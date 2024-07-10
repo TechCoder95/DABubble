@@ -1,15 +1,20 @@
 <main>
-  <section
-    *ngIf="isChannel"
-    class="chat-details-channel"
-    (mouseenter)="changeTagImg(true)"
-    (mouseleave)="changeTagImg(false)"
-  >
-    <img [src]="tagImg" class="tag-img" />
+  <section class="channel-information">
+    <div
+      *ngIf="isChannel"
+      class="chat-details-channel"
+      (mouseenter)="changeTagImg(true)"
+      (mouseleave)="changeTagImg(false)"
+      (click)="toggleChannelInformation($event)"
+    >
+      <img [src]="tagImg" class="tag-img" />
 
-    <h2>Entwicklerteam</h2>
-    <!-- NAME OF CHANNEL -->
-    <img class="arrow-down" [src]="arrowImg" />
+      <h2>Entwicklerteam</h2>
+      <img class="arrow-down" [src]="arrowImg" />
+    </div>
+    <app-dialog-channel-information
+      *ngIf="dialogChannelInfoIsOpen"
+    ></app-dialog-channel-information>
   </section>
 
   <section *ngIf="!isChannel">

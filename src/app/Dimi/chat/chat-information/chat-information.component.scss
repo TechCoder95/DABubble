@@ -13,11 +13,11 @@ main {
   border-radius: 100px;
   padding: 6px 10px;
   cursor: pointer;
-  transition: background 0.5s ease;
+  transition: background 0.3s ease;
   > h2 {
     margin: 0;
     font-size: 24px;
-    transition: color 0.5s ease;
+    transition: color 0.3s ease;
   }
   > .arrow-div {
     padding: 10px 7px;
