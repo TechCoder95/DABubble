@@ -1,0 +1,27 @@
+<mat-card appearance="outlined">
+    <mat-card-header>
+        <mat-card-title>Konto erstellen</mat-card-title>
+        <mat-card-subtitle>Mit deinem Namen und deiner E-Mail-Adresse hast du dein neues
+            DABubble-Konto</mat-card-subtitle>
+    </mat-card-header>
+
+    <form class="example-form flex flex-column">
+        <mat-form-field appearance="fill">
+            <mat-icon matSuffix>person</mat-icon>
+            <input matInput placeholder="Name und Nachname">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-icon matSuffix>mail</mat-icon>
+            <input matInput placeholder="Beispielname@email.com">
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+            <mat-icon matSuffix>lock</mat-icon>
+            <input matInput placeholder="Passwort">
+        </mat-form-field>
+        <div>
+            <mat-checkbox class="example-margin" [disabled]="true">Ich stimme der Datenschutzerklärung zu.</mat-checkbox>
+        </div>
+
+        <a mat-flat-button href="https://www.google.com/" target="_blank">Weiter</a>
+    </form>
+</mat-card>
