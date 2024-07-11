@@ -5,29 +5,33 @@
         <img src="./img/tag.png" />
         <h3>Entwicklerteam</h3>
       </div>
-      <button
-        #closeButton
-        mat-icon-button
+      <img
+        [src]="closeImg"
+        class="close"
         (mouseenter)="changeCloseImg(true)"
         (mouseleave)="changeCloseImg(false)"
         (click)="closeDialog()"
-      >
-        <img [src]="closeImg" />
-      </button>
+      />
     </section>
 
-    <section class="edit-channel-info">
+    <section #editChannelNameSection class="channel-info">
       <div class="arrange-sub-div">
-        <h4>Channel-Name</h4>
-        <p>Bearbeiten</p>
+        <h4 #title1 class="transition">Channel-Name</h4>
+        <p (click)="editModeName()" class="transition" #editName>Bearbeiten</p>
       </div>
-      <div class="channel-name">
+      <div class="channel-name" #channelName>
         <img src="./img/tag.png" />
-        <p>Entwicklerteam</p>
+        <p *ngIf="!inEditMode">Entwicklerteam</p>
+        <input
+          type="text"
+          placeholder="Entwicklerteam"
+          *ngIf="inEditMode"
+          class="input-channel-name"
+        />
       </div>
     </section>
 
-    <section class="edit-channel-info">
+    <section class="channel-info">
       <div class="arrange-sub-div">
         <h4>Beschreibung</h4>
         <p>Bearbeiten</p>

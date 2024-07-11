@@ -32,9 +32,17 @@ export class ChatInformationComponent {
   openChannelInformation(event: MouseEvent) {
     this.dialogIsOpen = !this.dialogIsOpen;
     this.changeTagImg(this.dialogIsOpen);
+    const dialogConfig = this.handleDialogConfig(event);
+    const dialogRef = this.dialog.open(
+      DialogChannelInformationComponent,
+      dialogConfig
+    );
+    this.handleDialogClose(dialogRef);
+  }
+
+  handleDialogConfig(event: MouseEvent) {
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
-
     const dialogConfig = {
       position: {
         top: `${rect.bottom}px`,
@@ -43,13 +51,11 @@ export class ChatInformationComponent {
       panelClass: 'custom-dialog-container',
       data: { dialogIsOpen: this.dialogIsOpen },
     };
+    return dialogConfig;
+  }
 
-    const dialogRef = this.dialog.open(
-      DialogChannelInformationComponent,
-      dialogConfig
-    );
-
-    dialogRef.afterClosed().subscribe((result: any) => {
+  handleDialogClose(dialogRef: any) {
+    dialogRef.afterClosed().subscribe((result: boolean) => {
       this.dialogIsOpen = result;
       this.changeTagImg(this.dialogIsOpen);
     });
