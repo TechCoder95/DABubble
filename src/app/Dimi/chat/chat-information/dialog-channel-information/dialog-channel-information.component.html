@@ -1,3 +1,49 @@
 <main>
-    HELLO WORLD
+  <div class="wrapper">
+    <section class="edit-channel-header">
+      <div class="channel-name">
+        <img src="./img/tag.png" />
+        <h3>Entwicklerteam</h3>
+      </div>
+      <button
+        #closeButton
+        mat-icon-button
+        (mouseenter)="changeCloseImg(true)"
+        (mouseleave)="changeCloseImg(false)"
+        (click)="closeDialog()"
+      >
+        <img [src]="closeImg" />
+      </button>
+    </section>
+
+    <section class="edit-channel-info">
+      <div class="arrange-sub-div">
+        <h4>Channel-Name</h4>
+        <p>Bearbeiten</p>
+      </div>
+      <div class="channel-name">
+        <img src="./img/tag.png" />
+        <p>Entwicklerteam</p>
+      </div>
+    </section>
+
+    <section class="edit-channel-info">
+      <div class="arrange-sub-div">
+        <h4>Beschreibung</h4>
+        <p>Bearbeiten</p>
+      </div>
+      <div class="current-channel-info">
+        <p>Hier kommt dann irgendwann die Beschreibung des Channels rein</p>
+      </div>
+
+      <hr class="divider" />
+
+      <h4>Erstellt von</h4>
+      <p class="channel-creator">Noah Braun</p>
+    </section>
+  </div>
+
+  <section>
+    <button class="leave-channel-button">Channel verlassen</button>
+  </section>
 </main>

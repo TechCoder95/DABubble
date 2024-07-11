@@ -31,3 +31,10 @@ main {
     }
   }
 }
+
+.dialog-is-open {
+  background: rgba(236, 238, 254, 1);
+  > h2 {
+    color: rgba(83, 90, 241, 1);
+  }
+}

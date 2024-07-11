@@ -1,4 +1,94 @@
-mat-card {
-  height: 200px;
-  width: 200px;
+main {
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 20px;
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+p,
+h4,
+h3 {
+  margin: 0;
+}
+
+.edit-channel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  > button:hover {
+    background: rgba(236, 238, 254, 1);
+  }
+}
+
+.channel-name {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  > img {
+    height: 25px;
+    width: 25px;
+  }
+}
+
+.edit-channel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  border: 1px solid rgba(173, 176, 217, 1);
+  border-radius: 20px;
+}
+
+.arrange-sub-div {
+  display: flex;
+  justify-content: space-between;
+  > p:last-child {
+    color: rgba(83, 90, 241, 1);
+    transition: font-weight 0.3s ease-in-out;
+    cursor: pointer;
+    &:hover {
+      font-weight: bold;
+    }
+  }
+}
+
+.current-channel-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  > img {
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.divider {
+  height: 0;
+  width: 100%;
+  background-color: rgba(173, 176, 217, 1);
+}
+
+.channel-creator {
+  font-size: 24px;
+  font-weight: 300;
+  color: rgba(83, 90, 241, 1);
+}
+
+.leave-channel-button {
+  padding: 12px 25px;
+  background: rgba(68, 77, 242, 1);
+  color: white;
+  border-radius: 25px;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    opacity: 0.75;
+  }
 }

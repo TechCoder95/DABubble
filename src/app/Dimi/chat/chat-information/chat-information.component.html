@@ -5,16 +5,14 @@
       class="chat-details-channel"
       (mouseenter)="changeTagImg(true)"
       (mouseleave)="changeTagImg(false)"
-      (click)="toggleChannelInformation($event)"
+      (click)="openChannelInformation($event)"
+      [ngClass]="{ 'dialog-is-open': dialogIsOpen }"
     >
       <img [src]="tagImg" class="tag-img" />
 
       <h2>Entwicklerteam</h2>
       <img class="arrow-down" [src]="arrowImg" />
     </div>
-    <app-dialog-channel-information
-      *ngIf="dialogChannelInfoIsOpen"
-    ></app-dialog-channel-information>
   </section>
 
   <section *ngIf="!isChannel">

@@ -15,12 +15,12 @@ export class ChatInformationComponent {
   tagImg = './img/tag.png';
   arrowImg = './img/keyboard_arrow_down.png';
   tagImgClass = '';
-  dialogChannelInfoIsOpen: boolean = false;
+  dialogIsOpen: boolean = false;
 
   constructor(public dialog: MatDialog) {}
 
   changeTagImg(hover: boolean) {
-    if (hover) {
+    if (hover || this.dialogIsOpen) {
       this.tagImg = './img/tag-hover.png';
       this.arrowImg = './img/arrow-down-hover.png';
     } else {
@@ -29,17 +29,29 @@ export class ChatInformationComponent {
     }
   }
 
-  toggleChannelInformation(event: MouseEvent) {
+  openChannelInformation(event: MouseEvent) {
+    this.dialogIsOpen = !this.dialogIsOpen;
+    this.changeTagImg(this.dialogIsOpen);
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
 
     const dialogConfig = {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.left}px`
-      }
+        left: `${rect.left}px`,
+      },
+      panelClass: 'custom-dialog-container',
+      data: { dialogIsOpen: this.dialogIsOpen },
     };
 
-    this.dialog.open(DialogChannelInformationComponent, dialogConfig);
+    const dialogRef = this.dialog.open(
+      DialogChannelInformationComponent,
+      dialogConfig
+    );
+
+    dialogRef.afterClosed().subscribe((result: any) => {
+      this.dialogIsOpen = result;
+      this.changeTagImg(this.dialogIsOpen);
+    });
   }
 }
