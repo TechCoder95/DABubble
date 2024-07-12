@@ -17,33 +17,51 @@
     <section #editChannelNameSection class="channel-info">
       <div class="arrange-sub-div">
         <h4 #title1 class="transition">Channel-Name</h4>
-        <p (click)="editModeName()" class="transition" #editName>Bearbeiten</p>
+        <p (click)="editChannelName()" class="transition" #editName>
+          Bearbeiten
+        </p>
       </div>
       <div class="channel-name" #channelName>
         <img src="./img/tag.png" />
-        <p *ngIf="!inEditMode">Entwicklerteam</p>
+        <p *ngIf="!inEditModeName">Entwicklerteam</p>
         <input
           type="text"
           placeholder="Entwicklerteam"
-          *ngIf="inEditMode"
+          *ngIf="inEditModeName"
           class="input-channel-name"
         />
       </div>
     </section>
 
-    <section class="channel-info">
-      <div class="arrange-sub-div">
-        <h4>Beschreibung</h4>
-        <p>Bearbeiten</p>
-      </div>
-      <div class="current-channel-info">
-        <p>Hier kommt dann irgendwann die Beschreibung des Channels rein</p>
+    <section #editChannelDescriptionSection class="channel-info">
+      <div class="channel-description-wrapper">
+        <div class="arrange-sub-div">
+          <h4 class="transition" #title2>Beschreibung</h4>
+          <p
+            (click)="editChannelDescription()"
+            class="transition"
+            #editDescription
+          >
+            Bearbeiten
+          </p>
+        </div>
+        <div class="current-channel-info" #channelDescription>
+          <p *ngIf="!inEditModeDescription">
+            Hier kommt dann irgendwann die Beschreibung des Channels rein
+          </p>
+          <input
+            type="text"
+            placeholder="Hier kommt dann irgendwann die Beschreibung des Channels rein"
+            *ngIf="inEditModeDescription"
+            class="input-channel-name"
+          />
+        </div>
       </div>
 
       <hr class="divider" />
 
       <h4>Erstellt von</h4>
-      <p class="channel-creator">Noah Braun</p>
+      <p #channelCreator class="channel-creator">Noah Braun</p>
     </section>
   </div>
 

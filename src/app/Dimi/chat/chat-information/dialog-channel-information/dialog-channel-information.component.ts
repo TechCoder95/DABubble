@@ -25,13 +25,21 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './dialog-channel-information.component.scss',
 })
 export class DialogChannelInformationComponent {
+  closeImg = './img/close-default.png';
+  channelName: string = 'Entwicklerteam';
+  /* TO EDIT NAME */
   @ViewChild('editChannelNameSection') editChannelNameSection!: ElementRef;
   @ViewChild('editName') editButton!: ElementRef;
   @ViewChild('title1') title1!: ElementRef;
   @ViewChild('channelName') channelNameDiv!: ElementRef;
   @ViewChild('channelNameInput') ChannelNameInput!: ElementRef;
-  closeImg = './img/close-default.png';
-  channelName: string = 'Entwicklerteam';
+  /* TO EDIT DESCRIPTION */
+  @ViewChild('editChannelDescriptionSection')
+  editChannelDescriptionSection!: ElementRef;
+  @ViewChild('editDescription') editDescriptionButton!: ElementRef;
+  @ViewChild('title2') title2!: ElementRef;
+  @ViewChild('channelDescription') channelDescriptionDiv!: ElementRef;
+  @ViewChild('channelCreator') channelCreator!: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>
@@ -49,10 +57,10 @@ export class DialogChannelInformationComponent {
     this.dialogRef.close(false);
   }
 
-  inEditMode: boolean = false;
-  editModeName() {
-    if (!this.inEditMode) {
-      this.inEditMode = true;
+  inEditModeName: boolean = false;
+  editChannelName() {
+    if (!this.inEditModeName) {
+      this.inEditModeName = true;
       this.editChannelNameSection.nativeElement.classList.add(
         'edit-mode-channel-name-section'
       );
@@ -61,7 +69,7 @@ export class DialogChannelInformationComponent {
       this.title1.nativeElement.classList.add('edit-mode-title');
       this.channelNameDiv.nativeElement.classList.add('edit-mode-channel-name');
     } else {
-      this.inEditMode = false;
+      this.inEditModeName = false;
       this.editChannelNameSection.nativeElement.classList.remove(
         'edit-mode-channel-name-section'
       );
@@ -71,6 +79,39 @@ export class DialogChannelInformationComponent {
       this.channelNameDiv.nativeElement.classList.remove(
         'edit-mode-channel-name'
       );
+    }
+  }
+
+  inEditModeDescription: boolean = false;
+  editChannelDescription() {
+    if (!this.inEditModeDescription) {
+      this.inEditModeDescription = true;
+      this.editChannelDescriptionSection.nativeElement.classList.add(
+        'edit-mode-channel-description-section'
+      );
+      this.editDescriptionButton.nativeElement.textContent = 'Speichern';
+      this.editDescriptionButton.nativeElement.classList.add('edit-mode');
+      this.title2.nativeElement.classList.add('edit-mode-title');
+      this.channelDescriptionDiv.nativeElement.style.marginTop = '20px';
+      this.channelDescriptionDiv.nativeElement.style.width = '465px';
+      this.channelDescriptionDiv.nativeElement.classList.add(
+        'edit-mode-channel-name'
+      );
+      this.channelCreator.nativeElement.style.paddingBottom = '20px';
+    } else {
+      this.inEditModeDescription = false;
+      this.editChannelDescriptionSection.nativeElement.classList.remove(
+        'edit-mode-channel-description-section'
+      );
+      this.editDescriptionButton.nativeElement.textContent = 'Bearbeiten';
+      this.editDescriptionButton.nativeElement.classList.remove('edit-mode');
+      this.title2.nativeElement.classList.remove('edit-mode-title');
+      this.channelDescriptionDiv.nativeElement.style.marginTop = '0';
+      this.channelDescriptionDiv.nativeElement.style.width = 'unset';
+      this.channelDescriptionDiv.nativeElement.classList.remove(
+        'edit-mode-channel-name'
+      );
+      this.channelCreator.nativeElement.style.paddingBottom = '0';
     }
   }
 }
