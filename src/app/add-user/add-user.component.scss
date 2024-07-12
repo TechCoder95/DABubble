@@ -1,0 +1,61 @@
+mat-card {
+    max-width: 606px;
+    border-radius: 30px;
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+}
+
+mat-card-title {
+    color: #444DF2;
+    font-size: 46px;
+    font-weight: 700;
+}
+
+mat-card-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.name {
+        background-image: url(./../../../public/img/person.svg);
+
+        &:focus {
+            background-image: url(./../../../public/img/person-focus.svg);
+            border-color: #535AF1;
+        }
+    }
+
+
+.mail {
+        background-image: url(./../../../public/img/mail.svg);
+
+        &:focus {
+            background-image: url(./../../../public/img/mail-focus.svg);
+            border-color: #535AF1;
+        }
+    }
+
+.password {
+        background-image: url(./../../../public/img/lock.svg);
+
+        &:focus {
+            background-image: url(./../../../public/img/lock-focus.svg);
+            border-color: #535AF1;
+        }
+    }
+
+
+input {
+    width: 500px;
+    height: 60px;
+    border-radius: 100px;
+    border: none;
+    background-color: rgba(236, 238, 254, 1);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-position-x: 95%;
+
+    &:focus {
+        border-color: #535AF1;
+    }
+
+}

@@ -6,6 +6,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { User } from '../models/user.class';
 
 @Component({
   selector: 'app-add-user',
@@ -15,5 +16,15 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './add-user.component.scss'
 })
 export class AddUserComponent {
+  user = new User();
+  acceptPolicy = false;
+
+  saveUser() {
+    console.log(this.user);
+  }
+
+  checkFields() {
+    this.acceptPolicy = this.user.fullName !== '' && this.user.email !== '' && this.user.password !== '';
+  }
 
 }
