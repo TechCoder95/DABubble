@@ -1,11 +1,18 @@
 input {
     margin: 10px;
-    padding: 20px;
-    border: 1px solid #ccc;
+    padding: 15px;
+    border: 2px solid white;
     border-radius: 5px;
     width: 85%;
     border-radius: 40px;
     font-size: 16px;
+    background-color: #ECEEFD;
+    cursor: pointer;
+
+    &:hover {
+        border-color: black;
+        border: 2px solid black;
+    }
 }
 span{
     margin-left: 20px;
@@ -14,9 +21,10 @@ span{
 button {
     margin: 10px;
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    width: 200px;
+    border: 2px solid #007bff;
+    border-radius: 40px;
+    width: 150px;
+    height: 50px;
     font-size: 16px;
     background-color: #007bff;
     color: white;
@@ -25,6 +33,12 @@ button {
     &:disabled {
         background: #4e4e4e;
         cursor: not-allowed;
+    }
+
+    &:hover {
+        background-color: white;
+        color: #007bff;
+        border: 2px solid #007bff;
     }
 }
 
@@ -40,7 +54,54 @@ button {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 25px;
-    height: 600px;
+    min-height: 600px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: white;
+}
+
+hr {
+    margin: 20px;
+    width: 30%;
+}
+
+
+.test {
+    display: none;
+}
+
+
+.test2{
+    width: 90%;
+}
+
+.gast{
+    background-color: white;
+    border: 2px solid #007bff;
+    color: #007bff;
+
+    &:hover{
+        background-color: #007bff;
+        color: white;
+    }
+
+}
+
+.googleButton{
+    margin: 10px;
+    padding: 30px;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    width: 90%;
+    color: #5262ED;
+    border-radius: 40px;
+    font-size: 16px;
+    text-align: center center;
+    background-color: #ECEEFD;
+    &:hover {
+        border-color: black;
+    }
+}
+
+h1{
+    color: #3A4EEC;
 }

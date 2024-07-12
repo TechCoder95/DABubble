@@ -58,7 +58,7 @@ export class UserService {
    */
   updateLoggedInUser(user: User) {
     if (user.id) {
-      this.DatabaseService.updateDataInDB('users', user.id, { isLoggedIn: true })
+      this.DatabaseService.updateDataInDB(this.collectionName, user.id, { isLoggedIn: true })
         .then(() => {
           this.getUsersFromDB();
         });
@@ -76,7 +76,7 @@ export class UserService {
    */
   updateActivationStatus(user: User) {
     if (user.id) {
-      this.DatabaseService.updateDataInDB('users', user.id, { activated: true })
+      this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
         .then(() => {
           this.getUsersFromDB();
         });
@@ -92,7 +92,7 @@ export class UserService {
    */
   async logout() {
     if (this.loggedInUser && this.loggedInUser.id) {
-      this.DatabaseService.updateDataInDB('users', this.loggedInUser.id, { isLoggedIn: false })
+      this.DatabaseService.updateDataInDB(this.collectionName, this.loggedInUser.id, { isLoggedIn: false })
         .then(() => {
           localStorage.removeItem('userLogin'),
             this.getUsersFromDB();
@@ -116,7 +116,7 @@ export class UserService {
    * @returns A promise that resolves when the user is successfully registered.
    */
   async registerUser(user: User) {
-    await this.DatabaseService.addDataToDB('users', user)
+    await this.DatabaseService.addDataToDB(this.collectionName, user)
       .then(() => {
         this.getUsersFromDB();
       });
