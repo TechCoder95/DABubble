@@ -23,8 +23,8 @@ export class AddUserComponent {
     console.log(this.user);
   }
 
-  checkFields() {
-    this.acceptPolicy = this.user.fullName !== '' && this.user.email !== '' && this.user.password !== '';
-  }
+  // checkFields() {
+  //   this.acceptPolicy = this.user.fullName !== '' && this.user.email !== '' && this.user.password !== '';
+  // }
 
 }

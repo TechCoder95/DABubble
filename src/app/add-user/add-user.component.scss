@@ -15,47 +15,67 @@ mat-card-subtitle {
     font-weight: 400;
 }
 
-.name {
-        background-image: url(./../../../public/img/person.svg);
+.arrow-back {
+    position: absolute;
+    top: 45px;
+    left: 32px;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./../../../public/img/arrow-back.svg);
 
-        &:focus {
-            background-image: url(./../../../public/img/person-focus.svg);
-            border-color: #535AF1;
-        }
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+        border-radius: 100%;
+        transition: 125ms;
+        background-image: url(./../../../public/img/arrow-back-hover.svg);
+
     }
+}
+
+.name {
+    background-image: url(./../../../public/img/person.svg);
+
+    &:focus {
+        background-image: url(./../../../public/img/person-focus.svg);
+        border-color: #535AF1;
+    }
+}
 
 
 .mail {
-        background-image: url(./../../../public/img/mail.svg);
+    background-image: url(./../../../public/img/mail.svg);
 
-        &:focus {
-            background-image: url(./../../../public/img/mail-focus.svg);
-            border-color: #535AF1;
-        }
+    &:focus {
+        background-image: url(./../../../public/img/mail-focus.svg);
+        border-color: #535AF1;
     }
+}
 
 .password {
-        background-image: url(./../../../public/img/lock.svg);
+    background-image: url(./../../../public/img/lock.svg);
 
-        &:focus {
-            background-image: url(./../../../public/img/lock-focus.svg);
-            border-color: #535AF1;
-        }
+    &:focus {
+        background-image: url(./../../../public/img/lock-focus.svg);
+        border-color: 1px solid #535AF1;
     }
-
+}
 
 input {
     width: 500px;
     height: 60px;
+    font-size: 16px;
     border-radius: 100px;
     border: none;
     background-color: rgba(236, 238, 254, 1);
     background-repeat: no-repeat;
-    background-position: center;
-    background-position-x: 95%;
+    background-position: 16px 50%;
+    padding-left: 48px;
+    box-sizing: border-box;
 
     &:focus {
-        border-color: #535AF1;
+        border-color: 1px solid #535AF1;
     }
-
 }
