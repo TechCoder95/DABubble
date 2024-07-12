@@ -1,0 +1,6 @@
+<div class="flex flex-column w-2">
+    <input type="text" [(ngModel)]="email" placeholder="Email" name="email">
+    <input type="text" [(ngModel)]="username" placeholder="Username" name="username">
+    <input type="password" [(ngModel)]="password" placeholder="Password">
+    <button (click)="register(email,password, username)" title="login">Registrieren</button>
+</div>
