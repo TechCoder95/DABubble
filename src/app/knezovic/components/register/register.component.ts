@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../../shared/services/user.service';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
+import { User } from '../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-register',
@@ -12,24 +14,38 @@ import { FormsModule } from '@angular/forms';
 })
 export class RegisterComponent {
 
-  email:string = '';
-  password:string = '';
-  username:string = '';
 
-  constructor(private UserService:UserService) {}
+  user: User = {
+    mail: '',
+    password: '',
+    username: ''
+  };
 
-  register(email:string, password:string, username:string) {
-    this.UserService.register(email, password, username);
-    this.clearInputs();
+
+  constructor(private UserService: UserService, private router: Router) { }
+
+  register(user: User) {
+    this.UserService.register(user.mail, user.password, user.username);
+    this.goToLogin();
+  }
+
+
+  onSubmit(ngForm: NgForm) {
+    if (ngForm.submitted && ngForm.form.valid) {
+      console.info('Form is valid');
+      this.register(this.user);
+    }
+    else {
+      console.info('Form is not valid');
+      ngForm.resetForm();
+    }
   }
 
   getUsers() {
     this.UserService.getUsersFromDB();
   }
 
-  clearInputs() {
-    this.email = '';
-    this.password = '';
-    this.username = '';
+  goToLogin() {
+    this.router.navigate(['/login']);
   }
 }

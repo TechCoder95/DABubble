@@ -1,7 +1,8 @@
 export interface User {
-    id: string;
+    id?: string;
     mail: string;
     username: string;
     password: string;
-    isLoggedIn: boolean;
+    isLoggedIn?: boolean;
+    activated?: boolean;
 }

@@ -1,10 +1,30 @@
 @if (!isLoggedIn) {
-<div class="flex flex-column w-2">
-    <input type="text" [(ngModel)]="email" placeholder="Email" name="email">
-    <input type="password" [(ngModel)]="password" placeholder="Password">
-    <button (click)="login(this.email,this.password)" title="login">Login</button>
-</div>
+    <div class="flex flex-column w-full align-items-center justify-content-center">
+
+        <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm"
+            class="card flex flex-column align-items-center justify-content-center w-4">
+            <h1>Registrieren</h1>
+            <div class="w-full">
+                <input type="text" [(ngModel)]="email" placeholder="Email" name="email" #mail="ngModel" required>
+                @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>Your mail is required</span>
+                </div>}
+            </div>
+            <div class="w-full">
+                <input type="password" [(ngModel)]="password" placeholder="Password" name="password"
+                    #password="ngModel" required>
+                @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Your password is
+                        required</span></div>}
+            </div>
+            <div class="flex">
+                <button type="submit" [disabled]=" !mail.valid || !password.valid" title="login"
+                    name="registrieren">Registrieren</button>
+                <button type="reset" (click)="goToRegister()" title="back" name="back">Registrieren</button>
+            </div>
+        </form>
+    </div>
 }
 @else {
     <button (click)="logout()" title="login">Logout</button>
 }
+
+<button (click)="goToRegister()" title="register">Registrieren</button>

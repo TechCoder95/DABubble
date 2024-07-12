@@ -38,7 +38,7 @@ export class UserService {
    */
   async login(email: string, password: string) {
     this.users.forEach((user: User) => {
-      if (user.mail === email && user.password === password) {
+      if (user.mail === email && user.password === password && user.id && user.activated) {
         localStorage.setItem('userLogin', user.id);
         this.updateLoggedInUser(user)
         console.log('User Logged In');
@@ -56,11 +56,31 @@ export class UserService {
    * @param {string} user The user object to update.
    * @returns A Promise that resolves when the user is updated in the database.
    */
-  async updateLoggedInUser(user: User) {
-   await this.DatabaseService.updateDataInDB('users', user.id, { isLoggedIn: true })
-          .then(() => {
-            this.getUsersFromDB();
-          });
+  updateLoggedInUser(user: User) {
+    if (user.id) {
+      this.DatabaseService.updateDataInDB('users', user.id, { isLoggedIn: true })
+        .then(() => {
+          this.getUsersFromDB();
+        });
+    } else {
+      console.error('User ID is undefined');
+    }
+  }
+
+  /**
+   * Updates the activation status of a user.
+   * If the user has an ID, it updates the 'activated' field to true in the database.
+   * After updating the status, it retrieves the updated user list from the database.
+   * 
+   * @param user - The user object to update.
+   */
+  updateActivationStatus(user: User) {
+    if (user.id) {
+      this.DatabaseService.updateDataInDB('users', user.id, { activated: true })
+        .then(() => {
+          this.getUsersFromDB();
+        });
+    }
   }
 
 
@@ -71,7 +91,7 @@ export class UserService {
    * Finally, retrieves the updated list of users from the database.
    */
   async logout() {
-    if (this.loggedInUser) {
+    if (this.loggedInUser && this.loggedInUser.id) {
       this.DatabaseService.updateDataInDB('users', this.loggedInUser.id, { isLoggedIn: false })
         .then(() => {
           localStorage.removeItem('userLogin'),
@@ -125,10 +145,12 @@ export class UserService {
    * @returns A Promise that resolves when the user is successfully updated.
    */
   async updateUser(user: User) {
-    await this.DatabaseService.updateDataInDB(this.collectionName, user.id, user)
-      .then(() => {
-        this.getUsersFromDB();
-      });
+    if (user.id) {
+      await this.DatabaseService.updateDataInDB(this.collectionName, user.id, user)
+        .then(() => {
+          this.getUsersFromDB();
+        });
+    }
   }
 
 
