@@ -1,0 +1,81 @@
+mat-card {
+    max-width: 606px;
+    border-radius: 30px;
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+}
+
+mat-card-title {
+    color: #444DF2;
+    font-size: 46px;
+    font-weight: 700;
+}
+
+mat-card-subtitle {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.arrow-back {
+    position: absolute;
+    top: 45px;
+    left: 32px;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(./../../../public/img/arrow-back.svg);
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+        border-radius: 100%;
+        transition: 125ms;
+        background-image: url(./../../../public/img/arrow-back-hover.svg);
+
+    }
+}
+
+.name {
+    background-image: url(./../../../public/img/person.svg);
+
+    &:focus {
+        background-image: url(./../../../public/img/person-focus.svg);
+        border-color: #535AF1;
+    }
+}
+
+
+.mail {
+    background-image: url(./../../../public/img/mail.svg);
+
+    &:focus {
+        background-image: url(./../../../public/img/mail-focus.svg);
+        border-color: #535AF1;
+    }
+}
+
+.password {
+    background-image: url(./../../../public/img/lock.svg);
+
+    &:focus {
+        background-image: url(./../../../public/img/lock-focus.svg);
+        border-color: 1px solid #535AF1;
+    }
+}
+
+input {
+    width: 500px;
+    height: 60px;
+    font-size: 16px;
+    border-radius: 100px;
+    border: none;
+    background-color: rgba(236, 238, 254, 1);
+    background-repeat: no-repeat;
+    background-position: 16px 50%;
+    padding-left: 48px;
+    box-sizing: border-box;
+
+    &:focus {
+        border-color: 1px solid #535AF1;
+    }
+}
