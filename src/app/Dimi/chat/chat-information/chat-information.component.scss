@@ -6,6 +6,17 @@ main {
   padding-inline: 15px;
 }
 
+p {
+  margin: 0;
+}
+
+.channel-information {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .chat-details-channel {
   display: flex;
   align-items: center;
@@ -23,12 +34,34 @@ main {
     padding: 10px 7px;
   }
   &:hover {
-    padding: 6px 10px;
+    /*  padding: 6px 10px; */
     gap: 10px;
     background: rgba(236, 238, 254, 1);
     > h2 {
       color: rgba(83, 90, 241, 1);
     }
+  }
+}
+
+.channel-members {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  > .channel-member-amount {
+    display: flex;
+    gap: 5px;
+    padding: 3px 10px;
+    cursor: pointer;
+    border-radius: 100px;
+    &:hover {
+      background: rgba(236, 238, 254, 1);
+      > p {
+        color: rgba(83, 90, 241, 1);
+      }
+    }
+  }
+  > img {
+    cursor: pointer;
   }
 }
 

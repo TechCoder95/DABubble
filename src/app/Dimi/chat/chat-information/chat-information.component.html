@@ -5,13 +5,29 @@
       class="chat-details-channel"
       (mouseenter)="changeTagImg(true)"
       (mouseleave)="changeTagImg(false)"
-      (click)="openChannelInformation($event)"
-      [ngClass]="{ 'dialog-is-open': dialogIsOpen }"
+      (click)="openDialogChannelInformation($event)"
+      [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
       <img [src]="tagImg" class="tag-img" />
 
       <h2>Entwicklerteam</h2>
       <img class="arrow-down" [src]="arrowImg" />
+    </div>
+
+    <div class="channel-members">
+      <div
+        class="channel-member-amount"
+        (click)="openDialogChannelMembers($event)"
+        [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
+      >
+        <p>CH.MEM-IMG</p>
+        <p>5</p>
+      </div>
+      <img
+        [src]="addChannelMembersImg"
+        (mouseenter)="changeAddMembersImg(true)"
+        (mouseleave)="changeAddMembersImg(false)"
+      />
     </div>
   </section>
 
