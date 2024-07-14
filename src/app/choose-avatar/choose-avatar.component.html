@@ -1,28 +1,32 @@
-<mat-card appearance="outlined" class="w-full p-6 gap-4 align-items-center">
-    <div (click)="goBackToRegister()" class="arrow-back"></div>
-
-    <mat-card-title>Wähle deinen Avatar</mat-card-title>
-
-    <img [src]="selectedAvatar" class="selected-avatar">
-
-    <mat-card-subtitle>Frederik Beck</mat-card-subtitle>
-
-    <div>
-        <p>Aus der Liste wählen</p>
-    </div>
-
-    <div class="flex gap-2">
-        <div class="cycle-avatar flex" *ngFor="let image of images">
-            <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
+<div class="flex w-full align-items-center justify-content-center">
+    <mat-card appearance="outlined" class="w-full p-6 gap-4 align-items-center">
+        <div (click)="goBackToRegister()" class="arrow-back"></div>
+    
+        <mat-card-title>Wähle deinen Avatar</mat-card-title>
+    
+        <img [src]="selectedAvatar" class="selected-avatar">
+    
+        <mat-card-subtitle>Frederik Beck</mat-card-subtitle>
+    
+        <div>
+            <p>Aus der Liste wählen</p>
         </div>
-    </div>
-
-    <div class="own-img flex gap-4 align-items-center">
-        <p>eigenes Bild verwenden</p>
-
-        <button mat-stroked-button>Datei hochladen</button>
-    </div>
-
-    <button mat-flat-button>Weiter</button>
-
-</mat-card>
+    
+        <div class="flex gap-2">
+            <div class="cycle-avatar flex" *ngFor="let image of images">
+                <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
+            </div>
+        </div>
+    
+        <div class="own-img flex gap-4 align-items-center">
+            <p>Eigenes Bild verwenden</p>
+    
+            <!-- <button mat-stroked-button>Datei hochladen</button> -->
+            <button mat-stroked-button (click)="fileInput.click()">Datei hochladen</button>
+            <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
+        </div>
+    
+        <button mat-flat-button>Weiter</button>
+    
+    </mat-card>
+</div>
