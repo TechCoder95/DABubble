@@ -11,11 +11,12 @@ import { Router } from '@angular/router';
 import { UserService } from './../shared/services/user.service';
 import { CommonModule } from '@angular/common';
 import { User } from './../shared/interfaces/user';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatCheckboxModule, FormsModule, MatButtonModule, MatDialogModule, CommonModule],
+  imports: [MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatCheckboxModule, FormsModule, MatButtonModule, MatDialogModule, CommonModule, MatTooltipModule],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.scss'
 })
@@ -25,16 +26,14 @@ export class AddUserComponent {
     mail: '',
     password: '',
     username: '',
-    
+
   };
 
   acceptPolicy = false;
   readonly dialog = inject(MatDialog);
 
 
-  constructor(private UserService: UserService, private router: Router) {
-    
-  }
+  constructor(private UserService: UserService, private router: Router) { }
 
 
   register(user: User) {
@@ -58,7 +57,7 @@ export class AddUserComponent {
     this.UserService.getUsersFromDB();
   }
 
-  
+
   openAvatar() {
     console.log(this.user);
     this.router.navigateByUrl('/avatar')
