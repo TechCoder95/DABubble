@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import { DatabaseService } from '../../shared/services/database.service';
+import { TextChannel } from '../../shared/interfaces/textchannel';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { AddChannelComponent } from '../add-channel/add-channel.component';
 
 interface Node {
   name: string;
@@ -31,23 +35,8 @@ interface FlattenedNode {
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss']
 })
-export class SidenavComponent {
-  private TREE_DATA: Node[] = [
-    {
-      name: 'Channels',
-      children: [
-        { name: '#Entwicklerteam' },
-        { name: 'Channel hinzufügen' }
-      ],
-    },
-    {
-      name: 'Direktnachrichten',
-      children: [
-        { name: 'Felix Müller' },
-        { name: 'Noah Ewen' },
-      ],
-    },
-  ];
+export class SidenavComponent implements OnInit {
+  private TREE_DATA: Node[] = [];
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -68,9 +57,12 @@ export class SidenavComponent {
   );
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+  channels: TextChannel[] = [];
 
-  constructor() {
-    this.dataSource.data = this.TREE_DATA;
+  constructor(private dbService: DatabaseService) { }
+
+  async ngOnInit() {
+    await this.loadChannels();
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
@@ -79,32 +71,72 @@ export class SidenavComponent {
     return node.name !== 'Channel hinzufügen' && node.name.startsWith('#');
   }
 
-  addChannel() {
-    const newChannel: Node = { name: '#Neuer Kanal' };
-    const expandedNodes = new Set(this.treeControl.expansionModel.selected.map(node => node.name));
-    const channelsNode = this.TREE_DATA.find(node => node.name === 'Channels');
-    if (channelsNode && channelsNode.children) {
-      const addChannelNodeIndex = channelsNode.children.findIndex(child => child.name === 'Channel hinzufügen');
-      if (addChannelNodeIndex !== -1) {
-        channelsNode.children.splice(addChannelNodeIndex, 0, newChannel);
-        this.dataSource.data = [...this.TREE_DATA];
-        this.treeControl.dataNodes.forEach(node => {
-          if (expandedNodes.has(node.name)) {
-            this.treeControl.expand(node);
-          }
-        });
-      }
-    }
+  async addChannel(channelName: string) {
+    const correctedChannelName = channelName.startsWith('#') ? channelName : `#${channelName}`;
+    const newChannel: TextChannel = { id: '', name: correctedChannelName };
+    await this.dbService.addDataToDB('channels', newChannel);
+    await this.loadChannels();
+  }
+
+  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+    return channel.name !== undefined;
+  }
+
+  private async fetchChannels(): Promise<void> {
+    this.channels = [];
+    await this.dbService.readDatafromDB('channels', this.channels);
+  }
+
+  private createChannelNodes(): Node[] {
+    return this.channels
+      .filter(this.isDefined)
+      .map(channel => ({
+        name: channel.name
+      }));
+  }
+
+  private initializeTreeData(channelNodes: Node[]): void {
+    const channelsStructure: Node = {
+      name: 'Channels',
+      children: [
+        ...channelNodes,
+        { name: 'Channel hinzufügen' }
+      ]
+    };
+    this.TREE_DATA = [channelsStructure];
+    this.TREE_DATA.push({
+      name: 'Direktnachrichten',
+      children: [
+        { name: 'Felix Müller' },
+        { name: 'Noah Ewen' },
+      ],
+    });
+
+    this.dataSource.data = this.TREE_DATA;
+  }
+
+  async loadChannels() {
+    await this.fetchChannels();
+    const channelNodes = this.createChannelNodes();
+    this.initializeTreeData(channelNodes);
   }
 
   handleNodeClick(node: FlattenedNode) {
-    console.log('Node clicked:', node.name);
- 
     if (node.expandable) {
       this.treeControl.toggle(node);
     }
     if (node.name === 'Channel hinzufügen') {
-      this.addChannel();
+      this.openDialog();
     }
+  }
+  readonly dialog = inject(MatDialog);
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AddChannelComponent);
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.addChannel(result); 
+      }
+    });
   }
 }

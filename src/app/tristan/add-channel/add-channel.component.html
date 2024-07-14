@@ -1,0 +1,12 @@
+<h2 mat-dialog-title>Channel erstellen</h2>
+<mat-dialog-content>
+  <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo iste similique aspernatur beatae nam, suscipit accusamus corrupti nobis? Ad est asperiores iusto perspiciatis itaque nobis quas rem inventore vero quia!</p>
+  <mat-form-field class="example-full-width">
+    <mat-label>Channelname</mat-label>
+    <input matInput [(ngModel)]="name" placeholder="Gebe einen Namen ein." />
+  </mat-form-field>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="onOkClick()" cdkFocusInitial>Ok</button>
+</mat-dialog-actions>
