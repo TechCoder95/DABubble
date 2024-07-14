@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { AddUserComponent } from './add-user/add-user.component';
 import { LoginComponent } from './knezovic/components/login/login.component';
-import { RegisterComponent } from './knezovic/components/register/register.component';
+import { ChooseAvatarComponent } from './choose-avatar/choose-avatar.component';
 
 
 export const routes: Routes = [
     {path: '', component: AddUserComponent},
-    {path: 'login', component: LoginComponent},
-    {path: 'register', component: RegisterComponent}
+    {path: 'addUser', component: AddUserComponent},
+    {path: 'avatar', component: ChooseAvatarComponent},
+    {path: 'login', component: LoginComponent}
 ];
