@@ -1,0 +1,11 @@
+main {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border-radius: 30px;
+  padding: 4px 20px;
+  cursor: pointer;
+  &:hover {
+    background: rgba(236, 238, 254, 1);
+  }
+}

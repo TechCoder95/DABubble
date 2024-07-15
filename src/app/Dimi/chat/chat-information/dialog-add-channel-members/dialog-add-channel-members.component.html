@@ -1,0 +1,22 @@
+<main>
+  <section>
+    <div class="headline">
+      <h3>Leute hinzufügen</h3>
+      <img
+        [src]="closeImg"
+        (mouseenter)="changeCloseImg(true)"
+        (mouseleave)="changeCloseImg(false)"
+        class="close"
+        (click)="closeDialog()"
+      />
+    </div>
+    <div class="channel-name">
+      <img src="./img/tag-hover.png" />
+      <p>Entwicklerteam</p>
+    </div>
+  </section>
+
+  <section>
+    <input type="text" class="inputfield-name" placeholder="Name eingeben" />
+  </section>
+</main>

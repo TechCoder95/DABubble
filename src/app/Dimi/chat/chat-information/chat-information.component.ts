@@ -4,6 +4,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
+import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
 
 @Component({
   selector: 'app-chat-information',
@@ -42,6 +43,9 @@ export class ChatInformationComponent {
 
   openDialogChannelInformation(event: MouseEvent) {
     this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
+    if (this.dialogChannelInfoIsOpen) {
+      document.body.style.overflow = 'hidden';
+    }
     this.changeTagImg(this.dialogChannelInfoIsOpen);
     const dialogConfig = this.handleDialogConfig(event, 'fromLeft');
     const dialogRef = this.dialog.open(
@@ -54,8 +58,25 @@ export class ChatInformationComponent {
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
+    if (this.dialogChannelMembersIsOpen) {
+      document.body.style.overflow = 'hidden';
+    }
     const dialogConfig = this.handleDialogConfig(event, 'fromRight');
-    this.dialog.open(DialogChannelMembersComponent, dialogConfig);
+    const dialogRef = this.dialog.open(
+      DialogChannelMembersComponent,
+      dialogConfig
+    );
+    this.handleDialogClose(dialogRef);
+  }
+
+  dialogAddChannelMembersIsOpen: boolean = false;
+  openDialogAddChannelMembers(event: MouseEvent) {
+    /*  this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
+    if (this.dialogAddChannelMembersIsOpen) {
+      document.body.style.overflow = 'hidden';
+    } */
+
+    this.dialog.open(DialogAddChannelMembersComponent);
   }
 
   handleDialogConfig(event: MouseEvent, position: string) {
@@ -66,25 +87,25 @@ export class ChatInformationComponent {
   }
 
   returnDialogConfig(rect: any, position: string) {
-    let dialogConfig;
     if (position === 'fromLeft') {
-      return (dialogConfig = {
+      return {
         position: {
           top: `${rect.bottom}px`,
           left: `${rect.left}px`,
         },
         panelClass: 'custom-dialog-container',
         /*   data: { dialogIsOpen: this.dialogChannelInfoIsOpen }, */
-      });
+      };
     } else {
-      const dialogWidth = 280;
-      return (dialogConfig = {
+      const dialogWidth = 380;
+      return {
         position: {
           top: `${rect.bottom}px`,
           left: `${rect.right - dialogWidth}px`, // Berechnet die linke Position, sodass die rechten Ränder übereinstimmen
         },
         panelClass: 'custom-dialog-container',
-      });
+        data: { channelMembers: this.channelMembers },
+      };
     }
   }
 
@@ -92,7 +113,27 @@ export class ChatInformationComponent {
     dialogRef.afterClosed().subscribe((result: boolean) => {
       this.dialogChannelInfoIsOpen = result;
       this.dialogChannelMembersIsOpen = result;
+      document.body.style.overflow = '';
       this.changeTagImg(this.dialogChannelInfoIsOpen);
     });
   }
+
+  channelMembers = [
+    {
+      img: './img/member1.png',
+      name: 'Dimitrios Kapetanis (Du)',
+    },
+    {
+      img: './img/member2.png',
+      name: 'Rabia Ürkmez',
+    },
+    {
+      img: './img/member3.png',
+      name: 'Dominik Knezovic',
+    },
+    {
+      img: './img/member4.png',
+      name: 'Tristan Gehring',
+    },
+  ];
 }

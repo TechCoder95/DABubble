@@ -3,7 +3,7 @@ main {
   padding: 40px;
 }
 
-section {
+.headline {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -19,4 +19,10 @@ section {
   &:hover {
     background: rgba(236, 238, 254, 1);
   }
+}
+
+.channel-members {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }

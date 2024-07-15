@@ -6,7 +6,8 @@ main {
   padding-inline: 15px;
 }
 
-p {
+p,
+h2 {
   margin: 0;
 }
 
@@ -26,7 +27,6 @@ p {
   cursor: pointer;
   transition: background 0.3s ease;
   > h2 {
-    margin: 0;
     font-size: 24px;
     transition: color 0.3s ease;
   }
@@ -44,30 +44,42 @@ p {
 }
 
 .channel-members {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
+  > img {
+    cursor: pointer;
+  }
   > .channel-member-amount {
     display: flex;
+    align-items: center;
     gap: 5px;
     padding: 3px 10px;
     cursor: pointer;
     border-radius: 100px;
+    > img:not(:first-child) {
+      margin-left: -15px;
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    > img {
+      width: 35px;
+    }
     &:hover {
+      cursor: pointer;
       background: rgba(236, 238, 254, 1);
       > p {
         color: rgba(83, 90, 241, 1);
       }
     }
   }
-  > img {
-    cursor: pointer;
-  }
 }
 
 .dialog-is-open {
   background: rgba(236, 238, 254, 1);
-  > h2 {
+  > h2,
+  p {
     color: rgba(83, 90, 241, 1);
   }
 }

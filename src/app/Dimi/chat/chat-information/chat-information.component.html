@@ -20,13 +20,16 @@
         (click)="openDialogChannelMembers($event)"
         [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
       >
-        <p>CH.MEM-IMG</p>
-        <p>5</p>
+        @for (member of channelMembers; track $index) {
+        <img [src]="member.img" />
+        }
+        <p>{{ channelMembers.length }}</p>
       </div>
       <img
         [src]="addChannelMembersImg"
         (mouseenter)="changeAddMembersImg(true)"
         (mouseleave)="changeAddMembersImg(false)"
+        (click)="openDialogAddChannelMembers($event)"
       />
     </div>
   </section>
