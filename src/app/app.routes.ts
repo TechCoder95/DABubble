@@ -9,7 +9,7 @@ import { RegisterComponent } from './knezovic/components/register/register.compo
 
 export const routes: Routes = [
     { path: '', component: SidenavComponent },
-    { path: 'platzhalter', component: AddUserComponent },
+    { path: 'add-user', component: AddUserComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent }
 ];
