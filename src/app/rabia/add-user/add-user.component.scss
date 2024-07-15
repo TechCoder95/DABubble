@@ -31,7 +31,6 @@ mat-card-subtitle {
         border-radius: 100%;
         transition: 125ms;
         background-image: url(./../../../public/img/arrow-back-hover.svg);
-
     }
 }
 
@@ -78,4 +77,10 @@ input {
     &:focus {
         border-color: 1px solid #535AF1;
     }
+}
+
+.alert {
+    color: red;
+    font-size: 14px;
+    margin: 5px;
 }
