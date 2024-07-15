@@ -1,0 +1,29 @@
+<div class="flex flex-column w-full align-items-center justify-content-center">
+
+    <form (ngSubmit)="onSubmit(registerForm)" #registerForm="ngForm"
+        class="card flex flex-column align-items-center justify-content-center w-4">
+        <h1>Registrieren</h1>
+        <div class="w-full">
+            <input type="text" [(ngModel)]="user.mail" placeholder="Email" name="email" #mail="ngModel" required>
+            @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>Your mail is required</span>
+            </div>}
+        </div>
+        <div class="w-full">
+            <input type="text" [(ngModel)]="user.username" placeholder="Username" name="username" #username="ngModel"
+                required>
+            @if (!username.valid && !username.disabled && username.touched) {<div class="alert"> <span>Your Name is
+                    required</span></div>}
+        </div>
+        <div class="w-full">
+            <input type="password" [(ngModel)]="user.password" placeholder="Password" name="password"
+                #password="ngModel" required>
+            @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Your password is
+                    required</span></div>}
+        </div>
+        <div class="flex">
+            <button type="submit" [disabled]="!username.valid || !mail.valid || !password.valid" title="login"
+                name="registrieren">Weiter (Reg)</button>
+            <button type="reset" (click)="goToLogin()" title="back" name="back">Zurück</button>
+        </div>
+    </form>
+</div>

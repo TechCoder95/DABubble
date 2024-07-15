@@ -1,0 +1,88 @@
+.toolbar-line {
+    background-color: rgb(86, 86, 214);
+    color: white;
+    min-height: 57px;
+    height: 57px;
+}
+
+.toolbar-container {
+    height: 100vh;
+}
+
+.sidenav {
+    width: 300px;
+}
+
+.logo-container {
+    padding: 0 16px;
+    min-height: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+}
+
+.menu {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        display: flex;
+        align-items: center;
+        padding-left: 16px;
+        padding-right: 16px;
+        height: 48px;
+        cursor: pointer;
+
+        mat-icon {
+            margin-right: 16px;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.15);
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+}
+
+.router-container {
+    padding-left: 56px;
+    padding-right: 56px;
+    padding-top: 16px;
+}
+
+.mat-tree-node{
+    padding: 0 !important;
+}
+
+.test{
+    position: absolute;
+    left: 0;
+    top: 50px;
+    z-index: 5;
+}
+
+.add-channel-icon {
+    width: 24px;
+    height: 24px;
+    margin-left: 10px;
+    cursor: pointer;
+    vertical-align: middle;
+  }
+  
+  .tree-node-content {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .new-channel {
+    color: blue;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
