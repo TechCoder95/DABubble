@@ -1,0 +1,54 @@
+main {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
+}
+
+p,
+h3 {
+  margin: 0;
+}
+
+.headline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close {
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 2px;
+  transition: background 0.5s ease;
+  &:hover {
+    background: rgba(236, 238, 254, 1);
+  }
+}
+
+.channel-name {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  > img {
+    width: 24px;
+    height: 24px;
+  }
+  > p {
+    font-size: 18px;
+    color: rgba(121, 126, 243, 1);
+  }
+}
+
+.inputfield-name {
+  border-radius: 30px;
+  padding: 15px 20px;
+  font-size: 18px;
+  width: 420px;
+  border: 1px solid rgba(173, 176, 217, 1);
+  /*  &:focus {
+    border: 1px solid rgba(68, 77, 242, 1);
+  } */
+}

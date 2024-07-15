@@ -1,0 +1,43 @@
+<main>
+  <section class="channel-information">
+    <div
+      *ngIf="isChannel"
+      class="chat-details-channel"
+      (mouseenter)="changeTagImg(true)"
+      (mouseleave)="changeTagImg(false)"
+      (click)="openDialogChannelInformation($event)"
+      [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
+    >
+      <img [src]="tagImg" class="tag-img" />
+
+      <h2>Entwicklerteam</h2>
+      <img class="arrow-down" [src]="arrowImg" />
+    </div>
+
+    <div class="channel-members">
+      <div
+        class="channel-member-amount"
+        (click)="openDialogChannelMembers($event)"
+        [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
+      >
+        @for (member of channelMembers; track $index) {
+        <img [src]="member.img" />
+        }
+        <p>{{ channelMembers.length }}</p>
+      </div>
+      <img
+        [src]="addChannelMembersImg"
+        (mouseenter)="changeAddMembersImg(true)"
+        (mouseleave)="changeAddMembersImg(false)"
+        (click)="openDialogAddChannelMembers($event)"
+      />
+    </div>
+  </section>
+
+  <section *ngIf="!isChannel">
+    <img src="./img/keyboard_arrow_down.png" />
+    <!-- IMG OF PERSON -->
+    <h2>Sofia Müller</h2>
+    <!-- NAME OF PERSON -->
+  </section>
+</main>
