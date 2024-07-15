@@ -133,7 +133,7 @@ export class SidenavComponent implements OnInit {
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
-    dialogRef.afterClosed().subscribe(result => {
+    dialogRef.afterClosed().subscribe((result:any) => {
       if (result) {
         this.addChannel(result); 
       }

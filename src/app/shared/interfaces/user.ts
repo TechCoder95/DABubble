@@ -5,4 +5,5 @@ export interface User {
     password: string;
     isLoggedIn?: boolean;
     activated?: boolean;
+    activeChannels?:[];
 }
