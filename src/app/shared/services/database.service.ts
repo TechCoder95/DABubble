@@ -39,16 +39,15 @@ export class DatabaseService {
    * @param {any[]} array - The array to populate with the retrieved data.
    * @returns A promise that resolves when the initial data is retrieved and whenever the data changes in the database.
    */
-  async readDatafromDB(collectionName: string, array: any[]) {
-    if (array.length > 0) {
-      array = []
-    }
-    onSnapshot(this.getDataRef(collectionName), (list) => {
-      list.docs.forEach(data => {
-          array.push({ id: data.id, ...data.data() });
-      });
-    });
-    return true
+  async readDatafromDB(collectionName: string, array: any[]): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      onSnapshot(this.getDataRef(collectionName), (list) => {
+        const results = list.docs.map(data => ({ id: data.id, ...data.data() }));
+        array.length = 0;
+        array.push(...results); 
+        resolve();
+      }, reject);
+    }).catch((err) => { console.error('Error reading Data', err); });
   }
 
 
