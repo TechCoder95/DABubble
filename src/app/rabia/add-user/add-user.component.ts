@@ -8,9 +8,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UserService } from './../shared/services/user.service';
+import { UserService } from '../../shared/services/user.service';
 import { CommonModule } from '@angular/common';
-import { User } from './../shared/interfaces/user';
+import { User } from '../../shared/interfaces/user';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
@@ -57,23 +57,18 @@ export class AddUserComponent {
   getUsers() {
     this.UserService.getUsersFromDB();
 
-    // Überprüfen, ob das Array nicht leer ist
     if (this.UserService.users.length > 0) {
-      // Zugriff auf das letzte Element
       const lastUser = this.UserService.users[this.UserService.users.length - 1];
-      console.log("mal schauen ob das klappt ",lastUser);
+      console.log("mal schauen ob das klappt: ",lastUser);
     } else {
       console.log("Das Array ist leer.");
     }
-
-
   }
 
 
   openAvatar() {
     console.log(this.user);
     this.router.navigateByUrl('/avatar')
-
   }
 
   goToLogin() {
