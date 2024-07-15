@@ -1,0 +1,24 @@
+<main>
+  <section class="channel-information">
+    <div
+      *ngIf="isChannel"
+      class="chat-details-channel"
+      (mouseenter)="changeTagImg(true)"
+      (mouseleave)="changeTagImg(false)"
+      (click)="openChannelInformation($event)"
+      [ngClass]="{ 'dialog-is-open': dialogIsOpen }"
+    >
+      <img [src]="tagImg" class="tag-img" />
+
+      <h2>Entwicklerteam</h2>
+      <img class="arrow-down" [src]="arrowImg" />
+    </div>
+  </section>
+
+  <section *ngIf="!isChannel">
+    <img src="./img/keyboard_arrow_down.png" />
+    <!-- IMG OF PERSON -->
+    <h2>Sofia Müller</h2>
+    <!-- NAME OF PERSON -->
+  </section>
+</main>
