@@ -26,7 +26,7 @@ export class AddUserComponent {
     mail: '',
     password: '',
     username: '',
-
+    id: ''
   };
 
   acceptPolicy = false;
@@ -46,6 +46,7 @@ export class AddUserComponent {
     if (ngForm.submitted && ngForm.form.valid) {
       console.info('Form is valid');
       this.register(this.user);
+      this.getUsers();
     }
     else {
       console.info('Form is not valid');
@@ -55,12 +56,24 @@ export class AddUserComponent {
 
   getUsers() {
     this.UserService.getUsersFromDB();
+
+    // Überprüfen, ob das Array nicht leer ist
+    if (this.UserService.users.length > 0) {
+      // Zugriff auf das letzte Element
+      const lastUser = this.UserService.users[this.UserService.users.length - 1];
+      console.log("mal schauen ob das klappt ",lastUser);
+    } else {
+      console.log("Das Array ist leer.");
+    }
+
+
   }
 
 
   openAvatar() {
     console.log(this.user);
     this.router.navigateByUrl('/avatar')
+
   }
 
   goToLogin() {
