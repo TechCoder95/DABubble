@@ -23,41 +23,41 @@ mat-card-subtitle {
     height: 40px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./../../../public/img/arrow-back.svg);
+    background-image: url(./../../../../public/img/arrow-back.svg);
 
     &:hover {
         cursor: pointer;
         background-color: #ECEEFE;
         border-radius: 100%;
         transition: 125ms;
-        background-image: url(./../../../public/img/arrow-back-hover.svg);
+        background-image: url(./../../../../public/img/arrow-back-hover.svg);
     }
 }
 
 .name {
-    background-image: url(./../../../public/img/person.svg);
+    background-image: url(./../../../../public/img/person.svg);
 
     &:focus {
-        background-image: url(./../../../public/img/person-focus.svg);
+        background-image: url(./../../../../public/img/person-focus.svg);
         border-color: #535AF1;
     }
 }
 
 
 .mail {
-    background-image: url(./../../../public/img/mail.svg);
+    background-image: url(./../../../../public/img/mail.svg);
 
     &:focus {
-        background-image: url(./../../../public/img/mail-focus.svg);
+        background-image: url(./../../../../public/img/mail-focus.svg);
         border-color: #535AF1;
     }
 }
 
 .password {
-    background-image: url(./../../../public/img/lock.svg);
+    background-image: url(./../../../../public/img/lock.svg);
 
     &:focus {
-        background-image: url(./../../../public/img/lock-focus.svg);
+        background-image: url(./../../../../public/img/lock-focus.svg);
         border-color: 1px solid #535AF1;
     }
 }
