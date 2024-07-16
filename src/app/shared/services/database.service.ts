@@ -1,5 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { ChatMessage } from '../interfaces/chatmessage';
 
 @Injectable({
   providedIn: 'root'
@@ -90,4 +91,18 @@ export class DatabaseService {
       .catch((err) => { console.error('Error deleting Data', err) })
   }
 
+   /**
+   * Retrieves messages from a given channel.
+   * 
+   * @param {string} channelName - The name of the channel.
+   * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
+   */
+   public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
+    const messagesCollectionRef = this.getDataRef('messages');
+    const q = query(messagesCollectionRef, where('channelId', '==', channelName));
+    const snapshot = await getDocs(q);
+    const messages: ChatMessage[] = [];
+    snapshot.forEach(doc => messages.push(doc.data() as ChatMessage));
+    return messages;
+  }
 }

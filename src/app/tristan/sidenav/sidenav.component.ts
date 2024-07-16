@@ -10,6 +10,7 @@ import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelComponent } from '../add-channel/add-channel.component';
+import { ChatMessage } from '../../shared/interfaces/chatmessage';
 
 interface Node {
   name: string;
@@ -28,15 +29,18 @@ interface FlattenedNode {
   imports: [
     CommonModule,
     MatSidenavModule,
-    MatIconModule,
-    MatButtonModule,
     MatTreeModule,
+    MatDialogModule,
+    MatIconModule,
+    MatButtonModule
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss']
 })
 export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
+  selectedChannel: TextChannel | null = null;
+  messages: ChatMessage[] = [];
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -59,7 +63,7 @@ export class SidenavComponent implements OnInit {
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
 
-  constructor(private dbService: DatabaseService) { }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog) { }
 
   async ngOnInit() {
     await this.loadChannels();
@@ -121,21 +125,24 @@ export class SidenavComponent implements OnInit {
     this.initializeTreeData(channelNodes);
   }
 
-  handleNodeClick(node: FlattenedNode) {
+  async handleNodeClick(node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
-    }
-    if (node.name === 'Channel hinzufügen') {
+    } else if (this.isNewChannel(node)) {
+      this.selectedChannel = this.channels.find(channel => channel.name === node.name) || null;
+      if (this.selectedChannel) {
+        this.messages = await this.dbService.getMessagesByChannel(this.selectedChannel.name);
+      }
+    } else if (node.name === 'Channel hinzufügen') {
       this.openDialog();
     }
   }
-  readonly dialog = inject(MatDialog);
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
-    dialogRef.afterClosed().subscribe((result:any) => {
+    dialogRef.afterClosed().subscribe((result: any) => {
       if (result) {
-        this.addChannel(result); 
+        this.addChannel(result);
       }
     });
   }
