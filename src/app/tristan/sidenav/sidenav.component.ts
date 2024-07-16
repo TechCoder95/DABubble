@@ -11,6 +11,8 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelComponent } from '../add-channel/add-channel.component';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
+import { ChatComponent } from '../../Dimi/chat/chat.component';
+import { ChannelService } from '../../shared/services/channel.service';
 
 interface Node {
   name: string;
@@ -32,7 +34,8 @@ interface FlattenedNode {
     MatTreeModule,
     MatDialogModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    ChatComponent
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss']
@@ -63,7 +66,7 @@ export class SidenavComponent implements OnInit {
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog) { }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService) { }
 
   async ngOnInit() {
     await this.loadChannels();
@@ -129,9 +132,10 @@ export class SidenavComponent implements OnInit {
     if (node.expandable) {
       this.treeControl.toggle(node);
     } else if (this.isNewChannel(node)) {
-      this.selectedChannel = this.channels.find(channel => channel.name === node.name) || null;
-      if (this.selectedChannel) {
-        this.messages = await this.dbService.getMessagesByChannel(this.selectedChannel.name);
+      const selectedChannel = this.channels.find(channel => channel.name === node.name);
+      if (selectedChannel) {
+        this.selectedChannel = selectedChannel;
+        this.channelService.selectChannel(selectedChannel); 
       }
     } else if (node.name === 'Channel hinzufügen') {
       this.openDialog();

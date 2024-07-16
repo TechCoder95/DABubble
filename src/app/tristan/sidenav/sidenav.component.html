@@ -1,43 +1,37 @@
 <button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
 
-   <mat-drawer-container class="toolbar-container" autosize>
-     <mat-drawer #drawer class="sidenav" mode="side" [opened]="true">
-       <div class="logo-container">
-         <img src="img/devspace.png" alt="logo">
-         <h3>Devspace</h3>
-       </div>
+<mat-drawer-container class="toolbar-container" autosize>
+  <mat-drawer #drawer class="sidenav" mode="side" [opened]="true">
+    <div class="logo-container">
+       <img src="img/devspace.png" alt="logo">
+      <h3>Devspace</h3>
+    </div>
 
-       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-         <!-- Standard -->
-         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-           <button mat-icon-button disabled></button>
-           <span (click)="handleNodeClick(node)" [ngClass]="{'new-channel': isNewChannel(node), 'cursor-pointer': true}">{{node.name}}</span>
-         </mat-tree-node>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <!-- Standart -->
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        <span (click)="handleNodeClick(node)" [ngClass]="{'new-channel': isNewChannel(node), 'cursor-pointer': true}">{{node.name}}</span>
+      </mat-tree-node>
 
-         <!-- Erweiterbar -->
-         <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-           <div class="tree-node-content">
-             <button mat-icon-button matTreeNodeToggle (click)="$event.stopPropagation()">
-               <mat-icon class="mat-icon-rtl-mirror">
-                 {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-               </mat-icon>
-             </button>
-             <span (click)="handleNodeClick(node)" [ngClass]="{'new-channel': isNewChannel(node), 'cursor-pointer': true}">{{node.name}}</span>
-             <ng-container *ngIf="node.name === 'Channels'">
-               <img src="img/add-channel.png" alt="add" class="add-channel-icon" (click)="openDialog()">
-             </ng-container>
-           </div>
-         </mat-tree-node>
-       </mat-tree>
-     </mat-drawer>
+      <!-- Erweiterbar -->
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+        <div class="tree-node-content">
+          <button mat-icon-button matTreeNodeToggle (click)="$event.stopPropagation()">
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            </mat-icon>
+          </button>
+          <span (click)="handleNodeClick(node)" [ngClass]="{'new-channel': isNewChannel(node), 'cursor-pointer': true}">{{node.name}}</span>
+          <ng-container *ngIf="node.name === 'Channels'">
+             <img src="img/add-channel.png" alt="add" class="add-channel-icon" (click)="openDialog()">
+          </ng-container>
+        </div>
+      </mat-tree-node>
+    </mat-tree>
+  </mat-drawer>
 
-     <div class="router-container">
-       <!-- Chat Component -->
-       <ng-container *ngIf="selectedChannel">
-         <h3>{{ selectedChannel.name }}</h3>
-         <div *ngFor="let message of messages">
-           <p>{{ message.sender }}: {{ message.message }}</p>
-         </div>
-       </ng-container>
-     </div>
-   </mat-drawer-container>
+  <div class="router-container">
+    <app-chat *ngIf="selectedChannel"></app-chat>
+  </div>
+</mat-drawer-container>
