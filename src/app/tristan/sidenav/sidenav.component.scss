@@ -79,8 +79,12 @@
     cursor: pointer;
   }
   
-  .new-channel {
-    color: blue;
+  .channel-name {
+    color: blue; 
+  }
+  
+  .category-name {
+    color: inherit; 
   }
 
   .cursor-pointer {
