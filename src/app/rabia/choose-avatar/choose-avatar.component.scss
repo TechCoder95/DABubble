@@ -23,14 +23,14 @@ mat-card-subtitle {
     height: 40px;
     background-repeat: no-repeat;
     background-position: center;
-    background-image: url(./../../../public/img/arrow-back.svg);
+   // background-image: url(./../../../public/img/arrow-back.svg);
 
     &:hover {
         cursor: pointer;
         background-color: #ECEEFE;
         border-radius: 100%;
         transition: 125ms;
-        background-image: url(./../../../public/img/arrow-back-hover.svg);
+       // background-image: url(./../../../public/img/arrow-back-hover.svg);
     }
 }
 
