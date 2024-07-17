@@ -1,25 +1,4 @@
-.toolbar-line {
-    background-color: rgb(86, 86, 214);
-    color: white;
-    min-height: 57px;
-    height: 57px;
-}
 
-.toolbar-container {
-    height: 100vh;
-}
-
-.sidenav {
-    width: 200px;
-}
-
-.logo-container {
-    padding: 0 16px;
-    min-height: 56px;
-    height: 56px;
-    display: flex;
-    align-items: center;
-}
 
 .menu {
     list-style-type: none;
@@ -54,39 +33,26 @@
     padding-top: 16px;
 }
 
-.mat-tree-node{
+.mat-tree-node {
     padding: 0 !important;
 }
 
-.test{
+.test {
     position: absolute;
     left: 0;
     top: 50px;
     z-index: 5;
 }
 
-.add-channel-icon {
-    width: 24px;
-    height: 24px;
-    margin-left: 10px;
-    cursor: pointer;
-    vertical-align: middle;
-  }
-  
-  .tree-node-content {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
-  
-  .channel-name {
-    color: blue; 
-  }
-  
-  .category-name {
-    color: inherit; 
-  }
 
-  .cursor-pointer {
+.channel-name {
+    color: blue;
+}
+
+.category-name {
+    color: inherit;
+}
+
+.cursor-pointer {
     cursor: pointer;
-  }
+}

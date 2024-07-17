@@ -1,35 +1,40 @@
 <button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
 
-<mat-drawer-container class="toolbar-container" autosize>
-  <mat-drawer #drawer class="sidenav" mode="side" [opened]="true">
-    <div class="logo-container">
-      <img src="img/devspace.png" alt="logo">
-      <h3>Devspace</h3>
+<mat-drawer-container class="h-screen" autosize>
+  <mat-drawer #drawer class="border-solid p-4" mode="side" [opened]="true">
+
+    <div class="flex align-items-center justify-content-between">
+      <div class="flex align-items-center">
+        <img src="img/devspace.png" alt="devspace-logo">
+        <h3 class="text-3xl m-2">Devspace</h3>
+      </div>
+      <img class="cursor-pointer" src="img/new-message.png" alt="new-message-logo">
     </div>
 
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
       <!-- Standard -->
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
         <button mat-icon-button disabled></button>
-        <span (click)="handleNodeClick(node)" 
-              [ngClass]="{'cursor-pointer': true, 'channel-name': isNewChannel(node), 'category-name': !isNewChannel(node)}">{{node.name}}</span>
+        <span (click)="handleNodeClick(node)"
+          [ngClass]="{'cursor-pointer': true, 'channel-name': isNewChannel(node), 'category-name': !isNewChannel(node)}">{{node.name}}</span>
       </mat-tree-node>
 
       <!-- Erweiterbar -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-        <div class="tree-node-content">
+        <div class="flex align-items-center cursor-pointer">
           <button mat-icon-button matTreeNodeToggle (click)="$event.stopPropagation()">
             <mat-icon class="mat-icon-rtl-mirror">
               {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
             </mat-icon>
           </button>
-          <span (click)="handleNodeClick(node)" 
-                [ngClass]="{'cursor-pointer': true, 'channel-name': isNewChannel(node), 'category-name': !isNewChannel(node)}">{{node.name}}</span>
+          <span (click)="handleNodeClick(node)"
+            [ngClass]="{'cursor-pointer': true, 'channel-name': isNewChannel(node), 'category-name': !isNewChannel(node)}">{{node.name}}</span>
           <ng-container *ngIf="node.name === 'Channels'">
-            <img src="img/add-channel.png" alt="add" class="add-channel-icon" (click)="openDialog()">
+            <img src="img/add-channel.png" alt="add" (click)="openDialog()">
           </ng-container>
         </div>
       </mat-tree-node>
+
     </mat-tree>
   </mat-drawer>
 
