@@ -15,4 +15,8 @@ export class HomeComponent {
 
   constructor(private UserService: UserService, private AuthService: AuthenticationService) { }
 
+    
+  get isLoggedIn() {
+    return this.UserService.isLoggedIn;
+  }
 }

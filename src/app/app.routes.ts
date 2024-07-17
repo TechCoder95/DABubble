@@ -13,5 +13,5 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'chat', component: ChatComponent },
   {path: 'avatar', component: ChooseAvatarComponent},
-  {path: 'home', component: HomeComponent}
+  {path: 'home', component: HomeComponent},
 ];

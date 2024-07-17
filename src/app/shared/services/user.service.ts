@@ -152,14 +152,23 @@ export class UserService {
    * Finally, retrieves the updated list of users from the database.
    */
   async logout() {
-    if (this.loggedInUser && this.loggedInUser.id) {
-      this.DatabaseService.updateDataInDB(this.collectionName, this.loggedInUser.id, { isLoggedIn: false })
-        .then(() => {
-          localStorage.removeItem('userLogin'),
-            this.activeUser = null!;
-          this.getUsersFromDB();
-        });
-    }
+    let id = localStorage.getItem('userLogin')!;
+    this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
+      this.activeUser = user as unknown as DABubbleUser;
+      if (this.activeUser.isLoggedIn === true && id) {
+        this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
+          .then(() => {
+            localStorage.removeItem('userLogin'),
+              this.activeUser = null!;
+            this.getUsersFromDB();
+          });
+      }
+    });
+
+
+
+
+
   }
 
 
@@ -168,7 +177,11 @@ export class UserService {
    * @returns The logged-in user object or undefined if no user is found.
    */
   get loggedInUser() {
-    return this.users.find((user: DABubbleUser) => user.id === localStorage.getItem('userLogin'));
+    let id = localStorage.getItem('userLogin');
+    if (id) {
+      return this.users.find(user => user.id === id);
+    }
+    return
   }
 
 

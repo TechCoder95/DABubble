@@ -2,13 +2,14 @@ import { EventEmitter, Injectable, Output } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult } from "firebase/auth";
 import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor( private userService : UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
 
   auth = getAuth();
@@ -36,7 +37,9 @@ export class AuthenticationService {
       .then((userCredential) => {
         // Signed in 
         this.userService.googleUser = userCredential.user;
-        this.userService.login(userCredential.user);
+        this.userService.login(userCredential.user).then(() => {
+          this.router.navigate(['/home']);
+        });
         // ...
       })
       .catch((error) => {
@@ -59,7 +62,9 @@ export class AuthenticationService {
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
-        this.userService.login(this.userService.googleUser);
+        this.userService.login(result.user).then(() => {
+          this.router.navigate(['/home']);
+        });
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -102,7 +107,6 @@ export class AuthenticationService {
       .then(() => {
         this.userService.logout();
         this.userService.googleUser = null;
-        console.log('User signed out');
       })
       .catch((error) => {
         // An error happened.
