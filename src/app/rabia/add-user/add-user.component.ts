@@ -10,8 +10,8 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { CommonModule } from '@angular/common';
-import { User } from '../../shared/interfaces/user';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { AuthenticationService } from '../../shared/services/authentication.service';
 
 @Component({
   selector: 'app-add-user',
@@ -22,22 +22,21 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 })
 export class AddUserComponent {
 
-  user: User = {
-    mail: '',
-    password: '',
+  user = {
     username: '',
-    id: ''
-  };
+    mail: '',
+    password: ''
+  }
 
   acceptPolicy = false;
   readonly dialog = inject(MatDialog);
 
 
-  constructor(private UserService: UserService, private router: Router) { }
+  constructor(private UserService: UserService, private router: Router, private AuthService : AuthenticationService) { }
 
 
-  register(user: User) {
-    this.UserService.register(user.mail, user.password, user.username);
+  register(mail: string, password: string, username: string) {
+    this.AuthService.MailSignUp(mail, password, username);
     this.acceptPolicy = true;
     this.openAvatar();
   }
@@ -45,7 +44,7 @@ export class AddUserComponent {
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
       console.info('Form is valid');
-      this.register(this.user);
+      this.register(this.user.mail, this.user.password, this.user.username);
       this.getUsers();
     }
     else {
@@ -59,7 +58,7 @@ export class AddUserComponent {
 
     if (this.UserService.users.length > 0) {
       const lastUser = this.UserService.users[this.UserService.users.length - 1];
-      console.log("mal schauen ob das klappt: ",lastUser);
+      // console.log("mal schauen ob das klappt: ",lastUser);
     } else {
       console.log("Das Array ist leer.");
     }
@@ -67,7 +66,6 @@ export class AddUserComponent {
 
 
   openAvatar() {
-    console.log(this.user);
     this.router.navigateByUrl('/avatar')
   }
 

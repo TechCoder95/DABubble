@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 
 @Injectable({
@@ -105,4 +105,16 @@ export class DatabaseService {
     snapshot.forEach(doc => messages.push(doc.data() as ChatMessage));
     return messages;
   }
+
+
+  async readDataByID(collectionName: string, id: string) {
+    const docSnap = await getDoc(doc(this.firestore, collectionName, id));
+    if (docSnap.exists()) {
+      return docSnap.data();
+    } else {
+      console.log('No such document!');
+      return
+    }
+  }
+ 
 }

@@ -1,19 +1,44 @@
-import { Injectable } from '@angular/core';
-import { User } from '../interfaces/user';
+import { EventEmitter, Injectable } from '@angular/core';
+import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
+import { User } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
 
-  users: User[] = [];
+  users: DABubbleUser[] = [];
+  activeUser!: DABubbleUser;
+  googleUser: User | null = null;
+
+  testUser$: EventEmitter<DABubbleUser> = new EventEmitter<DABubbleUser>();
 
   //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService) {
-    this.getUsersFromDB();
+
+    this.checkOnlineStatus();
+  }
+
+  /**
+   * Checks the online status of the user.
+   * If the user is logged in, it retrieves the user data from the database and sets the active user.
+   */
+  checkOnlineStatus() {
+    if (localStorage.getItem('userLogin')) {
+      let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
+      object.then((user) => {
+        if (user) {
+          this.activeUser = user as DABubbleUser;
+          this.testUser$.emit(this.activeUser);
+        }
+        else {
+          this.activeUser = null!;
+        }
+      });
+    }
   }
 
 
@@ -36,18 +61,54 @@ export class UserService {
    * @param {string} email - The email of the user.
    * @param {string} password - The password of the user.
    */
-  async login(email: string, password: string) {
-    this.users.forEach((user: User) => {
-      if (user.mail === email && user.password === password && user.id && user.activated) {
-        localStorage.setItem('userLogin', user.id);
-        this.updateLoggedInUser(user)
-        console.log('User Logged In');
+  async login(googleUser: User) {
+    this.getUsersFromDB().then(() => {
+
+      let loginUser = this.users.find(user => user.mail === googleUser.email);
+      if (loginUser === undefined) {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName }).then(() => {
+          this.getUsersFromDB().then(() => {
+            this.users.map(user => {
+              if (user.mail === googleUser.email) {
+                localStorage.setItem('userLogin', user.id);
+                this.activeUser = this.completeUser(user, googleUser);
+                this.updateLoggedInUser(this.activeUser);
+                console.log('User Logged In');
+              }
+            });
+          });
+        });
       }
       else {
-        console.log('User not logged in!');
+        // && user.actived === true
+        if (loginUser.mail === googleUser.email && loginUser.id) {
+          localStorage.setItem('userLogin', loginUser.id);
+          this.activeUser = this.completeUser(loginUser, this.googleUser);
+          this.updateLoggedInUser(this.activeUser);
+          console.log('User Logged In');
+
+        }
+        else {
+          console.log('User not logged in!');
+        }
       }
-    }
-    );
+
+
+    });
+  }
+
+
+
+  completeUser(user: DABubbleUser, googleUser: any) {
+    return user = {
+      id: user.id,
+      mail: user.mail || googleUser.email || '',
+      username: user.username ? user.username : googleUser.displayName || '',
+      uid: user.uid || googleUser.uid || '',
+      isLoggedIn: user.isLoggedIn || true,
+      activated: user.activated || false,
+      activeChannels: user.activeChannels || []
+    };
   }
 
 
@@ -56,7 +117,7 @@ export class UserService {
    * @param {string} user The user object to update.
    * @returns A Promise that resolves when the user is updated in the database.
    */
-  updateLoggedInUser(user: User) {
+  updateLoggedInUser(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { isLoggedIn: true })
         .then(() => {
@@ -74,7 +135,7 @@ export class UserService {
    * 
    * @param user - The user object to update.
    */
-  updateActivationStatus(user: User) {
+  updateActivationStatus(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
         .then(() => {
@@ -95,7 +156,8 @@ export class UserService {
       this.DatabaseService.updateDataInDB(this.collectionName, this.loggedInUser.id, { isLoggedIn: false })
         .then(() => {
           localStorage.removeItem('userLogin'),
-            this.getUsersFromDB();
+            this.activeUser = null!;
+          this.getUsersFromDB();
         });
     }
   }
@@ -106,7 +168,7 @@ export class UserService {
    * @returns The logged-in user object or undefined if no user is found.
    */
   get loggedInUser() {
-    return this.users.find((user: User) => user.id === localStorage.getItem('userLogin'));
+    return this.users.find((user: DABubbleUser) => user.id === localStorage.getItem('userLogin'));
   }
 
 
@@ -115,7 +177,7 @@ export class UserService {
    * @param {User} user - The user object to be registered.
    * @returns A promise that resolves when the user is successfully registered.
    */
-  async registerUser(user: User) {
+  async registerUser(user: DABubbleUser) {
     await this.DatabaseService.addDataToDB(this.collectionName, user)
       .then(() => {
         this.getUsersFromDB();
@@ -130,8 +192,8 @@ export class UserService {
    * @param {string} password - The password of the user.
    * @param {string} username - The username of the user.
    */
-  async register(email: string, password: string, username: string) {
-    let data = { mail: email, password: password, username: username }
+  async register(email: string, username: string, uid: string) {
+    let data: DABubbleUser = { id: '', mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
         this.getUsersFromDB();
@@ -144,7 +206,7 @@ export class UserService {
    * @param {User} user - The user object to be updated.
    * @returns A Promise that resolves when the user is successfully updated.
    */
-  async updateUser(user: User) {
+  async updateUser(user: DABubbleUser) {
     if (user.id) {
       await this.DatabaseService.updateDataInDB(this.collectionName, user.id, user)
         .then(() => {
@@ -175,6 +237,15 @@ export class UserService {
   getOneUserbyId(id: string) {
     return this.users.find(user => user.id === id);
 
+  }
+
+  get isLoggedIn() {
+    if (localStorage.getItem('userLogin')) {
+      return true;
+    }
+    else {
+      return false;
+    }
   }
 
 }
