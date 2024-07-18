@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
+import { ChannelService } from '../../../shared/services/channel.service';
 
 @Component({
   selector: 'app-chat-information',
@@ -21,7 +22,10 @@ export class ChatInformationComponent {
   dialogChannelInfoIsOpen: boolean = false;
   addChannelMembersImg = './img/add-members-default.png';
 
-  constructor(public dialog: MatDialog) {}
+  constructor(
+    public dialog: MatDialog,
+    public channelService: ChannelService
+  ) {}
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {

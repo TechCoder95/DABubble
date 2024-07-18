@@ -5,7 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+} from '@angular/material/tree';
 import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -35,10 +38,10 @@ interface FlattenedNode {
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    ChatComponent
+    ChatComponent,
   ],
   templateUrl: './sidenav.component.html',
-  styleUrls: ['./sidenav.component.scss']
+  styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
@@ -52,21 +55,25 @@ export class SidenavComponent implements OnInit {
   });
 
   treeControl = new FlatTreeControl<FlattenedNode>(
-    node => node.level,
-    node => node.expandable,
+    (node) => node.level,
+    (node) => node.expandable
   );
 
   treeFlattener = new MatTreeFlattener(
     this.transformer,
-    node => node.level,
-    node => node.expandable,
-    node => node.children,
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.children
   );
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService) { }
+  constructor(
+    private dbService: DatabaseService,
+    private dialog: MatDialog,
+    private channelService: ChannelService
+  ) {}
 
   async ngOnInit() {
     await this.loadChannels();
@@ -79,13 +86,17 @@ export class SidenavComponent implements OnInit {
   }
 
   async addChannel(channelName: string) {
-    const correctedChannelName = channelName.startsWith('#') ? channelName : `#${channelName}`;
+    const correctedChannelName = channelName.startsWith('#')
+      ? channelName
+      : `#${channelName}`;
     const newChannel: TextChannel = { name: correctedChannelName };
     await this.dbService.addDataToDB('channels', newChannel);
     await this.loadChannels();
   }
 
-  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+  private isDefined(
+    channel: TextChannel
+  ): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
 
@@ -95,28 +106,20 @@ export class SidenavComponent implements OnInit {
   }
 
   private createChannelNodes(): Node[] {
-    return this.channels
-      .filter(this.isDefined)
-      .map(channel => ({
-        name: channel.name
-      }));
+    return this.channels.filter(this.isDefined).map((channel) => ({
+      name: channel.name,
+    }));
   }
 
   private initializeTreeData(channelNodes: Node[]): void {
     const channelsStructure: Node = {
       name: 'Channels',
-      children: [
-        ...channelNodes,
-        { name: 'Channel hinzufügen' }
-      ]
+      children: [...channelNodes, { name: 'Channel hinzufügen' }],
     };
     this.TREE_DATA = [channelsStructure];
     this.TREE_DATA.push({
       name: 'Direktnachrichten',
-      children: [
-        { name: 'Felix Müller' },
-        { name: 'Noah Ewen' },
-      ],
+      children: [{ name: 'Felix Müller' }, { name: 'Noah Ewen' }],
     });
 
     this.dataSource.data = this.TREE_DATA;
@@ -132,14 +135,17 @@ export class SidenavComponent implements OnInit {
     if (node.expandable) {
       this.treeControl.toggle(node);
     } else if (this.isNewChannel(node)) {
-      const selectedChannel = this.channels.find(channel => channel.name === node.name);
+      const selectedChannel = this.channels.find(
+        (channel) => channel.name === node.name
+      );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel); 
+        this.channelService.selectChannel(selectedChannel);
       }
     } else if (node.name === 'Channel hinzufügen') {
       this.openDialog();
     }
+    console.log(this.selectedChannel);
   }
 
   openDialog(): void {

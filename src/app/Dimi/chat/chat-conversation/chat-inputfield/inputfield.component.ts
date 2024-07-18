@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, Pipe } from '@angular/core';
+import { ChannelService } from '../../../../shared/services/channel.service';
+import { map, Observable, pipe } from 'rxjs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -11,6 +14,8 @@ export class InputfieldComponent {
   addFilesImg = './img/add-files-default.png';
   addEmojiImg = './img/add-emoji-default.png';
   addLinkImg = './img/add-link-default.png';
+
+  constructor(public channelService: ChannelService) {}
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -46,5 +51,11 @@ export class InputfieldComponent {
     this.addFilesImg = './img/add-files-default.png';
     this.addEmojiImg = './img/add-emoji-default.png';
     this.addLinkImg = './img/add-link-default.png';
+  }
+
+  get placeholderText(): Observable<string> {
+    return this.channelService.selectedChannel$.pipe(
+      map((channel: any) => `Nachricht an ${channel?.name || 'Channel'}`)
+    );
   }
 }
