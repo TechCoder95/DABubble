@@ -7,6 +7,7 @@ import { DatabaseService } from '../../shared/services/database.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { addDoc } from 'firebase/firestore';
+import { DAStorageService } from '../../shared/services/dastorage.service';
 
 
 
@@ -18,7 +19,6 @@ import { addDoc } from 'firebase/firestore';
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
-  selectedAvatar: string = './img/avatar.svg';
   activeUser!: DABubbleUser;
 
   images: string[] = [
@@ -32,22 +32,22 @@ export class ChooseAvatarComponent {
 
 
 
-  constructor(private UserService: UserService, private DatabaseService: DatabaseService, private router: Router) {
+  constructor(private UserService: UserService, private router: Router, private daStorage: DAStorageService) {
     this.UserService.getUsersFromDB().then(() => {
-      this.activeUser = this.UserService.users.filter(user => user.uid === localStorage.getItem("uId"))[0];
-      console.log("lala", this.activeUser);
-
+      this.UserService.activeUser.avatar = './img/avatar.svg';
+      this.activeUser = this.UserService.activeUser;
     })
   }
 
 
   get isLoggedIn() {
-    return localStorage.getItem("uId");
+    return this.UserService.activeUser ? true : false;
   }
 
 
   selectAvatar(image: string) {
-    this.selectedAvatar = image;
+    this.activeUser.avatar = image;
+    console.log(this.activeUser);
   }
 
 
@@ -62,11 +62,23 @@ export class ChooseAvatarComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          this.selectedAvatar = e.target.result as string;
+          this.activeUser.avatar = e.target.result as string;
+          this.upload(file);
         }
       };
       reader.readAsDataURL(file);
     }
+  }
+
+
+  upload(file: File) {
+    this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
+  }
+
+
+  updateDatabase() {
+    this.UserService.updateUser(this.activeUser);
+    this.router.navigateByUrl('/home');
   }
 
 }

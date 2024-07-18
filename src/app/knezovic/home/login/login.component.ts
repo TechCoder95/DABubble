@@ -54,7 +54,7 @@ export class LoginComponent {
   }
 
   goToRegister() {
-    this.router.navigate(['/add-user']);
+    this.router.navigate(['/addUser']);
   }
 
 }
