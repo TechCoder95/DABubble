@@ -4,12 +4,13 @@
     
         <mat-card-title>Wähle deinen Avatar</mat-card-title>
     
-        <img [src]="selectedAvatar" class="selected-avatar">
-    @if (activeUser) {
+        @if (activeUser) {
+            <img [src]="activeUser.avatar" class="selected-avatar">
+    
         <mat-card-subtitle>{{activeUser.username}}</mat-card-subtitle>}
         @else() {
             <mat-card-subtitle>Kokosnuss</mat-card-subtitle>
-
+            <img [src]="'/img/avatar.svg'" class="selected-avatar">
         }
         
     
@@ -31,7 +32,7 @@
             <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
         </div>
     
-        <button mat-flat-button>Weiter</button>
+        <button mat-flat-button (click)="updateDatabase()">Weiter</button>
     
     </mat-card>
 </div>

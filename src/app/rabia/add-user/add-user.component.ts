@@ -38,7 +38,6 @@ export class AddUserComponent {
   register(mail: string, password: string, username: string) {
     this.AuthService.MailSignUp(mail, password, username);
     this.acceptPolicy = true;
-    this.openAvatar();
   }
 
   onSubmit(ngForm: NgForm) {
@@ -62,11 +61,6 @@ export class AddUserComponent {
     } else {
       console.log("Das Array ist leer.");
     }
-  }
-
-
-  openAvatar() {
-    this.router.navigateByUrl('/avatar')
   }
 
   goToLogin() {

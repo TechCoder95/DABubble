@@ -2,6 +2,7 @@ import { EventEmitter, Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,7 @@ export class UserService {
   //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
 
-  constructor(private DatabaseService: DatabaseService) {
+  constructor(private DatabaseService: DatabaseService, private router: Router) {
 
     this.checkOnlineStatus();
   }
@@ -69,11 +70,12 @@ export class UserService {
         this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
-              if (user.mail === googleUser.email) {
+              if (user.mail === googleUser.email && user.id) {
                 localStorage.setItem('userLogin', user.id);
                 this.activeUser = this.completeUser(user, googleUser);
                 this.updateLoggedInUser(this.activeUser);
                 console.log('User Logged In');
+                this.router.navigate(['/avatar']);
               }
             });
           });
@@ -207,7 +209,7 @@ export class UserService {
    * @param {string} username - The username of the user.
    */
   async register(email: string, username: string, uid: string) {
-    let data: DABubbleUser = { id: '', mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
+    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
         this.getUsersFromDB();
@@ -254,12 +256,14 @@ export class UserService {
   }
 
   get isLoggedIn() {
-    if (localStorage.getItem('userLogin')) {
+    if (localStorage.getItem('userLogin') && this.activeUser && localStorage.getItem('uId') ) {
       return true;
     }
     else {
       return false;
     }
   }
+
+ 
 
 }

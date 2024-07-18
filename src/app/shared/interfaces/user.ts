@@ -1,5 +1,5 @@
 export interface DABubbleUser {
-    id: string;
+    id?: string;
     uid?: string;
     mail: string;
     username?: string;
