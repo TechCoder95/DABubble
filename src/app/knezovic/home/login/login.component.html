@@ -1,4 +1,4 @@
-@if (!isLoggedIn) {
+<!-- @if (!isLoggedIn) { -->
 <div class="flex flex-column w-full align-items-center justify-content-center">
     <div class="card flex flex-column align-items-center justify-content-center w-4 h-8">
         <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" class="flex flex-column align-items-center w-full"
@@ -13,8 +13,8 @@
                 </div>}
             </div>
             <div class="w-full">
-                <input type="password" [(ngModel)]="password" placeholder="Password" name="password" #password="ngModel"
-                    required>
+                <input type="password" [(ngModel)]="epassword" placeholder="Password" name="password"
+                    #password="ngModel" required>
                 @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Your password
                         is
                         required</span></div>}
@@ -29,7 +29,7 @@
                 <hr>
             </div>
             <div class="flex w-full h-full justify-content-center align-items-center">
-                <button type="button" class="googleButton" (click)="goToRegister()" title="register">
+                <button type="button" class="googleButton" (click)="googleLogin()" title="register">
                     <div>
                         <img src="" alt="Logo-Google">
                         Anmelden mit Google
@@ -39,15 +39,37 @@
             <div class="flex w-full h-full justify-content-center align-items-center">
                 <button type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
                     name="registrieren">Anmelden</button>
-                <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}" (click)="goToRegister()"
-                    title="back" name="back">Gäste-Login</button>
-            </div> 
+                <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"
+                    (click)="goToRegister()" title="back" name="back">Gäste-Login</button>
+            </div>
         </form>
 
     </div>
 </div>
-
+<!-- 
 }
 @else {
 <button (click)="logout()" title="login">Logout</button>
-}
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Uid</th>
+        <th>id</th>
+        <th>activated</th>
+        <th>isLoggedIn</th>
+        @for (item of user.activeChannels; track $index) {
+            <th>Channel $index</th>}
+    </tr>
+    <tr>
+        <td>{{user.username}}</td>
+        <td>{{user.mail}}</td>
+        <td>{{user.uid}}</td>
+        <td>{{user.id}}</td>
+        <td>{{user.activated}}</td>
+        <td>{{user.isLoggedIn}}</td>
+        @for (item of user.activeChannels; track $index) {
+        <td>{{item}}</td>}
+    </tr>
+</table>
+} -->
