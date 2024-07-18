@@ -45,13 +45,22 @@ h3 {
   display: flex;
   align-items: center;
   gap: 5px;
-  > img {
-    height: 25px;
-    width: 25px;
-  }
   > p {
     font-size: 18px;
   }
+  > h3 {
+    font-size: 24px;
+  }
+}
+
+.headline-tag {
+  width: 30px;
+  height: 30px;
+}
+
+.edit-name-tag {
+  width: 24px;
+  height: 24px;
 }
 
 .channel-info {

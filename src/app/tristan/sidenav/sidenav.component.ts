@@ -144,7 +144,7 @@ export class SidenavComponent implements OnInit {
     } else if (node.name === 'Channel hinzufügen') {
       this.openDialog();
     }
-    console.log(this.selectedChannel);
+    /* console.log(this.selectedChannel); */
   }
 
   openDialog(): void {

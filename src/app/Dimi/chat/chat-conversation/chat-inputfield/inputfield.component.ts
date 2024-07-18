@@ -55,7 +55,7 @@ export class InputfieldComponent {
 
   get placeholderText(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
-      map((channel: any) => `Nachricht an ${channel?.name || 'Channel'}`)
+      map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
     );
   }
 }

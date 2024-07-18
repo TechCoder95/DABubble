@@ -1,10 +1,12 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ChannelService } from '../../../../shared/services/channel.service';
+import { map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -16,6 +18,7 @@ import { FormsModule } from '@angular/forms';
     MatIconModule,
     MatDialogModule,
     FormsModule,
+    CommonModule,
   ],
   templateUrl: './dialog-channel-information.component.html',
   styleUrl: './dialog-channel-information.component.scss',
@@ -29,6 +32,7 @@ export class DialogChannelInformationComponent {
   @ViewChild('title1') title1!: ElementRef;
   @ViewChild('channelName') channelNameDiv!: ElementRef;
   @ViewChild('channelNameInput') ChannelNameInput!: ElementRef;
+  @ViewChild('updatedChannelName') updatedChannelName!: ElementRef;
   /* TO EDIT DESCRIPTION */
   @ViewChild('editChannelDescriptionSection')
   editChannelDescriptionSection!: ElementRef;
@@ -38,7 +42,8 @@ export class DialogChannelInformationComponent {
   @ViewChild('channelCreator') channelCreator!: ElementRef;
 
   constructor(
-    public dialogRef: MatDialogRef<DialogChannelInformationComponent>
+    public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
+    public channelService: ChannelService
   ) {}
 
   changeCloseImg(hover: boolean) {
@@ -65,6 +70,9 @@ export class DialogChannelInformationComponent {
       this.title1.nativeElement.classList.add('edit-mode-title');
       this.channelNameDiv.nativeElement.classList.add('edit-mode-channel-name');
     } else {
+      debugger;
+      let updatedName = this.updatedChannelName.nativeElement.value;
+      this.saveNewChannelName(updatedName);
       this.inEditModeName = false;
       this.editChannelNameSection.nativeElement.classList.remove(
         'edit-mode-channel-name-section'
@@ -76,6 +84,10 @@ export class DialogChannelInformationComponent {
         'edit-mode-channel-name'
       );
     }
+  }
+
+  saveNewChannelName(updatedName: string) {
+    this.channelService.updateChannelName(updatedName);
   }
 
   inEditModeDescription: boolean = false;
@@ -109,5 +121,11 @@ export class DialogChannelInformationComponent {
       );
       this.channelCreator.nativeElement.style.paddingBottom = '0';
     }
+  }
+
+  get placeholderText(): Observable<string> {
+    return this.channelService.selectedChannel$.pipe(
+      map((channel: any) => `${channel?.name || 'Channel'}`)
+    );
   }
 }

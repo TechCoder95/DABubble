@@ -1,5 +1,5 @@
 export interface TextChannel {
-  /* id: number; */
+  id?: string;
   name: string;
   /* members: string[]; */
 }
