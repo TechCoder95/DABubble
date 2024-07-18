@@ -5,8 +5,13 @@
         <mat-card-title>Wähle deinen Avatar</mat-card-title>
     
         <img [src]="selectedAvatar" class="selected-avatar">
-    
-        <mat-card-subtitle>Frederik Beck</mat-card-subtitle>
+    @if (activeUser) {
+        <mat-card-subtitle>{{activeUser.username}}</mat-card-subtitle>}
+        @else() {
+            <mat-card-subtitle>Kokosnuss</mat-card-subtitle>
+
+        }
+        
     
         <div>
             <p>Aus der Liste wählen</p>

@@ -23,6 +23,7 @@ export class AuthenticationService {
         // Signed up 
         this.userService.googleUser = userCredential.user
         this.userService.register(email, username, this.userService.googleUser.uid);
+        localStorage.setItem("uId", this.userService.googleUser.uid);
         // Er muss mir hier den User mit der Email vom aanderen User aus der Datenbank holen und das array "User" komplett updaten um das object fertig zu machen
       })
       .catch((error) => {

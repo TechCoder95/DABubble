@@ -5,7 +5,8 @@ import { MatCardModule } from '@angular/material/card';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DatabaseService } from '../../shared/services/database.service';
 import { UserService } from '../../shared/services/user.service';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { DABubbleUser } from '../../shared/interfaces/user';
+import { addDoc } from 'firebase/firestore';
 
 
 
@@ -18,25 +19,30 @@ import { doc, onSnapshot } from 'firebase/firestore';
 })
 export class ChooseAvatarComponent {
   selectedAvatar: string = './img/avatar.svg';
- 
+  activeUser!: DABubbleUser;
+
   images: string[] = [
-    'noah.svg',
-    'steffen.svg',
-    'elise.svg',
-    'frederik.svg',
-    'sofia.svg',
-    'elias.svg'
+    '1.svg',
+    '2.svg',
+    '3.svg',
+    '4.svg',
+    '5.svg',
+    '6.svg'
   ];
-  
 
 
-  constructor(private UserService: UserService, private DatabaseService: DatabaseService, private router: Router, private route: ActivatedRoute) {
-   
-   }
-  
 
-  getUser() {
-   
+  constructor(private UserService: UserService, private DatabaseService: DatabaseService, private router: Router) {
+    this.UserService.getUsersFromDB().then(() => {
+      this.activeUser = this.UserService.users.filter(user => user.uid === localStorage.getItem("uId"))[0];
+      console.log("lala", this.activeUser);
+
+    })
+  }
+
+
+  get isLoggedIn() {
+    return localStorage.getItem("uId");
   }
 
 
