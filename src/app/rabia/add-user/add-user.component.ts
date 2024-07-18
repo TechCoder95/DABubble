@@ -12,6 +12,8 @@ import { UserService } from '../../shared/services/user.service';
 import { CommonModule } from '@angular/common';
 import { User } from '../../shared/interfaces/user';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { onSnapshot } from 'firebase/firestore';
+import { DatabaseService } from '../../shared/services/database.service';
 
 @Component({
   selector: 'app-add-user',
@@ -33,7 +35,27 @@ export class AddUserComponent {
   readonly dialog = inject(MatDialog);
 
 
-  constructor(private UserService: UserService, private router: Router) { }
+  constructor(private UserService: UserService, private DatabaseService: DatabaseService, private router: Router) {
+    this.subUserList();
+   }
+
+  subUserList() {
+    return onSnapshot(this.DatabaseService.getDataRef("users"), (list) => {
+      // this.allUsers = [];
+      list.forEach((element) => {
+
+        let userData = {
+          ...element.data(),
+          id: element.id,
+        };
+        console.log("blumenkohl: ", userData);
+        
+        // this.allUsers.push(new User(userData));
+      });console.log("das auch" , this.UserService.users);
+    });
+    
+    
+  }
 
 
   register(user: User) {
