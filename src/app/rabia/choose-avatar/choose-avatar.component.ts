@@ -22,12 +22,12 @@ export class ChooseAvatarComponent {
   activeUser!: DABubbleUser;
 
   images: string[] = [
-    'noah.svg',
-    'steffen.svg',
-    'elise.svg',
-    'frederik.svg',
-    'sofia.svg',
-    'elias.svg'
+    '1.svg',
+    '2.svg',
+    '3.svg',
+    '4.svg',
+    '5.svg',
+    '6.svg'
   ];
 
 

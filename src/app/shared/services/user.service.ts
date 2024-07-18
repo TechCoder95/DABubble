@@ -66,7 +66,7 @@ export class UserService {
 
       let loginUser = this.users.find(user => user.mail === googleUser.email);
       if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName }).then(() => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
               if (user.mail === googleUser.email) {
@@ -107,7 +107,8 @@ export class UserService {
       uid: user.uid || googleUser.uid || '',
       isLoggedIn: user.isLoggedIn || true,
       activated: user.activated || false,
-      activeChannels: user.activeChannels || []
+      activeChannels: user.activeChannels || [],
+      avatar: user.avatar || '',
     };
   }
 
@@ -206,7 +207,7 @@ export class UserService {
    * @param {string} username - The username of the user.
    */
   async register(email: string, username: string, uid: string) {
-    let data: DABubbleUser = { id: '', mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false };
+    let data: DABubbleUser = { id: '', mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
         this.getUsersFromDB();
