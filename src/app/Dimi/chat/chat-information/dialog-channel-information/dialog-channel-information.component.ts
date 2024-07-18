@@ -61,29 +61,38 @@ export class DialogChannelInformationComponent {
   inEditModeName: boolean = false;
   editChannelName() {
     if (!this.inEditModeName) {
-      this.inEditModeName = true;
-      this.editChannelNameSection.nativeElement.classList.add(
-        'edit-mode-channel-name-section'
-      );
-      this.editButton.nativeElement.textContent = 'Speichern';
-      this.editButton.nativeElement.classList.add('edit-mode');
-      this.title1.nativeElement.classList.add('edit-mode-title');
-      this.channelNameDiv.nativeElement.classList.add('edit-mode-channel-name');
+      this.editChannelNameTrue();
     } else {
-      debugger;
-      let updatedName = this.updatedChannelName.nativeElement.value;
-      this.saveNewChannelName(updatedName);
-      this.inEditModeName = false;
-      this.editChannelNameSection.nativeElement.classList.remove(
-        'edit-mode-channel-name-section'
-      );
-      this.editButton.nativeElement.textContent = 'Bearbeiten';
-      this.editButton.nativeElement.classList.remove('edit-mode');
-      this.title1.nativeElement.classList.remove('edit-mode-title');
-      this.channelNameDiv.nativeElement.classList.remove(
-        'edit-mode-channel-name'
-      );
+      this.editChannelNameFalse();
     }
+  }
+
+  editChannelNameTrue() {
+    this.inEditModeName = true;
+    this.editChannelNameSection.nativeElement.classList.add(
+      'edit-mode-channel-name-section'
+    );
+    this.editButton.nativeElement.textContent = 'Speichern';
+    this.editButton.nativeElement.classList.add('edit-mode');
+    this.title1.nativeElement.classList.add('edit-mode-title');
+    this.channelNameDiv.nativeElement.classList.add('edit-mode-channel-name');
+  }
+
+  editChannelNameFalse() {
+    let updatedName = this.updatedChannelName.nativeElement.value;
+    if (updatedName !== '') {
+      this.saveNewChannelName(updatedName);
+    }
+    this.inEditModeName = false;
+    this.editChannelNameSection.nativeElement.classList.remove(
+      'edit-mode-channel-name-section'
+    );
+    this.editButton.nativeElement.textContent = 'Bearbeiten';
+    this.editButton.nativeElement.classList.remove('edit-mode');
+    this.title1.nativeElement.classList.remove('edit-mode-title');
+    this.channelNameDiv.nativeElement.classList.remove(
+      'edit-mode-channel-name'
+    );
   }
 
   saveNewChannelName(updatedName: string) {

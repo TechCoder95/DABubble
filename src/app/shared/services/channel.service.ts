@@ -1,8 +1,7 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
-import { Firestore, updateDoc } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root',
@@ -35,7 +34,7 @@ export class ChannelService {
     }
   }
 
-  getCleanJSON(updatedName: any): {} {
+  getCleanJSON(updatedName: string): {} {
     return {
       name: updatedName,
     };
