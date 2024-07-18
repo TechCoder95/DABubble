@@ -4,7 +4,7 @@ import { ChatConversationComponent } from './chat-conversation/chat-conversation
 import { ChatInformationComponent } from './chat-information/chat-information.component';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
-import { User } from '../../shared/interfaces/user';
+import { DABubbleUser } from '../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { DatabaseService } from '../../shared/services/database.service';
 import { ChannelService } from '../../shared/services/channel.service';
@@ -20,7 +20,7 @@ import { user } from '@angular/fire/auth';
 export class ChatComponent implements OnInit, OnDestroy {
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
-  users: User[] = [];
+  users: DABubbleUser[] = [];
   private channelSubscription!: Subscription;
 
   constructor(

@@ -6,7 +6,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { DatabaseService } from '../../shared/services/database.service';
 import { UserService } from '../../shared/services/user.service';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { User } from '../models/user.class';
 
 
 
@@ -19,9 +18,7 @@ import { User } from '../models/user.class';
 })
 export class ChooseAvatarComponent {
   selectedAvatar: string = './img/avatar.svg';
-  userId = '';
-  user: User = new User(); // das erkennt das ganze nicht weil der gewünschte model ist leer. Sollte eig auf den vom interface greifen.. oder change add-user
-
+ 
   images: string[] = [
     'noah.svg',
     'steffen.svg',
@@ -34,19 +31,12 @@ export class ChooseAvatarComponent {
 
 
   constructor(private UserService: UserService, private DatabaseService: DatabaseService, private router: Router, private route: ActivatedRoute) {
-    this.route.params.subscribe(params => {
-      this.userId = params['id'];
-      console.log('Test ID:', this.userId);
-      this.getUser();
-    });
+   
    }
   
 
   getUser() {
-    onSnapshot(doc(this.DatabaseService.getDataRef("users"), this.userId), ((user) => {
-      this.user = new User(user.data())
-      console.log('Das ist jetzt mein aktueller User: ', this.user);
-    }))
+   
   }
 
 
