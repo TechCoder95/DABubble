@@ -20,6 +20,7 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
 })
 export class ChooseAvatarComponent {
   activeUser!: DABubbleUser;
+  registerUser: boolean = false;
 
   images: string[] = [
     '1.svg',
@@ -77,7 +78,9 @@ export class ChooseAvatarComponent {
 
 
   updateDatabase() {
+    this.registerUser = true;
     this.UserService.updateUser(this.activeUser);
+    this.registerUser = false;
     this.router.navigateByUrl('/home');
   }
 
