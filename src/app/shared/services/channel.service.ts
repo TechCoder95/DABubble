@@ -12,7 +12,7 @@ export class ChannelService {
   );
 
   constructor(private databaseService: DatabaseService) {}
-  
+
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   channel!: TextChannel;
 
@@ -21,23 +21,38 @@ export class ChannelService {
     this.channel = channel;
   }
 
-  async updateChannelName(updatedName: any) {
-    debugger;
+  async updateChannelName(updatedName: string) {
     const currentChannel = this.selectedChannelSubject.value;
     const updatedChannel = { ...currentChannel, name: updatedName };
-    this.selectedChannelSubject.next(updatedChannel.name);
+    this.selectedChannelSubject.next(updatedChannel as TextChannel);
     if (this.channel.id) {
-      this.databaseService.updateDataInDB(
+      await this.databaseService.updateDataInDB(
         'channels',
         this.channel.id,
-        this.getCleanJSON(updatedName)
+        this.getCleanJSON({ name: updatedName })
       );
     }
   }
 
-  getCleanJSON(updatedName: any): {} {
-    return {
-      name: updatedName,
+  async updateChannelDescription(updatedDescription: any) {
+    /* debugger; */
+    const currentChannel = this.selectedChannelSubject.value;
+    const updatedChannel = {
+      ...currentChannel,
+      description: updatedDescription,
     };
+    this.selectedChannelSubject.next(updatedChannel as TextChannel);
+    debugger;
+    if (this.channel.id) {
+      await this.databaseService.updateDataInDB(
+        'channels',
+        this.channel.id,
+        this.getCleanJSON({ description: updatedDescription })
+      );
+    }
+  }
+
+  getCleanJSON(updates: { [key: string]: any }): {} {
+    return updates;
   }
 }

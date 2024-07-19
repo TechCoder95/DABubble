@@ -50,13 +50,14 @@
         </div>
         <div class="current-channel-info" #channelDescription>
           <p *ngIf="!inEditModeDescription">
-            Hier kommt dann irgendwann die Beschreibung des Channels rein
+            {{ (channelService.selectedChannel$ | async)?.description }}
           </p>
           <input
             type="text"
-            placeholder="Hier kommt dann irgendwann die Beschreibung des Channels rein"
+            [placeholder]="channelService.channel.description"
             *ngIf="inEditModeDescription"
             class="input-channel-name"
+            #updatedChannelDescription
           />
         </div>
       </div>
