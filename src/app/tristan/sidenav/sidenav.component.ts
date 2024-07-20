@@ -16,15 +16,15 @@ import { ChannelService } from '../../shared/services/channel.service';
 
 interface Node {
   name: string;
+  type: 'category' | 'channel' | 'action' | 'privateMessage';
   children?: Node[];
-  type: 'channel' | 'category';
 }
 
 interface FlattenedNode {
   expandable: boolean;
   name: string;
   level: number;
-  type: 'channel' | 'category';
+  type: 'category' | 'channel' | 'action' | 'privateMessage';
 }
 
 @Component({
@@ -81,9 +81,9 @@ export class SidenavComponent implements OnInit {
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
-  isNewChannel(node: FlattenedNode): boolean {
-    return !node.expandable && node.name !== 'Channel hinzufügen' && node.name !== 'Felix Müller' && node.name !== 'Noah Ewen';
-  }
+  isNewChannel = (node: FlattenedNode): boolean => {
+    return !node.expandable && node.type === 'channel' && node.name !== 'Channel hinzufügen';
+  };
 
   async addChannel(data: TextChannel) {
     const newChannel: TextChannel = { ...data };
@@ -91,9 +91,7 @@ export class SidenavComponent implements OnInit {
     await this.loadChannels();
   }
 
-  private isDefined(
-    channel: TextChannel
-  ): channel is TextChannel & { name: string } {
+  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
 
@@ -109,28 +107,47 @@ export class SidenavComponent implements OnInit {
     }));
   }
 
-  private initializeTreeData(channelNodes: Node[]): void {
+  // todo daten aus datenbank laden
+  private async loadMessages(): Promise<any[]> {
+    return [
+      { name: 'Felix Müller', type: 'privateMessage' },
+      { name: 'Noah Ewen', type: 'privateMessage' }
+    ];
+  }
+
+  private createDirectMessageNodes(directMessages: TextChannel[]): Node[] {
+    return directMessages.filter(this.isDefined).map((dm) => ({
+      name: dm.name,
+      type: 'privateMessage'
+    }));
+  }
+
+  private async initializeTreeData(): Promise<void> {
+    const channelNodes = this.createChannelNodes();
+    const directMessages = await this.loadMessages();
+    const directMessageNodes = this.createDirectMessageNodes(directMessages);
+
     const channelsStructure: Node = {
       name: 'Channels',
       type: 'category',
-      children: [...channelNodes, { name: 'Channel hinzufügen', type: 'channel' }],
+      children: [...channelNodes, { name: 'Channel hinzufügen', type: 'action' }],
     };
-    this.TREE_DATA = [channelsStructure];
-    this.TREE_DATA.push({
+
+    const directMessagesStructure: Node = {
       name: 'Direktnachrichten',
       type: 'category',
-      children: [{ name: 'Felix Müller', type: 'channel' }, { name: 'Noah Ewen', type: 'channel' }],
-    });
+      children: [...directMessageNodes],
+    };
 
+    this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
     console.log(this.TREE_DATA);
   }
 
   async loadChannels() {
     await this.fetchChannels();
-    const channelNodes = this.createChannelNodes();
-    this.initializeTreeData(channelNodes);
-    console.log(this.TREE_DATA); // Überprüfen Sie, ob die Struktur korrekt ist
+    await this.initializeTreeData();
+    console.log(this.TREE_DATA);
   }
 
   async handleNodeClick(node: FlattenedNode) {
@@ -142,10 +159,12 @@ export class SidenavComponent implements OnInit {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel);         
+        this.channelService.selectChannel(selectedChannel);
       }
-    } else if (node.name === 'Channel hinzufügen') {
+    } else if (node.type === 'action') {
       this.openDialog();
+    } else if (node.type === 'privateMessage') {
+      // öffne chat
     }
   }
 
@@ -160,11 +179,18 @@ export class SidenavComponent implements OnInit {
   }
 
   isChannelNode(node: FlattenedNode): boolean {
-    return node.type === 'channel'; 
+    return node.type === 'channel';
   }
 
   isCategoryNode(node: FlattenedNode): boolean {
-    console.log("isCategoryNode: ", node);
-    return node.type === 'category'; 
+    return node.type === 'category';
+  }
+
+  isActionNode(node: FlattenedNode): boolean {
+    return node.type === 'action';
+  }
+
+  isPrivateMessage(node: FlattenedNode): boolean {
+    return node.type === 'privateMessage';
   }
 }
