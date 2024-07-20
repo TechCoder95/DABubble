@@ -76,9 +76,17 @@ export class ChooseAvatarComponent {
     this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
   }
 
+saveUser() {
+   this.registerUser = true;
+   console.log("sollte richtig sein", this.registerUser);
+   setTimeout(() => {
+    this.updateDatabase()
+   }, 2000);
+}  
+
 
   updateDatabase() {
-    this.registerUser = true;
+   
     this.UserService.updateUser(this.activeUser);
     this.registerUser = false;
     this.router.navigateByUrl('/home');

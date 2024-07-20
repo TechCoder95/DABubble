@@ -32,9 +32,11 @@
             <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
         </div>
 
-        <button mat-flat-button (click)="updateDatabase()">Weiter</button>
+        <button mat-flat-button (click)="saveUser()">Weiter</button>
         @if (registerUser) {
-        <mat-card class="alert">Konto erfolgreich erstellt!</mat-card>
+        <div class="bg-alert">
+            <mat-card class="alert">Konto erfolgreich erstellt!</mat-card>
+        </div>
         }
     </mat-card>
 </div>
