@@ -1,6 +1,26 @@
 @if (!isLoggedIn){
-<app-login></app-login>
+
+<div class="absolute w-full top-0 left-0">
+    <app-header></app-header>
+</div>
+<div class="h-screen w-full">
+    <div class="h-screen w-full flex align-items-center justify-content-center">
+
+        <div class="w-9">
+            <app-login></app-login>
+        </div>
+    </div>
+</div>
 }
 @else {
-    <app-sidenav></app-sidenav>
+<div class="h-screen w-full">
+    <div class="h-full flex flex-column">
+        <div>
+            <app-header></app-header>
+        </div>
+        <div class="h-full">
+            <app-sidenav></app-sidenav>
+        </div>
+    </div>
+</div>
 }

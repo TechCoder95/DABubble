@@ -15,8 +15,13 @@ export class AuthenticationService {
   auth = getAuth();
   provider = new GoogleAuthProvider();
 
-  //Mail Login
 
+  /**
+   * Signs up a user with email and password, and performs additional registration and login operations.
+   * @param email - The email address of the user.
+   * @param password - The password of the user.
+   * @param username - The username of the user.
+   */
   MailSignUp(email: string, password: string, username: string) {
     createUserWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
@@ -27,7 +32,6 @@ export class AuthenticationService {
         this.userService.login(this.userService.googleUser).then(() => {
           this.router.navigate(['/avatar']);
         });
-        // Er muss mir hier den User mit der Email vom aanderen User aus der Datenbank holen und das array "User" komplett updaten um das object fertig zu machen
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -36,13 +40,19 @@ export class AuthenticationService {
       });
   }
 
+  /**
+   * Signs in a user with email and password.
+   * 
+   * @param email - The user's email address.
+   * @param password - The user's password.
+   */
   mailSignIn(email: string, password: string) {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         // Signed in 
         this.userService.googleUser = userCredential.user;
         this.userService.login(userCredential.user).then(() => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['']);
         });
         // ...
       })
@@ -50,14 +60,15 @@ export class AuthenticationService {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
-  }
-
-
-
+  } 
 
   //Google Auth
 
 
+  /**
+   * Signs in the user using Google authentication.
+   * @returns {void}
+   */
   googleSignIn() {
     signInWithPopup(this.auth, this.provider)
       .then((result) => {
@@ -67,7 +78,7 @@ export class AuthenticationService {
         // The signed-in user info.
         this.userService.googleUser = result.user;
         this.userService.login(result.user).then(() => {
-          this.router.navigate(['/home']);
+          this.router.navigate(['']);
         });
       }).catch((error) => {
         // Handle Errors here.
@@ -81,6 +92,9 @@ export class AuthenticationService {
       });
   }
 
+  /**
+   * Retrieves the Google Access Token and performs necessary actions based on the result.
+   */
   getGoogleToken() {
     getRedirectResult(this.auth)
       .then((result) => {
@@ -106,6 +120,9 @@ export class AuthenticationService {
 
   //Für alle gültig
 
+  /**
+   * Signs out the user.
+   */
   signOut() {
     signOut(this.auth)
       .then(() => {

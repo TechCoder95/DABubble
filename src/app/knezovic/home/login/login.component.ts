@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -15,12 +15,8 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) {
+  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) {}
 
-
-  }
-  @Input() userLogin!: DABubbleUser;
-  @Output() userLoginChange = new EventEmitter<DABubbleUser>(); 
   email: string = '';
   epassword: string = '';
 
@@ -28,11 +24,18 @@ export class LoginComponent {
     return this.UserService.activeUser;
   }
 
+  /**
+   * Initiates the Google login process.
+   */
   googleLogin() {
     this.AuthService.googleSignIn();
   }
 
 
+  /**
+   * Handles the form submission event.
+   * @param ngForm - The NgForm object representing the form.
+   */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
       console.info('Form is valid');
@@ -45,14 +48,27 @@ export class LoginComponent {
     ngForm.resetForm();
   }
 
+
+  /**
+   * Performs the login operation.
+   */
   login() {
     this.AuthService.mailSignIn(this.email, this.epassword);
   }
 
+
+  /**
+   * Gets all the users.
+   * @returns An array of users.
+   */
   get allUsers() {
     return this.UserService.users;
   }
 
+
+  /**
+   * Navigates to the registration page.
+   */
   goToRegister() {
     this.router.navigate(['/addUser']);
   }

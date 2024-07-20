@@ -88,19 +88,24 @@ export class UserService {
           this.activeUser = this.completeUser(loginUser, this.googleUser);
           this.updateLoggedInUser(this.activeUser);
           console.log('User Logged In');
-
         }
         else {
           console.log('User not logged in!');
         }
       }
-
-
     });
   }
 
 
 
+  /**
+   * Completes the user object by filling in missing properties with values from the Google user object.
+   * If a property is already present in the user object, it will not be overwritten.
+   * 
+   * @param user - The user object to be completed.
+   * @param googleUser - The Google user object containing additional information.
+   * @returns The completed user object.
+   */
   completeUser(user: DABubbleUser, googleUser: any) {
     return user = {
       id: user.id,
@@ -167,11 +172,6 @@ export class UserService {
           });
       }
     });
-
-
-
-
-
   }
 
 
@@ -255,6 +255,11 @@ export class UserService {
 
   }
 
+
+  /**
+   * Checks if the user is currently logged in.
+   * @returns {boolean} True if the user is logged in, false otherwise.
+   */
   get isLoggedIn() {
     if (localStorage.getItem('userLogin') && this.activeUser && localStorage.getItem('uId') ) {
       return true;
@@ -263,7 +268,4 @@ export class UserService {
       return false;
     }
   }
-
- 
-
 }

@@ -8,10 +8,9 @@ import { HomeComponent } from './knezovic/home/home.component';
 
 
 export const routes: Routes = [
-  { path: '', component: SidenavComponent },
+  { path: '', component: HomeComponent },
   { path: 'addUser', component: AddUserComponent },
   { path: 'login', component: LoginComponent },
   { path: 'chat', component: ChatComponent },
-  {path: 'avatar', component: ChooseAvatarComponent},
-  {path: 'home', component: HomeComponent},
+  {path: 'avatar', component: ChooseAvatarComponent}
 ];
