@@ -326,7 +326,7 @@ export class UserService {
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser && localStorage.getItem('uId')) || (this.activeUser && sessionStorage.getItem('userLogin'))) {
+    if ((localStorage.getItem('userLogin') && this.activeUser) || (this.activeUser && sessionStorage.getItem('userLogin'))) {
       return true;
     }
     else {

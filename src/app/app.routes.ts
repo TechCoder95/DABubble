@@ -9,7 +9,7 @@ import { StartscreenComponent } from './knezovic/startscreen/startscreen.compone
 
 
 export const routes: Routes = [
-  { path: '', component: StartscreenComponent },
+  { path: '', component: HomeComponent },
   { path: 'addUser', component: AddUserComponent },
   { path: 'login', component: LoginComponent }, 
   { path: 'chat', component: ChatComponent },

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { UserService } from '../../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -21,7 +21,9 @@ export class HeaderComponent {
 
   searchInput: string = '';
 
-  constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) { }
+  constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) {
+
+   }
 
 
   openMenu() {
@@ -32,8 +34,9 @@ export class HeaderComponent {
     return this.userService.isLoggedIn;
   }
 
-  goToRegister(){
+  goToRegister() {
     this.router.navigate(['/addUser']);
   }
+
 
 }

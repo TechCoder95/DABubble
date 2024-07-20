@@ -88,7 +88,7 @@ saveUser() {
   updateDatabase() {
    
     this.UserService.updateUser(this.activeUser);
-    this.router.navigateByUrl('');
+    this.router.navigateByUrl('/home');
   }
 
 }
