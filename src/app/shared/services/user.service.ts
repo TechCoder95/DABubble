@@ -104,7 +104,7 @@ export class UserService {
               sessionStorage.setItem('userLogin', user.id!);
               this.updateLoggedInUser(this.activeUser);
               console.log('Guest User Logged In');
-              this.router.navigate(['']);
+              this.router.navigate(['/home']);
             }
           });
         });

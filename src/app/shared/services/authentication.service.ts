@@ -53,7 +53,7 @@ export class AuthenticationService {
         // Signed in 
         this.userService.googleUser = userCredential.user;
         this.userService.login(userCredential.user).then(() => {
-          this.router.navigate(['']);
+          this.router.navigate(['/home']);
         });
         // ...
       })
@@ -79,7 +79,7 @@ export class AuthenticationService {
         // The signed-in user info.
         this.userService.googleUser = result.user;
         this.userService.login(result.user).then(() => {
-          this.router.navigate(['']);
+          this.router.navigate(['/home']);
         });
       }).catch((error) => {
         // Handle Errors here.
