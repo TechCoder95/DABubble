@@ -1,3 +1,9 @@
 <div class="flex justify-content-between align-items-center m-3">
-    <img src="{{activeUser.avatar}}" alt="">
-    <button (click)="logout()">Ausloggen</button></div>
+    <img (click)="openMenu()" src="{{activeUser.avatar}}" alt="">
+    <!-- <div class="flex flex-column justify-content-center gap-3 p-5 toggle-menu">
+        <span class="flex align-items-center justify-content-center">Profil</span>
+        <span class="flex align-items-center justify-content-center" (click)="logout()">Log out</span>
+    </div>-->
+
+    <!-- <button (click)="logout()">Ausloggen</button> -->
+</div>
