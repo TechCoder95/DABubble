@@ -10,7 +10,7 @@
     </div>
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
-      <!-- Standard-Knoten -->
+      <!-- Unter Knoten -->
       <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
           <button mat-icon-button></button>
@@ -20,10 +20,9 @@
             <!-- Kanal hinzufügen -->
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.png" alt="add-channel">
             <!-- Private Message -->
-             <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo"> 
+            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo">
           </ng-container>
-          <span (click)="handleNodeClick(node)"
-                [ngClass]="{
+          <span (click)="handleNodeClick(node)" [ngClass]="{
                   'cursor-pointer': true,
                   'blue-channel-name': isNewChannel(node),
                   'blue-name': isCategoryNode(node),
@@ -34,7 +33,7 @@
         </div>
       </mat-tree-node>
 
-      <!-- Erweiterbare Knoten -->
+      <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="flex align-items-center justify-content-between cursor-pointer w-full" matTreeNodeToggle>
           <div class="flex align-items-center">
@@ -45,11 +44,12 @@
             </button>
             <ng-container *ngIf="node">
               <!-- Kategorien -->
-              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.png" alt="channels">
-              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3" src="img/private-messages.png" alt="direct-messages">
+              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.png"
+                alt="channels">
+              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3"
+                src="img/private-messages.png" alt="direct-messages">
             </ng-container>
-            <span matTreeNodeToggle
-                  [ngClass]="{
+            <span matTreeNodeToggle [ngClass]="{
                     'cursor-pointer': true,
                     'blue-channel-name': isNewChannel(node),
                     'blue-name': isCategoryNode(node),
