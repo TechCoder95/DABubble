@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -20,12 +17,14 @@ import { ChannelService } from '../../shared/services/channel.service';
 interface Node {
   name: string;
   children?: Node[];
+  type: 'channel' | 'category';
 }
 
 interface FlattenedNode {
   expandable: boolean;
   name: string;
   level: number;
+  type: 'channel' | 'category';
 }
 
 @Component({
@@ -52,6 +51,7 @@ export class SidenavComponent implements OnInit {
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
     level: level,
+    type: node.type
   });
 
   treeControl = new FlatTreeControl<FlattenedNode>(
@@ -105,27 +105,32 @@ export class SidenavComponent implements OnInit {
   private createChannelNodes(): Node[] {
     return this.channels.filter(this.isDefined).map((channel) => ({
       name: channel.name,
+      type: 'channel'
     }));
   }
 
   private initializeTreeData(channelNodes: Node[]): void {
     const channelsStructure: Node = {
       name: 'Channels',
-      children: [...channelNodes, { name: 'Channel hinzufügen' }],
+      type: 'category',
+      children: [...channelNodes, { name: 'Channel hinzufügen', type: 'channel' }],
     };
     this.TREE_DATA = [channelsStructure];
     this.TREE_DATA.push({
       name: 'Direktnachrichten',
-      children: [{ name: 'Felix Müller' }, { name: 'Noah Ewen' }],
+      type: 'category',
+      children: [{ name: 'Felix Müller', type: 'channel' }, { name: 'Noah Ewen', type: 'channel' }],
     });
 
     this.dataSource.data = this.TREE_DATA;
+    console.log(this.TREE_DATA);
   }
 
   async loadChannels() {
     await this.fetchChannels();
     const channelNodes = this.createChannelNodes();
     this.initializeTreeData(channelNodes);
+    console.log(this.TREE_DATA); // Überprüfen Sie, ob die Struktur korrekt ist
   }
 
   async handleNodeClick(node: FlattenedNode) {
@@ -152,5 +157,14 @@ export class SidenavComponent implements OnInit {
         this.addChannel(result);
       }
     });
+  }
+
+  isChannelNode(node: FlattenedNode): boolean {
+    return node.type === 'channel'; 
+  }
+
+  isCategoryNode(node: FlattenedNode): boolean {
+    console.log("isCategoryNode: ", node);
+    return node.type === 'category'; 
   }
 }
