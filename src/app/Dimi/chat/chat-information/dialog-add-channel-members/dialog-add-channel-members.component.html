@@ -12,11 +12,11 @@
     </div>
     <div class="channel-name">
       <img src="./img/tag-hover.png" />
-      <p>Entwicklerteam</p>
+      <p>{{ (channelService.selectedChannel$ | async)?.name }}</p>
     </div>
   </section>
 
   <section>
-    <input type="text" class="inputfield-name" placeholder="Name eingeben" />
+    <input type="text" class="inputfield-name" placeholder="Name eingeben" #inputName/>
   </section>
 </main>
