@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 export class UserService {
 
   users: DABubbleUser[] = [];
-  activeUser!: DABubbleUser;
+  activeUser!: DABubbleUser; //Wenn du Online bist bzw eingeloogt, ist dieses Objekt immer mit dem aktuellen User gefüllt
   googleUser: User | null = null;
   guestName: string = 'Guest';
 
