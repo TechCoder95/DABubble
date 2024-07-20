@@ -107,6 +107,12 @@ export class DatabaseService {
   }
 
 
+  /**
+   * Retrieves data from a Firestore collection by ID.
+   * @param collectionName - The name of the Firestore collection.
+   * @param id - The ID of the document to retrieve.
+   * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
+   */
   async readDataByID(collectionName: string, id: string) {
     const docSnap = await getDoc(doc(this.firestore, collectionName, id));
     if (docSnap.exists()) {

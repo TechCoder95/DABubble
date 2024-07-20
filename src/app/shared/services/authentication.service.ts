@@ -12,10 +12,10 @@ export class AuthenticationService {
 
   constructor(private userService: UserService, private router: Router) { }
 
-
   auth = getAuth();
   provider = new GoogleAuthProvider();
 
+  //#region [Mail Authentication]
 
   /**
    * Signs up a user with email and password, and performs additional registration and login operations.
@@ -62,6 +62,10 @@ export class AuthenticationService {
         const errorMessage = error.message;
       });
   }
+
+  //#endregion
+
+  //#region [Google Authentication]
 
   //Google Auth
 
@@ -119,6 +123,10 @@ export class AuthenticationService {
       });
   }
 
+  //#endregion
+
+  //#region [User Authentication]
+
   //Für alle gültig
 
   /**
@@ -143,6 +151,7 @@ export class AuthenticationService {
     this.userService.guestLogin();
   }
 
+  //#endregion
 
 
 }

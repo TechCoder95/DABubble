@@ -18,9 +18,9 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
-
     this.checkOnlineStatus();
   }
+
 
   /**
    * Checks the online status of the user.
@@ -38,8 +38,6 @@ export class UserService {
         }
       });
     }
-
-
     else if (localStorage.getItem('userLogin')) {
       let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
       object.then((user) => {
@@ -66,8 +64,9 @@ export class UserService {
   }
 
 
-
-
+  /**
+   * Performs a guest login by generating a unique guest name and writing it to the database.
+   */
   guestLogin() {
     this.getUsersFromDB().then(() => {
       let name = this.guestName;
@@ -82,7 +81,6 @@ export class UserService {
   }
 
 
-
   /**
    * Logs in a guest user.
    * 
@@ -93,7 +91,7 @@ export class UserService {
    * @returns A Promise that resolves when the guest user is logged in.
    */
   async writeGuestToDB() {
-    let guestUser = { mail: this.guestName + '@' + this.guestName +'.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg' };
+    let guestUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg' };
 
     await this.DatabaseService.addDataToDB(this.collectionName, guestUser)
       .then(() => {
@@ -109,10 +107,8 @@ export class UserService {
           });
         });
       });
-
-
-
   }
+
 
   /**
    * Logs out the guest user.
@@ -171,7 +167,6 @@ export class UserService {
   }
 
 
-
   /**
    * Completes the user object by filling in missing properties with values from the Google user object.
    * If a property is already present in the user object, it will not be overwritten.
@@ -199,7 +194,7 @@ export class UserService {
    * @param {string} user The user object to update.
    * @returns A Promise that resolves when the user is updated in the database.
    */
-  updateLoggedInUser(user: DABubbleUser) {
+  async updateLoggedInUser(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { isLoggedIn: true })
         .then(() => {
@@ -253,6 +248,7 @@ export class UserService {
     }
   }
 
+
   /**
    * Registers a new user.
    * @param {User} user - The user object to be registered.
@@ -260,9 +256,7 @@ export class UserService {
    */
   async registerUser(user: DABubbleUser) {
     await this.DatabaseService.addDataToDB(this.collectionName, user)
-      .then(() => {
-        this.getUsersFromDB();
-      });
+      .then(() => { this.getUsersFromDB(); });
   }
 
 
@@ -276,9 +270,7 @@ export class UserService {
   async register(email: string, username: string, uid: string) {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
-      .then(() => {
-        this.getUsersFromDB();
-      });
+      .then(() => { this.getUsersFromDB(); });
   }
 
 
@@ -290,9 +282,7 @@ export class UserService {
   async updateUser(user: DABubbleUser) {
     if (user.id) {
       await this.DatabaseService.updateDataInDB(this.collectionName, user.id, user)
-        .then(() => {
-          this.getUsersFromDB();
-        });
+        .then(() => { this.getUsersFromDB(); });
     }
   }
 
@@ -304,9 +294,7 @@ export class UserService {
    */
   async deleteUser(userID: string) {
     await this.DatabaseService.deleteDataFromDB(this.collectionName, userID)
-      .then(() => {
-        this.getUsersFromDB();
-      });
+      .then(() => { this.getUsersFromDB(); });
   }
 
 
@@ -317,7 +305,6 @@ export class UserService {
    */
   getOneUserbyId(id: string) {
     return this.users.find(user => user.id === id);
-
   }
 
 
@@ -326,12 +313,10 @@ export class UserService {
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser) || (this.activeUser && sessionStorage.getItem('userLogin'))) {
+    if ((localStorage.getItem('userLogin') && this.activeUser) || (this.activeUser && sessionStorage.getItem('userLogin')))
       return true;
-    }
-    else {
+    else
       return false;
-    }
   }
 
 }
