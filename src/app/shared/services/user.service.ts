@@ -12,8 +12,7 @@ export class UserService {
   users: DABubbleUser[] = [];
   activeUser!: DABubbleUser;
   googleUser: User | null = null;
-
-  testUser$: EventEmitter<DABubbleUser> = new EventEmitter<DABubbleUser>();
+  guestName: string = 'Guest';
 
   //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
@@ -28,12 +27,24 @@ export class UserService {
    * If the user is logged in, it retrieves the user data from the database and sets the active user.
    */
   checkOnlineStatus() {
-    if (localStorage.getItem('userLogin')) {
+    if (sessionStorage.getItem('userLogin')) {
+      let object = this.DatabaseService.readDataByID(this.collectionName, sessionStorage.getItem('userLogin')!);
+      object.then((user) => {
+        if (user) {
+          this.activeUser = user as DABubbleUser;
+        }
+        else {
+          this.activeUser = null!;
+        }
+      });
+    }
+
+
+    else if (localStorage.getItem('userLogin')) {
       let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
       object.then((user) => {
         if (user) {
           this.activeUser = user as DABubbleUser;
-          this.testUser$.emit(this.activeUser);
         }
         else {
           this.activeUser = null!;
@@ -55,6 +66,70 @@ export class UserService {
   }
 
 
+
+
+  guestLogin() {
+    this.getUsersFromDB().then(() => {
+      let name = this.guestName;
+      let i = 1;
+      while (this.users.find(user => user.username === name)) {
+        name = this.guestName + '_' + i;
+        i++;
+      }
+      this.guestName = name;
+      this.writeGuestToDB();
+    });
+  }
+
+
+
+  /**
+   * Logs in a guest user.
+   * 
+   * @remarks
+   * This method adds a guest user to the database, retrieves the list of users from the database,
+   * and performs additional operations to set the active user and navigate to the home page.
+   * 
+   * @returns A Promise that resolves when the guest user is logged in.
+   */
+  async writeGuestToDB() {
+    let guestUser = { mail: this.guestName + '@' + this.guestName +'.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg' };
+
+    await this.DatabaseService.addDataToDB(this.collectionName, guestUser)
+      .then(() => {
+        this.getUsersFromDB().then(() => {
+          this.users.map(user => {
+            if (user.username === this.guestName) {
+              this.activeUser = this.completeUser(user);
+              sessionStorage.setItem('userLogin', user.id!);
+              this.updateLoggedInUser(this.activeUser);
+              console.log('Guest User Logged In');
+              this.router.navigate(['/home']);
+            }
+          });
+        });
+      });
+
+
+
+  }
+
+  /**
+   * Logs out the guest user.
+   */
+  guestLogout() {
+    let id = sessionStorage.getItem('userLogin')!;
+    this.DatabaseService.deleteDataFromDB(this.collectionName, id)
+      .then(() => {
+        sessionStorage.removeItem('userLogin'),
+          this.activeUser = null!;
+        this.getUsersFromDB().then(() => {
+          window.location.reload()
+        });
+      });
+  }
+
+
   /**
    * Logs in a user with the provided email and password.
    * If the email and password match a user in the system, the user is logged in and their information is stored in local storage.
@@ -64,7 +139,6 @@ export class UserService {
    */
   async login(googleUser: User) {
     this.getUsersFromDB().then(() => {
-
       let loginUser = this.users.find(user => user.mail === googleUser.email);
       if (loginUser === undefined) {
         this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
@@ -85,28 +159,33 @@ export class UserService {
         // && user.actived === true
         if (loginUser.mail === googleUser.email && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
-          this.activeUser = this.completeUser(loginUser, this.googleUser);
+          this.activeUser = this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser);
           this.updateLoggedInUser(this.activeUser);
           console.log('User Logged In');
-
         }
         else {
           console.log('User not logged in!');
         }
       }
-
-
     });
   }
 
 
 
-  completeUser(user: DABubbleUser, googleUser: any) {
+  /**
+   * Completes the user object by filling in missing properties with values from the Google user object.
+   * If a property is already present in the user object, it will not be overwritten.
+   * 
+   * @param user - The user object to be completed.
+   * @param googleUser - The Google user object containing additional information.
+   * @returns The completed user object.
+   */
+  completeUser(user: DABubbleUser, googleUser?: User) {
     return user = {
       id: user.id,
-      mail: user.mail || googleUser.email || '',
-      username: user.username ? user.username : googleUser.displayName || '',
-      uid: user.uid || googleUser.uid || '',
+      mail: user.mail || googleUser?.email || '',
+      username: user.username ? user.username : googleUser?.displayName || '',
+      uid: user.uid || googleUser?.uid || '',
       isLoggedIn: user.isLoggedIn || true,
       activated: user.activated || false,
       activeChannels: user.activeChannels || [],
@@ -155,38 +234,24 @@ export class UserService {
    * Finally, retrieves the updated list of users from the database.
    */
   async logout() {
-    let id = localStorage.getItem('userLogin')!;
-    this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
-      this.activeUser = user as unknown as DABubbleUser;
-      if (this.activeUser.isLoggedIn === true && id) {
-        this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
-          .then(() => {
-            localStorage.removeItem('userLogin'),
-              this.activeUser = null!;
-            this.getUsersFromDB();
-          });
-      }
-    });
-
-
-
-
-
-  }
-
-
-  /**
-   * Gets the logged-in user based on the user ID stored in the local storage.
-   * @returns The logged-in user object or undefined if no user is found.
-   */
-  get loggedInUser() {
-    let id = localStorage.getItem('userLogin');
-    if (id) {
-      return this.users.find(user => user.id === id);
+    if (sessionStorage.getItem('userLogin')) {
+      this.guestLogout();
     }
-    return
+    else {
+      let id = localStorage.getItem('userLogin')!;
+      this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
+        this.activeUser = user as unknown as DABubbleUser;
+        if (this.activeUser.isLoggedIn === true && id) {
+          this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
+            .then(() => {
+              localStorage.removeItem('userLogin'),
+                this.activeUser = null!;
+              this.getUsersFromDB();
+            });
+        }
+      });
+    }
   }
-
 
   /**
    * Registers a new user.
@@ -255,8 +320,13 @@ export class UserService {
 
   }
 
+
+  /**
+   * Checks if the user is currently logged in.
+   * @returns {boolean} True if the user is logged in, false otherwise.
+   */
   get isLoggedIn() {
-    if (localStorage.getItem('userLogin') && this.activeUser && localStorage.getItem('uId') ) {
+    if ((localStorage.getItem('userLogin') && this.activeUser && localStorage.getItem('uId')) || (this.activeUser && sessionStorage.getItem('userLogin'))) {
       return true;
     }
     else {
@@ -264,6 +334,5 @@ export class UserService {
     }
   }
 
- 
-
 }
+

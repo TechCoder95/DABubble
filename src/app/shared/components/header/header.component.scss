@@ -1,65 +1,26 @@
-button {
-    margin: 10px;
+input[type="search"] {
+    width: 40%;
     padding: 10px;
-    border: 2px solid #007bff;
-    border-radius: 40px;
-    width: 150px;
     height: 50px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-
-    &:disabled {
-        background: #4e4e4e;
-        cursor: not-allowed;
-    }
-
-    &:hover {
-        background-color: white;
-        color: #007bff;
-        border: 2px solid #007bff;
-    }
+    border: 1px solid #ccc;
+    border-radius: 25px;
+    margin-right: 10px;
+    font-size: 20px;
 }
 
-img {
+.profileimg {
     width: 60px;
     height: 60px;
     border-radius: 50%;
     margin-right: 10px;
 }
 
-// .toggle-menu {
-//     max-height: 280px;
-//     max-width: 180px;
-//     background-color: white;
-//     border-radius: 30px 0 30px 30px;
-//     height: 100%;
-//     width: 100%;
-//     text-align: center;
-//     box-shadow: 0px 6px 10px 0px #00000033;
+.userName{
+    margin: 0;
+    font-size: 32px;
+    font-weight: bold;
+}
 
-
-//     span {
-//         font-size: 24px;
-//         font-weight: 600;
-//         height: 50px;
-        
-//         :first-child {
-//             padding: 10px 70px;
-//         }
-
-//         :last-child {
-//             padding: 10px 45px;
-//         }
-
-//         &:hover {
-//             cursor: pointer;
-//             font-weight: 700;
-//             color: #535AF1;
-//             background-color: #ECEEFE;
-//             border-radius: 100px;
-
-//         }
-//     }
-// }
+img{
+    cursor: pointer;
+}
