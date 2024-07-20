@@ -39,7 +39,7 @@
                 <button type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
                     name="registrieren">Anmelden</button>
                 <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"
-                    (click)="goToRegister()" title="back" name="back">Gäste-Login</button>
+                    (click)="loginAsGuest()" title="back" name="back">Gäste-Login</button>
             </div>
         </form>
 

@@ -73,4 +73,8 @@ export class LoginComponent {
     this.router.navigate(['/addUser']);
   }
 
+  loginAsGuest() {
+    this.AuthService.signInAsGuest();
+  }
+
 }

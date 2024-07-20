@@ -3,6 +3,7 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, si
 import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
+import { DABubbleUser } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class AuthenticationService {
         const errorCode = error.code;
         const errorMessage = error.message;
       });
-  } 
+  }
 
   //Google Auth
 
@@ -134,4 +135,14 @@ export class AuthenticationService {
       });
 
   }
+
+  /**
+   * Signs in the user as a guest.
+   */
+  signInAsGuest() {
+    this.userService.guestLogin();
+  }
+
+
+
 }
