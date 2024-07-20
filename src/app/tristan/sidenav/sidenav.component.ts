@@ -141,13 +141,12 @@ export class SidenavComponent implements OnInit {
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
-    console.log(this.TREE_DATA);
+    //console.log(this.TREE_DATA);
   }
 
   async loadChannels() {
     await this.fetchChannels();
     await this.initializeTreeData();
-    console.log(this.TREE_DATA);
   }
 
   async handleNodeClick(node: FlattenedNode) {
@@ -171,7 +170,6 @@ export class SidenavComponent implements OnInit {
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(result);
       if (result) {
         this.addChannel(result);
       }
@@ -192,5 +190,9 @@ export class SidenavComponent implements OnInit {
 
   isPrivateMessage(node: FlattenedNode): boolean {
     return node.type === 'privateMessage';
+  }
+
+  isSelectedChannel(node: FlattenedNode): boolean {
+    return this.selectedChannel?.name === node.name;
   }
 }

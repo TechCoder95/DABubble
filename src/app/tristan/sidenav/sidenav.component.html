@@ -11,30 +11,32 @@
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
       <!-- Standard-Knoten -->
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
-          <button mat-icon-button disabled></button>
+          <button mat-icon-button></button>
           <ng-container *ngIf="node">
             <!-- Kanal -->
             <img *ngIf="isChannelNode(node)" class="mr-3" src="img/channel.png" alt="channel">
             <!-- Kanal hinzufügen -->
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.png" alt="add-channel">
             <!-- Private Message -->
-            <!-- <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/avatar-private-message.png" alt="avatar-logo"> -->
+             <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo"> 
           </ng-container>
           <span (click)="handleNodeClick(node)"
                 [ngClass]="{
                   'cursor-pointer': true,
-                  'channel-name': isNewChannel(node),
-                  'category-name': isCategoryNode(node),
-                  'font-bold': isCategoryNode(node)
+                  'blue-channel-name': isNewChannel(node),
+                  'blue-name': isCategoryNode(node),
+                  'font-bold': isCategoryNode(node),
+                  'blue-action-name': isActionNode(node),
+                  'selected-channel': isSelectedChannel(node)
                 }">{{node.name}}</span>
         </div>
       </mat-tree-node>
 
       <!-- Erweiterbare Knoten -->
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-        <div class="flex align-items-center justify-content-between cursor-pointer" matTreeNodeToggle style="width: 100%;">
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <div class="flex align-items-center justify-content-between cursor-pointer w-full" matTreeNodeToggle>
           <div class="flex align-items-center">
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror">
@@ -49,7 +51,11 @@
             <span matTreeNodeToggle
                   [ngClass]="{
                     'cursor-pointer': true,
-                    'font-bold': isCategoryNode(node)
+                    'blue-channel-name': isNewChannel(node),
+                    'blue-name': isCategoryNode(node),
+                    'font-bold': isCategoryNode(node),
+                    'blue-action-name': isActionNode(node),
+                    'selected-channel': isSelectedChannel(node)
                   }">{{node.name}}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
@@ -60,7 +66,7 @@
     </mat-tree>
   </mat-drawer>
 
-  <div class="router-container">
+  <div class="px-5 pt-2">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
