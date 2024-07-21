@@ -1,0 +1,81 @@
+main {
+  min-height: 150px;
+  margin-top: 32px;
+  background-color: antiquewhite;
+  display: flex;
+  flex-direction: column;
+}
+
+p,
+h4,
+h5 {
+  margin: 0;
+}
+
+.message-day {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > p {
+    background: rgba(173, 176, 217, 1);
+    height: 1px;
+    width: 90%;
+  }
+  > h4 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(253, 251, 255);
+    border-radius: 30px;
+    padding: 5px 15px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    font-size: 18px;
+  }
+}
+
+.message {
+  display: flex;
+  justify-content: flex-end;
+  margin-block: 25px;
+  padding-inline: 50px;
+  padding-block: 10px;
+  gap: 20px;
+  cursor: pointer;
+  > img {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+  }
+  &:hover {
+    background-color: aqua;
+  }
+}
+
+.message-information {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  > .sender-and-time {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 20px;
+    align-items: center;
+    > h5 {
+      font-size: 18px;
+    }
+    > p {
+      font-size: 14px;
+      color: rgba(104, 104, 104, 1);
+    }
+  }
+  > .actual-message {
+    border-radius: 30px 0px 30px 30px;
+    background: rgba(236, 238, 254, 1);
+    padding: 15px;
+    > p {
+      font-size: 18px;
+    }
+  }
+}

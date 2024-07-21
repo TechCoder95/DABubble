@@ -1,5 +1,5 @@
 <section class="inputfield">
-  <textarea name="" id="" [placeholder]="placeholderText | async"></textarea>
+  <textarea name="" id="" [(ngModel)]="textareaValue" [placeholder]="placeholderText | async"></textarea>
 
   <div class="arrange-input-options">
     <div class="chat-options">
@@ -19,6 +19,6 @@
         (mouseleave)="changeAddLinkImg(false)"
       />
     </div>
-    <img src="./img/send-message.png" class="send-message-btn" />
+    <img src="./img/send-message.png" class="send-message-btn" (click)="sendMessage()"/>
   </div>
 </section>
