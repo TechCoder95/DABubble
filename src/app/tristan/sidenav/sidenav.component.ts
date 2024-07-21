@@ -13,6 +13,7 @@ import { AddChannelComponent } from '../add-channel/add-channel.component';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
+import { UserService } from '../../shared/services/user.service';
 
 interface Node {
   name: string;
@@ -37,7 +38,7 @@ interface FlattenedNode {
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    ChatComponent,
+    ChatComponent
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -72,11 +73,13 @@ export class SidenavComponent implements OnInit {
   constructor(
     private dbService: DatabaseService,
     private dialog: MatDialog,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
     await this.loadChannels();
+    this.userService.getUsersFromDB();
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
