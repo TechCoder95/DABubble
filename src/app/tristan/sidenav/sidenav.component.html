@@ -1,7 +1,5 @@
-<button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
-
-<mat-drawer-container class="h-full" autosize>
-  <mat-drawer #drawer class="border-solid p-4" mode="side" [opened]="true">
+<mat-drawer-container class="h-full relative" autosize>
+  <mat-drawer #drawer class="p-4" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
       <div class="flex align-items-center">
         <img src="img/devspace.png" alt="devspace-logo">
@@ -11,35 +9,53 @@
     </div>
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
-      <!-- Standard -->
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+      <!-- Unter Knoten -->
+      <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
-          <button mat-icon-button disabled></button>
-          <span (click)="handleNodeClick(node)"
-                [ngClass]="{
+          <button mat-icon-button></button>
+          <ng-container *ngIf="node">
+            <!-- Kanal -->
+            <img *ngIf="isChannelNode(node)" class="mr-3" src="img/channel.png" alt="channel">
+            <!-- Kanal hinzufügen -->
+            <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.png" alt="add-channel">
+            <!-- Private Message -->
+            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo">
+          </ng-container>
+          <span (click)="handleNodeClick(node)" [ngClass]="{
                   'cursor-pointer': true,
-                  'channel-name': isNewChannel(node),
-                  'category-name': !isNewChannel(node),
-                   'font-bold': !isNewChannel(node) && node.name === 'Channels' || node.name === 'Direktnachrichten'
+                  'blue-channel-name': isNewChannel(node),
+                  'blue-name': isCategoryNode(node),
+                  'font-bold': isCategoryNode(node),
+                  'blue-action-name': isActionNode(node),
+                  'selected-channel': isSelectedChannel(node)
                 }">{{node.name}}</span>
         </div>
       </mat-tree-node>
 
-      <!-- Erweiterbar -->
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
-        <div class="flex align-items-center justify-content-between cursor-pointer" style="width: 100%;">
+      <!-- Hauptknoten -->
+      <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
+        <div class="flex align-items-center justify-content-between cursor-pointer w-full" matTreeNodeToggle>
           <div class="flex align-items-center">
-            <button mat-icon-button matTreeNodeToggle (click)="$event.stopPropagation()">
-              <mat-icon class="mat-icon-rtl-mirror">
-                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+            <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
+              <mat-icon class="mat-icon-rtl-mirror align-items-center flex">
+                <img style="width: 10px; height: 10px;"
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow-down.png' : 'img/arrow-right.png'" alt="toggle icon">
               </mat-icon>
             </button>
-            <span (click)="handleNodeClick(node)"
-                  [ngClass]="{
+            <ng-container *ngIf="node">
+              <!-- Kategorien -->
+              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.png"
+                alt="channels">
+              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3"
+                src="img/private-messages.png" alt="direct-messages">
+            </ng-container>
+            <span matTreeNodeToggle [ngClass]="{
                     'cursor-pointer': true,
-                    'channel-name': isNewChannel(node),
-                    'category-name': !isNewChannel(node),
-                    'font-bold': !isNewChannel(node) && node.name === 'Channels' || node.name === 'Direktnachrichten'
+                    'blue-channel-name': isNewChannel(node),
+                    'blue-name': isCategoryNode(node),
+                    'font-bold': isCategoryNode(node),
+                    'blue-action-name': isActionNode(node),
+                    'selected-channel': isSelectedChannel(node)
                   }">{{node.name}}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
@@ -50,7 +66,8 @@
     </mat-tree>
   </mat-drawer>
 
-  <div class="router-container">
+  <div class="px-5 pt-2">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
+<button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>

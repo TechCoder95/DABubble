@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -16,9 +13,12 @@ import { AddChannelComponent } from '../add-channel/add-channel.component';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
+import { UserService } from '../../shared/services/user.service';
+import { DABubbleUser } from '../../shared/interfaces/user'; // Import DABubbleUser interface
 
 interface Node {
   name: string;
+  type: 'category' | 'channel' | 'action' | 'privateMessage';
   children?: Node[];
 }
 
@@ -26,6 +26,7 @@ interface FlattenedNode {
   expandable: boolean;
   name: string;
   level: number;
+  type: 'category' | 'channel' | 'action' | 'privateMessage';
 }
 
 @Component({
@@ -38,7 +39,7 @@ interface FlattenedNode {
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    ChatComponent,
+    ChatComponent
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -47,11 +48,13 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
+  activeUser: DABubbleUser | null = null; // Add property for active user
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
     level: level,
+    type: node.type
   });
 
   treeControl = new FlatTreeControl<FlattenedNode>(
@@ -72,18 +75,18 @@ export class SidenavComponent implements OnInit {
   constructor(
     private dbService: DatabaseService,
     private dialog: MatDialog,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private userService: UserService
   ) {}
 
   async ngOnInit() {
     await this.loadChannels();
+    this.userService.getUsersFromDB();
+    this.activeUser = this.userService.activeUser;
+    console.log(this.activeUser);
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
-
-  isNewChannel(node: FlattenedNode): boolean {
-    return !node.expandable && node.name !== 'Channel hinzufügen' && node.name !== 'Felix Müller' && node.name !== 'Noah Ewen';
-  }
 
   async addChannel(data: TextChannel) {
     const newChannel: TextChannel = { ...data };
@@ -91,9 +94,7 @@ export class SidenavComponent implements OnInit {
     await this.loadChannels();
   }
 
-  private isDefined(
-    channel: TextChannel
-  ): channel is TextChannel & { name: string } {
+  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
 
@@ -105,27 +106,50 @@ export class SidenavComponent implements OnInit {
   private createChannelNodes(): Node[] {
     return this.channels.filter(this.isDefined).map((channel) => ({
       name: channel.name,
+      type: 'channel'
     }));
   }
 
-  private initializeTreeData(channelNodes: Node[]): void {
+  // todo daten aus datenbank laden
+  private async loadMessages(): Promise<any[]> {
+    return [
+      { name: 'Felix Müller', type: 'privateMessage' },
+      { name: 'Noah Ewen', type: 'privateMessage' }
+    ];
+  }
+
+  private createDirectMessageNodes(directMessages: TextChannel[]): Node[] {
+    return directMessages.filter(this.isDefined).map((dm) => ({
+      name: dm.name,
+      type: 'privateMessage'
+    }));
+  }
+
+  private async initializeTreeData(): Promise<void> {
+    const channelNodes = this.createChannelNodes();
+    const directMessages = await this.loadMessages();
+    const directMessageNodes = this.createDirectMessageNodes(directMessages);
+
     const channelsStructure: Node = {
       name: 'Channels',
-      children: [...channelNodes, { name: 'Channel hinzufügen' }],
+      type: 'category',
+      children: [...channelNodes, { name: 'Channel hinzufügen', type: 'action' }],
     };
-    this.TREE_DATA = [channelsStructure];
-    this.TREE_DATA.push({
-      name: 'Direktnachrichten',
-      children: [{ name: 'Felix Müller' }, { name: 'Noah Ewen' }],
-    });
 
+    const directMessagesStructure: Node = {
+      name: 'Direktnachrichten',
+      type: 'category',
+      children: [...directMessageNodes],
+    };
+
+    this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
+    //console.log(this.TREE_DATA);
   }
 
   async loadChannels() {
     await this.fetchChannels();
-    const channelNodes = this.createChannelNodes();
-    this.initializeTreeData(channelNodes);
+    await this.initializeTreeData();
   }
 
   async handleNodeClick(node: FlattenedNode) {
@@ -137,20 +161,45 @@ export class SidenavComponent implements OnInit {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel);         
+        this.channelService.selectChannel(selectedChannel);
       }
-    } else if (node.name === 'Channel hinzufügen') {
+    } else if (node.type === 'action') {
       this.openDialog();
+    } else if (node.type === 'privateMessage') {
+      // öffne chat
     }
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((result: any) => {
-      console.log(result);
       if (result) {
         this.addChannel(result);
       }
     });
+  }
+
+  isNewChannel = (node: FlattenedNode): boolean => {
+    return !node.expandable && node.type === 'channel' && node.name !== 'Channel hinzufügen';
+  };
+
+  isChannelNode(node: FlattenedNode): boolean {
+    return node.type === 'channel';
+  }
+
+  isCategoryNode(node: FlattenedNode): boolean {
+    return node.type === 'category';
+  }
+
+  isActionNode(node: FlattenedNode): boolean {
+    return node.type === 'action';
+  }
+
+  isPrivateMessage(node: FlattenedNode): boolean {
+    return node.type === 'privateMessage';
+  }
+
+  isSelectedChannel(node: FlattenedNode): boolean {
+    return this.selectedChannel?.name === node.name;
   }
 }
