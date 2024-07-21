@@ -132,5 +132,16 @@ export class DatabaseService {
       return
     }
   }
- 
+
+  async addChannelDataToDB(collectionName: string, data: any): Promise<string> {
+    try {
+      const docRef = await addDoc(this.setRef(collectionName), data);
+      const id = docRef.id;
+      await updateDoc(docRef, { id });
+      return docRef.id;
+    } catch (err) {
+      console.error('Error adding Data', err);
+      throw err;
+    }
+  }
 }

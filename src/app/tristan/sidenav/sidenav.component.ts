@@ -99,13 +99,14 @@ export class SidenavComponent implements OnInit {
   async addChannel(data: TextChannel) {
     const newChannel: TextChannel = { ...data };
     try {
-      const newChannelId = await this.dbService.addDataToDB('channels', newChannel);
-      newChannel.id = newChannelId;
-      await this.loadChannels();
+      const newChannelId = await this.dbService.addChannelDataToDB('channels', newChannel);
+      newChannel.id = newChannelId; 
+      await this.loadChannels(); 
     } catch (err) {
       console.error('Error adding new channel', err);
     }
   }
+  
 
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
