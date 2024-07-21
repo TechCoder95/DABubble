@@ -1,6 +1,4 @@
-<button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
-
-<mat-drawer-container class="h-full" autosize>
+<mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="border-solid p-4" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
       <div class="flex align-items-center">
@@ -39,8 +37,9 @@
         <div class="flex align-items-center justify-content-between cursor-pointer w-full" matTreeNodeToggle>
           <div class="flex align-items-center">
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
-              <mat-icon class="mat-icon-rtl-mirror">
-                {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+              <mat-icon class="mat-icon-rtl-mirror align-items-center flex">
+                <img style="width: 10px; height: 10px;"
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow-down.png' : 'img/arrow-right.png'" alt="toggle icon">
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
@@ -71,3 +70,4 @@
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
+<button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
