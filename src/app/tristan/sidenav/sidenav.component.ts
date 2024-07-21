@@ -14,6 +14,7 @@ import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
+import { DABubbleUser } from '../../shared/interfaces/user'; // Import DABubbleUser interface
 
 interface Node {
   name: string;
@@ -47,6 +48,7 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
+  activeUser: DABubbleUser | null = null; // Add property for active user
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -80,13 +82,11 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     await this.loadChannels();
     this.userService.getUsersFromDB();
+    this.activeUser = this.userService.activeUser;
+    console.log(this.activeUser);
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
-
-  isNewChannel = (node: FlattenedNode): boolean => {
-    return !node.expandable && node.type === 'channel' && node.name !== 'Channel hinzufügen';
-  };
 
   async addChannel(data: TextChannel) {
     const newChannel: TextChannel = { ...data };
@@ -178,6 +178,10 @@ export class SidenavComponent implements OnInit {
       }
     });
   }
+
+  isNewChannel = (node: FlattenedNode): boolean => {
+    return !node.expandable && node.type === 'channel' && node.name !== 'Channel hinzufügen';
+  };
 
   isChannelNode(node: FlattenedNode): boolean {
     return node.type === 'channel';
