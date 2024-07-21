@@ -32,6 +32,7 @@ export class UserService {
       object.then((user) => {
         if (user) {
           this.activeUser = user as DABubbleUser;
+         
         }
         else {
           this.activeUser = null!;
@@ -43,6 +44,9 @@ export class UserService {
       object.then((user) => {
         if (user) {
           this.activeUser = user as DABubbleUser;
+          if (this.activeUser.avatar !== '') {
+            this.avatarSelected = true;
+          }
         }
         else {
           this.activeUser = null!;
@@ -280,8 +284,9 @@ export class UserService {
    * @returns A Promise that resolves when the user is successfully updated.
    */
   async updateUser(user: DABubbleUser) {
-    if (user.id) {
-      await this.DatabaseService.updateDataInDB(this.collectionName, user.id, user)
+    let id = localStorage.getItem('userLogin');
+    if (id) {
+      await this.DatabaseService.updateDataInDB(this.collectionName, id, user)
         .then(() => { this.getUsersFromDB(); });
     }
   }
@@ -308,13 +313,17 @@ export class UserService {
   }
 
 
+  avatarSelected: boolean = false;
+
   /**
    * Checks if the user is currently logged in.
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser) || (this.activeUser && sessionStorage.getItem('userLogin')))
+    if ((localStorage.getItem('userLogin') && this.activeUser)  && this.avatarSelected || (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected) {
+      console.log(this.activeUser.avatar);
       return true;
+    }
     else
       return false;
   }

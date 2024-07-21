@@ -6,6 +6,7 @@ import { OpenProfileInfoComponent } from '../../../rabia/open-profile-info/open-
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DABubbleUser } from '../../interfaces/user';
 
 @Component({
   selector: 'app-header',
@@ -16,12 +17,16 @@ import { Router } from '@angular/router';
 })
 export class HeaderComponent {
 
-  activeUser = this.userService.activeUser;
+  activeUser!: DABubbleUser;
   public dialog = inject(MatDialog);
 
   searchInput: string = '';
 
   constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) {
+
+    this.userService.getUsersFromDB().then(() => {
+      this.activeUser = this.userService.activeUser;
+    })
 
    }
 

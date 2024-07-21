@@ -20,7 +20,12 @@ export class AddChannelComponent {
   data: TextChannel = {
     id: "",
     name: "",
-    description: ""
+    description: "",
+    messages: [],
+    owner: "",
+    zugewieseneUser: [],
+    isPrivate: false
+
   };
 
   constructor(private dialogRef: MatDialogRef<AddChannelComponent>) {

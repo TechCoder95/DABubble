@@ -16,15 +16,14 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
 })
 export class OpenProfileCardComponent {
 
-  activeUser = this.userService.activeUser;
   editable: boolean = false;
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
 
-  constructor(private AuthService: AuthenticationService, private userService: UserService, private daStorage: DAStorageService) {
+  constructor(private AuthService: AuthenticationService, public userService: UserService, private daStorage: DAStorageService) {
   }
 
   saveProfile() {
-    console.log(this.activeUser);
+    console.log(this.userService.activeUser);
 
     this.updateProfile();
     this.editable = !this.editable;
@@ -35,14 +34,14 @@ export class OpenProfileCardComponent {
   }
 
   changeAvatar(event: Event): void {
-    console.log("das bild", this.activeUser.avatar);
+    console.log("das bild", this.userService.activeUser.avatar);
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          this.activeUser.avatar = e.target.result as string;
+          this.userService.activeUser.avatar = e.target.result as string;
           this.upload(file);
         }
       };
@@ -56,7 +55,7 @@ export class OpenProfileCardComponent {
   }
 
   updateProfile() {
-    this.userService.updateUser(this.activeUser)
+    this.userService.updateUser(this.userService.activeUser)
   }
 
   closeEdit() {

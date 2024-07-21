@@ -7,12 +7,12 @@
   <section class="message">
     <div class="message-information">
       <div class="sender-and-time">
-        <h5>Michael Ballack</h5>
-        <p>{{ time | date: "HH:mm" }} Uhr</p>
+        <h5>{{sendMessage.sender}}</h5>
+        <p>{{ sendMessage.timestamp | date:'hh.mm'}} Uhr</p>
       </div>
       <div class="actual-message">
         <p>
-          {{ message }}
+          {{ sendMessage.message }}
         </p>
       </div>
     </div>

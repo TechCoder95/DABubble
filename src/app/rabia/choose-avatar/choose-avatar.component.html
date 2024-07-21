@@ -3,10 +3,10 @@
 
         <mat-card-title>Wähle deinen Avatar</mat-card-title>
 
-        @if (activeUser) {
-        <img [src]="activeUser.avatar" class="selected-avatar">
+        @if (this.UserService.activeUser) {
+        <img [src]="this.UserService.activeUser.avatar" class="selected-avatar">
 
-        <mat-card-subtitle>{{activeUser.username}}</mat-card-subtitle>}
+        <mat-card-subtitle>{{this.UserService.activeUser.username}}</mat-card-subtitle>}
         @else() {
         <img [src]="'/img/avatar.svg'" class="selected-avatar">
         

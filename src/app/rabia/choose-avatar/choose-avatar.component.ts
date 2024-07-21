@@ -19,7 +19,6 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
-  activeUser!: DABubbleUser;
   registerUser: boolean = false;
 
   images: string[] = [
@@ -33,11 +32,10 @@ export class ChooseAvatarComponent {
 
 
 
-  constructor(private UserService: UserService, private router: Router, private daStorage: DAStorageService) {
+  constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
     this.UserService.getUsersFromDB().then(() => {
-      this.UserService.activeUser.avatar = './img/avatar.svg';
-      this.activeUser = this.UserService.activeUser;
-    })
+    this.selectAvatar('/img/avatar.svg');
+    });
   }
 
 
@@ -47,8 +45,7 @@ export class ChooseAvatarComponent {
 
 
   selectAvatar(image: string) {
-    this.activeUser.avatar = image;
-    console.log(this.activeUser);
+    this.UserService.activeUser.avatar = image;
   }
 
 
@@ -63,7 +60,7 @@ export class ChooseAvatarComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          this.activeUser.avatar = e.target.result as string;
+          this.UserService.activeUser.avatar = e.target.result as string;
           this.upload(file);
         }
       };
@@ -85,9 +82,10 @@ export class ChooseAvatarComponent {
   }
 
 
-  updateDatabase() {
-    this.UserService.updateUser(this.activeUser)
+  async updateDatabase() {
+    this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
+        this.UserService.checkOnlineStatus();
         this.router.navigateByUrl('/home')
       });
   }
