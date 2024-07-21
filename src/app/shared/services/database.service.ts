@@ -22,7 +22,7 @@ export class DatabaseService {
     return collection(this.firestore, collectionName);
   }
 
-  
+
   /**
    * Sets the reference to the specified database collection.
    * 
@@ -32,7 +32,6 @@ export class DatabaseService {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
-
 
   /**
    * Reads data from the specified database and populates the provided array with the retrieved data.
@@ -59,10 +58,21 @@ export class DatabaseService {
    * @param {any} data - The data to be added to the database.
    * @returns A Promise that resolves when the data is successfully added to the database.
    */
-  async addDataToDB(collectionName: string, data: any) {
-    await addDoc(this.setRef(collectionName), data)
-      .catch((err) => { console.error('Error adding Data', err) })
+  // async addDataToDB(collectionName: string, data: any) {
+  //   await addDoc(this.setRef(collectionName), data)
+  //     .catch((err) => { console.error('Error adding Data', err) })
+  // }
+
+  async addDataToDB(collectionName: string, data: any): Promise<string> {
+    try {
+      const docRef = await addDoc(this.setRef(collectionName), data);
+      return docRef.id;
+    } catch (err) {
+      console.error('Error adding Data', err);
+      throw err;
+    }
   }
+  
 
 
   /**
