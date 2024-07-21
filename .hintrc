@@ -28,6 +28,7 @@
           "zoom"
         ]
       }
-    ]
+    ],
+    "no-inline-styles": "off"
   }
 }

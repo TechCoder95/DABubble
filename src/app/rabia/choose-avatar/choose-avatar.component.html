@@ -1,5 +1,4 @@
-<div class="flex w-full align-items-center justify-content-center">
-    <mat-card appearance="outlined" class="w-full p-6 gap-4 align-items-center">
+<div class="flex w-full flex-column align-items-center justify-content-center">
         <div (click)="goBackToRegister()" class="arrow-back"></div>
 
         <mat-card-title>Wähle deinen Avatar</mat-card-title>
@@ -9,8 +8,9 @@
 
         <mat-card-subtitle>{{activeUser.username}}</mat-card-subtitle>}
         @else() {
-        <mat-card-subtitle>Kokosnuss</mat-card-subtitle>
         <img [src]="'/img/avatar.svg'" class="selected-avatar">
+        
+        <mat-card-subtitle>Kokosnuss</mat-card-subtitle>
         }
 
 
@@ -19,7 +19,7 @@
         </div>
 
         <div class="flex gap-2">
-            <div class="cycle-avatar flex" *ngFor="let image of images">
+            <div class="cycle-avatar flex w-full" *ngFor="let image of images">
                 <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
             </div>
         </div>
@@ -38,5 +38,4 @@
             <mat-card class="alert">Konto erfolgreich erstellt!</mat-card>
         </div>
         }
-    </mat-card>
 </div>
