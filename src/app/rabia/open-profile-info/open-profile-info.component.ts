@@ -21,7 +21,9 @@ export class OpenProfileInfoComponent {
   }
 
   profileCard() {
-   this.dialog.open(OpenProfileCardComponent);
+   this.dialog.open(OpenProfileCardComponent, {
+    panelClass: 'custom-dialog-container'
+  });
    this.dialogRef.close();
   }
 
