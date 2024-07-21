@@ -16,11 +16,21 @@ export class ChannelService {
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   channel!: TextChannel;
 
+  /**
+   * Selects a channel.
+   * 
+   * @param channel - The channel to be selected.
+   */
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
   }
 
+  /**
+   * Updates the name of the selected channel.
+   * 
+   * @param updatedName - The updated name for the channel.
+   */
   async updateChannelName(updatedName: any) {
     debugger;
     const currentChannel = this.selectedChannelSubject.value;
@@ -35,7 +45,12 @@ export class ChannelService {
     }
   }
 
-  getCleanJSON(updatedName: any): {} {
+  /**
+   * Returns a clean JSON object with the provided updated name.
+   * @param updatedName - The updated name to be included in the JSON object.
+   * @returns A clean JSON object with the updated name.
+   */
+  getCleanJSON(updatedName: string): {} {
     return {
       name: updatedName,
     };

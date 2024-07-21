@@ -1,0 +1,102 @@
+@if (!editable) {
+<section>
+    <div class="card flex flex-column justify-content-between align-items-center">
+
+        <div class="flex justify-content-between w-full">
+            <span>Profil</span>
+            <span>X</span>
+        </div>
+
+        <img class="avatar" src="{{activeUser.avatar}}">
+
+        <div class="flex justify-content-around w-full">
+            <span>{{activeUser.username}}</span>
+            <img src="/img/edit.svg" alt="">
+            <span (click)="editProfile()">Bearbeiten</span>
+        </div>
+
+        <div class="flex align-items-center gap-3">
+            <div class="cycle"  [ngClass]="activeUser.isLoggedIn ? 'green' : 'grey'"></div>
+
+            @if(activeUser.isLoggedIn) {
+            <span>Aktiv</span>
+            } @else {
+            <span>Abwesend</span>
+            }
+
+        </div>
+
+        <div class="flex align-items-start mail">
+            <img src="img/mail.svg" alt="">
+
+            <div class="flex flex-column">
+                <span>{{activeUser.mail}}</span>
+                <span>E-Mail-Adresse</span>
+            </div>
+
+        </div>
+
+        <button mat-flat-button> <img src="/img/chat-bubble.svg" alt=""> Nachricht</button>
+
+    </div>
+</section>
+}
+@else {
+
+
+<section>
+    <div class="card flex flex-column justify-content-between align-items-center">
+
+        <div class="flex justify-content-between w-full">
+            <span>Profil</span>
+            <span>X</span>
+        </div>
+
+        <input type="text" name="username"  [(ngModel)]="this.activeUser.username">
+
+
+        <div class="flex align-items-center gap-3">
+            <div class="cycle"  [ngClass]="activeUser.isLoggedIn ? 'green' : 'grey'"></div>
+
+            @if(activeUser.isLoggedIn) {
+            <span>Aktiv</span>
+            } @else {
+            <span>Abwesend</span>
+            }
+
+        </div>
+
+        <div class="flex align-items-start mail">
+            <img src="img/mail.svg" alt="">
+
+            <div class="flex flex-column">
+                <input type="text" name="mail"  [(ngModel)]="this.activeUser.mail">
+            </div>
+
+        </div>
+
+        <button mat-flat-button> <img src="/img/chat-bubble.svg" alt=""> Nachricht</button>
+        <button mat-flat-button (click)="saveProfile()">Save</button>
+
+    </div>
+</section>
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- flex flex-column justify-content-center gap-3 p-5  -->

@@ -20,6 +20,7 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
 })
 export class ChooseAvatarComponent {
   activeUser!: DABubbleUser;
+  registerUser: boolean = false;
 
   images: string[] = [
     '1.svg',
@@ -75,10 +76,21 @@ export class ChooseAvatarComponent {
     this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
   }
 
+  saveUser() {
+    this.registerUser = true;
+    console.log("sollte richtig sein", this.registerUser);
+    setTimeout(() => {
+      this.updateDatabase()
+    }, 2000);
+  }
+
 
   updateDatabase() {
-    this.UserService.updateUser(this.activeUser);
-    this.router.navigateByUrl('/home');
+
+    this.UserService.updateUser(this.activeUser)
+      .then(() => {
+        this.router.navigateByUrl('/home')
+      });
   }
 
 }

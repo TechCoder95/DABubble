@@ -38,6 +38,7 @@ export class AddUserComponent {
   register(mail: string, password: string, username: string) {
     this.AuthService.MailSignUp(mail, password, username);
     this.acceptPolicy = true;
+    this.openAvatar();
   }
 
   onSubmit(ngForm: NgForm) {
@@ -63,8 +64,13 @@ export class AddUserComponent {
     }
   }
 
+  openAvatar() {
+    this.router.navigateByUrl('/avatar')
+  }
+
+
   goToLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/home']);
   }
 
   // checkFields() {
