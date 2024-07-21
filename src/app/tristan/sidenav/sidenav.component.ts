@@ -14,7 +14,7 @@ import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
-import { DABubbleUser } from '../../shared/interfaces/user'; // Import DABubbleUser interface
+import { DABubbleUser } from '../../shared/interfaces/user';
 
 interface Node {
   name: string;
@@ -48,7 +48,7 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
-  activeUser: DABubbleUser | null = null; // Add property for active user
+  isLoggedIn: boolean | null = null; 
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -82,16 +82,29 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     await this.loadChannels();
     this.userService.getUsersFromDB();
-    this.activeUser = this.userService.activeUser;
-    console.log(this.activeUser);
+    this.isLoggedIn = this.userService.isLoggedIn;
+    
+    const savedChannelId = sessionStorage.getItem('selectedChannelId');
+    if (savedChannelId) {
+      const savedChannel = this.channels.find(channel => channel.id === savedChannelId);
+      if (savedChannel) {
+        this.selectedChannel = savedChannel;
+        this.channelService.selectChannel(savedChannel);
+      }
+    }
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async addChannel(data: TextChannel) {
     const newChannel: TextChannel = { ...data };
-    await this.dbService.addDataToDB('channels', newChannel);
-    await this.loadChannels();
+    try {
+      const newChannelId = await this.dbService.addDataToDB('channels', newChannel);
+      newChannel.id = newChannelId;
+      await this.loadChannels();
+    } catch (err) {
+      console.error('Error adding new channel', err);
+    }
   }
 
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
@@ -162,13 +175,14 @@ export class SidenavComponent implements OnInit {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.channelService.selectChannel(selectedChannel);
+        sessionStorage.setItem('selectedChannelId', selectedChannel.id);
       }
     } else if (node.type === 'action') {
       this.openDialog();
     } else if (node.type === 'privateMessage') {
       // öffne chat
     }
-  }
+  }  
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);

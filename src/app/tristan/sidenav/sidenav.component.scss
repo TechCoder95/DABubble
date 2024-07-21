@@ -1,12 +1,12 @@
 .blue-name:hover {
-     color: #535AF1;
-}
-
-.blue-action-name:hover{
     color: #535AF1;
 }
 
-.blue-channel-name:hover{
+.blue-action-name:hover {
+    color: #535AF1;
+}
+
+.blue-channel-name:hover {
     color: #535AF1;
     font-weight: bolder;
 }
@@ -14,9 +14,13 @@
 .selected-channel {
     color: #535AF1;
     font-weight: bolder;
-  }
+}
 
 .teste:hover {
     filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(7479%) hue-rotate(199deg) brightness(94%) contrast(90%);
 
+}
+
+.content {
+    background-color: #ECEEFE;
 }

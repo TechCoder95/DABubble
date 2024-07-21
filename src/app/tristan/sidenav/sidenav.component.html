@@ -1,3 +1,4 @@
+@if (isLoggedIn) {
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
@@ -22,13 +23,13 @@
             <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo">
           </ng-container>
           <span (click)="handleNodeClick(node)" [ngClass]="{
-                  'cursor-pointer': true,
-                  'blue-channel-name': isNewChannel(node),
-                  'blue-name': isCategoryNode(node),
-                  'font-bold': isCategoryNode(node),
-                  'blue-action-name': isActionNode(node),
-                  'selected-channel': isSelectedChannel(node)
-                }">{{node.name}}</span>
+                    'cursor-pointer': true,
+                    'blue-channel-name': isNewChannel(node),
+                    'blue-name': isCategoryNode(node),
+                    'font-bold': isCategoryNode(node),
+                    'blue-action-name': isActionNode(node),
+                    'selected-channel': isSelectedChannel(node)
+                  }">{{node.name}}</span>
         </div>
       </mat-tree-node>
 
@@ -50,13 +51,13 @@
                 src="img/private-messages.png" alt="direct-messages">
             </ng-container>
             <span matTreeNodeToggle [ngClass]="{
-                    'cursor-pointer': true,
-                    'blue-channel-name': isNewChannel(node),
-                    'blue-name': isCategoryNode(node),
-                    'font-bold': isCategoryNode(node),
-                    'blue-action-name': isActionNode(node),
-                    'selected-channel': isSelectedChannel(node)
-                  }">{{node.name}}</span>
+                      'cursor-pointer': true,
+                      'blue-channel-name': isNewChannel(node),
+                      'blue-name': isCategoryNode(node),
+                      'font-bold': isCategoryNode(node),
+                      'blue-action-name': isActionNode(node),
+                      'selected-channel': isSelectedChannel(node)
+                    }">{{node.name}}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
             <img class="ml-auto" src="img/add-channel.png" alt="add" (click)="openDialog()">
@@ -66,8 +67,10 @@
     </mat-tree>
   </mat-drawer>
 
-  <div class="px-5 pt-2">
+  <div class="px-5 pt-2 content">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
+
 <button class="absolute top-50 left-0 z-5 -rotate-90" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
+}
