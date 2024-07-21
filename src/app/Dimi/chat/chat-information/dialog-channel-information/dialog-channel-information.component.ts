@@ -40,6 +40,8 @@ export class DialogChannelInformationComponent {
   @ViewChild('title2') title2!: ElementRef;
   @ViewChild('channelDescription') channelDescriptionDiv!: ElementRef;
   @ViewChild('channelCreator') channelCreator!: ElementRef;
+  @ViewChild('updatedChannelDescription')
+  updatedChannelDescription!: ElementRef;
 
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
@@ -102,34 +104,50 @@ export class DialogChannelInformationComponent {
   inEditModeDescription: boolean = false;
   editChannelDescription() {
     if (!this.inEditModeDescription) {
-      this.inEditModeDescription = true;
-      this.editChannelDescriptionSection.nativeElement.classList.add(
-        'edit-mode-channel-description-section'
-      );
-      this.editDescriptionButton.nativeElement.textContent = 'Speichern';
-      this.editDescriptionButton.nativeElement.classList.add('edit-mode');
-      this.title2.nativeElement.classList.add('edit-mode-title');
-      this.channelDescriptionDiv.nativeElement.style.marginTop = '20px';
-      this.channelDescriptionDiv.nativeElement.style.width = '465px';
-      this.channelDescriptionDiv.nativeElement.classList.add(
-        'edit-mode-channel-name'
-      );
-      this.channelCreator.nativeElement.style.paddingBottom = '20px';
+      this.editChannelDescriptionTrue();
     } else {
-      this.inEditModeDescription = false;
-      this.editChannelDescriptionSection.nativeElement.classList.remove(
-        'edit-mode-channel-description-section'
-      );
-      this.editDescriptionButton.nativeElement.textContent = 'Bearbeiten';
-      this.editDescriptionButton.nativeElement.classList.remove('edit-mode');
-      this.title2.nativeElement.classList.remove('edit-mode-title');
-      this.channelDescriptionDiv.nativeElement.style.marginTop = '0';
-      this.channelDescriptionDiv.nativeElement.style.width = 'unset';
-      this.channelDescriptionDiv.nativeElement.classList.remove(
-        'edit-mode-channel-name'
-      );
-      this.channelCreator.nativeElement.style.paddingBottom = '0';
+      this.editChannelDescriptionFalse();
     }
+  }
+
+  editChannelDescriptionTrue() {
+    this.inEditModeDescription = true;
+    this.editChannelDescriptionSection.nativeElement.classList.add(
+      'edit-mode-channel-description-section'
+    );
+    this.editDescriptionButton.nativeElement.textContent = 'Speichern';
+    this.editDescriptionButton.nativeElement.classList.add('edit-mode');
+    this.title2.nativeElement.classList.add('edit-mode-title');
+    this.channelDescriptionDiv.nativeElement.style.marginTop = '20px';
+    /* this.channelDescriptionDiv.nativeElement.style.width = '465px'; */
+    this.channelDescriptionDiv.nativeElement.classList.add(
+      'edit-mode-channel-name'
+    );
+    this.channelCreator.nativeElement.style.paddingBottom = '20px';
+  }
+
+  editChannelDescriptionFalse() {
+    let updatedDescription = this.updatedChannelDescription.nativeElement.value;
+    if (updatedDescription !== '') {
+      this.saveNewChannelDescription(updatedDescription);
+    }
+    this.inEditModeDescription = false;
+    this.editChannelDescriptionSection.nativeElement.classList.remove(
+      'edit-mode-channel-description-section'
+    );
+    this.editDescriptionButton.nativeElement.textContent = 'Bearbeiten';
+    this.editDescriptionButton.nativeElement.classList.remove('edit-mode');
+    this.title2.nativeElement.classList.remove('edit-mode-title');
+    this.channelDescriptionDiv.nativeElement.style.marginTop = '0';
+   /*  this.channelDescriptionDiv.nativeElement.style.width = 'unset'; */
+    this.channelDescriptionDiv.nativeElement.classList.remove(
+      'edit-mode-channel-name'
+    );
+    this.channelCreator.nativeElement.style.paddingBottom = '0';
+  }
+
+  saveNewChannelDescription(updatedDescription: string) {
+    this.channelService.updateChannelDescription(updatedDescription);
   }
 
   get placeholderText(): Observable<string> {

@@ -85,8 +85,8 @@ export class SidenavComponent implements OnInit {
     return !node.expandable && node.name !== 'Channel hinzufügen' && node.name !== 'Felix Müller' && node.name !== 'Noah Ewen';
   }
 
-  async addChannel(channelName: string) {
-    const newChannel: TextChannel = { name: channelName };
+  async addChannel(data: TextChannel) {
+    const newChannel: TextChannel = { ...data };
     await this.dbService.addDataToDB('channels', newChannel);
     await this.loadChannels();
   }
@@ -142,12 +142,12 @@ export class SidenavComponent implements OnInit {
     } else if (node.name === 'Channel hinzufügen') {
       this.openDialog();
     }
-    /* console.log(this.selectedChannel); */
   }
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe((result: any) => {
+      console.log(result);
       if (result) {
         this.addChannel(result);
       }

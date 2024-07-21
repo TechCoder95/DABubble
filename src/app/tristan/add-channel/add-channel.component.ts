@@ -1,9 +1,10 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TextChannel } from '../../shared/interfaces/textchannel';
 
 
 @Component({
@@ -15,17 +16,20 @@ import { MatInputModule } from '@angular/material/input';
 })
 
 export class AddChannelComponent {
+  
+  data: TextChannel = {
+    name: "",
+    description: ""
+  };
 
-  constructor(private dialogRef: MatDialogRef<AddChannelComponent>){
+  constructor(private dialogRef: MatDialogRef<AddChannelComponent>) {
   }
-
-  name: string = "";
 
   onNoClick(): void {
     this.dialogRef.close();
   }
 
-  onOkClick(){
-     return this.name;
+  onOkClick() {
+    return this.data;
   }
 }

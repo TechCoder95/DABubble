@@ -76,6 +76,10 @@ h2 {
   }
 }
 
+.custom-dialog-container {
+  border-radius: 0 !important;
+}
+
 .dialog-is-open {
   background: rgba(236, 238, 254, 1);
   > h2,

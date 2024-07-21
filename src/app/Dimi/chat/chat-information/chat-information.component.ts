@@ -51,7 +51,7 @@ export class ChatInformationComponent {
       document.body.style.overflow = 'hidden';
     }
     this.changeTagImg(this.dialogChannelInfoIsOpen);
-    const dialogConfig = this.handleDialogConfig(event, 'fromLeft');
+    const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
     const dialogRef = this.dialog.open(
       DialogChannelInformationComponent,
       dialogConfig
@@ -62,10 +62,7 @@ export class ChatInformationComponent {
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
-    if (this.dialogChannelMembersIsOpen) {
-      document.body.style.overflow = 'hidden';
-    }
-    const dialogConfig = this.handleDialogConfig(event, 'fromRight');
+    const dialogConfig = this.handleDialogConfig(event, 'channelMembers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
       dialogConfig
@@ -75,37 +72,47 @@ export class ChatInformationComponent {
 
   dialogAddChannelMembersIsOpen: boolean = false;
   openDialogAddChannelMembers(event: MouseEvent) {
-    /*  this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
-    if (this.dialogAddChannelMembersIsOpen) {
-      document.body.style.overflow = 'hidden';
-    } */
-
-    this.dialog.open(DialogAddChannelMembersComponent);
+    this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
+    const dialogConfig = this.handleDialogConfig(event, 'addChannelMembers');
+    const dialogRef = this.dialog.open(
+      DialogAddChannelMembersComponent,
+      dialogConfig
+    );
+    this.handleDialogClose(dialogRef);
   }
 
-  handleDialogConfig(event: MouseEvent, position: string) {
+  handleDialogConfig(event: MouseEvent, dialog: string) {
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
-    let dialogConfig = this.returnDialogConfig(rect, position);
+    let dialogConfig = this.returnDialogConfig(rect, dialog);
     return dialogConfig;
   }
 
   returnDialogConfig(rect: any, position: string) {
-    if (position === 'fromLeft') {
+    if (position === 'channelInfo') {
       return {
         position: {
           top: `${rect.bottom}px`,
           left: `${rect.left}px`,
         },
         panelClass: 'custom-dialog-container',
-        /*   data: { dialogIsOpen: this.dialogChannelInfoIsOpen }, */
       };
-    } else {
-      const dialogWidth = 380;
+    } else if (position === 'channelMembers') {
+      const dialogWidth = 372;
       return {
         position: {
           top: `${rect.bottom}px`,
-          left: `${rect.right - dialogWidth}px`, // Berechnet die linke Position, sodass die rechten Ränder übereinstimmen
+          left: `${rect.right - dialogWidth}px`,
+        },
+        panelClass: 'custom-dialog-container',
+        data: { channelMembers: this.channelMembers },
+      };
+    } else {
+      const dialogWidth = 542;
+      return {
+        position: {
+          top: `${rect.bottom}px`,
+          left: `${rect.right - dialogWidth}px`,
         },
         panelClass: 'custom-dialog-container',
         data: { channelMembers: this.channelMembers },
