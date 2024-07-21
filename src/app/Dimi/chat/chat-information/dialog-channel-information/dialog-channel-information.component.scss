@@ -167,3 +167,7 @@ WHEN CLICKING ON EDIT TITLE
   flex-direction: column;
   gap: 20px;
 }
+
+::ng-deep .mat-mdc-dialog-surface {
+  border-radius: 0px 30px 30px 30px !important;
+}
