@@ -86,9 +86,11 @@ export class ChooseAvatarComponent {
 
 
   updateDatabase() {
-   
-    this.UserService.updateUser(this.activeUser);
-    this.router.navigateByUrl('/home');
+
+    this.UserService.updateUser(this.activeUser)
+      .then(() => {
+        this.router.navigateByUrl('/home')
+      });
   }
 
 }
