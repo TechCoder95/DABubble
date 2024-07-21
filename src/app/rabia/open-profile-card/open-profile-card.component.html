@@ -2,41 +2,42 @@
 <section>
     <div class="card flex flex-column justify-content-between align-items-center">
 
-        <div class="flex justify-content-between w-full">
-            <span>Profil</span>
-            <span>X</span>
+        <div class="flex justify-content-between align-items-center w-full">
+            <span class="text-2xl font-bold">Profil</span>
+            <div class="close" (click)="close()"></div>
         </div>
 
         <img class="avatar" src="{{activeUser.avatar}}">
 
-        <div class="flex justify-content-around w-full">
-            <span>{{activeUser.username}}</span>
-            <img src="/img/edit.svg" alt="">
-            <span (click)="editProfile()">Bearbeiten</span>
-        </div>
-
-        <div class="flex align-items-center gap-3">
-            <div class="cycle"  [ngClass]="activeUser.isLoggedIn ? 'green' : 'grey'"></div>
-
-            @if(activeUser.isLoggedIn) {
-            <span>Aktiv</span>
-            } @else {
-            <span>Abwesend</span>
-            }
-
-        </div>
-
-        <div class="flex align-items-start mail">
-            <img src="img/mail.svg" alt="">
-
-            <div class="flex flex-column">
-                <span>{{activeUser.mail}}</span>
-                <span>E-Mail-Adresse</span>
+        <div class="flex flex-column w-full" style="gap: 15px;">
+            <div class="flex justify-content-between align-items-center w-full">
+                <span class="font-bold text-4xl">{{activeUser.username}}</span>
+                <span class="font-semibold text-lg purple" (click)="editProfile()">Bearbeiten</span>
             </div>
 
+            <div class="flex align-items-center gap-3">
+                <div class="cycle" [ngClass]="activeUser.isLoggedIn ? 'green' : 'grey'"></div>
+
+                @if(activeUser.isLoggedIn) {
+                <span style="color: #92C83E;">Aktiv</span>
+                } @else {
+                <span style="color: #686868;">Abwesend</span>
+                }
+
+            </div>
         </div>
 
-        <button mat-flat-button> <img src="/img/chat-bubble.svg" alt=""> Nachricht</button>
+        <div class="flex align-items-center justify-content-start w-full">
+            <div class="flex flex-column mail">
+
+                <div class="flex" style="gap: 20px;">
+                    <img src="img/mail-focus.svg" alt="">
+                    <span class="font-bold text-xl">E-Mail-Adresse</span>
+                </div>
+
+                <span class="own-mail">{{activeUser.mail}}</span>
+            </div>
+        </div>
 
     </div>
 </section>
@@ -45,58 +46,42 @@
 
 
 <section>
-    <div class="card flex flex-column justify-content-between align-items-center">
+    <div class="card editable flex flex-column justify-content-between align-items-center">
 
-        <div class="flex justify-content-between w-full">
-            <span>Profil</span>
-            <span>X</span>
+        <div class="flex justify-content-between align-items-center w-full">
+            <span class="text-2xl font-bold">Dein Profil Bearbeiten</span>
+            <div class="close" (click)="close()"></div>
         </div>
 
-        <input type="text" name="username"  [(ngModel)]="this.activeUser.username">
-
-
-        <div class="flex align-items-center gap-3">
-            <div class="cycle"  [ngClass]="activeUser.isLoggedIn ? 'green' : 'grey'"></div>
-
-            @if(activeUser.isLoggedIn) {
-            <span>Aktiv</span>
-            } @else {
-            <span>Abwesend</span>
-            }
-
+        <div>
+            <img class="avatar cursor-pointer" src="{{activeUser.avatar}}" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="changeAvatar($event)" style="display: none;">
         </div>
 
-        <div class="flex align-items-start mail">
-            <img src="img/mail.svg" alt="">
 
-            <div class="flex flex-column">
-                <input type="text" name="mail"  [(ngModel)]="this.activeUser.mail">
+        <div class="flex flex-column w-full" style="gap: 10px;">
+            <div class="flex" style="gap: 20px;">
+                <img src="img/account_circle.svg" alt="">
+                <span class="font-bold text-xl">Vollständiger Name</span>
             </div>
-
+            <input type="text" name="username" [(ngModel)]="this.activeUser.username">
         </div>
 
-        <button mat-flat-button> <img src="/img/chat-bubble.svg" alt=""> Nachricht</button>
-        <button mat-flat-button (click)="saveProfile()">Save</button>
+        <div class="flex flex-column w-full" style="gap: 10px;">
+            <div class="flex" style="gap: 20px;">
+                <img src="img/mail-focus.svg" alt="">
+                <span class="font-bold text-xl">E-Mail-Adresse</span>
+            </div>
+            <input type="text" name="mail" [(ngModel)]="this.activeUser.mail">
+        </div>
+
+
+        <div class="flex gap-5">
+            <button class="break-btn" mat-stroked-button (click)="closeEdit()">Abbrechen</button>
+            <button mat-flat-button (click)="saveProfile()">Speichern</button>
+        </div>
 
     </div>
 </section>
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- flex flex-column justify-content-center gap-3 p-5  -->
