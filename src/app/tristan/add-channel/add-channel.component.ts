@@ -18,6 +18,7 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
 export class AddChannelComponent {
   
   data: TextChannel = {
+    id: "",
     name: "",
     description: ""
   };
