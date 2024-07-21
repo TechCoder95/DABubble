@@ -1,0 +1,98 @@
+div{
+    background-color: royalblue;
+
+}
+section{
+    background-image: url('/img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+
+}
+
+.logo{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.schrift{
+    position: absolute;
+    top: 50%;
+    left: 60%;
+    transform: translate(-50%, -50%);
+    zoom: 150%;
+    opacity: 0;
+}
+
+@keyframes moveLeft {
+    from {
+        left: 50%;
+    }
+    to {
+        left: 38%;
+    }
+}
+
+@keyframes moveRight {
+    from {
+        left: 50%;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes visibility {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+    
+}
+
+.logo {
+    animation: moveLeft 2s forwards 1s, moveToTopLogo 1s forwards 3s;
+    
+
+}
+
+.schrift {
+    animation: moveRight 3s forwards;
+    animation: visibility 1s forwards 2s, moveToTopSchrift 1s forwards 3s;
+}
+
+
+@keyframes moveToTopLogo {
+    from {
+        top: 50%;
+        height: 35%;
+        width: 35%;
+    }
+    to {
+        height: 13%;
+        width: 13%;
+        top: 6%;
+        left: 4%;
+    }
+}
+
+@keyframes moveToTopSchrift {
+    from {height: 35%;
+        width: 35%;
+        top: 50%;
+    }
+    to {
+        height: 8%;
+        width: 8%;
+        top: 6%;
+        left: 9.5%;
+    }
+}
+
+div{
+    animation: visibility 2.5s reverse 2s;
+}
+

@@ -86,7 +86,6 @@ export class ChooseAvatarComponent {
 
 
   updateDatabase() {
-
     this.UserService.updateUser(this.activeUser)
       .then(() => {
         this.router.navigateByUrl('/home')
