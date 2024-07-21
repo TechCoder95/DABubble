@@ -20,7 +20,7 @@ export class SendChatMessageComponent {
   }
 
   subscribeToMessages() {
-    this.chatService.currentMessage.subscribe((msg) => {
+    this.chatService.currentMessage$.subscribe((msg) => {
       this.message = msg;
     });
   }
