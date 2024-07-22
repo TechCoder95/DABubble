@@ -12,12 +12,17 @@ import { Router } from '@angular/router';
 export class StartscreenComponent {
 
 
-  constructor(private router:Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit(): void {
-    setTimeout(() => {
+    if (localStorage.getItem('userLogin')) {
       this.router.navigateByUrl('/home');
-    }, 4500);
+    }
+    else {
+      setTimeout(() => {
+        this.router.navigateByUrl('/login');
+      }, 4500);
+    }
   }
 
 

@@ -70,7 +70,7 @@ export class AddUserComponent {
 
 
   goToLogin() {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
   }
 
   // checkFields() {
