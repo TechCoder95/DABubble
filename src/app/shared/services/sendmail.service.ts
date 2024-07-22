@@ -17,7 +17,7 @@ export class EmailService {
       const actionCodeSettings = {
         url: 'http://localhost:4200/?email=' + user.email,
         handleCodeInApp: true,
-        dynamicLinkDomain: "http://localhost:4200",
+        dynamicLinkDomain: "http://localhost/__/auth/action",
       };
       sendEmailVerification(user, actionCodeSettings)
         .then(() => {

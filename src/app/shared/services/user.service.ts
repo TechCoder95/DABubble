@@ -350,7 +350,8 @@ export class UserService {
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' || (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar') {
+    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
+    (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
       return true;
     }
     else
