@@ -41,6 +41,9 @@ export class UserService {
       object.then((user) => {
         if (user) {
           this.activeUserSubject.next(user as DABubbleUser);
+          if (this.activeUser.avatar !== '') {
+            this.avatarSelected = true;
+          }
         }
         else {
           this.activeUserSubject.next(null!);
@@ -90,7 +93,9 @@ export class UserService {
         i++;
       }
       this.guestName = name;
-      this.writeGuestToDB();
+      this.writeGuestToDB().then(() => {
+        this.router.navigate(['/home'])
+      });
     });
   }
 
@@ -116,6 +121,7 @@ export class UserService {
               sessionStorage.setItem('userLogin', user.id!);
               this.updateLoggedInUser(this.activeUser);
               console.log('Guest User Logged In');
+              this.checkOnlineStatus();
               this.router.navigate(['/home']);
             }
           });
@@ -158,7 +164,7 @@ export class UserService {
                 localStorage.setItem('userLogin', user.id);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
-                console.log('User Logged In');
+                console.log('User Logged In but needs Avatar');
                 this.router.navigate(['/avatar']);
               }
             });
@@ -171,7 +177,8 @@ export class UserService {
           localStorage.setItem('userLogin', loginUser.id);
           this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
-          console.log('User Logged In');
+          this.checkOnlineStatus();
+          console.log('User full Logged In');
         }
         else {
           console.log('User not logged in!');
@@ -254,8 +261,10 @@ export class UserService {
           this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
             .then(() => {
               localStorage.removeItem('userLogin'),
-                this.activeUser = null!;
-              this.getUsersFromDB();
+                this.activeUserSubject.next(null!);
+              this.getUsersFromDB().then(() => {
+                window.location.reload()
+              });
             });
         }
       });

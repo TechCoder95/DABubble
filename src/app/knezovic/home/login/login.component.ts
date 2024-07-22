@@ -15,7 +15,13 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) { }
+  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) { 
+    this.UserService.activeUserObserver$.subscribe((user) => {
+      if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
 
   email: string = '';
   epassword: string = '';
