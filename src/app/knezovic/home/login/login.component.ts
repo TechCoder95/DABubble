@@ -15,7 +15,7 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) {}
+  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) { }
 
   email: string = '';
   epassword: string = '';
@@ -53,7 +53,9 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword);
+    this.AuthService.mailSignIn(this.email, this.epassword).then(() => {
+      this.UserService.checkOnlineStatus();
+    });
   }
 
 

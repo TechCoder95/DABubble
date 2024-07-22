@@ -47,7 +47,7 @@ export class AuthenticationService {
    * @param email - The user's email address.
    * @param password - The user's password.
    */
-  mailSignIn(email: string, password: string) {
+  async mailSignIn(email: string, password: string) {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         // Signed in 
@@ -58,8 +58,18 @@ export class AuthenticationService {
         // ...
       })
       .catch((error) => {
-        const errorCode = error.code;
-        const errorMessage = error.message;
+        if (error.code === "auth/too-many-requests") {
+          alert("User wurde gesperrt, bitte versuchen Sie es später erneut");
+        }
+        else if (error.code === "auth/invalid-credential") {
+          alert("Falsches Passwort");
+        }
+        else if (error.code === "auth/invalid-email") {
+          alert("E-Mail-Adresse existiert nicht");
+        }
+        else {
+          alert("Falsche Eingabe" + error.message);
+        }
       });
   }
 

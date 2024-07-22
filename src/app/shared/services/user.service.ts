@@ -23,6 +23,7 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
+   
     this.checkOnlineStatus();
     this.activeUserObserver$.subscribe((user: DABubbleUser) => {
       this.activeUser = user;
@@ -51,6 +52,7 @@ export class UserService {
       object.then((user) => {
         if (user) {
           this.activeUserSubject.next(user as DABubbleUser);
+          console.log(this);
           if (this.activeUser.avatar !== '') {
             this.avatarSelected = true;
           }

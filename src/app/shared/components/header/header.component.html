@@ -18,4 +18,9 @@
         <img class="ml-2" src="/img/arrow-down.svg" alt="" (click)="openMenu()">
     </div>
 </div>
+@if (!activeUser.activated) {
+    <div class="alert alert-danger" role="alert">
+        <p>Bitte bestätigen Sie Ihre E-Mail-Adresse</p>
+    </div>
+}
 }
