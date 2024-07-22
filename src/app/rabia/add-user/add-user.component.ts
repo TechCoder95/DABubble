@@ -37,6 +37,8 @@ export class AddUserComponent {
 
   register(mail: string, password: string, username: string) {
     this.AuthService.MailSignUp(mail, password, username);
+    
+    this.AuthService.getGoogleToken();
     this.acceptPolicy = true;
     this.openAvatar();
   }

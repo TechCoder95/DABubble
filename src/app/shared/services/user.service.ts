@@ -7,6 +7,9 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { JsonPipe } from '@angular/common';
 import { EmailService } from './sendmail.service';
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import { Auth, sendEmailVerification  } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -284,7 +287,7 @@ export class UserService {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
-          this.getUsersFromDB();
+        this.getUsersFromDB();
       }
       );
   }
@@ -333,7 +336,7 @@ export class UserService {
    */
   get isLoggedIn() {
     if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
-    (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
+      (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
       return true;
     }
     else
