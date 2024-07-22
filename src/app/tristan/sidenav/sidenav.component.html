@@ -16,11 +16,11 @@
           <button mat-icon-button></button>
           <ng-container *ngIf="node">
             <!-- Kanal -->
-            <img *ngIf="isChannelNode(node)" class="mr-3" src="img/channel.png" alt="channel">
+            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="channel">
             <!-- Kanal hinzufügen -->
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.png" alt="add-channel">
             <!-- Private Message -->
-            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="avatar-logo">
+            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/private-messages.png" alt="private-message">
           </ng-container>
           <span (click)="handleNodeClick(node)" [ngClass]="{
                     'cursor-pointer': true,
@@ -32,7 +32,7 @@
                   }">{{node.name}}</span>
         </div>
       </mat-tree-node>
-
+    
       <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="flex align-items-center justify-content-between cursor-pointer w-full" matTreeNodeToggle>
@@ -65,6 +65,8 @@
         </div>
       </mat-tree-node>
     </mat-tree>
+    
+    
   </mat-drawer>
 
   <div class="px-5 pt-2 content">
