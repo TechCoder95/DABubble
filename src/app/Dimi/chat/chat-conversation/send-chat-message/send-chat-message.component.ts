@@ -10,18 +10,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './send-chat-message.component.scss',
 })
 export class SendChatMessageComponent {
-  message: string = '';
-  time = new Date();
 
-  constructor(private chatService: ChatService) {
-    setInterval(() => {
-      this.time = new Date();
-    }, 60000);
-  }
+  constructor(public chatService: ChatService) {}
 
-  subscribeToMessages() {
-    this.chatService.currentMessage.subscribe((msg) => {
-      this.message = msg;
-    });
-  }
 }

@@ -66,7 +66,16 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
-    this.chatService.changeMessage(this.textareaValue);
+    this.chatService.changeMessage(this.getMessageInfo());
     this.textareaValue = '';
+  }
+
+  getMessageInfo() {
+    return {
+      channelId: this.channelService.channel.id || 'defaultChannelId',
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      sender: 'Michael Ballack',
+    };
   }
 }
