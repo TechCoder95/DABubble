@@ -1,0 +1,89 @@
+.card {
+    position: fixed;
+    top: 110px;
+    right: 40px;
+    width: 500px;
+    background-color: white;
+    border-radius: 30px 0 30px 30px;
+    box-shadow: 0px 6px 10px 0px #00000033;
+    height: 600px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.editable {
+    height: 700px !important;
+}
+
+.close {
+
+    border-radius: 100%;
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/img/close.svg);
+
+    &:hover {
+        cursor: pointer;
+        background-image: url(/img/close-hover.svg);
+        background-color: #ECEEFE;
+    }
+}
+
+.avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 100%;
+    object-fit: cover;
+}
+
+.mail {
+    gap: 20px;
+}
+
+.own-mail {
+    padding-left: 40px;
+    font-weight: 500;
+    font-size: 18px;
+    color: #1381FF;
+}
+
+.cycle {
+    width: 16px;
+    height: 16px;
+    border-radius: 100%;
+}
+
+.green {
+    background-color: #92C83E;
+}
+
+.grey {
+    background-color: #686868;
+}
+
+.purple {
+    color: #535AF1;
+    cursor: pointer;
+}
+
+input {
+    border-radius: 30px;
+    border: 1px solid #ADB0D9;
+    padding: 15px 20px 15px 20px;
+    font-weight: 500;
+    font-size: 18px;
+    color: #686868;
+
+    &:focus {
+        outline: none;
+        border: 1px solid #9747FF !important;
+        color: black;
+    }
+}
+
+
+.break-btn {
+    border: 1px solid #797EF3 !important;
+}

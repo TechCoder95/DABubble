@@ -1,18 +1,18 @@
 <main>
     <section class="message-day">
       <p></p>
-      <h4>Samstag, 20.07.2024</h4>
+      <h4>{{receiveMessage.timestamp | date: 'dd.MM.yyyy'}}</h4>
     </section>
   
     <section class="message">
       <img src="/img/3.svg" />
       <div class="message-information">
         <div class="sender-and-time">
-          <h5>Dimitrios Kapetanis</h5>
-          <p>14:25 Uhr</p>
+          <h5>{{receiveMessage.sender}}</h5>
+          <p>{{receiveMessage.timestamp | date: 'hh:mm'}} Uhr</p>
         </div>
         <div class="actual-message">
-          <p>Hello world</p>
+          <p>{{receiveMessage.message}}</p>
         </div>
       </div>
     </section>

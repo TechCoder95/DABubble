@@ -1,38 +1,41 @@
-<div class="flex w-full align-items-center justify-content-center">
-    <mat-card appearance="outlined" class="w-full p-6 gap-4 align-items-center">
+<div class="flex w-full flex-column align-items-center justify-content-center relative container">
         <div (click)="goBackToRegister()" class="arrow-back"></div>
-    
+
         <mat-card-title>Wähle deinen Avatar</mat-card-title>
-    
-        @if (activeUser) {
-            <img [src]="activeUser.avatar" class="selected-avatar">
-    
-        <mat-card-subtitle>{{activeUser.username}}</mat-card-subtitle>}
+
+        @if (this.UserService.activeUser) {
+        <img [src]="this.UserService.activeUser.avatar" class="selected-avatar">
+
+        <mat-card-subtitle>{{this.UserService.activeUser.username}}</mat-card-subtitle>}
         @else() {
-            <mat-card-subtitle>Kokosnuss</mat-card-subtitle>
-            <img [src]="'/img/avatar.svg'" class="selected-avatar">
-        }
+        <img [src]="'/img/avatar.svg'" class="selected-avatar">
         
-    
+        <mat-card-subtitle><mat-spinner></mat-spinner></mat-card-subtitle>
+        }
+
+
         <div>
             <p>Aus der Liste wählen</p>
         </div>
-    
+
         <div class="flex gap-2">
-            <div class="cycle-avatar flex" *ngFor="let image of images">
+            <div class="cycle-avatar flex w-full" *ngFor="let image of images">
                 <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
             </div>
         </div>
-    
+
         <div class="own-img flex gap-4 align-items-center">
             <p>Eigenes Bild verwenden</p>
-    
+
             <!-- <button mat-stroked-button>Datei hochladen</button> -->
             <button mat-stroked-button (click)="fileInput.click()">Datei hochladen</button>
             <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
         </div>
-    
-        <button mat-flat-button (click)="updateDatabase()">Weiter</button>
-    
-    </mat-card>
+
+        <button mat-flat-button (click)="saveUser()">Weiter</button>
+        @if (registerUser) {
+        <div class="bg-alert">
+            <mat-card class="alert">Konto erfolgreich erstellt!</mat-card>
+        </div>
+        }
 </div>

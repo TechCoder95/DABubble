@@ -2,24 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DatabaseService } from '../../shared/services/database.service';
+import { Router } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
-import { DABubbleUser } from '../../shared/interfaces/user';
-import { addDoc } from 'firebase/firestore';
 import { DAStorageService } from '../../shared/services/dastorage.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [MatCardModule, CommonModule, MatButtonModule],
+  imports: [MatCardModule, CommonModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.scss'
 })
 export class ChooseAvatarComponent {
-  activeUser!: DABubbleUser;
+  registerUser: boolean = false;
 
   images: string[] = [
     '1.svg',
@@ -32,11 +30,10 @@ export class ChooseAvatarComponent {
 
 
 
-  constructor(private UserService: UserService, private router: Router, private daStorage: DAStorageService) {
+  constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
     this.UserService.getUsersFromDB().then(() => {
-      this.UserService.activeUser.avatar = './img/avatar.svg';
-      this.activeUser = this.UserService.activeUser;
-    })
+      this.selectAvatar('/img/avatar.svg');
+    });
   }
 
 
@@ -46,8 +43,7 @@ export class ChooseAvatarComponent {
 
 
   selectAvatar(image: string) {
-    this.activeUser.avatar = image;
-    console.log(this.activeUser);
+    this.UserService.activeUser.avatar = image;
   }
 
 
@@ -62,7 +58,7 @@ export class ChooseAvatarComponent {
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          this.activeUser.avatar = e.target.result as string;
+          this.UserService.activeUser.avatar = e.target.result as string;
           this.upload(file);
         }
       };
@@ -75,10 +71,21 @@ export class ChooseAvatarComponent {
     this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
   }
 
+  saveUser() {
+    this.registerUser = true;
+    console.log("sollte richtig sein", this.registerUser);
+    setTimeout(() => {
+      this.updateDatabase()
+    }, 2000);
+  }
 
-  updateDatabase() {
-    this.UserService.updateUser(this.activeUser);
-    this.router.navigateByUrl('/home');
+
+  async updateDatabase() {
+    this.UserService.updateUser(this.UserService.activeUser)
+      .then(() => {
+        this.UserService.checkOnlineStatus();
+        this.router.navigateByUrl('/home')
+      });
   }
 
 }

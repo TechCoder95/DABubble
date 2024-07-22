@@ -1,7 +1,7 @@
 main {
   display: flex;
   flex-direction: column;
-  height: 85vh;
+  height: 100%;
 }
 
 section {
@@ -9,4 +9,5 @@ section {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  margin: 10px;
 }

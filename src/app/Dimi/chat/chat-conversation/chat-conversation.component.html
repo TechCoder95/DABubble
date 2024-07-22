@@ -1,7 +1,11 @@
 <main>
-  <section>
-    <app-receive-chat-message></app-receive-chat-message>
-    <!-- <app-send-chat-message></app-send-chat-message> -->
+  <section >
+    @for (receiveChatMessage of receiveChatMessages; track $index) {
+    <app-receive-chat-message [receiveMessage]="receiveChatMessage"></app-receive-chat-message>
+     }
+     @for (sendChatMessage of sendChatMessages; track $index) {
+      <app-send-chat-message [sendMessage]="sendChatMessage"></app-send-chat-message>
+       }
   </section>
 
   <app-chat-inputfield></app-chat-inputfield>

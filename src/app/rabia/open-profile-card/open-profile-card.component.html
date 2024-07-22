@@ -1,0 +1,87 @@
+@if (!editable) {
+<section>
+    <div class="card flex flex-column justify-content-between align-items-center">
+
+        <div class="flex justify-content-between align-items-center w-full">
+            <span class="text-2xl font-bold">Profil</span>
+            <div class="close" (click)="close()"></div>
+        </div>
+
+        <img class="avatar" src="{{this.userService.activeUser.avatar}}">
+
+        <div class="flex flex-column w-full" style="gap: 15px;">
+            <div class="flex justify-content-between align-items-center w-full">
+                <span class="font-bold text-4xl">{{this.userService.activeUser.username}}</span>
+                <span class="font-semibold text-lg purple" (click)="editProfile()">Bearbeiten</span>
+            </div>
+
+            <div class="flex align-items-center gap-3">
+                <div class="cycle" [ngClass]="this.userService.activeUser.isLoggedIn ? 'green' : 'grey'"></div>
+
+                @if(this.userService.activeUser.isLoggedIn) {
+                <span style="color: #92C83E;">Aktiv</span>
+                } @else {
+                <span style="color: #686868;">Abwesend</span>
+                }
+
+            </div>
+        </div>
+
+        <div class="flex align-items-center justify-content-start w-full">
+            <div class="flex flex-column mail">
+
+                <div class="flex" style="gap: 20px;">
+                    <img src="img/mail-focus.svg" alt="">
+                    <span class="font-bold text-xl">E-Mail-Adresse</span>
+                </div>
+
+                <span class="own-mail">{{this.userService.activeUser.mail}}</span>
+            </div>
+        </div>
+
+    </div>
+</section>
+}
+@else {
+
+
+<section>
+    <div class="card editable flex flex-column justify-content-between align-items-center">
+
+        <div class="flex justify-content-between align-items-center w-full">
+            <span class="text-2xl font-bold">Dein Profil Bearbeiten</span>
+            <div class="close" (click)="close()"></div>
+        </div>
+
+        <div>
+            <img class="avatar cursor-pointer" src="{{this.userService.activeUser.avatar}}" (click)="fileInput.click()">
+            <input type="file" #fileInput (change)="changeAvatar($event)" style="display: none;">
+        </div>
+
+
+        <div class="flex flex-column w-full" style="gap: 10px;">
+            <div class="flex" style="gap: 20px;">
+                <img src="img/account_circle.svg" alt="">
+                <span class="font-bold text-xl">Vollständiger Name</span>
+            </div>
+            <input type="text" name="username" [(ngModel)]="this.userService.activeUser.username">
+        </div>
+
+        <div class="flex flex-column w-full" style="gap: 10px;">
+            <div class="flex" style="gap: 20px;">
+                <img src="img/mail-focus.svg" alt="">
+                <span class="font-bold text-xl">E-Mail-Adresse</span>
+            </div>
+            <input type="text" name="mail" [(ngModel)]="this.userService.activeUser.mail">
+        </div>
+
+
+        <div class="flex gap-5">
+            <button class="break-btn" mat-stroked-button (click)="closeEdit()">Abbrechen</button>
+            <button mat-flat-button (click)="saveProfile()">Speichern</button>
+        </div>
+
+    </div>
+</section>
+
+}

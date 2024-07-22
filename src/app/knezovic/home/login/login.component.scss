@@ -1,3 +1,7 @@
+form {
+    max-width: 606px;
+}
+
 input {
     margin: 10px;
     padding: 15px;
@@ -48,16 +52,7 @@ button {
     margin: 5px;
 }
 
-.card {
-    margin: 20px;
-    margin-top: 0;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    min-height: 600px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
-}
+
 
 hr {
     margin: 20px;
@@ -88,14 +83,17 @@ hr {
 
 .googleButton{
     margin: 10px;
-    padding: 30px;
+    padding: 20px;
     border: 2px solid #ccc;
     border-radius: 5px;
     width: 90%;
     color: #5262ED;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 40px;
     font-size: 16px;
-    text-align: center center;
+    text-align: center;
     background-color: #ECEEFD;
     &:hover {
         border-color: black;
@@ -110,3 +108,9 @@ table {
     border-collapse: collapse;
     width: 100%;
 }
+
+a {
+    text-decoration: none;
+    color: #797EF3;
+}
+

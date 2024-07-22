@@ -3,19 +3,22 @@ import { LoginComponent } from "./login/login.component";
 import { UserService } from '../../shared/services/user.service';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
-import { ChatComponent } from "../../Dimi/chat/chat.component";
+import { HeaderComponent } from "../../shared/components/header/header.component";
+import { FooterComponent } from "../../shared/components/footer/footer.component";
+import { VariableContentComponent } from "./variable-content/variable-content.component";
+
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, ChatComponent],
+  imports: [LoginComponent, SidenavComponent, HeaderComponent, FooterComponent, VariableContentComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
 
 
-  constructor(private UserService: UserService, private AuthService: AuthenticationService) { }
+  constructor(private UserService: UserService) { }
 
     
   get isLoggedIn() {

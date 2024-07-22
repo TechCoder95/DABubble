@@ -7,12 +7,12 @@
   <section class="message">
     <div class="message-information">
       <div class="sender-and-time">
-        <h5>{{ chatService.message.sender }}</h5>
-        <p>{{ chatService.message.timestamp }} Uhr</p>
+        <h5>{{sendMessage.sender}}</h5>
+        <p>{{ sendMessage.timestamp | date:'hh.mm'}} Uhr</p>
       </div>
       <div class="actual-message">
         <p>
-          {{ chatService.message.message }}
+          {{ sendMessage.message }}
         </p>
       </div>
     </div>

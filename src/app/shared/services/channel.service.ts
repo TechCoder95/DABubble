@@ -16,11 +16,21 @@ export class ChannelService {
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   channel!: TextChannel;
 
+  /**
+   * Selects a channel.
+   * 
+   * @param channel - The channel to be selected.
+   */
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
   }
 
+  /**
+   * Updates the name of the selected channel.
+   * 
+   * @param updatedName - The updated name for the channel.
+   */
   async updateChannelName(updatedName: string) {
     const currentChannel = this.selectedChannelSubject.value;
     const updatedChannel = { ...currentChannel, name: updatedName };

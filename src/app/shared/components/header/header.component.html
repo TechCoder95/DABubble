@@ -1,3 +1,21 @@
-<div class="flex justify-content-between align-items-center m-3">
-    <img src="{{activeUser.avatar}}" alt="">
-    <button (click)="logout()">Ausloggen</button></div>
+@if (!isLoggedIn){
+<div class="flex justify-content-between align-items-center p-3">
+
+    <img src="/img/logo.svg" alt="">
+    <div class="flex align-items-center flex-column">
+        <p>Neu bei DABubble?</p>
+        <a href="/addUser">Konto erstellen</a>
+    </div>
+</div>
+}
+@else {
+<div class="flex justify-content-between align-items-center p-3">
+    <img src="/img/logo.svg" alt="">
+    <input type="search" aria-label="awd" [(ngModel)]="searchInput" placeholder="Search bar">
+    <div class="flex align-items-center">
+        <p class="userName">{{activeUser.username}}</p>
+        <img class="ml-2 profileimg" src="{{activeUser.avatar}}" alt="">
+        <img class="ml-2" src="/img/arrow-down.svg" alt="" (click)="openMenu()">
+    </div>
+</div>
+}

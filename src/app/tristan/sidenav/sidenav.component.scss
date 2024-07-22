@@ -1,62 +1,26 @@
-
-
-.menu {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-
-    li {
-        display: flex;
-        align-items: center;
-        padding-left: 16px;
-        padding-right: 16px;
-        height: 48px;
-        cursor: pointer;
-
-        mat-icon {
-            margin-right: 16px;
-        }
-
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.15);
-        }
-
-        &:focus {
-            outline: none;
-        }
-    }
+.blue-name:hover {
+    color: #535AF1;
 }
 
-.router-container {
-    padding-left: 56px;
-    padding-right: 56px;
-    padding-top: 16px;
+.blue-action-name:hover {
+    color: #535AF1;
 }
 
-.mat-tree-node {
-    padding: 0 !important;
+.blue-channel-name:hover {
+    color: #535AF1;
+    font-weight: bolder;
 }
 
-.test {
-    position: absolute;
-    left: 0;
-    top: 50px;
-    z-index: 5;
+.selected-channel {
+    color: #535AF1;
+    font-weight: bolder;
 }
 
+.teste:hover {
+    filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(7479%) hue-rotate(199deg) brightness(94%) contrast(90%);
 
-.channel-name {
-    color: blue;
 }
 
-.category-name {
-    color: inherit;
-}
-
-.cursor-pointer {
-    cursor: pointer;
-}
-
-.font-bold{
-    font-weight: bold;
+.content {
+    background-color: #ECEEFE;
 }
