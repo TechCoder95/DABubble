@@ -1,5 +1,5 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, User } from "firebase/auth";
 import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
@@ -164,4 +164,5 @@ export class AuthenticationService {
   //#endregion
 
 
+  
 }
