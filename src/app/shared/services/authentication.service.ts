@@ -4,13 +4,14 @@ import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { DABubbleUser } from '../interfaces/user';
+import { EmailService } from './sendmail.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private router: Router) { }
+  constructor(private userService: UserService, private router: Router, private emailService : EmailService) { }
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
@@ -31,7 +32,7 @@ export class AuthenticationService {
         this.userService.register(email, username, this.userService.googleUser.uid);
         localStorage.setItem("uId", this.userService.googleUser.uid);
         this.userService.login(this.userService.googleUser).then(() => {
-          this.router.navigate(['/avatar']);
+          this.emailService.sendMail();
         });
       })
       .catch((error) => {

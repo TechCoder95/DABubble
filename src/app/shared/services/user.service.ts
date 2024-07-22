@@ -23,7 +23,7 @@ export class UserService {
   //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
 
-  constructor(private DatabaseService: DatabaseService, private router: Router, private sendmailService: EmailService) {
+  constructor(private DatabaseService: DatabaseService, private router: Router) {
 
     this.checkOnlineStatus();
     this.activeUserObserver$.subscribe((user: DABubbleUser) => {
@@ -274,22 +274,6 @@ export class UserService {
 
 
   /**
-   * Registers a new user.
-   * @param {User} user - The user object to be registered.
-   * @returns A promise that resolves when the user is successfully registered.
-   */
-  async registerUser(user: DABubbleUser) {
-    await this.DatabaseService.addDataToDB(this.collectionName, user)
-      .then(() => {
-        this.sendmailService.sendMail().then(() => {
-          this.getUsersFromDB();
-        });
-      }
-      );
-  }
-
-
-  /**
    * Registers a new user with the provided email, password, and username.
    * 
    * @param {string} email - The email of the user.
@@ -300,9 +284,7 @@ export class UserService {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
-        this.sendmailService.sendMail().then(() => {
           this.getUsersFromDB();
-        });
       }
       );
   }
