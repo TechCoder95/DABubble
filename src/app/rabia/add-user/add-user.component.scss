@@ -1,7 +1,7 @@
-mat-card {
+.container {
     max-width: 606px;
-    border-radius: 30px;
-    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.08);
+    padding: 40px;
+    box-sizing: border-box;
 }
 
 mat-card-title {
@@ -17,8 +17,8 @@ mat-card-subtitle {
 
 .arrow-back {
     position: absolute;
-    top: 10px;
-    left: -10px;
+    top: 48px;
+    left: 0;
     width: 40px;
     height: 40px;
     background-repeat: no-repeat;

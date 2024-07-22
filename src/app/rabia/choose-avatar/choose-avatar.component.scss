@@ -1,3 +1,9 @@
+.container {
+    max-width: 606px;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
 mat-card-title {
     color: #444DF2;
     font-size: 46px;
@@ -11,8 +17,8 @@ mat-card-subtitle {
 
 .arrow-back {
     position: absolute;
-    top: 45px;
-    left: 32px;
+    top: 48px;
+    left: 0;
     width: 40px;
     height: 40px;
     background-repeat: no-repeat;
@@ -66,6 +72,11 @@ mat-card-subtitle {
         padding: 12px 25px;
         border: 1px solid #444DF2;
     }
+}
+
+mat-spinner {
+    width: 43px !important;
+    height: 43px !important;
 }
 
 .bg-alert {
