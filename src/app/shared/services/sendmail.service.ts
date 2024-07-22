@@ -38,24 +38,28 @@ export class EmailService {
   }
 
 
-  verifyMail() {
-    if (this.router.url.includes('verifyEmail')) {
+  verifyMail(authUser: any) {
+    if (authUser) {
+      if (this.router.url.includes('verifyEmail')) {
+        this.userService.getUsersFromDB().then(() => {
 
-      this.userService.getUsersFromDB().then(() => {
-
-        this.userService.users.find((user) => {
-          if (user.mail === this.auth.currentUser?.email) {
-            this.activeUser = user;
-            const url = this.router.url;
-            const apiKey = url.split('?apiKey=')[1];
-            if (apiKey && !this.activeUser.activated) {
-              this.activeUser.activated = true;
-              this.userService.updateUser(this.activeUser);
+          this.userService.users.find((user) => {
+            if (user) {
+              this.activeUser = user;
+              const url = this.router.url;
+              const apiKey = url.split('?apiKey=')[1];
+              if (apiKey && !this.activeUser.activated) {
+                this.activeUser.activated = true;
+                this.userService.login(authUser);
+                this.userService.updateUser(this.activeUser).then(() => {
+                  this.router.navigate(['/home']);
+                });
+              }
             }
-          }
+          });
         });
-      });
 
+      }
     }
   }
 
