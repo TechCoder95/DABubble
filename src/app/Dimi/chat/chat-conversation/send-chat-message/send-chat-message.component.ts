@@ -11,19 +11,7 @@ import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
   styleUrl: './send-chat-message.component.scss',
 })
 export class SendChatMessageComponent {
+  constructor(private chatService: ChatService) {}
 
-  constructor(private chatService: ChatService) {
-    setInterval(() => {
-      this.time = new Date();
-    }, 60000);
-  }
-
-  subscribeToMessages() {
-    this.chatService.currentMessage$.subscribe((msg) => {
-      this.message = msg;
-    });
-  }
-
-  
   @Input() sendMessage!: ChatMessage;
 }

@@ -48,7 +48,10 @@ h5 {
     border-radius: 50%;
   }
   &:hover {
-    background-color: aqua;
+    background-color: rgba(236, 238, 254, 1);
+    & > .message-information > .actual-message {
+      background-color: white;
+    }
   }
 }
 

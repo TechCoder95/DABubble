@@ -4,6 +4,8 @@ import { map, Observable, pipe } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../../shared/services/chat.service';
+import { UserService } from '../../../../shared/services/user.service';
+import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -17,11 +19,15 @@ export class InputfieldComponent {
   addEmojiImg = './img/add-emoji-default.png';
   addLinkImg = './img/add-link-default.png';
   textareaValue: string = '';
+  activeUser!: DABubbleUser;
 
   constructor(
     public channelService: ChannelService,
-    private chatService: ChatService
-  ) {}
+    private chatService: ChatService,
+    private userService: UserService
+  ) {
+    this.activeUser = this.userService.activeUser;
+  }
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -66,6 +72,7 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
+   /*  console.log('aktiver USer is', this.activeUser); */
     this.chatService.changeMessage(this.getMessageInfo());
     this.textareaValue = '';
   }
@@ -74,8 +81,9 @@ export class InputfieldComponent {
     return {
       channelId: this.channelService.channel.id || 'defaultChannelId',
       message: this.textareaValue,
-      timestamp: new Date().getTime(),
+      timestamp: new Date(),
       sender: 'Michael Ballack',
+      /* sender: this.activeUser */
     };
   }
 }

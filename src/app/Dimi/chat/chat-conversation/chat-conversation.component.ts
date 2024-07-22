@@ -15,19 +15,30 @@ import { UserService } from '../../../shared/services/user.service';
     InputfieldComponent,
     ReceiveChatMessageComponent,
     SendChatMessageComponent,
-    CommonModule
+    CommonModule,
   ],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent {
-
-  activeUser! : DABubbleUser;
-  constructor(private chatService: ChatService, private userService: UserService) { 
+  activeUser!: DABubbleUser;
+  constructor(
+    private chatService: ChatService,
+    private userService: UserService
+  ) {
     this.activeUser = this.userService.activeUser;
   }
 
-  receiveChatMessages: ChatMessage[] = [{
+  receiveChatMessages: ChatMessage[] = [
+   /*  {
+      channelId: ;
+    name?: string; 
+    message: string;
+    timestamp: Date;
+    sender: string;
+    emoticons?: string[];
+    }, */
+    {
     channelId: '1',
     message: 'Hallo',
     timestamp: new Date(),
@@ -38,8 +49,11 @@ export class ChatConversationComponent {
     message: 'Hallo Dimi',
     timestamp: new Date(),
     sender: 'Dimi'
-  }];
-  sendChatMessages: ChatMessage[] = [{
+  }
+  ];
+
+  sendChatMessages: ChatMessage[] = [
+    /* {
     channelId: '1',
     message: 'Hallo2',
     timestamp: new Date(),
@@ -50,12 +64,9 @@ export class ChatConversationComponent {
     message: 'Hallo Dome',
     timestamp: new Date(),
     sender: 'Dome'
-  }
-
+  } */
   ];
 
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
-
-
 }
