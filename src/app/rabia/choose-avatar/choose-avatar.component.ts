@@ -2,19 +2,17 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { ActivatedRoute, Router } from '@angular/router';
-import { DatabaseService } from '../../shared/services/database.service';
+import { Router } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
-import { DABubbleUser } from '../../shared/interfaces/user';
-import { addDoc } from 'firebase/firestore';
 import { DAStorageService } from '../../shared/services/dastorage.service';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [MatCardModule, CommonModule, MatButtonModule],
+  imports: [MatCardModule, CommonModule, MatButtonModule, MatProgressSpinnerModule],
   templateUrl: './choose-avatar.component.html',
   styleUrl: './choose-avatar.component.scss'
 })
@@ -34,7 +32,7 @@ export class ChooseAvatarComponent {
 
   constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
     this.UserService.getUsersFromDB().then(() => {
-    this.selectAvatar('/img/avatar.svg');
+      this.selectAvatar('/img/avatar.svg');
     });
   }
 
