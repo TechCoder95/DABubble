@@ -1,8 +1,12 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { CdkConnectedOverlay } from '@angular/cdk/overlay';
+import { JsonPipe } from '@angular/common';
+import { EmailService } from './sendmail.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,12 +17,18 @@ export class UserService {
   activeUser!: DABubbleUser; //Wenn du Online bist bzw eingeloogt, ist dieses Objekt immer mit dem aktuellen User gefüllt
   googleUser: User | null = null;
   guestName: string = 'Guest';
+  activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
+  activeUserObserver$ = this.activeUserSubject.asObservable();
 
   //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
 
-  constructor(private DatabaseService: DatabaseService, private router: Router) {
+  constructor(private DatabaseService: DatabaseService, private router: Router, private sendmailService: EmailService) {
+
     this.checkOnlineStatus();
+    this.activeUserObserver$.subscribe((user: DABubbleUser) => {
+      this.activeUser = user;
+    });
   }
 
 
@@ -31,11 +41,13 @@ export class UserService {
       let object = this.DatabaseService.readDataByID(this.collectionName, sessionStorage.getItem('userLogin')!);
       object.then((user) => {
         if (user) {
-          this.activeUser = user as DABubbleUser;
-         
+          this.activeUserSubject.next(user as DABubbleUser);
+          if (this.activeUser.avatar !== '') {
+            this.avatarSelected = true;
+          }
         }
         else {
-          this.activeUser = null!;
+          this.activeUserSubject.next(null!);
         }
       });
     }
@@ -43,13 +55,15 @@ export class UserService {
       let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
       object.then((user) => {
         if (user) {
-          this.activeUser = user as DABubbleUser;
+          this.activeUserSubject.next(user as DABubbleUser);
+          console.log(this);
           if (this.activeUser.avatar !== '') {
             this.avatarSelected = true;
           }
         }
         else {
           this.activeUser = null!;
+          this.activeUserSubject.next(null!);
         }
       });
     }
@@ -80,7 +94,9 @@ export class UserService {
         i++;
       }
       this.guestName = name;
-      this.writeGuestToDB();
+      this.writeGuestToDB().then(() => {
+        this.router.navigate(['/home'])
+      });
     });
   }
 
@@ -102,10 +118,11 @@ export class UserService {
         this.getUsersFromDB().then(() => {
           this.users.map(user => {
             if (user.username === this.guestName) {
-              this.activeUser = this.completeUser(user);
+              this.activeUserSubject.next(this.completeUser(user));
               sessionStorage.setItem('userLogin', user.id!);
               this.updateLoggedInUser(this.activeUser);
               console.log('Guest User Logged In');
+              this.checkOnlineStatus();
               this.router.navigate(['/home']);
             }
           });
@@ -122,7 +139,7 @@ export class UserService {
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
         sessionStorage.removeItem('userLogin'),
-          this.activeUser = null!;
+          this.activeUserSubject.next(null!);
         this.getUsersFromDB().then(() => {
           window.location.reload()
         });
@@ -146,9 +163,9 @@ export class UserService {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
                 localStorage.setItem('userLogin', user.id);
-                this.activeUser = this.completeUser(user, googleUser);
+                this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
-                console.log('User Logged In');
+                console.log('User Logged In but needs Avatar');
                 this.router.navigate(['/avatar']);
               }
             });
@@ -159,9 +176,10 @@ export class UserService {
         // && user.actived === true
         if (loginUser.mail === googleUser.email && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
-          this.activeUser = this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser);
+          this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
-          console.log('User Logged In');
+          this.checkOnlineStatus();
+          console.log('User full Logged In');
         }
         else {
           console.log('User not logged in!');
@@ -186,7 +204,7 @@ export class UserService {
       username: user.username ? user.username : googleUser?.displayName || '',
       uid: user.uid || googleUser?.uid || '',
       isLoggedIn: user.isLoggedIn || true,
-      activated: user.activated || false,
+      activated: googleUser?.emailVerified || false,
       activeChannels: user.activeChannels || [],
       avatar: user.avatar || '',
     };
@@ -239,13 +257,15 @@ export class UserService {
     else {
       let id = localStorage.getItem('userLogin')!;
       this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
-        this.activeUser = user as unknown as DABubbleUser;
+        this.activeUserSubject.next(user as unknown as DABubbleUser);
         if (this.activeUser.isLoggedIn === true && id) {
           this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
             .then(() => {
               localStorage.removeItem('userLogin'),
-                this.activeUser = null!;
-              this.getUsersFromDB();
+                this.activeUserSubject.next(null!);
+              this.getUsersFromDB().then(() => {
+                window.location.reload()
+              });
             });
         }
       });
@@ -260,7 +280,12 @@ export class UserService {
    */
   async registerUser(user: DABubbleUser) {
     await this.DatabaseService.addDataToDB(this.collectionName, user)
-      .then(() => { this.getUsersFromDB(); });
+      .then(() => {
+        this.sendmailService.sendMail().then(() => {
+          this.getUsersFromDB();
+        });
+      }
+      );
   }
 
 
@@ -274,7 +299,12 @@ export class UserService {
   async register(email: string, username: string, uid: string) {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
-      .then(() => { this.getUsersFromDB(); });
+      .then(() => {
+        this.sendmailService.sendMail().then(() => {
+          this.getUsersFromDB();
+        });
+      }
+      );
   }
 
 
@@ -320,8 +350,8 @@ export class UserService {
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser)  && this.avatarSelected || (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected) {
-      console.log(this.activeUser.avatar);
+    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
+    (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
       return true;
     }
     else

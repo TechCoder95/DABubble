@@ -31,8 +31,10 @@ export class ChooseAvatarComponent {
 
 
   constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
-    this.UserService.getUsersFromDB().then(() => {
-      this.selectAvatar('/img/avatar.svg');
+    this.UserService.activeUserObserver$.subscribe((user: DABubbleUser) => {
+      if (user) {
+        user.avatar = '/img/avatar.svg';
+      }
     });
   }
 
