@@ -24,6 +24,9 @@ export class UserService {
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
     this.checkOnlineStatus();
+    this.activeUserObserver$.subscribe((user: DABubbleUser) => {
+      this.activeUser = user;
+    });
   }
 
 
@@ -36,12 +39,10 @@ export class UserService {
       let object = this.DatabaseService.readDataByID(this.collectionName, sessionStorage.getItem('userLogin')!);
       object.then((user) => {
         if (user) {
-          this.activeUser = user as DABubbleUser;
-          this.activeUserSubject.next(this.activeUser);
+          this.activeUserSubject.next(user as DABubbleUser);
         }
         else {
-          this.activeUser = null!;
-          this.activeUserSubject.next(this.activeUser);
+          this.activeUserSubject.next(null!);
         }
       });
     }
@@ -49,15 +50,14 @@ export class UserService {
       let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
       object.then((user) => {
         if (user) {
-          this.activeUser = user as DABubbleUser;
+          this.activeUserSubject.next(user as DABubbleUser);
           if (this.activeUser.avatar !== '') {
             this.avatarSelected = true;
-            this.activeUserSubject.next(this.activeUser);
           }
         }
         else {
           this.activeUser = null!;
-          this.activeUserSubject.next(this.activeUser);
+          this.activeUserSubject.next(null!);
         }
       });
     }
@@ -110,8 +110,7 @@ export class UserService {
         this.getUsersFromDB().then(() => {
           this.users.map(user => {
             if (user.username === this.guestName) {
-              this.activeUser = this.completeUser(user);
-              this.activeUserSubject.next(this.activeUser);
+              this.activeUserSubject.next(this.completeUser(user));
               sessionStorage.setItem('userLogin', user.id!);
               this.updateLoggedInUser(this.activeUser);
               console.log('Guest User Logged In');
@@ -131,8 +130,7 @@ export class UserService {
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
         sessionStorage.removeItem('userLogin'),
-          this.activeUser = null!;
-          this.activeUserSubject.next(this.activeUser);
+          this.activeUserSubject.next(null!);
         this.getUsersFromDB().then(() => {
           window.location.reload()
         });
@@ -156,8 +154,7 @@ export class UserService {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
                 localStorage.setItem('userLogin', user.id);
-                this.activeUser = this.completeUser(user, googleUser);
-                this.activeUserSubject.next(this.activeUser);
+                this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
                 console.log('User Logged In');
                 this.router.navigate(['/avatar']);
@@ -170,8 +167,7 @@ export class UserService {
         // && user.actived === true
         if (loginUser.mail === googleUser.email && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
-          this.activeUser = this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser);
-          this.activeUserSubject.next(this.activeUser);
+          this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
           console.log('User Logged In');
         }
@@ -251,8 +247,7 @@ export class UserService {
     else {
       let id = localStorage.getItem('userLogin')!;
       this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
-        this.activeUser = user as unknown as DABubbleUser;
-        this.activeUserSubject.next(this.activeUser);
+        this.activeUserSubject.next(user as unknown as DABubbleUser);
         if (this.activeUser.isLoggedIn === true && id) {
           this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
             .then(() => {
