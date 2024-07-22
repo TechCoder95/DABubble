@@ -1,4 +1,4 @@
-import { EventEmitter, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { CdkConnectedOverlay } from '@angular/cdk/overlay';
 import { JsonPipe } from '@angular/common';
+import { EmailService } from './sendmail.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
-   
+
     this.checkOnlineStatus();
     this.activeUserObserver$.subscribe((user: DABubbleUser) => {
       this.activeUser = user;
@@ -273,17 +274,6 @@ export class UserService {
 
 
   /**
-   * Registers a new user.
-   * @param {User} user - The user object to be registered.
-   * @returns A promise that resolves when the user is successfully registered.
-   */
-  async registerUser(user: DABubbleUser) {
-    await this.DatabaseService.addDataToDB(this.collectionName, user)
-      .then(() => { this.getUsersFromDB(); });
-  }
-
-
-  /**
    * Registers a new user with the provided email, password, and username.
    * 
    * @param {string} email - The email of the user.
@@ -293,7 +283,10 @@ export class UserService {
   async register(email: string, username: string, uid: string) {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
-      .then(() => { this.getUsersFromDB(); });
+      .then(() => {
+          this.getUsersFromDB();
+      }
+      );
   }
 
 
@@ -339,7 +332,8 @@ export class UserService {
    * @returns {boolean} True if the user is logged in, false otherwise.
    */
   get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected || (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected) {
+    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
+    (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
       return true;
     }
     else
