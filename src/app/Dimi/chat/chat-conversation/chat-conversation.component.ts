@@ -16,6 +16,7 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { UserService } from '../../../shared/services/user.service';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { Subscription } from 'rxjs';
+import { DatabaseService } from '../../../shared/services/database.service';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -42,16 +43,20 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     private chatService: ChatService,
     private userService: UserService,
     private channelService: ChannelService,
-    private cdr: ChangeDetectorRef
+    private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
   }
 
   ngOnInit() {
+    this.databaseService.onDataChange$.subscribe((channel) => {
+      this.sendChatMessages = [];
+      this.receiveChatMessages = [];
+      this.chatService.sortMessages(channel);
+    });
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
-        this.sendChatMessages = [];
-        this.receiveChatMessages = [];
+        console.log('CHANNELOBSERVe');
       }
     );
     this.chatService.sendMessages$.subscribe((message) => {
@@ -67,9 +72,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     });
   }
 
-  sendMessage(){
-    
-  }
+  sendMessage() {}
 
   ngOnDestroy() {
     if (this.channelSubscription) {

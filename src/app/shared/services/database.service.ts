@@ -12,8 +12,10 @@ import {
   getDocs,
   getDoc,
 } from '@angular/fire/firestore';
+import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { arrayUnion } from 'firebase/firestore';
+import { TextChannel } from '../interfaces/textchannel';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +24,12 @@ export class DatabaseService {
   // Firestore Initialization
   firestore: Firestore = inject(Firestore);
 
-  constructor() {}
+  private onDataChange = new BehaviorSubject<any | null>(null);
+  public onDataChange$ = this.onDataChange.asObservable();
+
+  constructor() {
+    this.subscribeToMessages();
+  }
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -175,4 +182,25 @@ export class DatabaseService {
       throw err;
     }
   }
+
+  async subscribeToMessages() {
+    const q = query(
+      collection(this.firestore, 'channels'),
+      where('id', '==', sessionStorage.getItem('selectedChannelId'))
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+        this.onDataChange.next(data);
+        console.log(change.doc.data());
+      });
+    });
+  }
 }
+
+/* async addMessageToChannel(channelDoc: string, messageDocId: string) {
+  const channelDocRef = doc(this.firestore, 'channels', channelDoc);
+  await updateDoc(channelDocRef, {
+    conversationId: arrayUnion(messageDocId),
+  });
+} */
