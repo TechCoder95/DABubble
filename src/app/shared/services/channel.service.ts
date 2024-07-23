@@ -52,7 +52,6 @@ export class ChannelService {
       description: updatedDescription,
     };
     this.selectedChannelSubject.next(updatedChannel as TextChannel);
-    debugger;
     if (this.channel.id) {
       await this.databaseService.updateDataInDB(
         'channels',
