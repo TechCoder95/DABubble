@@ -8,7 +8,7 @@ import { DatabaseService } from './database.service';
 })
 export class ChatService {
   private messageSource = new BehaviorSubject<ChatMessage | null>(null);
-  currentMessage = this.messageSource.asObservable();
+  public message$ = this.messageSource.asObservable();
   message!: ChatMessage;
 
   constructor(private databaseService: DatabaseService) {}
@@ -16,7 +16,7 @@ export class ChatService {
   addMessage(message: ChatMessage) {
     this.messageSource.next(message);
     this.message = message;
-    debugger;
+    /* debugger; */
     this.databaseService.addMessageToChannel(message);
   }
 }

@@ -73,7 +73,7 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
-    debugger;
+    /* debugger; */
     let message: ChatMessage = {
       channelId: this.channelService.channel.id,
       name: this.channelService.channel.name,

@@ -36,6 +36,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   private channelSubscription!: Subscription;
+  private messageSubscription!: Subscription;
 
   constructor(
     private chatService: ChatService,
@@ -46,13 +47,38 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.activeUser = this.userService.activeUser;
   }
 
-  ngOnInit() {
+  /* ngOnInit() {
     this.channelSubscription = this.channelService.selectedChannel$.subscribe({
       next: () => {
         this.sortMessages();
       },
       error: (err) => console.error(err),
     });
+    this.sortMessages();
+  } */
+  ngOnInit() {
+   /*  debugger; */
+    this.channelSubscription = this.channelService.selectedChannel$.subscribe({
+      next: () => {
+        this.sortMessages();
+      },
+      error: (err) => console.error(err),
+    });
+
+    // Abonnieren des message$ Observable aus ChatService
+    this.messageSubscription = this.chatService.message$.subscribe(
+      (message) => {
+        if (message) {
+          if (message.sender === this.activeUser.username) {
+            this.sendChatMessages.push(message);
+          } else {
+            this.receiveChatMessages.push(message);
+          }
+          this.cdr.detectChanges(); // Aktualisieren der Ansicht
+        }
+      }
+    );
+
     this.sortMessages();
   }
 
@@ -73,9 +99,18 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.cdr.detectChanges();
   }
 
+  /*  ngOnDestroy() {
+    if (this.channelSubscription) {
+      this.channelSubscription.unsubscribe();
+    }
+  } */
   ngOnDestroy() {
     if (this.channelSubscription) {
       this.channelSubscription.unsubscribe();
+    }
+    if (this.messageSubscription) {
+      // Bereinigung
+      this.messageSubscription.unsubscribe();
     }
   }
 }
