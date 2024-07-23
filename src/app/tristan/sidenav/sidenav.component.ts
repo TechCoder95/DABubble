@@ -97,16 +97,18 @@ export class SidenavComponent implements OnInit {
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async addChannel(data: TextChannel) {
-    const newChannel: TextChannel = { ...data };
-    try {
-      const newChannelId = await this.dbService.addChannelDataToDB('channels', newChannel);
-      newChannel.id = newChannelId; 
-      await this.loadChannels(); 
-    } catch (err) {
-      console.error('Error adding new channel', err);
+    const activeUser = this.userService.activeUser;
+    if (activeUser && activeUser.id) {
+      const newChannel: TextChannel = { ...data, assignedUser: [activeUser.id] };
+      try {
+        const newChannelId = await this.dbService.addChannelDataToDB('channels', newChannel);
+        newChannel.id = newChannelId; 
+        await this.loadChannels(); 
+      } catch (err) {
+        console.error('Error adding new channel', err);
+      }
     }
   }
-  
 
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
@@ -124,15 +126,6 @@ export class SidenavComponent implements OnInit {
         name: channel.name,
         type: 'channel'
       }));
-  }
-  
-
-  // todo daten aus datenbank laden
-  private async loadMessages(): Promise<any[]> {
-    return [
-      { name: 'Felix Müller', type: 'privateMessage' },
-      { name: 'Noah Ewen', type: 'privateMessage' }
-    ];
   }
 
   private createDirectMessageNodes(): Node[] {
@@ -162,15 +155,14 @@ export class SidenavComponent implements OnInit {
   
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
-  }
-  
-  
-  
-  
+  }  
 
   async loadChannels() {
-    await this.fetchChannels();
-    await this.initializeTreeData();
+    const activeUser = this.userService.activeUser;
+    if (activeUser && activeUser.id) {
+      this.channels = await this.dbService.getUserChannels(activeUser.id);
+      await this.initializeTreeData();
+    }
   }
 
   async handleNodeClick(node: FlattenedNode) {
@@ -188,10 +180,7 @@ export class SidenavComponent implements OnInit {
     } else if (node.type === 'action') {
       this.openDialog();
     }
-  }
-  
-  
-  
+  }  
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
+import { TextChannel } from '../interfaces/textchannel';
 
 @Injectable({
   providedIn: 'root'
@@ -144,4 +145,15 @@ export class DatabaseService {
       throw err;
     }
   }
+
+  async getUserChannels(userId: string): Promise<TextChannel[]> {
+    const channelsCollectionRef = this.getDataRef('channels');
+    const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
+    const snapshot = await getDocs(q);
+    const channels: TextChannel[] = [];
+    snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
+    return channels;
+  }
+  
+  
 }
