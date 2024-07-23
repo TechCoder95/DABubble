@@ -1,4 +1,6 @@
 <main>
   <img [src]="member.img" />
-  <p>{{ member.name }}</p>
+  <p (click)="openInfo()">{{ member.name }}</p>
 </main>
+
+<!-- <app-open-user-info></app-open-user-info> -->
