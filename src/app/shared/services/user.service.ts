@@ -237,7 +237,7 @@ export class UserService {
    * 
    * @param user - The user object to update.
    */
-  updateActivationStatus(user: DABubbleUser) {
+  async updateActivationStatus(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
         .then(() => {

@@ -17,6 +17,7 @@ import { EmailService } from '../../../shared/services/sendmail.service';
 export class LoginComponent {
 
   constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService, private emailService: EmailService) { 
+
     this.UserService.activeUserObserver$.subscribe((user) => {
       if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
         this.router.navigate(['/home']);
