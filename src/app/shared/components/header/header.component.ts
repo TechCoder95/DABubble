@@ -40,7 +40,7 @@ export class HeaderComponent {
   }
 
   goToRegister() {
-    this.router.navigate(['/addUser']);
+    this.router.navigate(['/user/register']);
   }
 
 

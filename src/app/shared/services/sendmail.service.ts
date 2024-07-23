@@ -29,7 +29,7 @@ export class EmailService {
       };
       sendEmailVerification(user, actionCodeSettings)
         .then(() => {
-          this.router.navigate(['/avatar'])
+          this.router.navigate(['/user/chooseAvatar'])
         })
         .catch((error) => {
           console.error(error);
