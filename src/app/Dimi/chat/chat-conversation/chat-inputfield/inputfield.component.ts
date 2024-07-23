@@ -6,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -72,18 +73,16 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
-   /*  console.log('aktiver USer is', this.activeUser); */
-    this.chatService.changeMessage(this.getMessageInfo());
-    this.textareaValue = '';
-  }
-
-  getMessageInfo() {
-    return {
-      channelId: this.channelService.channel.id || 'defaultChannelId',
+    debugger;
+    let message:ChatMessage = {
+      channelId: this.channelService.channel.id,
+      name: this.channelService.channel.name,
       message: this.textareaValue,
       timestamp: new Date(),
-      sender: 'Michael Ballack',
-      /* sender: this.activeUser */
-    };
+      sender: this.activeUser.username || 'guest',
+      emoticons: [],
+    }
+    this.chatService.changeMessage(message);
+    this.textareaValue = '';
   }
 }
