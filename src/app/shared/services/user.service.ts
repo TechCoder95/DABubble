@@ -9,7 +9,8 @@ import { JsonPipe } from '@angular/common';
 import { EmailService } from './sendmail.service';
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { Auth, sendEmailVerification  } from '@angular/fire/auth';
+import { Auth, sendEmailVerification } from '@angular/fire/auth';
+import { TextChannel } from '../interfaces/textchannel';
 
 @Injectable({
   providedIn: 'root'
@@ -123,6 +124,7 @@ export class UserService {
             if (user.username === this.guestName) {
               this.activeUserSubject.next(this.completeUser(user));
               sessionStorage.setItem('userLogin', user.id!);
+              sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
               this.updateLoggedInUser(this.activeUser);
               console.log('Guest User Logged In');
               this.checkOnlineStatus();
@@ -166,6 +168,7 @@ export class UserService {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
                 localStorage.setItem('userLogin', user.id);
+                sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
                 console.log('User Logged In but needs Avatar');
@@ -179,6 +182,8 @@ export class UserService {
         // && user.actived === true
         if (loginUser.mail === googleUser.email && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
+          
+          sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
           this.checkOnlineStatus();
