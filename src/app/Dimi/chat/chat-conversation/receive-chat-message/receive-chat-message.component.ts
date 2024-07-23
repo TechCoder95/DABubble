@@ -15,4 +15,19 @@ export class ReceiveChatMessageComponent {
   constructor() {
     console.log(this.receiveMessage);
   }
+
+  checkDate(date: number): string {
+    const today = new Date();
+    const givenDate = new Date(date);
+
+    if (givenDate.setHours(0, 0, 0, 0) === today.setHours(0, 0, 0, 0)) {
+      return 'Heute';
+    } else {
+      return new Intl.DateTimeFormat('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+      }).format(givenDate);
+    }
+  }
 }

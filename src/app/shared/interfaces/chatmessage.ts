@@ -2,7 +2,7 @@ export interface ChatMessage {
     channelId: string;
     name?: string; 
     message: string;
-    timestamp: Date;
+    timestamp: number;
     sender: string;
     emoticons?: string[];
 }

@@ -1,7 +1,7 @@
 <main>
   <section class="message-day">
     <p></p>
-    <h4>Heute</h4>
+    <h4>{{checkDate(sendMessage.timestamp)}}</h4>
   </section>
 
   <section class="message">
@@ -16,6 +16,6 @@
         </p>
       </div>
     </div>
-    <img src="/img/3.svg" />
+    <img [src]="userAvatar()" />
   </section>
 </main>

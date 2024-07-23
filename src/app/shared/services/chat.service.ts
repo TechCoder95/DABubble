@@ -13,15 +13,11 @@ export class ChatService {
 
   constructor(private databaseService: DatabaseService) {}
 
-  changeMessage(message: ChatMessage) {
+  addMessage(message: ChatMessage) {
     this.messageSource.next(message);
     this.message = message;
-    console.log(message);
     debugger;
     this.databaseService.addMessageToChannel(message);
   }
 
-  /* addMessage(){
-    const messageDocRef = doc(this.firestore, "channels", );
-  } */
 }
