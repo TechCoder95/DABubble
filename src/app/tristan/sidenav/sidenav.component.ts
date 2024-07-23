@@ -110,6 +110,11 @@ export class SidenavComponent implements OnInit {
     return channel.name !== undefined;
   }
 
+  private async fetchChannels(): Promise<void> {
+    this.channels = [];
+    await this.dbService.readDatafromDB('channels', this.channels);
+  }
+
   private createChannelNodes(): Node[] {
     return this.channels
       .filter(channel => !channel.isPrivate && this.isDefined(channel))
@@ -133,7 +138,7 @@ export class SidenavComponent implements OnInit {
       .filter(channel => channel.isPrivate && this.isDefined(channel))
       .map((dm) => ({
         name: dm.name,
-        type: 'channel'
+        type: 'channel' // Behandelt Direktnachrichten wie Kanäle
       }));
   }
 
@@ -215,6 +220,7 @@ export class SidenavComponent implements OnInit {
     return node.type === 'privateMessage';
   }
   
+
   isSelectedChannel(node: FlattenedNode): boolean {
     return this.selectedChannel?.name === node.name;
   }
