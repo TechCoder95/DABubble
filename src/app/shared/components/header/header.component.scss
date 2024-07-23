@@ -8,20 +8,23 @@ input[type="search"] {
     font-size: 20px;
 }
 
-.profileimg {
+.img-container {
     width: 60px;
     height: 60px;
-    border-radius: 50%;
-    margin-right: 10px;
 }
 
-.userName{
+.profileimg {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.userName {
     margin: 0;
     font-size: 32px;
     font-weight: bold;
 }
 
-img{
+img {
     cursor: pointer;
 }
 
@@ -30,4 +33,15 @@ img{
     background-color: #f44336;
     color: white;
     border-radius: 25px;
+}
+
+.online-status {
+    width: 14px;
+    height: 14px;
+    background-color: #92C83E;
+    border-radius: 100%;
+    border: 2px solid #ECEEFE;
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
