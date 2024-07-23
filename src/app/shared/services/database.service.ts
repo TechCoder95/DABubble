@@ -92,9 +92,11 @@ export class DatabaseService {
     }
   }
 
-  async addMessageToChannel(message: ChatMessage) {
-    const channelDocRef = doc(this.firestore, 'channels', message.channelId);
-    await updateDoc(channelDocRef, { messages: arrayUnion(message) });
+  async addMessageToChannel(channelDoc: string, messageDocId: string) {
+    const channelDocRef = doc(this.firestore, 'channels', channelDoc);
+    await updateDoc(channelDocRef, {
+      conversationId: arrayUnion(messageDocId),
+    });
   }
 
   /**

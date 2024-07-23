@@ -47,63 +47,30 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.activeUser = this.userService.activeUser;
   }
 
-  /* ngOnInit() {
-    this.channelSubscription = this.channelService.selectedChannel$.subscribe({
-      next: () => {
-        this.sortMessages();
-      },
-      error: (err) => console.error(err),
-    });
-    this.sortMessages();
-  } */
   ngOnInit() {
-   /*  debugger; */
-    this.channelSubscription = this.channelService.selectedChannel$.subscribe({
-      next: () => {
-        this.sortMessages();
-      },
-      error: (err) => console.error(err),
-    });
-
-    // Abonnieren des message$ Observable aus ChatService
-    this.messageSubscription = this.chatService.message$.subscribe(
-      (message) => {
-        if (message) {
-          if (message.sender === this.activeUser.username) {
-            this.sendChatMessages.push(message);
-          } else {
-            this.receiveChatMessages.push(message);
-          }
-          this.cdr.detectChanges(); // Aktualisieren der Ansicht
-        }
+    this.channelSubscription = this.channelService.selectedChannel$.subscribe(
+      () => {
+        this.sendChatMessages = [];
+        this.receiveChatMessages = [];
       }
     );
-
-    this.sortMessages();
+    this.chatService.sendMessages$.subscribe((message) => {
+      if (message !== null) {
+        this.sendChatMessages.push(message);
+      }
+    });
+    this.chatService.receiveMessages$.subscribe((message) => {
+      if (message !== null) {
+        this.receiveChatMessages.push(message);
+        console.log(this.receiveChatMessages);
+      }
+    });
   }
 
-  sortMessages() {
-    this.sendChatMessages = [];
-    this.receiveChatMessages = [];
-    if (this.channelService.channel && this.channelService.channel.messages) {
-      this.channelService.channel.messages.forEach((message) => {
-        if (message.sender === this.activeUser.username) {
-          this.sendChatMessages.push(message);
-        } else {
-          this.receiveChatMessages.push(message);
-        }
-      });
-    } else {
-      console.log('KEINE NACHRICHTEN');
-    }
-    this.cdr.detectChanges();
+  sendMessage(){
+    
   }
 
-  /*  ngOnDestroy() {
-    if (this.channelSubscription) {
-      this.channelSubscription.unsubscribe();
-    }
-  } */
   ngOnDestroy() {
     if (this.channelSubscription) {
       this.channelSubscription.unsubscribe();

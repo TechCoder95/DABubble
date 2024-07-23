@@ -73,7 +73,6 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
-    /* debugger; */
     let message: ChatMessage = {
       channelId: this.channelService.channel.id,
       name: this.channelService.channel.name,
@@ -82,7 +81,7 @@ export class InputfieldComponent {
       sender: this.activeUser.username || 'guest',
       emoticons: [],
     };
-    this.chatService.addMessage(message);
+    this.chatService.sendMessage(message);
     this.textareaValue = '';
   }
 }
