@@ -11,9 +11,14 @@ import { VariableContentComponent } from './knezovic/home/variable-content/varia
 
 export const routes: Routes = [
   { path: '', component: StartscreenComponent },
-  { path: 'addUser', component: VariableContentComponent },
-  { path: 'login', component: VariableContentComponent }, 
+  { path: 'user', component: VariableContentComponent, 
+    children: [
+    {path: 'register', component: AddUserComponent},
+    {path: 'chooseAvatar', component: ChooseAvatarComponent},
+    {path: 'login', component: LoginComponent},
+
+  ]}, 
   { path: 'chat', component: ChatComponent },
-  {path: 'avatar', component: VariableContentComponent},
   {path: 'home', component: HomeComponent},
+  {path: 'verfiyEmail', component: VariableContentComponent}
 ];

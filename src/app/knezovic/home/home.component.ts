@@ -25,11 +25,11 @@ export class HomeComponent {
       if (!localStorage.getItem('userLogin') || (localStorage.getItem('userLogin') && user.avatar == "") || (!localStorage.getItem('userLogin') && !sessionStorage.getItem('userLogin'))) {
         if (user) {
           if (user.avatar == "") {
-            this.router.navigate(['/avatar']);
+            this.router.navigate(['/user/chooseAvatar']);
           }
         }
         else {
-          this.router.navigate(['/login']);
+          this.router.navigate(['/user/login']);
         }
       }
     });

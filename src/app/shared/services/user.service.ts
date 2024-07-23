@@ -169,7 +169,7 @@ export class UserService {
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
                 console.log('User Logged In but needs Avatar');
-                this.router.navigate(['/avatar']);
+                this.router.navigate(['/user/chooseAvatar']);
               }
             });
           });

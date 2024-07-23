@@ -38,11 +38,11 @@ export class ChooseAvatarComponent {
 
       if (this.UserService.activeUser) {
         if (this.UserService.activeUser.avatar == "") {
-          this.router.navigate(['/avatar']);
+          this.router.navigate(['/user/chooseAvatar']);
         }
       }
       else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/user/login']);
       }
     }
     );
@@ -60,7 +60,7 @@ export class ChooseAvatarComponent {
 
 
   goBackToRegister() {
-    this.router.navigateByUrl('/addUser')
+    this.router.navigate(['/users/register']);
   }
 
   onFileSelected(event: Event): void {
@@ -96,7 +96,7 @@ export class ChooseAvatarComponent {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
         this.UserService.checkOnlineStatus();
-        this.router.navigateByUrl('/home')
+        this.router.navigate(['/home'])
       });
   }
 
