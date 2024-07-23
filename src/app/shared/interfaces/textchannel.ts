@@ -6,6 +6,6 @@ export interface TextChannel {
    description: string;
    messages: ChatMessage[];
    owner: string;
-   zugewieseneUser: string[];
+   assignedUser: string[];
    isPrivate: boolean;
 }

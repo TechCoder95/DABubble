@@ -23,7 +23,7 @@ export class AddChannelComponent {
     description: "",
     messages: [],
     owner: "",
-    zugewieseneUser: [],
+    assignedUser: [],
     isPrivate: false
 
   };

@@ -48,7 +48,6 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
-  isLoggedIn: boolean | null = null; 
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -82,7 +81,6 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     await this.loadChannels();
     this.userService.getUsersFromDB();
-    this.isLoggedIn = this.userService.isLoggedIn;
     
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
     if (savedChannelId) {
@@ -118,11 +116,14 @@ export class SidenavComponent implements OnInit {
   }
 
   private createChannelNodes(): Node[] {
-    return this.channels.filter(this.isDefined).map((channel) => ({
-      name: channel.name,
-      type: 'channel'
-    }));
+    return this.channels
+      .filter(channel => !channel.isPrivate && this.isDefined(channel))
+      .map((channel) => ({
+        name: channel.name,
+        type: 'channel'
+      }));
   }
+  
 
   // todo daten aus datenbank laden
   private async loadMessages(): Promise<any[]> {
@@ -132,34 +133,38 @@ export class SidenavComponent implements OnInit {
     ];
   }
 
-  private createDirectMessageNodes(directMessages: TextChannel[]): Node[] {
-    return directMessages.filter(this.isDefined).map((dm) => ({
-      name: dm.name,
-      type: 'privateMessage'
-    }));
+  private createDirectMessageNodes(): Node[] {
+    return this.channels
+      .filter(channel => channel.isPrivate && this.isDefined(channel))
+      .map((dm) => ({
+        name: dm.name,
+        type: 'channel' // Behandelt Direktnachrichten wie Kanäle
+      }));
   }
 
   private async initializeTreeData(): Promise<void> {
     const channelNodes = this.createChannelNodes();
-    const directMessages = await this.loadMessages();
-    const directMessageNodes = this.createDirectMessageNodes(directMessages);
-
+    const directMessageNodes = this.createDirectMessageNodes();
+  
     const channelsStructure: Node = {
       name: 'Channels',
       type: 'category',
       children: [...channelNodes, { name: 'Channel hinzufügen', type: 'action' }],
     };
-
+  
     const directMessagesStructure: Node = {
       name: 'Direktnachrichten',
       type: 'category',
-      children: [...directMessageNodes],
+      children: directMessageNodes.length > 0 ? directMessageNodes : [{ name: 'Keine Nachrichten vorhanden', type: 'channel' }],
     };
-
+  
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
-    //console.log(this.TREE_DATA);
   }
+  
+  
+  
+  
 
   async loadChannels() {
     await this.fetchChannels();
@@ -180,10 +185,11 @@ export class SidenavComponent implements OnInit {
       }
     } else if (node.type === 'action') {
       this.openDialog();
-    } else if (node.type === 'privateMessage') {
-      // öffne chat
     }
-  }  
+  }
+  
+  
+  
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
@@ -213,6 +219,7 @@ export class SidenavComponent implements OnInit {
   isPrivateMessage(node: FlattenedNode): boolean {
     return node.type === 'privateMessage';
   }
+  
 
   isSelectedChannel(node: FlattenedNode): boolean {
     return this.selectedChannel?.name === node.name;
