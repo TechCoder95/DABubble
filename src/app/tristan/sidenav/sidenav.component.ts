@@ -48,7 +48,6 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
-  isLoggedIn: boolean | null = null; 
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -82,7 +81,6 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     await this.loadChannels();
     this.userService.getUsersFromDB();
-    this.isLoggedIn = this.userService.isLoggedIn;
     
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
     if (savedChannelId) {

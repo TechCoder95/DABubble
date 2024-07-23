@@ -1,14 +1,5 @@
-@if (!isLoggedIn){
-<div class="flex justify-content-between align-items-center p-3">
 
-    <img src="/img/logo.svg" alt="">
-    <div class="flex align-items-center flex-column">
-        <p>Neu bei DABubble?</p>
-        <a href="user/register">Konto erstellen</a>
-    </div>
-</div>
-}
-@else {
+@if (activeUser) {
 <div class="flex justify-content-between align-items-center p-3">
     <img src="/img/logo.svg" alt="">
     <input type="search" aria-label="awd" [(ngModel)]="searchInput" placeholder="Search bar">
@@ -19,10 +10,21 @@
     </div>
 </div>
 @if (!activeUser.activated) {
-    <div class="flex align-items-center justify-content-center">
+<div class="flex align-items-center justify-content-center">
     <div class="alert w-4 text-center" role="alert">
         <p>Bitte bestätigen Sie Ihre E-Mail-Adresse</p>
     </div>
 </div>
 }
+}
+@else {
+    <div class="flex justify-content-between align-items-center p-3">
+
+        <img src="/img/logo.svg" alt="">
+        <div class="flex align-items-center flex-column">
+            <p>Neu bei DABubble?</p>
+            <a href="user/register">Konto erstellen</a>
+        </div>
+    </div>
+    
 }

@@ -1,4 +1,3 @@
-@if (isLoggedIn) {
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
@@ -75,4 +74,3 @@
 </mat-drawer-container>
 
 <button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{'margin-left':'-50px'}" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
-}

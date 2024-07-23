@@ -14,10 +14,6 @@ import { LoginComponent } from "./knezovic/home/login/login.component";
 })
 export class AppComponent {
   title = 'dabubble';
-  constructor(private UserService:UserService) { }
+  constructor() { }
 
-  
-  get isLoggedIn() {
-    return this.UserService.isLoggedIn;
-  }
 }
