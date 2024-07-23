@@ -49,7 +49,9 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    /*  this.databaseService.subscribeToMessages(); */
     this.databaseService.onDataChange$.subscribe((channel) => {
+      console.log('onChangeSUBSCRIPTION');
       this.sendChatMessages = [];
       this.receiveChatMessages = [];
       this.chatService.sortMessages(channel);
@@ -60,11 +62,13 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
       }
     );
     this.chatService.sendMessages$.subscribe((message) => {
+      console.log('sendMessagesSUBSCRIPTION');
       if (message !== null) {
         this.sendChatMessages.push(message);
       }
     });
     this.chatService.receiveMessages$.subscribe((message) => {
+      console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
         this.receiveChatMessages.push(message);
         console.log(this.receiveChatMessages);
