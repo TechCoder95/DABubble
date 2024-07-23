@@ -21,7 +21,7 @@ export class AddChannelComponent {
     id: "",
     name: "",
     description: "",
-    messages: [],
+    conversationId: [],
     owner: "",
     assignedUser: [],
     isPrivate: false

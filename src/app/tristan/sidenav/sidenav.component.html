@@ -2,13 +2,21 @@
   <mat-drawer #drawer class="p-4" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
       <div class="flex align-items-center">
-        <img src="img/devspace.png" alt="devspace-logo">
+        <img src="img/devspace.png" alt="devspace-logo" />
         <h3 class="text-3xl m-2">Devspace</h3>
       </div>
-      <img class="cursor-pointer" src="img/new-message.png" alt="new-message-logo">
+      <img
+        class="cursor-pointer"
+        src="img/new-message.png"
+        alt="new-message-logo"
+      />
     </div>
 
-    <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
+    <mat-tree
+      class="mt-5"
+      [dataSource]="dataSource"
+      [treeControl]="treeControl"
+    >
       <!-- Unter Knoten -->
       <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
@@ -17,18 +25,27 @@
             <!-- Kanal -->
             <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="channel">
             <!-- Kanal hinzufügen -->
-            <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.png" alt="add-channel">
+            <img
+              *ngIf="isActionNode(node)"
+              class="mr-3"
+              src="img/add-channel-2.png"
+              alt="add-channel"
+            />
             <!-- Private Message -->
             <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/private-messages.png" alt="private-message">
           </ng-container>
-          <span (click)="handleNodeClick(node)" [ngClass]="{
-                    'cursor-pointer': true,
-                    'blue-channel-name': isNewChannel(node),
-                    'blue-name': isCategoryNode(node),
-                    'font-bold': isCategoryNode(node),
-                    'blue-action-name': isActionNode(node),
-                    'selected-channel': isSelectedChannel(node)
-                  }">{{node.name}}</span>
+          <span
+            (click)="handleNodeClick(node)"
+            [ngClass]="{
+              'cursor-pointer': true,
+              'blue-channel-name': isNewChannel(node),
+              'blue-name': isCategoryNode(node),
+              'font-bold': isCategoryNode(node),
+              'blue-action-name': isActionNode(node),
+              'selected-channel': isSelectedChannel(node)
+            }"
+            >{{ node.name }}</span
+          >
         </div>
       </mat-tree-node>
     
@@ -44,22 +61,41 @@
             </button>
             <ng-container *ngIf="node">
               <!-- Kategorien -->
-              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.png"
-                alt="channels">
-              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3"
-                src="img/private-messages.png" alt="direct-messages">
+              <img
+                *ngIf="isCategoryNode(node) && node.name === 'Channels'"
+                class="mr-3"
+                src="img/channels.png"
+                alt="channels"
+              />
+              <img
+                *ngIf="
+                  isCategoryNode(node) && node.name === 'Direktnachrichten'
+                "
+                class="mr-3"
+                src="img/private-messages.png"
+                alt="direct-messages"
+              />
             </ng-container>
-            <span matTreeNodeToggle [ngClass]="{
-                      'cursor-pointer': true,
-                      'blue-channel-name': isNewChannel(node),
-                      'blue-name': isCategoryNode(node),
-                      'font-bold': isCategoryNode(node),
-                      'blue-action-name': isActionNode(node),
-                      'selected-channel': isSelectedChannel(node)
-                    }">{{node.name}}</span>
+            <span
+              matTreeNodeToggle
+              [ngClass]="{
+                'cursor-pointer': true,
+                'blue-channel-name': isNewChannel(node),
+                'blue-name': isCategoryNode(node),
+                'font-bold': isCategoryNode(node),
+                'blue-action-name': isActionNode(node),
+                'selected-channel': isSelectedChannel(node)
+              }"
+              >{{ node.name }}</span
+            >
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
-            <img class="ml-auto" src="img/add-channel.png" alt="add" (click)="openDialog()">
+            <img
+              class="ml-auto"
+              src="img/add-channel.png"
+              alt="add"
+              (click)="openDialog()"
+            />
           </ng-container>
         </div>
       </mat-tree-node>
@@ -68,7 +104,7 @@
     
   </mat-drawer>
 
-  <div class="px-5 pt-2 content">
+  <div class="px-5 pt-2 content" [ngStyle]="{ 'flex-grow': 1 }">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>

@@ -73,16 +73,15 @@ export class InputfieldComponent {
   }
 
   sendMessage() {
-    debugger;
-    let message:ChatMessage = {
+    let message: ChatMessage = {
       channelId: this.channelService.channel.id,
       name: this.channelService.channel.name,
       message: this.textareaValue,
-      timestamp: new Date(),
+      timestamp: new Date().getTime(),
       sender: this.activeUser.username || 'guest',
       emoticons: [],
-    }
-    this.chatService.changeMessage(message);
+    };
+    this.chatService.sendMessage(message);
     this.textareaValue = '';
   }
 }
