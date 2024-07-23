@@ -7,6 +7,7 @@ import { HeaderComponent } from "../../shared/components/header/header.component
 import { FooterComponent } from "../../shared/components/footer/footer.component";
 import { VariableContentComponent } from "./variable-content/variable-content.component";
 import { Router } from '@angular/router';
+import { EmailService } from '../../shared/services/sendmail.service';
 
 
 @Component({
@@ -19,10 +20,20 @@ import { Router } from '@angular/router';
 export class HomeComponent {
 
 
-  constructor(private UserService: UserService, private router: Router) {
-    if (!localStorage.getItem('userLogin') && !sessionStorage.getItem('userLogin')) {
-      this.router.navigate(['/login']);
-    }
+  constructor(private UserService: UserService, private router: Router, private emailService: EmailService) {
+    this.UserService.activeUserObserver$.subscribe((user) => {
+      if (!localStorage.getItem('userLogin') || (localStorage.getItem('userLogin') && user.avatar == "") || (!localStorage.getItem('userLogin') && !sessionStorage.getItem('userLogin'))) {
+        if (user) {
+          if (user.avatar == "") {
+            this.router.navigate(['/avatar']);
+          }
+        }
+        else {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
+
   }
 
 
