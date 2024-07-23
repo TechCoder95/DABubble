@@ -63,6 +63,9 @@ export class EmailService {
                 this.router.navigate(['/home']);
               });
             }
+            else {
+              this.router.navigate(['/home']);
+            }
           }
         });
       }
