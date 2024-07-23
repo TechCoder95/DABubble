@@ -38,30 +38,36 @@ export class EmailService {
   }
 
 
-  verifyMail(authUser: any) {
-    if (authUser) {
+  verifyMail() {
+
+    this.userService.getUsersFromDB().then(() => {
       if (this.router.url.includes('verifyEmail')) {
-        this.userService.getUsersFromDB().then(() => {
 
-          this.userService.users.find((user) => {
-            if (user) {
-              this.activeUser = user;
-              const url = this.router.url;
-              const apiKey = url.split('?apiKey=')[1];
-              if (apiKey && !this.activeUser.activated) {
-                this.activeUser.activated = true;
-                this.userService.login(authUser);
-                this.userService.updateUser(this.activeUser).then(() => {
-                  this.router.navigate(['/home']);
-                });
-              }
+
+
+        let split1 = this.router.url.split('%3Femail%3D')[1]
+        let split2 = split1.split('&')[0];
+
+
+        console.log(split2);
+        this.userService.users.map(user => {
+          if (user.mail === split2) {
+            this.activeUser = user;
+            if (!this.activeUser.activated) {
+              this.activeUser.activated = true;
+
+              this.userService.updateActivationStatus(this.activeUser).then(() => {
+                localStorage.setItem("userLogin", this.activeUser.id? this.activeUser.id:'');
+                this.userService.activeUserSubject.next(this.activeUser);
+                this.userService.checkOnlineStatus();
+                this.router.navigate(['/home']);
+              });
             }
-          });
+          }
         });
-
       }
-    }
+    });
+
   }
-
-
 }
+

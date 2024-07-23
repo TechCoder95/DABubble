@@ -20,8 +20,7 @@ export class VariableContentComponent {
 
   constructor(private router: Router, private emailService: EmailService, private authService: AuthenticationService
   ) {
-
-    this.emailService.verifyMail(this.authService.auth);
+    this.emailService.verifyMail();
     console.log(this.router.url);
     this.link = this.router.url;
   }
