@@ -1,4 +1,11 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
@@ -22,35 +29,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent implements OnInit {
-  /*  @Output() receiveChatMessage!: string;
-  @Output() sendChatMessage!: string;
-  activeUser!: DABubbleUser;
-  sendChatMessages: ChatMessage[] = [];
-  receiveChatMessages: ChatMessage[] = [];
-
-  constructor(
-    private chatService: ChatService,
-    private userService: UserService,
-    private channelService: ChannelService
-  ) {
-    this.activeUser = this.userService.activeUser;
-    this.sortMessages();
-  }
-
-  sortMessages() {
-    if (this.channelService.channel && this.channelService.channel.messages) {
-      this.channelService.channel.messages.forEach((message) => {
-        if (message.sender === this.activeUser.username) {
-          this.sendChatMessages.push(message);
-        } else {
-          this.receiveChatMessages.push(message);
-        }
-      });
-    } else{
-      console.log('KEINE NACHRICHTEN')
-    }
-  } */
+export class ChatConversationComponent implements OnInit, OnDestroy {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -61,7 +40,8 @@ export class ChatConversationComponent implements OnInit {
   constructor(
     private chatService: ChatService,
     private userService: UserService,
-    private channelService: ChannelService
+    private channelService: ChannelService,
+    private cdr: ChangeDetectorRef
   ) {
     this.activeUser = this.userService.activeUser;
   }
@@ -73,7 +53,7 @@ export class ChatConversationComponent implements OnInit {
       },
       error: (err) => console.error(err),
     });
-    this.sortMessages(); // Initialer Aufruf, um Nachrichten beim ersten Laden zu sortieren
+    this.sortMessages();
   }
 
   sortMessages() {
@@ -90,6 +70,7 @@ export class ChatConversationComponent implements OnInit {
     } else {
       console.log('KEINE NACHRICHTEN');
     }
+    this.cdr.detectChanges();
   }
 
   ngOnDestroy() {

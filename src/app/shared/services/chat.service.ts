@@ -19,5 +19,4 @@ export class ChatService {
     debugger;
     this.databaseService.addMessageToChannel(message);
   }
-
 }
