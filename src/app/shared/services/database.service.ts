@@ -1,13 +1,25 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  doc,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  getDocs,
+  getDoc,
+} from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
+import { arrayUnion } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatabaseService {
-
   // Firestore Initialization
   firestore: Firestore = inject(Firestore);
 
@@ -15,7 +27,7 @@ export class DatabaseService {
 
   /**
    * Retrieves a reference to the specified database collection.
-   * 
+   *
    * @param {string} collectionName - The name of the database collection.
    * @returns A reference to the specified database collection.
    */
@@ -23,10 +35,9 @@ export class DatabaseService {
     return collection(this.firestore, collectionName);
   }
 
-
   /**
    * Sets the reference to the specified database collection.
-   * 
+   *
    * @param {string} collectionName - The name of the database collection.
    * @returns A reference to the specified database collection.
    */
@@ -42,19 +53,27 @@ export class DatabaseService {
    */
   async readDatafromDB(collectionName: string, array: any[]): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      onSnapshot(this.getDataRef(collectionName), (list) => {
-        const results = list.docs.map(data => ({ id: data.id, ...data.data() }));
-        array.length = 0;
-        array.push(...results); 
-        resolve();
-      }, reject);
-    }).catch((err) => { console.error('Error reading Data', err); });
+      onSnapshot(
+        this.getDataRef(collectionName),
+        (list) => {
+          const results = list.docs.map((data) => ({
+            id: data.id,
+            ...data.data(),
+          }));
+          array.length = 0;
+          array.push(...results);
+          resolve();
+        },
+        reject
+      );
+    }).catch((err) => {
+      console.error('Error reading Data', err);
+    });
   }
-
 
   /**
    * Adds data to the specified database.
-   * 
+   *
    * @param {string} collectionName - The name of the database.
    * @param {any} data - The data to be added to the database.
    * @returns A Promise that resolves when the data is successfully added to the database.
@@ -73,50 +92,60 @@ export class DatabaseService {
       throw err;
     }
   }
-  
 
+  async addMessageToChannel(message: ChatMessage) {
+    const channelDocRef = doc(this.firestore, 'channels', message.channelId);
+    await updateDoc(channelDocRef, { messages: arrayUnion(message) });
+  }
 
   /**
    * Updates data in the specified database and document.
-   * 
+   *
    * @param {string} collectionName - The name of the database.
    * @param {string} docId - The ID of the document.
    * @param {any} data - The data to be updated.
    * @returns {Promise<void>} - A promise that resolves when the data is updated.
    */
   async updateDataInDB(collectionName: string, docId: string, data: any) {
-    await updateDoc(doc(this.firestore, collectionName, docId), data)
-      .catch((err) => { console.error('Error updating Data', err) })
+    await updateDoc(doc(this.firestore, collectionName, docId), data).catch(
+      (err) => {
+        console.error('Error updating Data', err);
+      }
+    );
   }
-
 
   /**
    * Deletes data from the specified database and document ID.
-   * 
+   *
    * @param {string} collectionName - The name of the database.
    * @param {string} docId - The ID of the document to delete.
    * @returns {Promise<void>} - A promise that resolves when the data is deleted successfully.
    */
   async deleteDataFromDB(collectionName: string, docId: string) {
-    await deleteDoc(doc(this.firestore, collectionName, docId))
-      .catch((err) => { console.error('Error deleting Data', err) })
+    await deleteDoc(doc(this.firestore, collectionName, docId)).catch((err) => {
+      console.error('Error deleting Data', err);
+    });
   }
 
-   /**
+  /**
    * Retrieves messages from a given channel.
-   * 
+   *
    * @param {string} channelName - The name of the channel.
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
-   public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
+  public async getMessagesByChannel(
+    channelName: string
+  ): Promise<ChatMessage[]> {
     const messagesCollectionRef = this.getDataRef('messages');
-    const q = query(messagesCollectionRef, where('channelId', '==', channelName));
+    const q = query(
+      messagesCollectionRef,
+      where('channelId', '==', channelName)
+    );
     const snapshot = await getDocs(q);
     const messages: ChatMessage[] = [];
-    snapshot.forEach(doc => messages.push(doc.data() as ChatMessage));
+    snapshot.forEach((doc) => messages.push(doc.data() as ChatMessage));
     return messages;
   }
-
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -130,7 +159,7 @@ export class DatabaseService {
       return docSnap.data();
     } else {
       console.log('No such document!');
-      return
+      return;
     }
   }
 

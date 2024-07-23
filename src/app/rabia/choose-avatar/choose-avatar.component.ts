@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { DAStorageService } from '../../shared/services/dastorage.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { DABubbleUser } from '../../shared/interfaces/user';
 
 
 
@@ -37,11 +38,11 @@ export class ChooseAvatarComponent {
 
       if (this.UserService.activeUser) {
         if (this.UserService.activeUser.avatar == "") {
-          this.router.navigate(['/avatar']);
+          this.router.navigate(['/user/chooseAvatar']);
         }
       }
       else {
-        this.router.navigate(['/login']);
+        this.router.navigate(['/user/login']);
       }
     }
     );
@@ -59,7 +60,7 @@ export class ChooseAvatarComponent {
 
 
   goBackToRegister() {
-    this.router.navigateByUrl('/addUser')
+    this.router.navigate(['/users/register']);
   }
 
   onFileSelected(event: Event): void {
@@ -95,7 +96,7 @@ export class ChooseAvatarComponent {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
         this.UserService.checkOnlineStatus();
-        this.router.navigateByUrl('/home')
+        this.router.navigate(['/home'])
       });
   }
 

@@ -16,11 +16,11 @@ export class StartscreenComponent {
 
   ngOnInit(): void {
     if (localStorage.getItem('userLogin')) {
-      this.router.navigateByUrl('/home');
+      this.router.navigate(['/home']);
     }
     else {
       setTimeout(() => {
-        this.router.navigateByUrl('/login');
+        this.router.navigate(['/user/login']);
       }, 4500);
     }
   }

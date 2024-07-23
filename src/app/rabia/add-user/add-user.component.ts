@@ -67,12 +67,12 @@ export class AddUserComponent {
   }
 
   openAvatar() {
-    this.router.navigateByUrl('/avatar')
+    this.router.navigate(['/user/chooseAvatar']);
   }
 
 
   goToLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/user/login']);
   }
 
   // checkFields() {

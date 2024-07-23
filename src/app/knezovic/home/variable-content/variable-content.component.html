@@ -7,15 +7,7 @@
         <div class="w-9">
             <div class="flex flex-column w-full align-items-center justify-content-center">
                 <div class="card flex flex-column align-items-center justify-content-center w-5 h-8">
-                    @if (link == '/login') {
-                    <app-login></app-login>
-                    }
-                    @else if (link === '/addUser') {
-                    <app-add-user></app-add-user>
-                    }
-                    @else if (link === '/avatar') {
-                    <app-choose-avatar></app-choose-avatar>
-                    }
+                    <router-outlet></router-outlet>
 
                 </div>
                 <div class="flex gap-8">

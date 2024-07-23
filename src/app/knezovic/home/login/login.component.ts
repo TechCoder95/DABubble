@@ -80,7 +80,7 @@ export class LoginComponent {
    * Navigates to the registration page.
    */
   goToRegister() {
-    this.router.navigate(['/addUser']);
+    this.router.navigate(['/user/register']);
   }
 
   loginAsGuest() {

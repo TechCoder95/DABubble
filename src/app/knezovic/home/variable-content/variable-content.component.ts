@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { LoginComponent } from "../login/login.component";
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { AddUserComponent } from "../../../rabia/add-user/add-user.component";
 import { ChooseAvatarComponent } from "../../../rabia/choose-avatar/choose-avatar.component";
 import { HeaderComponent } from "../../../shared/components/header/header.component";
@@ -10,7 +10,7 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 @Component({
   selector: 'app-variable-content',
   standalone: true,
-  imports: [LoginComponent, AddUserComponent, ChooseAvatarComponent, HeaderComponent],
+  imports: [LoginComponent, AddUserComponent, ChooseAvatarComponent, HeaderComponent, RouterOutlet],
   templateUrl: './variable-content.component.html',
   styleUrl: './variable-content.component.scss'
 })

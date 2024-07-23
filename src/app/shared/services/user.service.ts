@@ -169,7 +169,7 @@ export class UserService {
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
                 console.log('User Logged In but needs Avatar');
-                this.router.navigate(['/avatar']);
+                this.router.navigate(['/user/chooseAvatar']);
               }
             });
           });
@@ -267,7 +267,7 @@ export class UserService {
               localStorage.removeItem('userLogin'),
                 this.activeUserSubject.next(null!);
               this.getUsersFromDB().then(() => {
-                window.location.reload()
+                window.location.reload();
               });
             });
         }
@@ -330,18 +330,18 @@ export class UserService {
 
   avatarSelected: boolean = false;
 
-  /**
-   * Checks if the user is currently logged in.
-   * @returns {boolean} True if the user is logged in, false otherwise.
-   */
-  get isLoggedIn() {
-    if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
-      (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
-      return true;
-    }
-    else
-      return false;
-  }
+  // /**
+  //  * Checks if the user is currently logged in.
+  //  * @returns {boolean} True if the user is logged in, false otherwise.
+  //  */
+  // get isLoggedIn() {
+  //   if ((localStorage.getItem('userLogin') && this.activeUser) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser' ||
+  //     (this.activeUser && sessionStorage.getItem('userLogin')) && this.avatarSelected && this.router.url != '/avatar' && this.router.url != '/addUser') {
+  //     return true;
+  //   }
+  //   else
+  //     return false;
+  // }
 
 }
 

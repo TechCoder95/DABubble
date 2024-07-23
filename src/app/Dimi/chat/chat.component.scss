@@ -3,6 +3,11 @@ mat-card {
   margin: 0 !important;
 }
 
+:host ::ng-deep mat-card {
+  border: none !important;
+  box-shadow: none !important; // Optional, falls Sie auch den Schatten entfernen möchten
+}
+
 chat-information {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
 }
