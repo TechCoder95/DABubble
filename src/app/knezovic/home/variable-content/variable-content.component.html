@@ -1,18 +1,28 @@
-<div class="flex flex-column w-full align-items-center justify-content-center">
-    <div class="card flex flex-column align-items-center justify-content-center h-8">
-        @if (link === '/home') {
-        <app-login></app-login>
-        }
-        @else if (link === '/addUser') {
-        <app-add-user></app-add-user>
-        }
-        @else if (link === '/avatar') {
-        <app-choose-avatar></app-choose-avatar>
-        }
+<div class="absolute w-full top-0 left-0">
+    <app-header></app-header>
+</div>
+<div class="h-screen w-full">
+    <div class="h-full w-full flex align-items-center justify-content-center">
 
-    </div>
-    <div class="flex gap-8">
-        <a href="#">Impressum</a>
-        <a href="#">Datenschutz</a>
+        <div class="w-9">
+            <div class="flex flex-column w-full align-items-center justify-content-center">
+                <div class="card flex flex-column align-items-center justify-content-center h-8">
+                    @if (link == '/login') {
+                    <app-login></app-login>
+                    }
+                    @else if (link === '/addUser') {
+                    <app-add-user></app-add-user>
+                    }
+                    @else if (link === '/avatar') {
+                    <app-choose-avatar></app-choose-avatar>
+                    }
+
+                </div>
+                <div class="flex gap-8">
+                    <a href="#">Impressum</a>
+                    <a href="#">Datenschutz</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

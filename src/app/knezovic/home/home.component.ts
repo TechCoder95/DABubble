@@ -6,6 +6,8 @@ import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
 import { FooterComponent } from "../../shared/components/footer/footer.component";
 import { VariableContentComponent } from "./variable-content/variable-content.component";
+import { Router } from '@angular/router';
+import { EmailService } from '../../shared/services/sendmail.service';
 
 
 @Component({
@@ -18,9 +20,23 @@ import { VariableContentComponent } from "./variable-content/variable-content.co
 export class HomeComponent {
 
 
-  constructor(private UserService: UserService) { }
+  constructor(private UserService: UserService, private router: Router, private emailService: EmailService) {
+    this.UserService.activeUserObserver$.subscribe((user) => {
+      if (!localStorage.getItem('userLogin') || (localStorage.getItem('userLogin') && user.avatar == "") || (!localStorage.getItem('userLogin') && !sessionStorage.getItem('userLogin'))) {
+        if (user) {
+          if (user.avatar == "") {
+            this.router.navigate(['/avatar']);
+          }
+        }
+        else {
+          this.router.navigate(['/login']);
+        }
+      }
+    });
 
-    
+  }
+
+
   get isLoggedIn() {
     return this.UserService.isLoggedIn;
   }

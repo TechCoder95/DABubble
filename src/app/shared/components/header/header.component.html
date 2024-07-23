@@ -18,4 +18,11 @@
         <img class="ml-2" src="/img/arrow-down.svg" alt="" (click)="openMenu()">
     </div>
 </div>
+@if (!activeUser.activated) {
+    <div class="flex align-items-center justify-content-center">
+    <div class="alert w-4 text-center" role="alert">
+        <p>Bitte bestätigen Sie Ihre E-Mail-Adresse</p>
+    </div>
+</div>
+}
 }

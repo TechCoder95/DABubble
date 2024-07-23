@@ -24,9 +24,9 @@ export class HeaderComponent {
 
   constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) {
 
-    this.userService.getUsersFromDB().then(() => {
-      this.activeUser = this.userService.activeUser;
-    })
+    this.userService.activeUserObserver$.subscribe((user: DABubbleUser) => {
+      this.activeUser = user;
+    });
 
    }
 

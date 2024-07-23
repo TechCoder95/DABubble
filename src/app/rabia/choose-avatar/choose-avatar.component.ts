@@ -31,9 +31,20 @@ export class ChooseAvatarComponent {
 
 
   constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
+    let id = localStorage.getItem("userLogin");
     this.UserService.getUsersFromDB().then(() => {
-      this.selectAvatar('/img/avatar.svg');
-    });
+      this.UserService.users.map(user => user.id === id ? this.UserService.activeUser = user : null);
+
+      if (this.UserService.activeUser) {
+        if (this.UserService.activeUser.avatar == "") {
+          this.router.navigate(['/avatar']);
+        }
+      }
+      else {
+        this.router.navigate(['/login']);
+      }
+    }
+    );
   }
 
 

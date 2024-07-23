@@ -6,13 +6,14 @@ import { ChooseAvatarComponent } from './rabia/choose-avatar/choose-avatar.compo
 import { AddUserComponent } from './rabia/add-user/add-user.component';
 import { HomeComponent } from './knezovic/home/home.component';
 import { StartscreenComponent } from './knezovic/startscreen/startscreen.component';
+import { VariableContentComponent } from './knezovic/home/variable-content/variable-content.component';
 
 
 export const routes: Routes = [
   { path: '', component: StartscreenComponent },
-  { path: 'addUser', component: HomeComponent },
-  { path: 'login', component: LoginComponent }, 
+  { path: 'addUser', component: VariableContentComponent },
+  { path: 'login', component: VariableContentComponent }, 
   { path: 'chat', component: ChatComponent },
-  {path: 'avatar', component: HomeComponent},
+  {path: 'avatar', component: VariableContentComponent},
   {path: 'home', component: HomeComponent},
 ];

@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service';
+import { EmailService } from '../../../shared/services/sendmail.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,14 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService) {}
+  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService, private emailService: EmailService) { 
+
+    this.UserService.activeUserObserver$.subscribe((user) => {
+      if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
+        this.router.navigate(['/home']);
+      }
+    });
+  }
 
   email: string = '';
   epassword: string = '';
@@ -53,7 +61,9 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword);
+    this.AuthService.mailSignIn(this.email, this.epassword).then(() => {
+      this.UserService.checkOnlineStatus();
+    });
   }
 
 
