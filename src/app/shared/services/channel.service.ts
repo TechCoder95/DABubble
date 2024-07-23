@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
+import { ChatService } from './chat.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,24 +12,30 @@ export class ChannelService {
     null
   );
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private databaseService: DatabaseService, private chatService: ChatService) {}
 
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   channel!: TextChannel;
 
   /**
    * Selects a channel.
-   * 
+   *
    * @param channel - The channel to be selected.
    */
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
+    console.log(this.channel);
+    this.getActiveMessages(this.channel);
+  }
+
+  getActiveMessages(channel: TextChannel) {
+    this.chatService.sortMessages(channel);
   }
 
   /**
    * Updates the name of the selected channel.
-   * 
+   *
    * @param updatedName - The updated name for the channel.
    */
   async updateChannelName(updatedName: string) {
