@@ -9,11 +9,17 @@ import { Subscription } from 'rxjs';
 import { DatabaseService } from '../../shared/services/database.service';
 import { ChannelService } from '../../shared/services/channel.service';
 import { user } from '@angular/fire/auth';
+import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 
 @Component({
   selector: 'app-chat',
   standalone: true,
-  imports: [MatCardModule, ChatConversationComponent, ChatInformationComponent],
+  imports: [
+    MatCardModule,
+    ChatConversationComponent,
+    ChatInformationComponent,
+    InputfieldComponent,
+  ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })

@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -22,7 +21,6 @@ import { DatabaseService } from '../../../shared/services/database.service';
   selector: 'app-chat-conversation',
   standalone: true,
   imports: [
-    InputfieldComponent,
     ReceiveChatMessageComponent,
     SendChatMessageComponent,
     CommonModule,

@@ -1,12 +1,12 @@
 import { Component, Pipe } from '@angular/core';
-import { ChannelService } from '../../../../shared/services/channel.service';
+import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatService } from '../../../../shared/services/chat.service';
-import { UserService } from '../../../../shared/services/user.service';
-import { DABubbleUser } from '../../../../shared/interfaces/user';
-import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
+import { ChatService } from '../../../shared/services/chat.service';
+import { UserService } from '../../../shared/services/user.service';
+import { DABubbleUser } from '../../../shared/interfaces/user';
+import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 
 @Component({
   selector: 'app-chat-inputfield',
