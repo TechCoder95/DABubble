@@ -23,10 +23,6 @@ export class OpenUserInfoComponent {
     
   }
 
-  olm() {
-    console.log("budur iste", this.data.member);
-    
-  }
 
   close() {
     this.dialogRef.close();
