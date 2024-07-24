@@ -5,19 +5,16 @@
                 verwendest.</p>
             <div class="w-full">
                 <input type="text" [(ngModel)]="email" placeholder="Email" name="email" #mail="ngModel" required>
-                @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>Your mail is
-                        required</span>
+                @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>*Diese E-Mail-Adresse ist leider ungültig</span>
                 </div>}
             </div>
             <div class="w-full">
                 <input type="password" [(ngModel)]="epassword" placeholder="Password" name="password"
                     #password="ngModel" required>
-                @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Your password
-                        is
-                        required</span></div>}
+                @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Falsches Passwort. Bitte noch einmal versuchen.</span></div>}
             </div>
             <div class="mt-5">
-                <a href="">Passwort vergessen?</a>
+                <a (click)="forgotPW()">Passwort vergessen?</a>
             </div>
 
 
@@ -27,7 +24,7 @@
             </div>
             <div class="flex w-full h-full justify-content-center align-items-center">
                 <button type="button" class="googleButton" (click)="googleLogin()" title="register">
-                    <div class="flex align-items-center justify-content-center">
+                    <div class="flex align-items-center justify-content-center text-lg font-bold" style="gap: 20px">
                         <img src="/img/google.svg" alt="Logo-Google">
                         Anmelden mit Google
                     </div>

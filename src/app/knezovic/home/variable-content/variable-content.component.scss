@@ -8,3 +8,24 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: white;
 }
+
+a {
+    font-family: 'Figtree' !important;
+    font-size: 18px;
+    color: #797EF3;
+    font-weight: 400;
+    border: 1px solid transparent;
+    border-radius: 30px;
+    padding: 10px 15px;
+    text-decoration: none;
+    border-radius: 30px;
+    padding: 10px 15px;
+    text-decoration: none;
+
+    &:hover {
+        color: #444DF2;
+        font-weight: 500;
+        border: 1px solid #ADB0D9;
+    }
+
+}

@@ -12,13 +12,23 @@ input {
     font-size: 16px;
     background-color: #ECEEFD;
     cursor: pointer;
+    border: 1px solid white;
+    outline: none;
+
+    ::placeholder {
+        font-size: 18px;
+    }
 
     &:hover {
-        border-color: black;
-        border: 2px solid black;
+        border: 1px solid #ADB0D9
+    }
+
+    &:focus {
+        border: 1px solid #535AF1
     }
 }
-span{
+
+span {
     margin-left: 20px;
 }
 
@@ -65,23 +75,23 @@ hr {
 }
 
 
-.test2{
+.test2 {
     width: 90%;
 }
 
-.gast{
+.gast {
     background-color: white;
     border: 2px solid #007bff;
     color: #007bff;
 
-    &:hover{
+    &:hover {
         background-color: #007bff;
         color: white;
     }
 
 }
 
-.googleButton{
+.googleButton {
     margin: 10px;
     padding: 20px;
     border: 2px solid #ccc;
@@ -95,12 +105,20 @@ hr {
     font-size: 16px;
     text-align: center;
     background-color: #ECEEFD;
+    border: 1px solid white;
+
     &:hover {
-        border-color: black;
+        border: 1px solid #444DF2;
+        background-color: #ECEEFD;
+    }
+
+    &:focus {
+        border: 1px solid #686868;
+        background-color: #ECEEFD;
     }
 }
 
-h1{
+h1 {
     color: #3A4EEC;
 }
 
@@ -110,7 +128,16 @@ table {
 }
 
 a {
+    font-family: 'Figtree' !important;
     text-decoration: none;
     color: #797EF3;
-}
 
+    &:hover {
+        color: #444DF2;
+        background-color: #eceefe;
+        border-radius: 30px;
+        padding: 5px 30px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+}

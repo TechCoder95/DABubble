@@ -73,9 +73,19 @@ input {
     background-position: 16px 50%;
     padding-left: 48px;
     box-sizing: border-box;
+    border: 1px solid white;
+    outline: none;
+
+    ::placeholder {
+        font-size: 18px;
+    }
+
+    &:hover {
+        border: 1px solid #ADB0D9
+    }
 
     &:focus {
-        border-color: 1px solid #535AF1;
+        border: 1px solid #535AF1
     }
 }
 
