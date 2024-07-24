@@ -27,27 +27,26 @@ export class ChatService {
   addMessage(message: ChatMessage) {
     this.messageSource.next(message);
     this.message = message;
-    /* debugger; */
     this.databaseService.addDataToDB('messages', message);
   }
 
-  sortMessages(channel:TextChannel) {
-      if (channel && channel.conversationId) {
-        channel.conversationId.forEach((messageID) => {
-          this.databaseService
-            .readDataByID('messages', messageID)
-            .then((messageFromDb) => {
-              let message = messageFromDb as ChatMessage;
-              if (message.sender === this.userService.activeUser.username) {
-                this.readMessage(message);
-              } else {
-                this.receiveMessage(message);
-              }
-            });
-        });
-      } else {
-        console.log('KEINE NACHRICHTEN');
-      }
+  async sortMessages(channel: TextChannel) {
+    if (channel && channel.conversationId) {
+      channel.conversationId.forEach((messageID) => {
+        this.databaseService
+          .readDataByID('messages', messageID)
+          .then((messageFromDb) => {
+            let message = messageFromDb as ChatMessage;
+            if (message.sender === this.userService.activeUser.username) {
+              this.readMessage(message);
+            } else {
+              this.receiveMessage(message);
+            }
+          });
+      });
+    } else {
+      console.log('KEINE NACHRICHTEN');
+    }
   }
 
   sendMessage(message: ChatMessage) {

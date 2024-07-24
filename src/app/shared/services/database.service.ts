@@ -28,7 +28,7 @@ export class DatabaseService {
   public onDataChange$ = this.onDataChange.asObservable();
 
   constructor() {
-    this.subscribeToMessages();
+  
   }
 
   /**
@@ -194,10 +194,10 @@ export class DatabaseService {
   
   
 
-  async subscribeToMessages() {
+  async subscribeToMessages( channel?: TextChannel) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', sessionStorage.getItem('selectedChannelId'))
+      where('id', '==', channel?.id || sessionStorage.getItem('selectedChannelId'))
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {

@@ -131,19 +131,19 @@ export class ChatInformationComponent {
 
   channelMembers = [
     {
-      img: './img/member1.png',
+      img: './img/2.svg',
       name: 'Dimitrios Kapetanis (Du)',
     },
     {
-      img: './img/member2.png',
+      img: './img/3.svg',
       name: 'Rabia Ürkmez',
     },
     {
-      img: './img/member3.png',
+      img: './img/4.svg',
       name: 'Dominik Knezovic',
     },
     {
-      img: './img/member4.png',
+      img: './img/5.svg',
       name: 'Tristan Gehring',
     },
   ];

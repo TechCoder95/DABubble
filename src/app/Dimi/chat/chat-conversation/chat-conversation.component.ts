@@ -6,7 +6,6 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -22,7 +21,6 @@ import { DatabaseService } from '../../../shared/services/database.service';
   selector: 'app-chat-conversation',
   standalone: true,
   imports: [
-    InputfieldComponent,
     ReceiveChatMessageComponent,
     SendChatMessageComponent,
     CommonModule,
@@ -49,7 +47,9 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    /*  this.databaseService.subscribeToMessages(); */
     this.databaseService.onDataChange$.subscribe((channel) => {
+      console.log('onChangeSUBSCRIPTION');
       this.sendChatMessages = [];
       this.receiveChatMessages = [];
       this.chatService.sortMessages(channel);
@@ -60,11 +60,13 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
       }
     );
     this.chatService.sendMessages$.subscribe((message) => {
+      console.log('sendMessagesSUBSCRIPTION');
       if (message !== null) {
         this.sendChatMessages.push(message);
       }
     });
     this.chatService.receiveMessages$.subscribe((message) => {
+      console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
         this.receiveChatMessages.push(message);
         console.log(this.receiveChatMessages);

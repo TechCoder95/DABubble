@@ -8,17 +8,25 @@ import { HomeComponent } from './knezovic/home/home.component';
 import { StartscreenComponent } from './knezovic/startscreen/startscreen.component';
 import { VariableContentComponent } from './knezovic/home/variable-content/variable-content.component';
 import { isLoggedIn } from './shared/guards/authguard.guard';
+import { PasswordResetComponent } from './rabia/password-reset/password-reset.component';
+import { PasswordChangeComponent } from './rabia/password-change/password-change.component';
 
 
 export const routes: Routes = [
   { path: '', component: StartscreenComponent },
-  { path: 'user', component: VariableContentComponent, 
+  {
+    path: 'user', component: VariableContentComponent,
     children: [
-    {path: 'register', component: AddUserComponent},
-    {path: 'chooseAvatar', component: ChooseAvatarComponent},
-    {path: 'login', component: LoginComponent},
-  ]}, 
-  { path: 'chat', component: ChatComponent  , canActivate: [isLoggedIn]},
-  {path: 'home', component: HomeComponent , canActivate: [isLoggedIn]},
-  {path: 'verfiyEmail', component: VariableContentComponent},
+      { path: 'register', component: AddUserComponent },
+      { path: 'chooseAvatar', component: ChooseAvatarComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'pw', component: PasswordResetComponent },
+      { path: 'pw-change', component: PasswordChangeComponent }
+    ]
+  },
+  { path: 'chat', component: ChatComponent, canActivate: [isLoggedIn] },
+  { path: 'home', component: HomeComponent, canActivate: [isLoggedIn] },
+  { path: 'verfiyEmail', component: VariableContentComponent },
+
+  
 ];

@@ -9,3 +9,32 @@ main {
     background: rgba(236, 238, 254, 1);
   }
 }
+
+.img-container {
+  width: 64px;
+  height: 64px;
+
+  img {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+  }
+}
+
+.online-status {
+  width: 14px;
+  height: 14px;
+  border-radius: 100%;
+  border: 2px solid white;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+
+.green {
+  background-color: #92C83E;
+}
+
+.grey {
+  background-color: #686868;
+}

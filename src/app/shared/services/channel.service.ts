@@ -30,7 +30,7 @@ export class ChannelService {
   }
 
   getActiveMessages(channel: TextChannel) {
-    this.chatService.sortMessages(channel);
+    this.databaseService.subscribeToMessages(channel)
   }
 
   /**
