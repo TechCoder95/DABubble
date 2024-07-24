@@ -1,9 +1,7 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Injectable} from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, User } from "firebase/auth";
-import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
-import { DABubbleUser } from '../interfaces/user';
 import { EmailService } from './sendmail.service';
 
 @Injectable({

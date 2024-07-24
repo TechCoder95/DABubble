@@ -21,15 +21,17 @@ import { TextChannel } from '../interfaces/textchannel';
   providedIn: 'root',
 })
 export class DatabaseService {
-  // Firestore Initialization
+
+
   firestore: Firestore = inject(Firestore);
+
 
   private onDataChange = new BehaviorSubject<any | null>(null);
   public onDataChange$ = this.onDataChange.asObservable();
 
-  constructor() {
-  
-  }
+
+  constructor() { }
+
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -41,6 +43,7 @@ export class DatabaseService {
     return collection(this.firestore, collectionName);
   }
 
+
   /**
    * Sets the reference to the specified database collection.
    *
@@ -50,6 +53,7 @@ export class DatabaseService {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
+
 
   /**
    * Reads data from the specified database and populates the provided array with the retrieved data.
@@ -77,6 +81,7 @@ export class DatabaseService {
     });
   }
 
+  
   /**
    * Adds data to the specified database.
    *
@@ -88,7 +93,6 @@ export class DatabaseService {
   //   await addDoc(this.setRef(collectionName), data)
   //     .catch((err) => { console.error('Error adding Data', err) })
   // }
-
   async addDataToDB(collectionName: string, data: any): Promise<string> {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
@@ -99,12 +103,20 @@ export class DatabaseService {
     }
   }
 
+
+  /**
+   * Adds a message to a channel.
+   * @param {string} channelDoc - The document ID of the channel.
+   * @param {string} messageDocId - The document ID of the message.
+   * @returns {Promise<void>} - A promise that resolves when the message is added to the channel.
+   */
   async addMessageToChannel(channelDoc: string, messageDocId: string) {
     const channelDocRef = doc(this.firestore, 'channels', channelDoc);
     await updateDoc(channelDocRef, {
       conversationId: arrayUnion(messageDocId),
     });
   }
+
 
   /**
    * Updates data in the specified database and document.
@@ -122,6 +134,7 @@ export class DatabaseService {
     );
   }
 
+
   /**
    * Deletes data from the specified database and document ID.
    *
@@ -134,6 +147,7 @@ export class DatabaseService {
       console.error('Error deleting Data', err);
     });
   }
+
 
   /**
    * Retrieves messages from a given channel.
@@ -155,6 +169,7 @@ export class DatabaseService {
     return messages;
   }
 
+
   /**
    * Retrieves data from a Firestore collection by ID.
    * @param collectionName - The name of the Firestore collection.
@@ -171,6 +186,15 @@ export class DatabaseService {
     }
   }
 
+
+  /**
+   * Adds channel data to the database.
+   * 
+   * @param collectionName - The name of the collection in the database.
+   * @param data - The data to be added to the database.
+   * @returns A Promise that resolves to the ID of the added document.
+   * @throws If there is an error adding the data to the database.
+   */
   async addChannelDataToDB(collectionName: string, data: any): Promise<string> {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
@@ -183,6 +207,13 @@ export class DatabaseService {
     }
   }
 
+
+  /**
+   * Retrieves the text channels assigned to a specific user.
+   * 
+   * @param userId - The ID of the user.
+   * @returns A promise that resolves to an array of TextChannel objects.
+   */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
     const channelsCollectionRef = this.getDataRef('channels');
     const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
@@ -191,10 +222,13 @@ export class DatabaseService {
     snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
     return channels;
   }
-  
-  
 
-  async subscribeToMessages( channel?: TextChannel) {
+
+  /**
+   * Subscribes to messages in a specified channel or the currently selected channel.
+   * @param channel - The optional TextChannel object representing the channel to subscribe to.
+   */
+  async subscribeToMessages(channel?: TextChannel) {
     const q = query(
       collection(this.firestore, 'channels'),
       where('id', '==', channel?.id || sessionStorage.getItem('selectedChannelId'))
