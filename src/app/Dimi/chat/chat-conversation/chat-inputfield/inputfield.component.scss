@@ -8,12 +8,14 @@
   width: -webkit-fill-available;
   margin: 20px;
   border: 1px solid rgba(173, 176, 217, 1);
-  > textarea {
+
+  >textarea {
     resize: none;
     border: none;
     outline: none;
     background-color: rgb(253, 251, 255);
     font-size: 16px;
+
     &::placeholder {
       color: rgba(104, 104, 104, 1);
     }
@@ -23,8 +25,10 @@
 .arrange-input-options {
   display: flex;
   justify-content: space-between;
-  > .send-message-btn {
+
+  >.send-message-btn {
     cursor: pointer;
+
     &:hover {
       opacity: 0.6;
     }
@@ -35,13 +39,29 @@
   display: flex;
   align-items: center;
   gap: 5px;
-  > img {
-    cursor: pointer;
-    height: 40px;
+
+  >.emoji {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 40px;
-    &:first-of-type {
-      border-right: 1px solid rgba(173, 176, 217, 1);
-      padding-right: 5px;
+    height: 40px;
+    padding: 8px;
+
+
+    &:hover {
+      background-color: #ECEEFE;
+      border-radius: 100%;
+      
+    }
+
+
+    >img {
+      cursor: pointer;
+      height: 20px;
+      width: 20px;
+
     }
   }
+
 }

@@ -23,12 +23,12 @@
           <button mat-icon-button></button>
           <ng-container *ngIf="node">
             <!-- Kanal -->
-            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/channel.png" alt="channel">
+            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/tag-hover.svg" alt="channel">
             <!-- Kanal hinzufügen -->
             <img
               *ngIf="isActionNode(node)"
               class="mr-3"
-              src="img/add-channel-2.png"
+              src="img/add-channel-2.svg"
               alt="add-channel"
             />
             <!-- Private Message -->
@@ -56,7 +56,7 @@
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
                 <img style="width: 10px; height: 10px;"
-                  [src]="treeControl.isExpanded(node) ? 'img/arrow-down.png' : 'img/arrow-right.png'" alt="toggle icon">
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'" alt="toggle icon">
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
@@ -64,7 +64,7 @@
               <img
                 *ngIf="isCategoryNode(node) && node.name === 'Channels'"
                 class="mr-3"
-                src="img/channels.png"
+                src="img/channels.svg"
                 alt="channels"
               />
               <img
@@ -72,7 +72,7 @@
                   isCategoryNode(node) && node.name === 'Direktnachrichten'
                 "
                 class="mr-3"
-                src="img/private-messages.png"
+                src="img/account_circle.svg"
                 alt="direct-messages"
               />
             </ng-container>

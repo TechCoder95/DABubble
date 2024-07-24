@@ -13,6 +13,12 @@ main {
 .img-container {
   width: 64px;
   height: 64px;
+
+  img {
+    width: 64px;
+    height: 64px;
+    border-radius: 100%;
+  }
 }
 
 .online-status {

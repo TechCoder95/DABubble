@@ -3,21 +3,30 @@
 
   <div class="arrange-input-options">
     <div class="chat-options">
-      <img
+      <div class="emoji">
+        <img
         [src]="addFilesImg"
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
       />
-      <img
+      </div>
+      <div>
+        <img src="/img/line.svg" alt="">
+      </div>
+      <div class="emoji">
+        <img
         [src]="addEmojiImg"
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
       />
-      <img
+      </div>
+      <div class="emoji">
+        <img
         [src]="addLinkImg"
         (mouseenter)="changeAddLinkImg(true)"
         (mouseleave)="changeAddLinkImg(false)"
       />
+      </div>
     </div>
     <img src="./img/send-message.png" class="send-message-btn" (click)="sendMessage()"/>
   </div>
