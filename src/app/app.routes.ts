@@ -9,6 +9,7 @@ import { StartscreenComponent } from './knezovic/startscreen/startscreen.compone
 import { VariableContentComponent } from './knezovic/home/variable-content/variable-content.component';
 import { isLoggedIn } from './shared/guards/authguard.guard';
 import { PasswordResetComponent } from './rabia/password-reset/password-reset.component';
+import { PasswordChangeComponent } from './rabia/password-change/password-change.component';
 
 
 export const routes: Routes = [
@@ -23,4 +24,5 @@ export const routes: Routes = [
   {path: 'home', component: HomeComponent , canActivate: [isLoggedIn]},
   {path: 'verfiyEmail', component: VariableContentComponent},
   {path: 'pw', component: PasswordResetComponent},
+  {path: 'pw-change', component: PasswordChangeComponent}
 ];

@@ -6,19 +6,19 @@ import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-password-reset',
+  selector: 'app-password-change',
   standalone: true,
   imports: [MatCardModule, MatButtonModule, FormsModule, CommonModule],
-  templateUrl: './password-reset.component.html',
-  styleUrl: './password-reset.component.scss'
+  templateUrl: './password-change.component.html',
+  styleUrl: './password-change.component.scss'
 })
-export class PasswordResetComponent {
-
+export class PasswordChangeComponent {
   email: string = '';
+  newPassword: string = '';
 
   constructor(private router: Router) {}
 
-  passwordChange() {
-    this.router.navigate(['/pw-change']);
+  goBack() {
+    this.router.navigate(['/pw']);
   }
 }
