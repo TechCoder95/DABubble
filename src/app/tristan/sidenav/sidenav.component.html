@@ -1,5 +1,5 @@
 <mat-drawer-container class="h-full relative" autosize>
-  <mat-drawer #drawer class="p-4" mode="side" [opened]="true">
+  <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
       <div class="flex align-items-center">
         <img src="img/devspace.png" alt="devspace-logo" />
@@ -32,7 +32,12 @@
               alt="add-channel"
             />
             <!-- Private Message -->
-            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/private-messages.png" alt="private-message">
+            <img
+              *ngIf="isPrivateMessage(node)"
+              class="mr-3"
+              src="img/private-messages.png"
+              alt="private-message"
+            />
           </ng-container>
           <span
             (click)="handleNodeClick(node)"
@@ -48,7 +53,7 @@
           >
         </div>
       </mat-tree-node>
-    
+
       <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter" matTreeNodeToggle>
@@ -100,13 +105,18 @@
         </div>
       </mat-tree-node>
     </mat-tree>
-    
-    
   </mat-drawer>
 
-  <div class="px-5 pt-2 content" [ngStyle]="{ 'flex-grow': 1 }">
+  <div class="pl-5 content extend">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
 
-<button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{'margin-left':'-50px'}" (click)="drawer.toggle()" mat-button>Workspace-Menü</button>
+<button
+  class="absolute top-50 z-5 -rotate-90"
+  [ngStyle]="{ 'margin-left': '-50px' }"
+  (click)="drawer.toggle()"
+  mat-button
+>
+  Workspace-Menü
+</button>

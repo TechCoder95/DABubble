@@ -1,13 +1,21 @@
 mat-card {
   margin-inline: 0 !important;
   margin: 0 !important;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 :host ::ng-deep mat-card {
   border: none !important;
-  box-shadow: none !important; // Optional, falls Sie auch den Schatten entfernen möchten
+  box-shadow: none !important;
+  border-radius: 30px !important;
 }
 
 chat-information {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+}
+
+app-chat-conversation {
+  flex-grow: 1;
 }
