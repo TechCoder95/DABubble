@@ -16,9 +16,9 @@ import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
   styleUrl: './inputfield.component.scss',
 })
 export class InputfieldComponent {
-  addFilesImg = './img/add-files-default.png';
+  addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
-  addLinkImg = './img/add-link-default.png';
+  addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
   activeUser!: DABubbleUser;
 
