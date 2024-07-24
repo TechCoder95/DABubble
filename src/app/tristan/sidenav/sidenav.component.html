@@ -23,7 +23,12 @@
           <button mat-icon-button></button>
           <ng-container *ngIf="node">
             <!-- Kanal -->
-            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/tag-hover.svg" alt="channel">
+            <img
+              *ngIf="isChannelNode(node) && !isPrivateMessage(node)"
+              class="mr-3"
+              src="img/tag-hover.svg"
+              alt="channel"
+            />
             <!-- Kanal hinzufügen -->
             <img
               *ngIf="isActionNode(node)"
@@ -56,12 +61,28 @@
 
       <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
-        <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter" matTreeNodeToggle>
+        <div
+          class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
+          matTreeNodeToggle
+        >
           <div class="flex align-items-center">
-            <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
-              <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
-                <img style="width: 10px; height: 10px;"
-                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'" alt="toggle icon">
+            <button
+              mat-icon-button
+              (click)="$event.stopPropagation()"
+              matTreeNodeToggle
+            >
+              <mat-icon
+                class="mat-icon-rtl-mirror align-items-center flex justify-content-center"
+              >
+                <img
+                  style="width: 10px; height: 10px"
+                  [src]="
+                    treeControl.isExpanded(node)
+                      ? 'img/arrow_down.svg'
+                      : 'img/arrow-right.png'
+                  "
+                  alt="toggle icon"
+                />
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
