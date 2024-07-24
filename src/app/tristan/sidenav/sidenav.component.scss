@@ -16,33 +16,14 @@
   font-weight: bolder;
 }
 
+.blue-filter:hover {
+    filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%) hue-rotate(228deg) brightness(97%) contrast(95%);
+}
+
 .teste:hover {
-  filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(7479%)
-    hue-rotate(199deg) brightness(94%) contrast(90%);
+    filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(7479%) hue-rotate(199deg) brightness(94%) contrast(90%);
 }
 
 .content {
-  background-color: #eceefe;
-}
-
-mat-drawer-container {
-  padding: 40px;
-  background: initial;
-}
-
-.extend {
-  height: 100%;
-  display: flex;
-  border-radius: 30px;
-  > app-chat {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.sidenav-style {
-  border-radius: 30px !important;
-  top: 40px;
-  bottom: 40px;
+    background-color: #ECEEFE;
 }

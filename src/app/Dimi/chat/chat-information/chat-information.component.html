@@ -21,7 +21,7 @@
         [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
       >
         @for (member of channelMembers; track $index) {
-        <img [src]="member.img" />
+        <img class="img" [src]="member.img" />
         }
         <p>{{ channelMembers.length }}</p>
       </div>

@@ -5,7 +5,10 @@
     <input type="search" aria-label="awd" [(ngModel)]="searchInput" placeholder="Search bar">
     <div class="flex align-items-center">
         <p class="userName">{{activeUser.username}}</p>
-        <img class="ml-2 profileimg" src="{{activeUser.avatar}}" alt="">
+        <div class="ml-2 mr-2 relative img-container">
+            <img class="profileimg" src="{{activeUser.avatar}}" alt="">
+            <div class="online-status"></div>
+        </div>
         <img class="ml-2" src="/img/arrow-down.svg" alt="" (click)="openMenu()">
     </div>
 </div>

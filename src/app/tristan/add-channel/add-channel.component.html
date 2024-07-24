@@ -1,21 +1,24 @@
+<div class="flex justify-content-between align-items-center p-4">
+  <h2 class="text-2xl font-bold text-color m-0 p-0" mat-dialog-title>Channel erstellen</h2>
+  <div class="close" (click)="onNoClick()"></div>
+</div>
 
-  <h2 mat-dialog-title>Channel erstellen</h2>
+<mat-dialog-content class="flex flex-column text-color">
+  <p class="text-lg text-color">Channels dienen deinem Team zur Kommunikation. Am besten sollten sie themenbezogen sein #marketing zum Beispiel.
+  </p>
 
-  <mat-dialog-content class="flex flex-column">
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo iste similique aspernatur beatae nam, suscipit
-      accusamus corrupti nobis? Ad est asperiores iusto perspiciatis itaque nobis quas rem inventore vero quia!</p>
-    <mat-form-field class="example-full-width">
-      <mat-label>Channelname</mat-label>
-      <input matInput [(ngModel)]="data.name" placeholder="Gebe einen Namen ein." />
-    </mat-form-field>
 
-    <mat-form-field class="example-full-width">
-      <mat-label>Beschreibung</mat-label>
-      <input matInput [(ngModel)]="data.description" placeholder="Gebe einen Namen ein." />
-    </mat-form-field>
-  </mat-dialog-content>
+  <div>
+    <p class="font-bold text-color text-lg">Channel-Name</p>
+    <input [(ngModel)]="data.name" class="channel" type="text" placeholder="z.B. Kooperationsprojekte">
+  </div>
 
-  <mat-dialog-actions>
-    <button mat-button (click)="onNoClick()">No Thanks</button>
-    <button mat-button [mat-dialog-close]="onOkClick()" cdkFocusInitial>Ok</button>
+  <div>
+    <p class="font-bold text-color text-lg">Beschreibung <span class="font-normal" style="color: #686868;" >(optional)</span></p>
+    <input [(ngModel)]="data.description" type="text" placeholder="Dein Text hier">
+  </div>
+
+
+  <mat-dialog-actions class="pb-6">
+    <button mat-flat-button [mat-dialog-close]="onOkClick()" cdkFocusInitial>Erstellen</button>
   </mat-dialog-actions>
