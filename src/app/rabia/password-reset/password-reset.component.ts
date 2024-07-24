@@ -19,6 +19,10 @@ export class PasswordResetComponent {
   constructor(private router: Router) {}
 
   passwordChange() {
-    this.router.navigate(['/pw-change']);
+    this.router.navigate(['/user/pw-change']);
+  }
+
+  goBack() {
+    this.router.navigate(['/user/login']);
   }
 }

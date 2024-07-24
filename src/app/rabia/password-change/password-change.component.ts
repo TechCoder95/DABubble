@@ -19,6 +19,6 @@ export class PasswordChangeComponent {
   constructor(private router: Router) {}
 
   goBack() {
-    this.router.navigate(['/pw']);
+    this.router.navigate(['/user/pw']);
   }
 }

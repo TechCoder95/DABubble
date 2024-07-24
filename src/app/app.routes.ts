@@ -14,15 +14,19 @@ import { PasswordChangeComponent } from './rabia/password-change/password-change
 
 export const routes: Routes = [
   { path: '', component: StartscreenComponent },
-  { path: 'user', component: VariableContentComponent, 
+  {
+    path: 'user', component: VariableContentComponent,
     children: [
-    {path: 'register', component: AddUserComponent},
-    {path: 'chooseAvatar', component: ChooseAvatarComponent},
-    {path: 'login', component: LoginComponent},
-  ]}, 
-  { path: 'chat', component: ChatComponent  , canActivate: [isLoggedIn]},
-  {path: 'home', component: HomeComponent , canActivate: [isLoggedIn]},
-  {path: 'verfiyEmail', component: VariableContentComponent},
-  {path: 'pw', component: PasswordResetComponent},
-  {path: 'pw-change', component: PasswordChangeComponent}
+      { path: 'register', component: AddUserComponent },
+      { path: 'chooseAvatar', component: ChooseAvatarComponent },
+      { path: 'login', component: LoginComponent },
+      { path: 'pw', component: PasswordResetComponent },
+      { path: 'pw-change', component: PasswordChangeComponent }
+    ]
+  },
+  { path: 'chat', component: ChatComponent, canActivate: [isLoggedIn] },
+  { path: 'home', component: HomeComponent, canActivate: [isLoggedIn] },
+  { path: 'verfiyEmail', component: VariableContentComponent },
+
+  
 ];

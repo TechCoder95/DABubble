@@ -14,7 +14,7 @@
                 @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Falsches Passwort. Bitte noch einmal versuchen.</span></div>}
             </div>
             <div class="mt-5">
-                <a [routerLink]="['/pw/']">Passwort vergessen?</a>
+                <a (click)="forgotPW()">Passwort vergessen?</a>
             </div>
 
 
