@@ -35,8 +35,10 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
+  private databaseSubscription!: Subscription;
   private channelSubscription!: Subscription;
-  private messageSubscription!: Subscription;
+  private sendMessagesSubscription!: Subscription;
+  private receiveMessagesSubscription!: Subscription;
 
   constructor(
     private chatService: ChatService,
@@ -48,49 +50,63 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.databaseService.onDataChange$.subscribe((channel) => {
-      /* this.sendChatMessages = [];
-      this.receiveChatMessages = []; */
-      this.allMessages = [];
-      this.chatService.sortMessages(channel);
-    });
+    this.subscribeToDataChanges();
+    this.subscribeToChannelChanges();
+    this.subscribeToSendMessages();
+    this.subscribeToReceiveMessages();
+  }
+
+  subscribeToDataChanges() {
+    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
+      (channel) => {
+        this.allMessages = [];
+        this.chatService.sortMessages(channel);
+      }
+    );
+  }
+
+  subscribeToChannelChanges() {
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
         console.log('CHANNELOBSERVe');
       }
     );
-    this.chatService.sendMessages$.subscribe((message) => {
-      console.log('sendMessagesSUBSCRIPTION');
-      if (message !== null) {
-       /*  this.sendChatMessages.push(message); */
-        this.allMessages.push(message);
-        console.log(this.allMessages);
+  }
+
+  subscribeToSendMessages() {
+    this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
+      (message) => {
+        console.log('sendMessagesSUBSCRIPTION');
+        if (message !== null) {
+          this.allMessages.push(message);
+          console.log(this.allMessages);
+        }
       }
-    });
+    );
+  }
+
+  subscribeToReceiveMessages() {
     this.chatService.receiveMessages$.subscribe((message) => {
       console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
-       /*  this.receiveChatMessages.push(message); */
         this.allMessages.push(message);
         console.log(this.allMessages);
       }
     });
   }
 
-  sendMessage() {}
-
   ngOnDestroy() {
+    if (this.databaseSubscription) {
+      this.databaseSubscription.unsubscribe();
+    }
     if (this.channelSubscription) {
       this.channelSubscription.unsubscribe();
     }
-    if (this.messageSubscription) {
-      // Bereinigung
-      this.messageSubscription.unsubscribe();
+    if (this.sendMessagesSubscription) {
+      this.sendMessagesSubscription.unsubscribe();
+    }
+    if (this.receiveMessagesSubscription) {
+      this.receiveMessagesSubscription.unsubscribe();
     }
   }
-
-  /*  orderMessages() {
-    this.allMessages = [];
-
-  } */
 }
