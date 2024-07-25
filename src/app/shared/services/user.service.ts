@@ -34,8 +34,12 @@ export class UserService {
 
 
     this.getUsersFromDB().then(() => {
-      if (sessionStorage.getItem('userLogin') || localStorage.getItem('userLogin')) {
+      if (sessionStorage.getItem('userLogin') ) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
+        this.activeUserSubject.next(this.activeUser);
+      }
+      else if (localStorage.getItem('userLogin')) {
+        this.activeUser = this.users.find(user => user.id === localStorage.getItem('userLogin')!)!;
         this.activeUserSubject.next(this.activeUser);
       }
     });
