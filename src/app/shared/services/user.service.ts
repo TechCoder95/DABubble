@@ -1,16 +1,9 @@
-import { EventEmitter, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { CdkConnectedOverlay } from '@angular/cdk/overlay';
-import { JsonPipe } from '@angular/common';
-import { EmailService } from './sendmail.service';
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { Auth, sendEmailVerification } from '@angular/fire/auth';
-import { TextChannel } from '../interfaces/textchannel';
+import { BehaviorSubject } from 'rxjs';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
 @Injectable({
@@ -18,18 +11,17 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 })
 export class UserService {
 
+  
   users: DABubbleUser[] = [];
   activeUser!: DABubbleUser; //Wenn du Online bist bzw eingeloogt, ist dieses Objekt immer mit dem aktuellen User gefüllt
   googleUser: User | null = null;
   guestName: string = 'Guest';
   activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
   activeUserObserver$ = this.activeUserSubject.asObservable();
-
-  //Die Sammlung in der Datenbank, in der die Benutzer gespeichert sind
   collectionName: string = 'users';
 
-  constructor(private DatabaseService: DatabaseService, private router: Router) {
 
+  constructor(private DatabaseService: DatabaseService, private router: Router) {
     this.checkOnlineStatus();
     this.activeUserObserver$.subscribe((user: DABubbleUser) => {
       this.activeUser = user;
@@ -45,21 +37,16 @@ export class UserService {
     if (sessionStorage.getItem('userLogin')) {
       let object = this.DatabaseService.readDataByID(this.collectionName, sessionStorage.getItem('userLogin')!);
       object.then((user) => {
-        if (user) {
+        if (user)
           this.activeUserSubject.next(user as DABubbleUser);
-          if (this.activeUser.avatar !== '') {
-            this.avatarSelected = true;
-          }
-        }
-        else {
+        else
           this.activeUserSubject.next(null!);
-        }
       });
     }
     else if (localStorage.getItem('userLogin')) {
       let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
       object.then((user) => {
-        if (user) {
+        if (user)
           this.activeUserSubject.next(user as DABubbleUser);
           // console.log(this);
           if (this.activeUser.avatar !== '') {
@@ -183,7 +170,6 @@ export class UserService {
         // && user.actived === true
         if (loginUser.mail === googleUser.email && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
-          
           sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
@@ -236,6 +222,7 @@ export class UserService {
     }
   }
 
+
   /**
    * Updates the activation status of a user.
    * If the user has an ID, it updates the 'activated' field to true in the database.
@@ -246,9 +233,7 @@ export class UserService {
   async updateActivationStatus(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
-        .then(() => {
-          this.getUsersFromDB();
-        });
+        .then(() => { this.getUsersFromDB(); });
     }
   }
 
@@ -260,9 +245,8 @@ export class UserService {
    * Finally, retrieves the updated list of users from the database.
    */
   async logout() {
-    if (sessionStorage.getItem('userLogin')) {
+    if (sessionStorage.getItem('userLogin'))
       this.guestLogout();
-    }
     else {
       let id = localStorage.getItem('userLogin')!;
       this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
@@ -292,10 +276,7 @@ export class UserService {
   async register(email: string, username: string, uid: string) {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
-      .then(() => {
-        this.getUsersFromDB();
-      }
-      );
+      .then(() => { this.getUsersFromDB(); });
   }
 
 
