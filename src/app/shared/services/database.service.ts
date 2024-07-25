@@ -104,10 +104,9 @@ export class DatabaseService {
   //   await addDoc(this.setRef(collectionName), data)
   //     .catch((err) => { console.error('Error adding Data', err) })
   // }
-  async addDataToDB(collectionName: string, data: any): Promise<string> {
+  async addDataToDB(collectionName: string, data: any): Promise<void> {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
-      return docRef.id;
     } catch (err) {
       console.error('Error adding Data', err);
       throw err;

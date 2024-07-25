@@ -36,7 +36,8 @@ export class LoginComponent {
    * Initiates the Google login process.
    */
   googleLogin() {
-    this.AuthService.googleSignIn();
+    alert("In Bearbeitung");
+    // this.AuthService.googleSignIn();
   }
 
 
