@@ -48,6 +48,9 @@ interface FlattenedNode {
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
+  private TREE_DATA: Node[] = [];
+  selectedChannel: TextChannel | null = null;
+  messages: ChatMessage[] = [];
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -67,10 +70,7 @@ export class SidenavComponent implements OnInit {
     (node) => node.expandable,
     (node) => node.children
   );
-  
-  private TREE_DATA: Node[] = [];
-  selectedChannel: TextChannel | null = null;
-  messages: ChatMessage[] = [];
+
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
 
@@ -84,9 +84,10 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       if (currentUser) {
-        console.log('Aktuell eingeloggter Nutzer:', currentUser);
+        console.log('Aktueller Benutzer in SidenavComponent:', currentUser); // Debugging Information
         this.channels = await this.userService.getUserChannels(currentUser.id!);
         await this.initializeTreeData();
+  
         const savedChannelId = sessionStorage.getItem('selectedChannelId');
         if (savedChannelId) {
           const savedChannel = this.channels.find(channel => channel.id === savedChannelId);
@@ -116,7 +117,7 @@ export class SidenavComponent implements OnInit {
       newChannel.id = newChannelId;
       await this.loadChannels();
     } catch (err) {
-      console.error('Es konnte kein Channel hinzugefügt werden!', err);
+      console.error('Error adding new channel', err);
     }
   }
 
@@ -132,7 +133,7 @@ export class SidenavComponent implements OnInit {
 
   private createChannelNodes(): Node[] {
     return this.channels
-      .filter(channel => !channel.isPrivate && this.isDefined(channel))
+      .filter(channel => !channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length >= 3)
       .map(channel => ({
         name: channel.name,
         type: 'channel',
@@ -141,9 +142,9 @@ export class SidenavComponent implements OnInit {
 
   private createDirectMessageNodes(): Node[] {
     return this.channels
-      .filter(channel => channel.isPrivate && this.isDefined(channel))
-      .map(dm => ({
-        name: dm.name,
+      .filter(channel => (channel.isPrivate || (channel.assignedUser.length < 3)) && this.isDefined(channel))
+      .map(directMessage => ({
+        name: directMessage.name,
         type: 'channel',
       }));
   }
@@ -164,10 +165,10 @@ export class SidenavComponent implements OnInit {
     const directMessagesStructure: Node = {
       name: 'Direktnachrichten',
       type: 'category',
-      children:
-        directMessageNodes.length > 0
-          ? directMessageNodes
-          : [{ name: 'Keine Nachrichten vorhanden', type: 'channel' }],
+      children: [
+       ...directMessageNodes,
+       { name: 'Du', type: 'channel'},
+      ],
     };
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
