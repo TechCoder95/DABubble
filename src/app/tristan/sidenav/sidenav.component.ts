@@ -18,6 +18,7 @@ import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
+import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 
 interface Node {
   name: string;
@@ -43,6 +44,7 @@ interface FlattenedNode {
     MatIconModule,
     MatButtonModule,
     ChatComponent,
+    NewChatComponent
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -51,6 +53,7 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
+  newChannel: boolean = false;
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -233,5 +236,11 @@ export class SidenavComponent implements OnInit {
 
   isSelectedChannel(node: FlattenedNode): boolean {
     return this.selectedChannel?.name === node.name;
+  }
+
+  openNewMessage() {
+    this.newChannel = true;
+    console.log('olaa lo', this.newChannel);
+    
   }
 }

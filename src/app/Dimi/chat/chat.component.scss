@@ -4,6 +4,7 @@ mat-card {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
+  justify-content: space-between;
 }
 
 :host ::ng-deep mat-card {
@@ -12,21 +13,21 @@ mat-card {
   border-radius: 30px !important;
 }
 
-chat-information {
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
-}
+// chat-information {
+//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
+// }
 
-app-chat-conversation {
-  flex-grow: 1;
-  max-height: 520px;
-  overflow-y: auto;
-}
+// app-chat-conversation {
+//   flex-grow: 1;
+//   max-height: 520px;
+//   overflow-y: auto;
+// }
 
-app-chat-inputfield {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgb(253, 251, 255);
-  border-radius: 0px 0px 30px 30px;
-}
+// app-chat-inputfield {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   background: rgb(253, 251, 255);
+//   border-radius: 0px 0px 30px 30px;
+// }
