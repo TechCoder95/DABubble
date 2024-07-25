@@ -7,7 +7,8 @@ input {
     padding: 15px;
     border: 2px solid white;
     border-radius: 5px;
-    width: 85%;
+    width: -webkit-fill-available;
+    max-width: 500px;
     border-radius: 40px;
     font-size: 16px;
     background-color: #ECEEFD;
@@ -119,7 +120,14 @@ hr {
 }
 
 h1 {
-    color: #3A4EEC;
+    color: #444DF2;
+    font-size: 46px;
+    font-weight: 700;
+}
+
+p {
+    font-size: 20px;
+    font-weight: 400;
 }
 
 table {

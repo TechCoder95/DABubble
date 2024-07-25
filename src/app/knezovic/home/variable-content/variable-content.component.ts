@@ -25,6 +25,12 @@ export class VariableContentComponent {
     this.link = this.router.url;
   }
 
+  routeToImprint() {
+    this.router.navigate(['/user/imprint']);
+  }
 
+  routeToPrivacy() {
+    this.router.navigate(['/user/privacy']);
+  }
 
 }
