@@ -17,7 +17,6 @@ import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
-import { DABubbleUser } from '../../shared/interfaces/user';
 
 interface Node {
   name: string;
@@ -84,7 +83,7 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       if (currentUser) {
-        console.log('Aktueller Benutzer in SidenavComponent:', currentUser); // Debugging Information
+        console.log('Aktueller Benutzer:', currentUser);
         this.channels = await this.userService.getUserChannels(currentUser.id!);
         await this.initializeTreeData();
   
