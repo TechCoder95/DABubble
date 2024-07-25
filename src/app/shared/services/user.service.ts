@@ -11,6 +11,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { Auth, sendEmailVerification } from '@angular/fire/auth';
 import { TextChannel } from '../interfaces/textchannel';
+import { getDocs, query, where } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -60,7 +61,7 @@ export class UserService {
       object.then((user) => {
         if (user) {
           this.activeUserSubject.next(user as DABubbleUser);
-          console.log(this);
+          // console.log(this);
           if (this.activeUser.avatar !== '') {
             this.avatarSelected = true;
           }
@@ -81,7 +82,7 @@ export class UserService {
   async getUsersFromDB() {
     await this.DatabaseService.readDatafromDB(this.collectionName, this.users)
       .then(() => {
-        console.log('Users fetched from DB');
+        // console.log('Users fetched from DB');
       });
   }
 
@@ -126,7 +127,7 @@ export class UserService {
               sessionStorage.setItem('userLogin', user.id!);
               sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
               this.updateLoggedInUser(this.activeUser);
-              console.log('Guest User Logged In');
+              // console.log('Guest User Logged In');
               this.checkOnlineStatus();
               this.router.navigate(['/home']);
             }
@@ -171,7 +172,7 @@ export class UserService {
                 sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser(this.activeUser);
-                console.log('User Logged In but needs Avatar');
+                // console.log('User Logged In but needs Avatar');
                 this.router.navigate(['/user/chooseAvatar']);
               }
             });
@@ -187,10 +188,10 @@ export class UserService {
           this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
           this.checkOnlineStatus();
-          console.log('User full Logged In');
+          // console.log('User full Logged In');
         }
         else {
-          console.log('User not logged in!');
+          // console.log('User not logged in!');
         }
       }
     });
@@ -348,5 +349,13 @@ export class UserService {
   //     return false;
   // }
 
+  async getUserChannels(userId: string): Promise<TextChannel[]> {
+    const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
+    const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
+    const snapshot = await getDocs(q);
+    const channels: TextChannel[] = [];
+    snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
+    return channels;
+  }
 }
 

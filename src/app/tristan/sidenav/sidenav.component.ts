@@ -48,9 +48,6 @@ interface FlattenedNode {
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
-  private TREE_DATA: Node[] = [];
-  selectedChannel: TextChannel | null = null;
-  messages: ChatMessage[] = [];
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -70,7 +67,10 @@ export class SidenavComponent implements OnInit {
     (node) => node.expandable,
     (node) => node.children
   );
-
+  
+  private TREE_DATA: Node[] = [];
+  selectedChannel: TextChannel | null = null;
+  messages: ChatMessage[] = [];
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
 
@@ -79,28 +79,35 @@ export class SidenavComponent implements OnInit {
     private dialog: MatDialog,
     private channelService: ChannelService,
     private userService: UserService
-  ) {}
-
+  ) { }
+  
   async ngOnInit() {
-    await this.loadChannels();
-    this.userService.getUsersFromDB();
-
-    const savedChannelId = sessionStorage.getItem('selectedChannelId');
-    if (savedChannelId) {
-      const savedChannel = this.channels.find(
-        (channel) => channel.id === savedChannelId
-      );
-      if (savedChannel) {
-        this.selectedChannel = savedChannel;
-        this.channelService.selectChannel(savedChannel);
+    this.userService.activeUserObserver$.subscribe(async (currentUser) => {
+      if (currentUser) {
+        console.log('Aktuell eingeloggter Nutzer:', currentUser);
+        this.channels = await this.userService.getUserChannels(currentUser.id!);
+        await this.initializeTreeData();
+        const savedChannelId = sessionStorage.getItem('selectedChannelId');
+        if (savedChannelId) {
+          const savedChannel = this.channels.find(channel => channel.id === savedChannelId);
+          if (savedChannel) {
+            this.selectedChannel = savedChannel;
+            this.channelService.selectChannel(savedChannel);
+          }
+        }
+      } else {
+        console.log('Kein aktiver Benutzer gefunden');
       }
-    }
+    });
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async addChannel(data: TextChannel) {
-    const newChannel: TextChannel = { ...data };
+    const newChannel: TextChannel = { 
+      ...data,
+      assignedUser: [this.userService.activeUser.id!]
+    };
     try {
       const newChannelId = await this.dbService.addChannelDataToDB(
         'channels',
@@ -109,7 +116,7 @@ export class SidenavComponent implements OnInit {
       newChannel.id = newChannelId;
       await this.loadChannels();
     } catch (err) {
-      console.error('Error adding new channel', err);
+      console.error('Es konnte kein Channel hinzugefügt werden!', err);
     }
   }
 
@@ -120,33 +127,24 @@ export class SidenavComponent implements OnInit {
   }
 
   private async fetchChannels(): Promise<void> {
-    this.channels = [];
-    await this.dbService.readDatafromDB('channels', this.channels);
+    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
   }
 
   private createChannelNodes(): Node[] {
     return this.channels
-      .filter((channel) => !channel.isPrivate && this.isDefined(channel))
-      .map((channel) => ({
+      .filter(channel => !channel.isPrivate && this.isDefined(channel))
+      .map(channel => ({
         name: channel.name,
         type: 'channel',
       }));
   }
 
-  // todo daten aus datenbank laden
-  private async loadMessages(): Promise<any[]> {
-    return [
-      { name: 'Felix Müller', type: 'privateMessage' },
-      { name: 'Noah Ewen', type: 'privateMessage' },
-    ];
-  }
-
   private createDirectMessageNodes(): Node[] {
     return this.channels
-      .filter((channel) => channel.isPrivate && this.isDefined(channel))
-      .map((dm) => ({
+      .filter(channel => channel.isPrivate && this.isDefined(channel))
+      .map(dm => ({
         name: dm.name,
-        type: 'channel', // Behandelt Direktnachrichten wie Kanäle
+        type: 'channel',
       }));
   }
 

@@ -5,123 +5,64 @@
         <img src="img/devspace.png" alt="devspace-logo" />
         <h3 class="text-3xl m-2">Devspace</h3>
       </div>
-      <img
-        class="cursor-pointer"
-        src="img/new-message.png"
-        alt="new-message-logo"
-      />
+      <img class="cursor-pointer" src="img/new-message.png" alt="new-message-logo" />
     </div>
 
-    <mat-tree
-      class="mt-5"
-      [dataSource]="dataSource"
-      [treeControl]="treeControl"
-    >
+    <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
       <!-- Unter Knoten -->
       <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
           <button mat-icon-button></button>
           <ng-container *ngIf="node">
             <!-- Kanal -->
-            <img
-              *ngIf="isChannelNode(node) && !isPrivateMessage(node)"
-              class="mr-3"
-              src="img/tag-hover.svg"
-              alt="channel"
-            />
+            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/tag-hover.svg"
+              alt="channel">
             <!-- Kanal hinzufügen -->
-            <img
-              *ngIf="isActionNode(node)"
-              class="mr-3"
-              src="img/add-channel-2.svg"
-              alt="add-channel"
-            />
+            <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
             <!-- Private Message -->
-            <img
-              *ngIf="isPrivateMessage(node)"
-              class="mr-3"
-              src="img/private-messages.png"
-              alt="private-message"
-            />
+            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/private-messages.png" alt="private-message" />
           </ng-container>
-          <span
-            (click)="handleNodeClick(node)"
-            [ngClass]="{
+          <span (click)="handleNodeClick(node)" [ngClass]="{
               'cursor-pointer': true,
               'blue-channel-name': isNewChannel(node),
               'blue-name': isCategoryNode(node),
               'font-bold': isCategoryNode(node),
               'blue-action-name': isActionNode(node),
               'selected-channel': isSelectedChannel(node)
-            }"
-            >{{ node.name }}</span
-          >
+            }">{{ node.name }}</span>
         </div>
       </mat-tree-node>
 
       <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
-        <div
-          class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
-          matTreeNodeToggle
-        >
+        <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
+          matTreeNodeToggle>
           <div class="flex align-items-center">
-            <button
-              mat-icon-button
-              (click)="$event.stopPropagation()"
-              matTreeNodeToggle
-            >
-              <mat-icon
-                class="mat-icon-rtl-mirror align-items-center flex justify-content-center"
-              >
-                <img
-                  style="width: 10px; height: 10px"
-                  [src]="
-                    treeControl.isExpanded(node)
-                      ? 'img/arrow_down.svg'
-                      : 'img/arrow-right.png'
-                  "
-                  alt="toggle icon"
-                />
+            <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
+              <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
+                <img style="width: 10px; height: 10px;"
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'" alt="toggle icon">
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
               <!-- Kategorien -->
-              <img
-                *ngIf="isCategoryNode(node) && node.name === 'Channels'"
-                class="mr-3"
-                src="img/channels.svg"
-                alt="channels"
-              />
-              <img
-                *ngIf="
+              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.svg"
+                alt="channels" />
+              <img *ngIf="
                   isCategoryNode(node) && node.name === 'Direktnachrichten'
-                "
-                class="mr-3"
-                src="img/account_circle.svg"
-                alt="direct-messages"
-              />
+                " class="mr-3" src="img/account_circle.svg" alt="direct-messages" />
             </ng-container>
-            <span
-              matTreeNodeToggle
-              [ngClass]="{
+            <span matTreeNodeToggle [ngClass]="{
                 'cursor-pointer': true,
                 'blue-channel-name': isNewChannel(node),
                 'blue-name': isCategoryNode(node),
                 'font-bold': isCategoryNode(node),
                 'blue-action-name': isActionNode(node),
                 'selected-channel': isSelectedChannel(node)
-              }"
-              >{{ node.name }}</span
-            >
+              }">{{ node.name }}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
-            <img
-              class="ml-auto"
-              src="img/add-files.svg"
-              alt="add"
-              (click)="openDialog()"
-            />
+            <img class="ml-auto" src="img/add-files.svg" alt="add" (click)="openDialog()" />
           </ng-container>
         </div>
       </mat-tree-node>
@@ -133,11 +74,7 @@
   </div>
 </mat-drawer-container>
 
-<button
-  class="absolute top-50 z-5 -rotate-90"
-  [ngStyle]="{ 'margin-left': '-50px' }"
-  (click)="drawer.toggle()"
-  mat-button
->
+<button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{ 'margin-left': '-50px' }" (click)="drawer.toggle()"
+  mat-button>
   Workspace-Menü
 </button>
