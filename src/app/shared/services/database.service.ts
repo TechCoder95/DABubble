@@ -17,6 +17,12 @@ import { ChatMessage } from '../interfaces/chatmessage';
 import { arrayUnion } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
 
+
+export interface DataId {
+  id : string;
+}
+
+
 @Injectable({
   providedIn: 'root',
 })
@@ -28,6 +34,10 @@ export class DatabaseService {
 
   private onDataChange = new BehaviorSubject<any | null>(null);
   public onDataChange$ = this.onDataChange.asObservable();
+
+
+  private onDomiDataChange = new BehaviorSubject<any | null>(null);
+  public onDomiDataChange$ = this.onDomiDataChange.asObservable();
 
 
   constructor() { }
@@ -73,6 +83,7 @@ export class DatabaseService {
           array.length = 0;
           array.push(...results);
           resolve();
+          console.log('Data read successfully');
         },
         reject
       );
@@ -241,6 +252,29 @@ export class DatabaseService {
       });
     });
   }
+
+
+
+ /**
+   * Subscribes to messages in a specified channel or the currently selected channel.
+   * @param channel - The optional TextChannel object representing the channel to subscribe to.
+   */
+ async subscribeToData(collectionName: string, dataId : string) {
+  const q = query(
+    collection(this.firestore, collectionName),
+    where('id', '==', dataId))
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      let data = change.doc.data();
+      this.onDomiDataChange.next(data);
+      console.log(change.doc.data());
+    });
+  });
+}
+
+
+
 }
 
 /* async addMessageToChannel(channelDoc: string, messageDocId: string) {
