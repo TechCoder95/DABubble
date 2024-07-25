@@ -51,8 +51,25 @@ export class ChannelService {
     }
   }
 
+  async updateChannel(channel: TextChannel) {
+    const cleanChannel = this.cleanData(channel);
+    if (cleanChannel.id) {
+      await this.databaseService.updateDataInDB('channels', cleanChannel.id, cleanChannel);
+    }
+  }
+
+  private cleanData(channel: TextChannel): Partial<TextChannel> {
+    const cleanChannel: Partial<TextChannel> = {};
+    Object.keys(channel).forEach(key => {
+      const value = (channel as any)[key];
+      if (value !== undefined) {
+        (cleanChannel as any)[key] = value;
+      }
+    });
+    return cleanChannel;
+  }
+
   async updateChannelDescription(updatedDescription: any) {
-    /* debugger; */
     const currentChannel = this.selectedChannelSubject.value;
     const updatedChannel = {
       ...currentChannel,

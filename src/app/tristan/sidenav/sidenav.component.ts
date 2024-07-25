@@ -5,7 +5,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+} from '@angular/material/tree';
 import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -15,6 +18,7 @@ import { ChatComponent } from '../../Dimi/chat/chat.component';
 import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
+import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 
 interface Node {
   name: string;
@@ -39,7 +43,8 @@ interface FlattenedNode {
     MatDialogModule,
     MatIconModule,
     MatButtonModule,
-    ChatComponent
+    ChatComponent,
+    NewChatComponent
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -48,12 +53,13 @@ export class SidenavComponent implements OnInit {
   private TREE_DATA: Node[] = [];
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
+  newChannel: boolean = false;
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
     level: level,
-    type: node.type
+    type: node.type,
   });
 
   treeControl = new FlatTreeControl<FlattenedNode>(
@@ -76,95 +82,101 @@ export class SidenavComponent implements OnInit {
     private dialog: MatDialog,
     private channelService: ChannelService,
     private userService: UserService
-  ) {}
-
+  ) { }
+  
   async ngOnInit() {
-    await this.loadChannels();
-    this.userService.getUsersFromDB();
-    
-    const savedChannelId = sessionStorage.getItem('selectedChannelId');
-    if (savedChannelId) {
-      const savedChannel = this.channels.find(channel => channel.id === savedChannelId);
-      if (savedChannel) {
-        this.selectedChannel = savedChannel;
-        this.channelService.selectChannel(savedChannel);
+    this.userService.activeUserObserver$.subscribe(async (currentUser) => {
+      if (currentUser) {
+        console.log('Aktueller Benutzer:', currentUser);
+        this.channels = await this.userService.getUserChannels(currentUser.id!);
+        await this.initializeTreeData();
+  
+        const savedChannelId = sessionStorage.getItem('selectedChannelId');
+        if (savedChannelId) {
+          const savedChannel = this.channels.find(channel => channel.id === savedChannelId);
+          if (savedChannel) {
+            this.selectedChannel = savedChannel;
+            this.channelService.selectChannel(savedChannel);
+          }
+        }
+      } else {
+        console.log('Kein aktiver Benutzer gefunden');
       }
-    }
+    });
   }
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async addChannel(data: TextChannel) {
-    const newChannel: TextChannel = { ...data };
+    const newChannel: TextChannel = { 
+      ...data,
+      assignedUser: [this.userService.activeUser.id!]
+    };
     try {
-      const newChannelId = await this.dbService.addChannelDataToDB('channels', newChannel);
-      newChannel.id = newChannelId; 
-      await this.loadChannels(); 
+      const newChannelId = await this.dbService.addChannelDataToDB(
+        'channels',
+        newChannel
+      );
+      newChannel.id = newChannelId;
+      await this.loadChannels();
     } catch (err) {
       console.error('Error adding new channel', err);
     }
   }
-  
 
-  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+  private isDefined(
+    channel: TextChannel
+  ): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
 
   private async fetchChannels(): Promise<void> {
-    this.channels = [];
-    await this.dbService.readDatafromDB('channels', this.channels);
+    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
   }
 
   private createChannelNodes(): Node[] {
     return this.channels
-      .filter(channel => !channel.isPrivate && this.isDefined(channel))
-      .map((channel) => ({
+      .filter(channel => !channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length >= 3)
+      .map(channel => ({
         name: channel.name,
-        type: 'channel'
+        type: 'channel',
       }));
-  }
-  
-
-  // todo daten aus datenbank laden
-  private async loadMessages(): Promise<any[]> {
-    return [
-      { name: 'Felix Müller', type: 'privateMessage' },
-      { name: 'Noah Ewen', type: 'privateMessage' }
-    ];
   }
 
   private createDirectMessageNodes(): Node[] {
     return this.channels
-      .filter(channel => channel.isPrivate && this.isDefined(channel))
-      .map((dm) => ({
-        name: dm.name,
-        type: 'channel' // Behandelt Direktnachrichten wie Kanäle
+      .filter(channel => (channel.isPrivate || (channel.assignedUser.length < 3)) && this.isDefined(channel))
+      .map(directMessage => ({
+        name: directMessage.name,
+        type: 'channel',
       }));
   }
 
   private async initializeTreeData(): Promise<void> {
     const channelNodes = this.createChannelNodes();
     const directMessageNodes = this.createDirectMessageNodes();
-  
+
     const channelsStructure: Node = {
       name: 'Channels',
       type: 'category',
-      children: [...channelNodes, { name: 'Channel hinzufügen', type: 'action' }],
+      children: [
+        ...channelNodes,
+        { name: 'Channel hinzufügen', type: 'action' },
+      ],
     };
-  
+
     const directMessagesStructure: Node = {
       name: 'Direktnachrichten',
       type: 'category',
-      children: directMessageNodes.length > 0 ? directMessageNodes : [{ name: 'Keine Nachrichten vorhanden', type: 'channel' }],
+      children: [
+       ...directMessageNodes,
+       { name: 'Du', type: 'channel'},
+      ],
     };
-  
+
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
   }
-  
-  
-  
-  
 
   async loadChannels() {
     await this.fetchChannels();
@@ -187,9 +199,6 @@ export class SidenavComponent implements OnInit {
       this.openDialog();
     }
   }
-  
-  
-  
 
   openDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
@@ -201,7 +210,11 @@ export class SidenavComponent implements OnInit {
   }
 
   isNewChannel = (node: FlattenedNode): boolean => {
-    return !node.expandable && node.type === 'channel' && node.name !== 'Channel hinzufügen';
+    return (
+      !node.expandable &&
+      node.type === 'channel' &&
+      node.name !== 'Channel hinzufügen'
+    );
   };
 
   isChannelNode(node: FlattenedNode): boolean {
@@ -219,9 +232,14 @@ export class SidenavComponent implements OnInit {
   isPrivateMessage(node: FlattenedNode): boolean {
     return node.type === 'privateMessage';
   }
-  
 
   isSelectedChannel(node: FlattenedNode): boolean {
     return this.selectedChannel?.name === node.name;
+  }
+
+  openNewMessage() {
+    this.newChannel = true;
+    console.log('olaa lo', this.newChannel);
+    
   }
 }

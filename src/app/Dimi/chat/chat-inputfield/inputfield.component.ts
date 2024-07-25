@@ -81,7 +81,11 @@ export class InputfieldComponent {
       sender: this.activeUser.username || 'guest',
       emoticons: [],
     };
-    this.chatService.sendMessage(message);
-    this.textareaValue = '';
+    if (message.message !== '') {
+      this.chatService.sendMessage(message);
+      this.textareaValue = '';
+    } else {
+      alert('Du musst eine Nachricht eingeben');
+    }
   }
 }
