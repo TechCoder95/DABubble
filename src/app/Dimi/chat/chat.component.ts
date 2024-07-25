@@ -1,4 +1,11 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -23,7 +30,7 @@ import { InputfieldComponent } from './chat-inputfield/inputfield.component';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent implements OnInit, OnDestroy {
+export class ChatComponent implements OnInit, OnDestroy{
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
   users: DABubbleUser[] = [];

@@ -1,4 +1,4 @@
-<main>
+<main #scrollContainer>
   @for (message of allMessages; track $index) { @if (message.sender ===
   this.activeUser.username) {
   <app-send-chat-message [sendMessage]="message"></app-send-chat-message>

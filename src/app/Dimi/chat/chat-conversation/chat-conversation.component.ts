@@ -1,10 +1,14 @@
 import {
+  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
@@ -28,7 +32,9 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent implements OnInit, OnDestroy {
+export class ChatConversationComponent
+  implements OnInit, OnDestroy
+{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -39,6 +45,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   private channelSubscription!: Subscription;
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   constructor(
     private chatService: ChatService,
@@ -54,6 +61,15 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
+  }
+
+  ngAfterViewInit(): void {
+      setTimeout(() => this.scrollToBottom(), 1000);
+    }
+
+  scrollToBottom() {
+    this.scrollContainer.nativeElement.scrollTop =
+      this.scrollContainer.nativeElement.scrollHeight;
   }
 
   subscribeToDataChanges() {
