@@ -29,18 +29,25 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
-
     console.log('User Service Initialized');
-
-
     this.getUsersFromDB().then(() => {
-      if (sessionStorage.getItem('userLogin') ) {
+      if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
         this.activeUserSubject.next(this.activeUser);
+        this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+        this.DatabaseService.onDomiDataChange$.subscribe((data) => {
+          this.activeUserSubject.next(data);
+        }
+        );
       }
       else if (localStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === localStorage.getItem('userLogin')!)!;
         this.activeUserSubject.next(this.activeUser);
+        this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+        this.DatabaseService.onDomiDataChange$.subscribe((data) => {
+          this.activeUserSubject.next(data);
+        }
+        );
       }
     });
 
@@ -53,8 +60,6 @@ export class UserService {
    * If the user is logged in, it retrieves the user data from the database and sets the active user.
    */
   checkOnlineStatus(user: DABubbleUser) {
-
-
     if (user) {
       this.activeUser = user;
       this.activeUserSubject.next(user);
@@ -102,25 +107,25 @@ export class UserService {
    * @returns A Promise that resolves when the guest user is logged in.
    */
   async writeGuestToDB() {
-    let guestUser : DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg', activeChannels: [] };
+    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg', activeChannels: [] };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser)
-        this.getUsersFromDB().then(() => {
-          this.users.map(user => {
-            if (user.mail === guestUser.mail && user.id) {
-              this.activeUser = user;
-              this.activeUserSubject.next(this.completeUser(this.activeUser))
-              sessionStorage.setItem('userLogin', this.activeUser.id!);
-              sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
-              this.updateLoggedInUser(this.activeUser);
-              this.checkOnlineStatus(this.activeUser);
-              console.log('Guest User Logged In');
-              this.router.navigate(['/home']);
-            }
-          }
-          );
+    this.getUsersFromDB().then(() => {
+      this.users.map(user => {
+        if (user.mail === guestUser.mail && user.id) {
+          this.activeUser = user;
+          this.activeUserSubject.next(this.completeUser(this.activeUser))
+          sessionStorage.setItem('userLogin', this.activeUser.id!);
+          sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
+          this.updateLoggedInUser();
+          this.checkOnlineStatus(this.activeUser);
+          console.log('Guest User Logged In');
+          this.router.navigate(['/home']);
         }
+      }
       );
+    }
+    );
   }
 
 
@@ -161,7 +166,7 @@ export class UserService {
                 localStorage.setItem('userLogin', user.id);
                 sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
-                this.updateLoggedInUser(this.activeUser);
+                this.updateLoggedInUser();
                 // console.log('User Logged In but needs Avatar');
                 this.router.navigate(['/user/chooseAvatar']);
               }
@@ -215,15 +220,9 @@ export class UserService {
    * @param {string} user The user object to update.
    * @returns A Promise that resolves when the user is updated in the database.
    */
-  async updateLoggedInUser(user: DABubbleUser) {
-    if (user.id) {
-      this.DatabaseService.updateDataInDB(this.collectionName, user.id, { isLoggedIn: true })
-        .then(() => {
-          this.getUsersFromDB();
-        });
-    } else {
-      console.error('User ID is undefined');
-    }
+  async updateLoggedInUser() {
+    this.activeUser.isLoggedIn = true;
+    this.updateUser(this.activeUser);
   }
 
   /**
@@ -290,10 +289,11 @@ export class UserService {
    * @returns A Promise that resolves when the user is successfully updated.
    */
   async updateUser(user: DABubbleUser) {
-      await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
-        .then(() => { 
-          this.activeUserSubject.next(user);
-          this.getUsersFromDB(); });
+    await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
+      .then(() => {
+        this.activeUserSubject.next(user);
+        this.getUsersFromDB();
+      });
   }
 
 
