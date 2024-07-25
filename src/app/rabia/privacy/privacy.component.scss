@@ -1,0 +1,16 @@
+.arrow-back {
+    width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/img/arrow-back.svg);
+    margin-bottom: 24px;
+
+    &:hover {
+        cursor: pointer;
+        background-color: #ECEEFE;
+        border-radius: 100%;
+        transition: 125ms;
+        background-image: url(/img/arrow-back-hover.svg);
+    }
+}

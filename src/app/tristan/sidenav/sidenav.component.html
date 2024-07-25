@@ -5,7 +5,7 @@
         <img src="img/devspace.png" alt="devspace-logo" />
         <h3 class="text-3xl m-2">Devspace</h3>
       </div>
-      <img class="cursor-pointer" src="img/new-message.png" alt="new-message-logo" />
+      <img (click)="openNewMessage()" class="cursor-pointer" src="img/new-message.png" alt="new-message-logo" />
     </div>
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
@@ -16,7 +16,7 @@
           <ng-container *ngIf="node">
             <!-- Kanal -->
             <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/tag-hover.svg"
-              alt="channel">
+              alt="channel" />
             <!-- Kanal hinzufügen -->
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
             <!-- Private Message -->
@@ -40,8 +40,11 @@
           <div class="flex align-items-center">
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
-                <img style="width: 10px; height: 10px;"
-                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'" alt="toggle icon">
+                <img style="width: 10px; height: 10px" [src]="
+                    treeControl.isExpanded(node)
+                      ? 'img/arrow_down.svg'
+                      : 'img/arrow-right.png'
+                  " alt="toggle icon" />
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
@@ -69,7 +72,11 @@
     </mat-tree>
   </mat-drawer>
 
-  <div class="pl-5 content extend">
+  <div class="pl-5 content extend" *ngIf="newChannel">
+    <app-new-chat class="flex justify-content-between flex-auto"></app-new-chat>
+  </div>
+
+  <div class="pl-5 content extend" *ngIf="!newChannel">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>

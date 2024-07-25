@@ -1,39 +1,45 @@
-        <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" class="flex flex-column align-items-center w-full"
-            novalidate>
-            <h1>Anmeldung</h1>
-            <p class="w-8 text-center">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit
-                verwendest.</p>
-            <div class="w-full">
-                <input type="text" [(ngModel)]="email" placeholder="Email" name="email" #mail="ngModel" required>
-                @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>*Diese E-Mail-Adresse ist leider ungültig</span>
-                </div>}
-            </div>
-            <div class="w-full">
-                <input type="password" [(ngModel)]="epassword" placeholder="Password" name="password"
-                    #password="ngModel" required>
-                @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Falsches Passwort. Bitte noch einmal versuchen.</span></div>}
-            </div>
-            <div class="mt-5">
-                <a (click)="forgotPW()">Passwort vergessen?</a>
-            </div>
+<div>
+    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm" class="flex flex-column align-items-center w-full"
+    novalidate>
+    <h1>Anmeldung</h1>
+    <p class="w-8 text-center">Wir empfehlen dir, die E-Mail-Adresse zu nutzen, die du bei der Arbeit
+        verwendest.</p>
+
+        
+    <div class="w-full flex flex-column align-items-center">
+        <input type="text" [(ngModel)]="email" placeholder="Email" name="email" #mail="ngModel" required>
+        @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>*Diese E-Mail-Adresse ist leider ungültig</span>
+        </div>}
+    </div>
+    <div class="w-full flex flex-column align-items-center">
+        <input type="password" [(ngModel)]="epassword" placeholder="Password" name="password"
+            #password="ngModel" required>
+        @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Falsches Passwort. Bitte noch einmal versuchen.</span></div>}
+    </div>
 
 
-            <div class="flex w-full align-items-center justify-content-center m-5">
-                <hr>ODER
-                <hr>
+    <div class="mt-5">
+        <a (click)="forgotPW()">Passwort vergessen?</a>
+    </div>
+
+
+    <div class="flex w-full align-items-center justify-content-center m-5">
+        <hr>ODER
+        <hr>
+    </div>
+    <div class="flex w-full h-full justify-content-center align-items-center">
+        <button type="button" class="googleButton" (click)="googleLogin()" title="register">
+            <div class="flex align-items-center justify-content-center text-lg font-bold" style="gap: 20px">
+                <img src="/img/google.svg" alt="Logo-Google">
+                Anmelden mit Google
             </div>
-            <div class="flex w-full h-full justify-content-center align-items-center">
-                <button type="button" class="googleButton" (click)="googleLogin()" title="register">
-                    <div class="flex align-items-center justify-content-center text-lg font-bold" style="gap: 20px">
-                        <img src="/img/google.svg" alt="Logo-Google">
-                        Anmelden mit Google
-                    </div>
-                </button>
-            </div>
-            <div class="flex w-full h-full justify-content-center align-items-center">
-                <button type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
-                    name="registrieren">Anmelden</button>
-                <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"
-                    (click)="loginAsGuest()" title="back" name="back">Gäste-Login</button>
-            </div>
-        </form>
+        </button>
+    </div>
+    <div class="flex w-full h-full justify-content-center align-items-center">
+        <button type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
+            name="registrieren">Anmelden</button>
+        <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"
+            (click)="loginAsGuest()" title="back" name="back">Gäste-Login</button>
+    </div>
+</form>
+</div>

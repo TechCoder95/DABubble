@@ -10,6 +10,8 @@ import { VariableContentComponent } from './knezovic/home/variable-content/varia
 import { isLoggedIn } from './shared/guards/authguard.guard';
 import { PasswordResetComponent } from './rabia/password-reset/password-reset.component';
 import { PasswordChangeComponent } from './rabia/password-change/password-change.component';
+import { ImprintComponent } from './rabia/imprint/imprint.component';
+import { PrivacyComponent } from './rabia/privacy/privacy.component';
 
 
 export const routes: Routes = [
@@ -21,7 +23,9 @@ export const routes: Routes = [
       { path: 'chooseAvatar', component: ChooseAvatarComponent },
       { path: 'login', component: LoginComponent },
       { path: 'pw', component: PasswordResetComponent },
-      { path: 'pw-change', component: PasswordChangeComponent }
+      { path: 'pw-change', component: PasswordChangeComponent },
+      { path: 'imprint', component: ImprintComponent },
+      { path: 'privacy', component: PrivacyComponent },
     ]
   },
   { path: 'chat', component: ChatComponent, canActivate: [isLoggedIn] },
