@@ -34,6 +34,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   activeUser!: DABubbleUser;
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
+  allMessages: ChatMessage[] = [];
   private channelSubscription!: Subscription;
   private messageSubscription!: Subscription;
 
@@ -47,11 +48,10 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    /*  this.databaseService.subscribeToMessages(); */
     this.databaseService.onDataChange$.subscribe((channel) => {
-      console.log('onChangeSUBSCRIPTION');
-      this.sendChatMessages = [];
-      this.receiveChatMessages = [];
+      /* this.sendChatMessages = [];
+      this.receiveChatMessages = []; */
+      this.allMessages = [];
       this.chatService.sortMessages(channel);
     });
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
@@ -62,14 +62,17 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.chatService.sendMessages$.subscribe((message) => {
       console.log('sendMessagesSUBSCRIPTION');
       if (message !== null) {
-        this.sendChatMessages.push(message);
+       /*  this.sendChatMessages.push(message); */
+        this.allMessages.push(message);
+        console.log(this.allMessages);
       }
     });
     this.chatService.receiveMessages$.subscribe((message) => {
       console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
-        this.receiveChatMessages.push(message);
-        console.log(this.receiveChatMessages);
+       /*  this.receiveChatMessages.push(message); */
+        this.allMessages.push(message);
+        console.log(this.allMessages);
       }
     });
   }
@@ -85,4 +88,9 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
       this.messageSubscription.unsubscribe();
     }
   }
+
+  /*  orderMessages() {
+    this.allMessages = [];
+
+  } */
 }
