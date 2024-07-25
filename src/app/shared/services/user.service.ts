@@ -11,7 +11,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { Auth, sendEmailVerification } from '@angular/fire/auth';
 import { TextChannel } from '../interfaces/textchannel';
-import { getDocs, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -356,6 +356,19 @@ export class UserService {
     const channels: TextChannel[] = [];
     snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
     return channels;
+  }
+
+  async searchUsersByName(name: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
+    const q = query(usersRef, where('username', '==', name));
+    const snapshot = await getDocs(q);
+    const users: DABubbleUser[] = [];
+    snapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;  
+      users.push(data);
+    });
+    return users;
   }
 }
 
