@@ -33,6 +33,14 @@ export class UserService {
     console.log('User Service Initialized');
 
 
+    this.getUsersFromDB().then(() => {
+      if (sessionStorage.getItem('userLogin') || localStorage.getItem('userLogin')) {
+        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
+        this.activeUserSubject.next(this.activeUser);
+      }
+    });
+
+
   }
 
 
