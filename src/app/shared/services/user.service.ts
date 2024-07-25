@@ -29,10 +29,18 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
+    
+    console.log('User Service Initialized');
 
-    this.checkOnlineStatus();
-    this.activeUserObserver$.subscribe((user: DABubbleUser) => {
-      this.activeUser = user;
+    this.DatabaseService.readDatafromDB(this.collectionName, this.users).then(() => {
+      let id = localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin');
+      this.activeUser = this.users.find(user => user.id === id)!;
+      this.DatabaseService.onDomiDataChange.next(this.activeUser);
+      this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+      this.DatabaseService.onDomiDataChange$.subscribe((user: DABubbleUser) => {
+        this.activeUser = user;
+        console.log('User Service Active User Observer', this.activeUser);
+      });
     });
   }
 
@@ -41,39 +49,19 @@ export class UserService {
    * Checks the online status of the user.
    * If the user is logged in, it retrieves the user data from the database and sets the active user.
    */
-  checkOnlineStatus() {
-    if (sessionStorage.getItem('userLogin')) {
-      let object = this.DatabaseService.readDataByID(this.collectionName, sessionStorage.getItem('userLogin')!);
-      object.then((user) => {
-        if (user) {
-          this.activeUserSubject.next(user as DABubbleUser);
-          if (this.activeUser.avatar !== '') {
-            this.avatarSelected = true;
-          }
-        }
-        else {
-          this.activeUserSubject.next(null!);
-        }
-      });
+  checkOnlineStatus(user : DABubbleUser) {
+    
+
+    if (user) {
+      this.activeUser = user;
+      this.activeUserSubject.next(user);
     }
-    else if (localStorage.getItem('userLogin')) {
-      let object = this.DatabaseService.readDataByID(this.collectionName, localStorage.getItem('userLogin')!)
-      object.then((user) => {
-        if (user) {
-          this.activeUserSubject.next(user as DABubbleUser);
-          // console.log(this);
-          if (this.activeUser.avatar !== '') {
-            this.avatarSelected = true;
-          }
-        }
-        else {
-          this.activeUser = null!;
-          this.activeUserSubject.next(null!);
-        }
-      });
+    else {
+      this.activeUser = null!;
+      this.activeUserSubject.next(null!);
     }
   }
-
+ 
 
   /**
    * Retrieves users from the database.
@@ -127,8 +115,7 @@ export class UserService {
               sessionStorage.setItem('userLogin', user.id!);
               sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
               this.updateLoggedInUser(this.activeUser);
-              // console.log('Guest User Logged In');
-              this.checkOnlineStatus();
+              console.log('Guest User Logged In');
               this.router.navigate(['/home']);
             }
           });
@@ -187,8 +174,7 @@ export class UserService {
           sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.activeUserSubject.next(this.completeUser(loginUser, this.googleUser ? this.googleUser : googleUser));
           this.updateLoggedInUser(this.activeUser);
-          this.checkOnlineStatus();
-          // console.log('User full Logged In');
+          console.log('User full Logged In');
         }
         else {
           // console.log('User not logged in!');

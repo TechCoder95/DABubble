@@ -95,7 +95,7 @@ export class ChooseAvatarComponent {
   async updateDatabase() {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
-        this.UserService.checkOnlineStatus();
+        this.UserService.checkOnlineStatus(this.UserService.activeUser);
         this.router.navigate(['/home'])
       });
   }

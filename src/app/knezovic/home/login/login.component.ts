@@ -61,9 +61,7 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword).then(() => {
-      this.UserService.checkOnlineStatus();
-    });
+    this.AuthService.mailSignIn(this.email, this.epassword)
   }
 
 

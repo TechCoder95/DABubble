@@ -59,7 +59,7 @@ export class EmailService {
               this.userService.updateActivationStatus(this.activeUser).then(() => {
                 localStorage.setItem("userLogin", this.activeUser.id? this.activeUser.id:'');
                 this.userService.activeUserSubject.next(this.activeUser);
-                this.userService.checkOnlineStatus();
+                this.userService.checkOnlineStatus(this.activeUser);
                 this.router.navigate(['/home']);
               });
             }

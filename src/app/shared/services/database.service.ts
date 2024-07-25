@@ -36,7 +36,7 @@ export class DatabaseService {
   public onDataChange$ = this.onDataChange.asObservable();
 
 
-  private onDomiDataChange = new BehaviorSubject<any | null>(null);
+  public onDomiDataChange = new BehaviorSubject<any | null>(null);
   public onDomiDataChange$ = this.onDomiDataChange.asObservable();
 
 
