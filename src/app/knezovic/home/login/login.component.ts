@@ -36,7 +36,8 @@ export class LoginComponent {
    * Initiates the Google login process.
    */
   googleLogin() {
-    this.AuthService.googleSignIn();
+    alert("In Bearbeitung");
+    // this.AuthService.googleSignIn();
   }
 
 
@@ -61,9 +62,7 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword).then(() => {
-      this.UserService.checkOnlineStatus();
-    });
+    this.AuthService.mailSignIn(this.email, this.epassword)
   }
 
 

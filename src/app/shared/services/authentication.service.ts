@@ -1,4 +1,4 @@
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, User } from "firebase/auth";
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
@@ -9,7 +9,7 @@ import { EmailService } from './sendmail.service';
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private router: Router, private emailService : EmailService) { }
+  constructor(private userService: UserService, private router: Router, private emailService: EmailService) { }
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
@@ -51,24 +51,22 @@ export class AuthenticationService {
       .then((userCredential) => {
         // Signed in 
         this.userService.googleUser = userCredential.user;
-        this.userService.login(userCredential.user).then(() => {
-          this.router.navigate(['/home']);
-        });
-        // ...
-      })
-      .catch((error) => {
-        if (error.code === "auth/too-many-requests") {
-          alert("User wurde gesperrt, bitte versuchen Sie es später erneut");
-        }
-        else if (error.code === "auth/invalid-credential") {
-          alert("Falsches Passwort");
-        }
-        else if (error.code === "auth/invalid-email") {
-          alert("E-Mail-Adresse existiert nicht");
-        }
-        else {
-          alert("Falsche Eingabe" + error.message);
-        }
+        this.userService.login(userCredential.user)
+          .catch((error) => {
+            if (error.code === "auth/too-many-requests") {
+              alert("User wurde gesperrt, bitte versuchen Sie es später erneut");
+            }
+            else if (error.code === "auth/invalid-credential") {
+              alert("Falsches Passwort");
+            }
+            else if (error.code === "auth/invalid-email") {
+              alert("E-Mail-Adresse existiert nicht");
+            }
+            else {
+              alert("Falsche Eingabe" + error.message);
+            }
+
+          })
       });
   }
 
@@ -116,7 +114,7 @@ export class AuthenticationService {
         const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
         const token = credential?.accessToken;
         console.log('token:' + token);
-        
+
 
       }).catch((error) => {
         // Handle Errors here.
@@ -161,5 +159,5 @@ export class AuthenticationService {
   //#endregion
 
 
-  
+
 }
