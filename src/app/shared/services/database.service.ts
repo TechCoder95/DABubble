@@ -247,7 +247,6 @@ export class DatabaseService {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
         this.onDataChange.next(data);
-        console.log(change.doc.data());
       });
     });
   }
@@ -269,7 +268,6 @@ export class DatabaseService {
     snapshot.docChanges().forEach((change) => {
       let data = change.doc.data();
       this.onDomiDataChange.next(data);
-      console.log(change.doc.data());
     });
   });
 }

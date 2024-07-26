@@ -156,7 +156,6 @@ export class UserService {
   async login(googleUser: User) {
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.mail === googleUser.email);
-      console.log(loginUser);
 
       if (loginUser === undefined) {
         this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activated: googleUser.emailVerified, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {

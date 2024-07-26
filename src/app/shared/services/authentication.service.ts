@@ -111,7 +111,6 @@ export class AuthenticationService {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
         const token = credential?.accessToken;
-        console.log('token:' + token);
 
 
       }).catch((error) => {
