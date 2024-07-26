@@ -1,7 +1,7 @@
 <main>
   <section>
     <div class="headline">
-      <h3>Leute hinzufügen</h3>
+      <h3 class="text-2xl">Leute hinzufügen</h3>
       <img
         [src]="closeImg"
         (mouseenter)="changeCloseImg(true)"
@@ -11,7 +11,7 @@
       />
     </div>
     <div class="channel-name">
-      <img src="./img/tag-hover.png" />
+      <img src="./img/tag-hover-thin.svg" />
       <p>{{ (channelService.selectedChannel$ | async)?.name }}</p>
     </div>
   </section>
