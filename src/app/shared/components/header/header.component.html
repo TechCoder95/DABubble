@@ -3,13 +3,13 @@
 <div class="flex justify-content-between align-items-center p-3">
     <img src="/img/logo.svg" alt="">
     <input type="search" aria-label="awd" [(ngModel)]="searchInput" placeholder="Search bar">
-    <div class="flex align-items-center">
+    <div (click)="openMenu()" class="flex align-items-center cursor-pointer">
         <p class="userName">{{activeUser.username}}</p>
         <div class="ml-2 mr-2 relative img-container">
             <img class="profileimg" src="{{activeUser.avatar}}" alt="">
             <div class="online-status"></div>
         </div>
-        <img class="ml-2" src="/img/arrow-down.svg" alt="" (click)="openMenu()">
+        <img class="ml-2" src="/img/arrow-down.svg" alt="">
     </div>
 </div>
 @if (!activeUser.activated) {
