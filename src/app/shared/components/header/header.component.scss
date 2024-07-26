@@ -6,6 +6,15 @@ input[type="search"] {
     border-radius: 25px;
     margin-right: 10px;
     font-size: 20px;
+    outline: none;
+
+    &:hover {
+        border: 1px solid #ADB0D9
+    }
+
+    &:focus {
+        border: 1px solid #535AF1
+    }
 }
 
 .img-container {
