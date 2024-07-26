@@ -89,9 +89,7 @@ export class AuthenticationService {
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
-        this.userService.login(result.user).then(() => {
-          this.router.navigate(['/home']);
-        });
+        this.userService.login(result.user)
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
