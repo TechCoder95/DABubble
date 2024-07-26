@@ -32,9 +32,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent
-  implements OnInit, OnDestroy
-{
+export class ChatConversationComponent implements OnInit, OnDestroy{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -61,16 +59,17 @@ export class ChatConversationComponent
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
+   /*  this.scrollToBottom(); */
   }
 
-  ngAfterViewInit(): void {
-      setTimeout(() => this.scrollToBottom(), 1000);
-    }
+ /*  ngAfterViewInit(): void {
+    setTimeout(() => this.scrollToBottom(), 500);
+  } */
 
-  scrollToBottom() {
+ /*  scrollToBottom() {
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
-  }
+  } */
 
   subscribeToDataChanges() {
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
