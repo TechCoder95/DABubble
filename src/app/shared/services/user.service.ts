@@ -156,10 +156,9 @@ export class UserService {
   async login(googleUser: User) {
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.mail === googleUser.email);
-      console.log(loginUser);
 
       if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activated: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activated: googleUser.emailVerified, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
@@ -181,6 +180,7 @@ export class UserService {
           
           sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.checkOnlineStatus(loginUser);
+          this.updateLoggedInUser();
           this.activeUserSubject.next(loginUser);
           console.log('User full Logged In');
         }

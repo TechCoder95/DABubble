@@ -247,17 +247,18 @@ export class DatabaseService {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
         this.onDataChange.next(data);
-        console.log(change.doc.data());
       });
     });
   }
 
 
 
- /**
-   * Subscribes to messages in a specified channel or the currently selected channel.
-   * @param channel - The optional TextChannel object representing the channel to subscribe to.
-   */
+ 
+/**
+ * Subscribes to data changes in a specific collection and with a specific data ID.
+ * @param collectionName - The name of the collection to subscribe to.
+ * @param dataId - The ID of the data to subscribe to.
+ */
  async subscribeToData(collectionName: string, dataId : string) {
   const q = query(
     collection(this.firestore, collectionName),
@@ -267,7 +268,6 @@ export class DatabaseService {
     snapshot.docChanges().forEach((change) => {
       let data = change.doc.data();
       this.onDomiDataChange.next(data);
-      console.log(change.doc.data());
     });
   });
 }

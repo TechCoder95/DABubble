@@ -89,9 +89,7 @@ export class AuthenticationService {
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
-        this.userService.login(result.user).then(() => {
-          this.router.navigate(['/home']);
-        });
+        this.userService.login(result.user)
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -113,7 +111,6 @@ export class AuthenticationService {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
         const token = credential?.accessToken;
-        console.log('token:' + token);
 
 
       }).catch((error) => {

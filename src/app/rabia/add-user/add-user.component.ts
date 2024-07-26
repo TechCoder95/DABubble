@@ -60,7 +60,6 @@ export class AddUserComponent {
 
     if (this.UserService.users.length > 0) {
       const lastUser = this.UserService.users[this.UserService.users.length - 1];
-      // console.log("mal schauen ob das klappt: ",lastUser);
     } else {
       console.log("Das Array ist leer.");
     }
