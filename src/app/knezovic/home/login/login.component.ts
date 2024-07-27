@@ -16,7 +16,7 @@ import { EmailService } from '../../../shared/services/sendmail.service';
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService, private emailService: EmailService) {
+  constructor(private UserService: UserService, private router: Router, public AuthService: AuthenticationService) {
 
     this.UserService.activeUserObserver$.subscribe((user) => {
       if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
@@ -88,5 +88,9 @@ export class LoginComponent {
 
   forgotPW() {
     this.router.navigate(['/user/pw']);
+  }
+
+  changeInput() {
+    this.AuthService.fehlerMeldung = "";
   }
 }

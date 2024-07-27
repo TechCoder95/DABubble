@@ -1,15 +1,9 @@
-import { EventEmitter, Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of } from 'rxjs';
-import { CdkConnectedOverlay } from '@angular/cdk/overlay';
-import { JsonPipe } from '@angular/common';
-import { EmailService } from './sendmail.service';
-import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { Auth, sendEmailVerification } from '@angular/fire/auth';
+import { BehaviorSubject} from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -24,6 +18,7 @@ export class UserService {
   guestName: string = 'Guest';
   activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
   activeUserObserver$ = this.activeUserSubject.asObservable();
+  avatarSelected: boolean = false;
 
   collectionName: string = 'users';
 
@@ -49,6 +44,12 @@ export class UserService {
     });
   }
 
+
+  /**
+   * Checks the online status of a user.
+   * 
+   * @param user - The user to check the online status for.
+   */
   checkOnlineStatus(user: DABubbleUser) {
     if (user) {
       this.activeUser = user;
@@ -59,10 +60,19 @@ export class UserService {
     }
   }
 
+
+  /**
+   * Retrieves users from the database.
+   * @returns {Promise<void>} A promise that resolves when the users are retrieved.
+   */
   async getUsersFromDB() {
     await this.DatabaseService.readDatafromDB(this.collectionName, this.users);
   }
 
+
+  /**
+   * Performs a guest login by generating a unique guest name and writing it to the database.
+   */
   guestLogin() {
     this.getUsersFromDB().then(() => {
       let name = this.guestName;
@@ -76,6 +86,12 @@ export class UserService {
     });
   }
 
+
+  /**
+   * Writes a guest user to the database.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
+   */
   async writeGuestToDB() {
     let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg', activeChannels: [] };
 
@@ -96,6 +112,12 @@ export class UserService {
     });
   }
 
+
+  /**
+   * Logs out the guest user.
+   * Removes the user login from the session storage, updates the active user subject,
+   * deletes the user data from the database, and reloads the page.
+   */
   guestLogout() {
     let id = sessionStorage.getItem('userLogin')!;
     this.activeUser = null!;
@@ -109,6 +131,13 @@ export class UserService {
       });
   }
 
+
+  /**
+   * Logs in a user using the provided Google user object.
+   * If the user is not found in the database, a new user entry is created.
+   * If the user is found, the user is logged in and their information is updated.
+   * @param googleUser - The Google user object containing the user's information.
+   */
   async login(googleUser: User) {
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.mail === googleUser.email);
@@ -140,6 +169,15 @@ export class UserService {
     });
   }
 
+
+  /**
+   * Completes the user object by filling in missing properties with values from the Google user object.
+   * If a property is already present in the user object, it will not be overwritten.
+   * 
+   * @param user - The user object to be completed.
+   * @param googleUser - The Google user object containing additional information.
+   * @returns The completed user object.
+   */
   completeUser(user: DABubbleUser, googleUser?: User) {
     return user = {
       id: user.id,
@@ -153,11 +191,21 @@ export class UserService {
     };
   }
 
+
+  /**
+   * Updates the logged-in user's status and calls the updateUser method.
+   */
   async updateLoggedInUser() {
     this.activeUser.isLoggedIn = true;
     this.updateUser(this.activeUser);
   }
 
+
+  /**
+   * Updates the activation status of a user.
+   * @param user - The user object to update.
+   * @returns A Promise that resolves when the activation status is updated.
+   */
   async updateActivationStatus(user: DABubbleUser) {
     if (user.id) {
       this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
@@ -167,8 +215,15 @@ export class UserService {
     }
   }
 
+
+  /**
+   * Logs out the user.
+   * If the user is logged in as a guest, it calls the `guestLogout` method.
+   * Otherwise, it updates the user's data in the database, removes the user login information from local and session storage,
+   * clears the selected channel ID from session storage, emits a null value for the active user subject,
+   * and navigates to the login page.
+   */
   async logout() {
-    if (sessionStorage.getItem('userLogin')) {
       if (sessionStorage.getItem('userLogin')) {
         this.guestLogout();
       } else {
@@ -182,9 +237,15 @@ export class UserService {
             this.router.navigate(['/user/login']);
           });
       }
-    }
   }
 
+
+  /**
+   * Registers a new user with the provided email, username, and uid.
+   * @param email - The email of the user.
+   * @param username - The username of the user.
+   * @param uid - The unique identifier of the user.
+   */
   async register(email: string, username: string, uid: string) {
     let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
@@ -193,6 +254,13 @@ export class UserService {
       });
   }
 
+
+  /**
+   * Updates a user in the database.
+   * 
+   * @param user - The user object to update.
+   * @returns A Promise that resolves when the user is updated.
+   */
   async updateUser(user: DABubbleUser) {
     await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
       .then(() => {
@@ -201,17 +269,34 @@ export class UserService {
       });
   }
 
+
+  /**
+   * Deletes a user from the database.
+   * @param {string} userID - The ID of the user to be deleted.
+   * @returns {Promise<void>} - A promise that resolves when the user is deleted.
+   */
   async deleteUser(userID: string) {
     await this.DatabaseService.deleteDataFromDB(this.collectionName, userID)
       .then(() => { this.getUsersFromDB(); });
   }
 
+  
+  /**
+   * Retrieves a user by their ID.
+   * @param id - The ID of the user to retrieve.
+   * @returns The user object matching the specified ID, or undefined if no user is found.
+   */
   getOneUserbyId(id: string) {
     return this.users.find(user => user.id === id);
   }
 
-  avatarSelected: boolean = false;
 
+  /**
+   * Retrieves the channels assigned to a user.
+   * 
+   * @param userId - The ID of the user.
+   * @returns A promise that resolves to an array of TextChannel objects.
+   */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
     const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
     const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
@@ -221,6 +306,12 @@ export class UserService {
     return channels;
   }
 
+
+  /**
+   * Searches for users by name.
+   * @param name - The name to search for.
+   * @returns A promise that resolves to an array of DABubbleUser objects matching the search criteria.
+   */
   async searchUsersByName(name: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
     const q = query(usersRef, where('username', '==', name));
