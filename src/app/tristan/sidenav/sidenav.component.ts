@@ -24,7 +24,7 @@ import { distinctUntilChanged, filter, take } from 'rxjs/operators';
 interface Node {
   id: string;
   name: string;
-  type: 'groupchannel' | 'directMessage' | 'action';
+  type: 'groupChannel' | 'directMessage' | 'action';
   children?: Node[];
   avatar?: string;
 }
@@ -34,7 +34,7 @@ interface FlattenedNode {
   name: string;
   id: string;
   level: number;
-  type: 'groupchannel' | 'directMessage' | 'action';
+  type: 'groupChannel' | 'directMessage' | 'action';
   avatar?: string
 }
 
@@ -55,11 +55,6 @@ interface FlattenedNode {
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit {
-  private TREE_DATA: Node[] = [];
-  selectedChannel: TextChannel | null = null;
-  messages: ChatMessage[] = [];
-  newChannel: boolean = false;
-  isCurrentUserActivated: boolean | undefined;
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -84,6 +79,11 @@ export class SidenavComponent implements OnInit {
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
+  private TREE_DATA: Node[] = [];
+  selectedChannel: TextChannel | null = null;
+  messages: ChatMessage[] = [];
+  showNewChat: boolean = false;
+  isCurrentUserActivated: boolean | undefined;
 
   constructor(
     private dbService: DatabaseService,
@@ -95,6 +95,7 @@ export class SidenavComponent implements OnInit {
 
   async ngOnInit() {
     this.userService.activeUserObserver$
+      // nur falls notwendig
       .pipe(
         filter(user => !!user),
         distinctUntilChanged(),
@@ -140,10 +141,10 @@ export class SidenavComponent implements OnInit {
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async addChannel(data: TextChannel) {
-    const newChannel: TextChannel = { 
+    const newChannel: TextChannel = {
       ...data,
       assignedUser: [this.userService.activeUser.id!],
-      isPrivate: false  
+      isPrivate: false
     };
     try {
       const newChannelId = await this.dbService.addChannelDataToDB(
@@ -173,7 +174,7 @@ export class SidenavComponent implements OnInit {
       .map(channel => ({
         id: channel.id,
         name: channel.name,
-        type: 'groupchannel' as const,
+        type: 'groupChannel' as const,
       }));
     return nodes;
   }
@@ -195,42 +196,42 @@ export class SidenavComponent implements OnInit {
     }
     return directMessageNodes;
   }
-  
+
   private async initializeTreeData(): Promise<void> {
     const groupChannelNodes = this.createGroupChannelNodes();
     const directMessageNodes = await this.createDirectMessageNodes();
-  
+
     const channelsStructure: Node = {
       id: 'channels',
       name: 'Channels',
-      type: 'groupchannel',
+      type: 'groupChannel',
       children: [
         ...groupChannelNodes,
         { id: 'add-channel', name: 'Channel hinzufügen', type: 'action' as const },
       ],
     };
-  
+
     const directMessagesStructure: Node = {
       id: 'direct-messages',
       name: 'Direktnachrichten',
       type: 'directMessage',
       children: directMessageNodes,
     };
-  
+
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
   }
-  
 
   async loadChannels() {
     await this.fetchChannels();
     await this.initializeTreeData();
   }
 
-  async handleNodeClick(node: FlattenedNode) {
+  async onNode(node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
-    } else if (this.isGroupChannel(node) || this.isDirectMessage(node)) {
+    }
+    else if (this.isGroupChannel(node) || this.isDirectMessage(node)) {
       const selectedChannel = this.channels.find(
         (channel) => channel.id === node.id
       );
@@ -238,15 +239,16 @@ export class SidenavComponent implements OnInit {
         this.selectedChannel = selectedChannel;
         this.channelService.selectChannel(selectedChannel);
         sessionStorage.setItem('selectedChannelId', selectedChannel.id);
+        this.showNewChat = false;
       }
     } else if (node.type === 'action') {
-      this.openDialog();
+      this.openAddChannelDialog();
     }
   }
 
-  openDialog(): void {
+  openAddChannelDialog(): void {
     const dialogRef = this.dialog.open(AddChannelComponent);
-    dialogRef.afterClosed().subscribe((result: any) => {
+    dialogRef.afterClosed().subscribe((result: TextChannel) => {
       if (result) {
         this.addChannel(result);
       }
@@ -256,7 +258,7 @@ export class SidenavComponent implements OnInit {
   isGroupChannel = (node: FlattenedNode): boolean => {
     return (
       !node.expandable &&
-      node.type === 'groupchannel' &&
+      node.type === 'groupChannel' &&
       node.name !== 'Channel hinzufügen'
     );
   };
@@ -266,7 +268,7 @@ export class SidenavComponent implements OnInit {
   }
 
   isCategoryNode(node: FlattenedNode): boolean {
-    return node.type === 'groupchannel' || node.type === 'directMessage';
+    return node.type === 'groupChannel' || node.type === 'directMessage';
   }
 
   isActionNode(node: FlattenedNode): boolean {
@@ -278,6 +280,6 @@ export class SidenavComponent implements OnInit {
   }
 
   openNewMessage() {
-    this.newChannel = true;
+    this.showNewChat = true;
   }
 }

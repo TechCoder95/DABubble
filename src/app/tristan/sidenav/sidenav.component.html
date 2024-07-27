@@ -1,4 +1,3 @@
-@if (this.isCurrentUserActivated) {
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
@@ -19,7 +18,7 @@
             <img *ngIf="isDirectMessage(node)" class="mr-3 border-circle" style="width: 50px;" [src]="node.avatar"
               alt="pm" />
           </ng-container>
-          <span (click)="handleNodeClick(node)" [ngClass]="{
+          <span (click)="onNode(node)" [ngClass]="{
               'cursor-pointer': true,
               'blue-channel-name': isGroupChannel(node),
               'blue-name': isCategoryNode(node),
@@ -57,18 +56,18 @@
               }">{{ node.name }}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
-            <img class="ml-auto" src="img/add-files.svg" alt="add" (click)="openDialog()" />
+            <img class="ml-auto" src="img/add-files.svg" alt="add" (click)="openAddChannelDialog()" />
           </ng-container>
         </div>
       </mat-tree-node>
     </mat-tree>
   </mat-drawer>
 
-  <div class="pl-5 content extend" *ngIf="newChannel">
+  <div class="pl-5 content extend" *ngIf="showNewChat">
     <app-new-chat class="flex justify-content-between flex-auto"></app-new-chat>
   </div>
 
-  <div class="pl-5 content extend" *ngIf="!newChannel">
+  <div class="pl-5 content extend" *ngIf="!showNewChat">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>
@@ -77,4 +76,3 @@
   mat-button>
   Workspace-Menü
 </button>
-}
