@@ -324,4 +324,50 @@ export class UserService {
     });
     return users;
   }
+
+ 
+  async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const q = query(
+      usersRef,
+      where('username', '>=', searchText),
+      where('username', '<=', searchText + '\uf8ff')
+    );
+
+    const emailQuery = query(
+      usersRef,
+      where('mail', '>=', searchText),
+      where('mail', '<=', searchText + '\uf8ff')
+    );
+
+    const [nameSnapshot, emailSnapshot] = await Promise.all([
+      getDocs(q),
+      getDocs(emailQuery)
+    ]);
+
+    const users: DABubbleUser[] = [];
+
+    nameSnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      users.push(data);
+    });
+
+    emailSnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      if (!users.some(user => user.id === data.id)) {
+        users.push(data);
+      }
+    });
+
+    return users;
+  }
+
+
+
+
+
+
+
 }

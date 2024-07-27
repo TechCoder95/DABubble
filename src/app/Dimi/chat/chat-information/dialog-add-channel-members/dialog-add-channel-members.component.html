@@ -21,8 +21,7 @@
       type="text"
       class="inputfield-name"
       placeholder="Name eingeben"
-      [(ngModel)]="searchQuery"
-      (input)="searchUser()"
+      [formControl]="searchControl"
       #inputName
     />
   </section>
