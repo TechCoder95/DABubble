@@ -25,7 +25,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    // console.log(this.channel);
+    console.log(this.channel);
     this.getActiveMessages(this.channel);
   }
 

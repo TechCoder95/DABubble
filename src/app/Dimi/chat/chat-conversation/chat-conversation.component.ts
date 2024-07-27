@@ -32,7 +32,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent implements OnInit, OnDestroy {
+export class ChatConversationComponent implements OnInit, OnDestroy{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -59,14 +59,14 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
-    /*  this.scrollToBottom(); */
+   /*  this.scrollToBottom(); */
   }
 
-  /*  ngAfterViewInit(): void {
+ /*  ngAfterViewInit(): void {
     setTimeout(() => this.scrollToBottom(), 500);
   } */
 
-  /*  scrollToBottom() {
+ /*  scrollToBottom() {
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
   } */
@@ -74,7 +74,6 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   subscribeToDataChanges() {
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
       (channel) => {
-        /* debugger; */
         this.allMessages = [];
         this.chatService.sortMessages(channel);
       }
@@ -92,11 +91,10 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   subscribeToSendMessages() {
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
-        /* debugger; */
-        if (message) {
-          //Hier irgendwas rein, dass checkt, ob die message bereits im Array existiert?
+        console.log('sendMessagesSUBSCRIPTION');
+        if (message !== null) {
           this.allMessages.push(message);
-          console.log('Wird das 2X ausgeführt?');
+          console.log(this.allMessages);
         }
       }
     );
@@ -107,7 +105,7 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
       console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
         this.allMessages.push(message);
-        console.log('WIRD DAS AUCH 2X augeführt?');
+        console.log(this.allMessages);
       }
     });
   }

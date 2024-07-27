@@ -21,6 +21,11 @@
     hue-rotate(228deg) brightness(97%) contrast(95%);
 }
 
+.teste:hover {
+  filter: brightness(0) saturate(100%) invert(28%) sepia(91%) saturate(7479%)
+    hue-rotate(199deg) brightness(94%) contrast(90%);
+}
+
 .content {
   background-color: #eceefe;
 }

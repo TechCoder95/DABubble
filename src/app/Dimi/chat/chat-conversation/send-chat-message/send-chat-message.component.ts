@@ -3,7 +3,6 @@ import { ChatService } from '../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { UserService } from '../../../../shared/services/user.service';
-import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -17,13 +16,8 @@ export class SendChatMessageComponent {
     private chatService: ChatService,
     private userService: UserService
   ) {}
-  @Input() user!: DABubbleUser;
-  @Input() sendMessage!: ChatMessage;
 
-  getUserName() {
-    let user = this.userService.getOneUserbyId(this.user.id!);
-    return user?.username;
-  }
+  @Input() sendMessage!: ChatMessage;
 
   checkDate(date: number): string {
     const today = new Date();
@@ -40,8 +34,10 @@ export class SendChatMessageComponent {
     }
   }
 
-  getUserAvatar(): string | undefined {
-    let user = this.userService.getOneUserbyId(this.user.id!);
-    return user?.avatar;
+  userAvatar(): string | undefined {
+    const user = this.userService.users.find(
+      (user) => user.username === this.sendMessage.sender
+    );
+    return user ? user.avatar : undefined;
   }
 }
