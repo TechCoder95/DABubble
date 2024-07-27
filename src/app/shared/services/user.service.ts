@@ -224,7 +224,6 @@ export class UserService {
    * and navigates to the login page.
    */
   async logout() {
-    if (sessionStorage.getItem('userLogin')) {
       if (sessionStorage.getItem('userLogin')) {
         this.guestLogout();
       } else {
@@ -238,7 +237,6 @@ export class UserService {
             this.router.navigate(['/user/login']);
           });
       }
-    }
   }
 
 
