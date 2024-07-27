@@ -13,7 +13,7 @@ export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
 
   constructor() {
-    console.log(this.receiveMessage);
+     console.log(this.receiveMessage);
   }
 
   checkDate(date: number): string {
