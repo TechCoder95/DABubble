@@ -305,26 +305,6 @@ export class UserService {
     snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
     return channels;
   }
-
-
-  /**
-   * Searches for users by name.
-   * @param name - The name to search for.
-   * @returns A promise that resolves to an array of DABubbleUser objects matching the search criteria.
-   */
-  async searchUsersByName(name: string): Promise<DABubbleUser[]> {
-    const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
-    const q = query(usersRef, where('username', '==', name));
-    const snapshot = await getDocs(q);
-    const users: DABubbleUser[] = [];
-    snapshot.forEach(doc => {
-      const data = doc.data() as DABubbleUser;
-      data.id = doc.id;
-      users.push(data);
-    });
-    return users;
-  }
-
  
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');

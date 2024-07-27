@@ -96,11 +96,7 @@ export class SidenavComponent implements OnInit {
   async ngOnInit() {
     this.userService.activeUserObserver$
       // nur falls notwendig
-      .pipe(
-        filter(user => !!user),
-        distinctUntilChanged(),
-        take(1) // Nimmt nur den ersten Wert und beendet dann die Subscription
-      )
+      .pipe(filter(user => !!user), distinctUntilChanged(), take(1)) // Nimmt nur den ersten Wert und beendet dann die Subscription
       .subscribe(async (currentUser) => {
         this.isCurrentUserActivated = currentUser.activated;
         if (currentUser.activated) {

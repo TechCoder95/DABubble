@@ -18,16 +18,31 @@ import { CommonModule } from '@angular/common';
 export class NewChatComponent implements OnInit {
   searchControl = new FormControl();
   searchResults: DABubbleUser[] = [];
+  searchQuery: string | undefined;
+  isSelectingUser: boolean = false;
 
-  constructor(private userService: UserService) {}
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(value => this.userService.searchUsersByNameOrEmail(value))
+      switchMap(value => {
+        if (this.isSelectingUser) {
+          this.isSelectingUser = false;
+          return [];
+        }
+        return this.userService.searchUsersByNameOrEmail(value);
+      })
     ).subscribe(results => {
       this.searchResults = results;
     });
+  }
+
+  selectUser(user: DABubbleUser) {
+    this.isSelectingUser = true;
+    this.searchQuery = user.username;
+    this.searchControl.setValue(user.username);
+    this.searchResults = [];
   }
 }
