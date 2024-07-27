@@ -90,20 +90,17 @@ export class SidenavComponent implements OnInit {
     private channelService: ChannelService,
     private userService: UserService
   ) {
-    console.log('SidenavComponent constructed');
   }
 
   async ngOnInit() {
     this.userService.activeUserObserver$
       .pipe(
-        filter(user => !!user), // Filtere nicht vorhandene Benutzer heraus
+        filter(user => !!user),
         distinctUntilChanged(),
         take(1) // Nimmt nur den ersten Wert und beendet dann die Subscription
       )
       .subscribe(async (currentUser) => {
-        console.log('Subscription triggered', currentUser);
         if (currentUser) {
-          console.log('Aktueller Benutzer:', currentUser);
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
           await this.initializeTreeData();
@@ -114,16 +111,13 @@ export class SidenavComponent implements OnInit {
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
-    console.log('Loading user channels');
     this.channels = await this.userService.getUserChannels(currentUser.id!);
-    console.log('User channels loaded', this.channels);
   }
 
   private async initializeDirectMessageForUser(currentUser: DABubbleUser) {
     const directMessageExists = this.channels.some(
       (channel) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!)
     );
-    console.log("---------------------", directMessageExists);
 
     if (!directMessageExists) {
       const directMessage: TextChannel = {
@@ -138,7 +132,6 @@ export class SidenavComponent implements OnInit {
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
       directMessage.id = newChannelId;
       this.channels.push(directMessage);
-      console.log('Direct message initialized', directMessage);
     }
   }
 
@@ -148,7 +141,7 @@ export class SidenavComponent implements OnInit {
     const newChannel: TextChannel = { 
       ...data,
       assignedUser: [this.userService.activeUser.id!],
-      isPrivate: false  // Jeder neue Channel hat standardmäßig isPrivate = false
+      isPrivate: false  
     };
     try {
       const newChannelId = await this.dbService.addChannelDataToDB(
@@ -170,18 +163,16 @@ export class SidenavComponent implements OnInit {
 
   private async fetchChannels(): Promise<void> {
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
-    console.log('Fetched channels', this.channels);
   }
 
   private createGroupChannelNodes(): Node[] {
     const nodes = this.channels
       .filter(channel => !channel.isPrivate && this.isDefined(channel))
       .map(channel => ({
-        id: channel.id, // ID hinzufügen
+        id: channel.id,
         name: channel.name,
         type: 'groupchannel' as const,
       }));
-    console.log('Group channel nodes created', nodes);
     return nodes;
   }
 
@@ -190,7 +181,6 @@ export class SidenavComponent implements OnInit {
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel)) {
         const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
-        console.log('Avatar for user', user?.username, ':', user?.avatar); // Debug-Log hinzugefügt
         const node: Node = {
           id: channel.id,
           name: user?.username + " (Du)" || 'Unknown User',
@@ -198,11 +188,9 @@ export class SidenavComponent implements OnInit {
           children: [],
           avatar: user?.avatar
         };
-        console.log('Created node', node); // Debug-Log hinzugefügt
         directMessageNodes.push(node);
       }
     }
-    console.log("Direct message nodes", directMessageNodes); // Debug-Log hinzugefügt
     return directMessageNodes;
   }
   
@@ -229,7 +217,6 @@ export class SidenavComponent implements OnInit {
   
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
-    console.log('Tree data initialized', JSON.stringify(this.TREE_DATA, null, 2)); // Detailliertes Debug-Log hinzugefügt
   }
   
 
@@ -239,14 +226,12 @@ export class SidenavComponent implements OnInit {
   }
 
   async handleNodeClick(node: FlattenedNode) {
-    console.log('Node clicked', node);
     if (node.expandable) {
       this.treeControl.toggle(node);
     } else if (this.isGroupChannel(node) || this.isDirectMessage(node)) {
       const selectedChannel = this.channels.find(
-        (channel) => channel.id === node.id // Nach ID suchen
+        (channel) => channel.id === node.id
       );
-      console.log('Selected channel', selectedChannel);
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         this.channelService.selectChannel(selectedChannel);
@@ -292,6 +277,5 @@ export class SidenavComponent implements OnInit {
 
   openNewMessage() {
     this.newChannel = true;
-    console.log('olaa lo', this.newChannel);
   }
 }
