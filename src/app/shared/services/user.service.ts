@@ -28,7 +28,7 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
-    console.log('User Service Initialized');
+    // console.log('User Service Initialized');
     this.getUsersFromDB().then(() => {
       if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
@@ -89,7 +89,7 @@ export class UserService {
           sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
           this.updateLoggedInUser();
           this.checkOnlineStatus(this.activeUser);
-          console.log('Guest User Logged In');
+          // console.log('Guest User Logged In');
           this.router.navigate(['/home']);
         }
       });
@@ -134,7 +134,7 @@ export class UserService {
           this.checkOnlineStatus(loginUser);
           this.updateLoggedInUser();
           this.activeUserSubject.next(loginUser);
-          console.log('User full Logged In');
+          // console.log('User full Logged In');
         }
       }
     });

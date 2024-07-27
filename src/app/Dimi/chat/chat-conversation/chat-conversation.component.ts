@@ -57,10 +57,10 @@ export class ChatConversationComponent
   }
 
   ngOnInit() {
-    this.subscribeToDataChanges();
-    this.subscribeToChannelChanges();
-    this.subscribeToSendMessages();
-    this.subscribeToReceiveMessages();
+    // this.subscribeToDataChanges();
+    // this.subscribeToChannelChanges();
+    // this.subscribeToSendMessages();
+    // this.subscribeToReceiveMessages();
   }
 
   ngAfterViewInit(): void {

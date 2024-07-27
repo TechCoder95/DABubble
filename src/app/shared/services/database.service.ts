@@ -83,7 +83,7 @@ export class DatabaseService {
           array.length = 0;
           array.push(...results);
           resolve();
-          console.log('Data read successfully');
+          // console.log('Data read successfully');
         },
         reject
       );
