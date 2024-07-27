@@ -1,3 +1,4 @@
+@if (this.isCurrentUserActivated) {
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
     <div class="flex align-items-center justify-content-between">
@@ -15,7 +16,8 @@
           <ng-container *ngIf="node">
             <img *ngIf="isGroupChannel(node)" class="mr-3" src="img/tag-hover.svg" alt="channel" />
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
-            <img *ngIf="isDirectMessage(node)" class="mr-3 border-circle" style="width: 50px;" [src]="node.avatar" alt="pm" />
+            <img *ngIf="isDirectMessage(node)" class="mr-3 border-circle" style="width: 50px;" [src]="node.avatar"
+              alt="pm" />
           </ng-container>
           <span (click)="handleNodeClick(node)" [ngClass]="{
               'cursor-pointer': true,
@@ -29,16 +31,21 @@
       </mat-tree-node>
 
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
-        <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter" matTreeNodeToggle>
+        <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
+          matTreeNodeToggle>
           <div class="flex align-items-center">
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
-                <img style="width: 10px; height: 10px" [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'" alt="toggle icon" />
+                <img style="width: 10px; height: 10px"
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'"
+                  alt="toggle icon" />
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
-              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.svg" alt="channels" />
-              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3" src="img/account_circle.svg" alt="direct-messages" />
+              <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.svg"
+                alt="channels" />
+              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3"
+                src="img/account_circle.svg" alt="direct-messages" />
             </ng-container>
             <span matTreeNodeToggle [ngClass]="{
                 'cursor-pointer': true,
@@ -66,6 +73,8 @@
   </div>
 </mat-drawer-container>
 
-<button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{ 'margin-left': '-50px' }" (click)="drawer.toggle()" mat-button>
+<button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{ 'margin-left': '-50px' }" (click)="drawer.toggle()"
+  mat-button>
   Workspace-Menü
 </button>
+}

@@ -22,7 +22,7 @@ import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 import { distinctUntilChanged, filter, take } from 'rxjs/operators';
 
 interface Node {
-  id: string; // Neues Feld hinzugefügt
+  id: string;
   name: string;
   type: 'groupchannel' | 'directMessage' | 'action';
   children?: Node[];
@@ -32,7 +32,7 @@ interface Node {
 interface FlattenedNode {
   expandable: boolean;
   name: string;
-  id: string; // Neues Feld hinzugefügt
+  id: string;
   level: number;
   type: 'groupchannel' | 'directMessage' | 'action';
   avatar?: string
@@ -59,11 +59,12 @@ export class SidenavComponent implements OnInit {
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
   newChannel: boolean = false;
+  isCurrentUserActivated: boolean | undefined;
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
-    id: node.id, // ID wird hier hinzugefügt
+    id: node.id,
     level: level,
     type: node.type,
     avatar: node.avatar
@@ -100,7 +101,8 @@ export class SidenavComponent implements OnInit {
         take(1) // Nimmt nur den ersten Wert und beendet dann die Subscription
       )
       .subscribe(async (currentUser) => {
-        if (currentUser) {
+        this.isCurrentUserActivated = currentUser.activated;
+        if (currentUser.activated) {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
           await this.initializeTreeData();
