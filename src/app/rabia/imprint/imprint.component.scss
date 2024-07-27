@@ -1,15 +1,18 @@
 section {
+    position: relative;
     width: 400px;
     padding: 48px 56px;
 }
 
 .arrow-back {
+    position: absolute;
+    right: 40px;
+    top: 40px;
     width: 40px;
     height: 40px;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(/img/arrow-back.svg);
-    margin-bottom: 24px;
 
     &:hover {
         cursor: pointer;

@@ -32,9 +32,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent
-  implements OnInit, OnDestroy
-{
+export class ChatConversationComponent implements OnInit, OnDestroy {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -57,24 +55,26 @@ export class ChatConversationComponent
   }
 
   ngOnInit() {
-    // this.subscribeToDataChanges();
-    // this.subscribeToChannelChanges();
-    // this.subscribeToSendMessages();
-    // this.subscribeToReceiveMessages();
+    this.subscribeToDataChanges();
+    this.subscribeToChannelChanges();
+    this.subscribeToSendMessages();
+    this.subscribeToReceiveMessages();
+    /*  this.scrollToBottom(); */
   }
 
-  ngAfterViewInit(): void {
-      setTimeout(() => this.scrollToBottom(), 1000);
-    }
+  /*  ngAfterViewInit(): void {
+    setTimeout(() => this.scrollToBottom(), 500);
+  } */
 
-  scrollToBottom() {
+  /*  scrollToBottom() {
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
-  }
+  } */
 
   subscribeToDataChanges() {
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
       (channel) => {
+        /* debugger; */
         this.allMessages = [];
         this.chatService.sortMessages(channel);
       }
@@ -92,10 +92,11 @@ export class ChatConversationComponent
   subscribeToSendMessages() {
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
-        console.log('sendMessagesSUBSCRIPTION');
-        if (message !== null) {
+        /* debugger; */
+        if (message) {
+          //Hier irgendwas rein, dass checkt, ob die message bereits im Array existiert?
           this.allMessages.push(message);
-          console.log(this.allMessages);
+          console.log('Wird das 2X ausgeführt?');
         }
       }
     );
@@ -106,7 +107,7 @@ export class ChatConversationComponent
       console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
         this.allMessages.push(message);
-        console.log(this.allMessages);
+        console.log('WIRD DAS AUCH 2X augeführt?');
       }
     });
   }

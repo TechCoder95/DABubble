@@ -1,7 +1,7 @@
 <main #scrollContainer>
   @for (message of allMessages; track $index) { @if (message.sender ===
   this.activeUser.username) {
-  <app-send-chat-message [sendMessage]="message"></app-send-chat-message>
+  <app-send-chat-message [sendMessage]="message" [user]="activeUser"></app-send-chat-message>
   }@else {
   <app-receive-chat-message
     [receiveMessage]="message"
