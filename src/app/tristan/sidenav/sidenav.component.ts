@@ -101,7 +101,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         if (currentUser?.activated) {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
-          this.updateTreeData(); // Update Tree Data without reloading sidenav
+          this.updateTreeData();
         } else {
           console.log('Kein aktiver Benutzer gefunden');
         }
@@ -136,7 +136,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
       directMessage.id = newChannelId;
       this.channels.push(directMessage);
-      this.updateTreeData(); // Update Tree Data after adding a new direct message channel
+      this.updateTreeData();
     }
   }
 
@@ -154,8 +154,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
         newChannel
       );
       newChannel.id = newChannelId;
-      this.channels.push(newChannel); // Add new channel to the channels array
-      this.updateTreeData(); // Update Tree Data after adding a new channel
+      this.channels.push(newChannel);
+      this.updateTreeData();
     } catch (err) {
       console.error('Fehler beim Hinzufügen des neuen Kanals', err);
     }
@@ -223,7 +223,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
-    this.treeControl.expandAll(); // Expand all nodes to maintain the expanded state
+    this.treeControl.expandAll();
   }
 
   async loadChannels() {
