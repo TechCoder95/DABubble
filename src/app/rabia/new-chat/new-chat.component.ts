@@ -20,6 +20,7 @@ export class NewChatComponent implements OnInit {
   searchResults: DABubbleUser[] = [];
   searchQuery: string | undefined;
   isSelectingUser: boolean = false;
+  selectedUser: DABubbleUser | undefined;
 
   constructor(private userService: UserService) { }
 
@@ -44,5 +45,8 @@ export class NewChatComponent implements OnInit {
     this.searchQuery = user.username;
     this.searchControl.setValue(user.username);
     this.searchResults = [];
+    this.selectedUser = user;    
+    console.log(this.selectedUser);
+    
   }
 }
