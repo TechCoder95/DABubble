@@ -9,22 +9,18 @@
     </div>
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
-      <!-- Unter Knoten -->
       <mat-tree-node *matTreeNodeDef="let node">
         <div class="flex align-items-center cursor-pointer">
           <button mat-icon-button></button>
           <ng-container *ngIf="node">
-            <!-- Kanal -->
-            <img *ngIf="isChannelNode(node) && !isPrivateMessage(node)" class="mr-3" src="img/tag-hover.svg"
-              alt="channel" />
-            <!-- Kanal hinzufügen -->
+            <img *ngIf="isGroupChannel(node)" class="mr-3" src="img/tag-hover.svg" alt="channel" />
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
-            <!-- Private Message -->
-            <img *ngIf="isPrivateMessage(node)" class="mr-3" src="img/private-messages.png" alt="private-message" />
+            <img *ngIf="isDirectMessage(node)" class="mr-3 border-circle" style="width: 50px;" [src]="node.avatar"
+              alt="pm" />
           </ng-container>
-          <span (click)="handleNodeClick(node)" [ngClass]="{
+          <span (click)="onNode(node)" [ngClass]="{
               'cursor-pointer': true,
-              'blue-channel-name': isNewChannel(node),
+              'blue-channel-name': isGroupChannel(node),
               'blue-name': isCategoryNode(node),
               'font-bold': isCategoryNode(node),
               'blue-action-name': isActionNode(node),
@@ -33,31 +29,26 @@
         </div>
       </mat-tree-node>
 
-      <!-- Hauptknoten -->
       <mat-tree-node *matTreeNodeDef="let node; when: hasChild">
         <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
           matTreeNodeToggle>
           <div class="flex align-items-center">
             <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
               <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
-                <img style="width: 10px; height: 10px" [src]="
-                    treeControl.isExpanded(node)
-                      ? 'img/arrow_down.svg'
-                      : 'img/arrow-right.png'
-                  " alt="toggle icon" />
+                <img style="width: 10px; height: 10px"
+                  [src]="treeControl.isExpanded(node) ? 'img/arrow_down.svg' : 'img/arrow-right.png'"
+                  alt="toggle icon" />
               </mat-icon>
             </button>
             <ng-container *ngIf="node">
-              <!-- Kategorien -->
               <img *ngIf="isCategoryNode(node) && node.name === 'Channels'" class="mr-3" src="img/channels.svg"
                 alt="channels" />
-              <img *ngIf="
-                  isCategoryNode(node) && node.name === 'Direktnachrichten'
-                " class="mr-3" src="img/account_circle.svg" alt="direct-messages" />
+              <img *ngIf="isCategoryNode(node) && node.name === 'Direktnachrichten'" class="mr-3"
+                src="img/account_circle.svg" alt="direct-messages" />
             </ng-container>
             <span matTreeNodeToggle [ngClass]="{
                 'cursor-pointer': true,
-                'blue-channel-name': isNewChannel(node),
+                'blue-channel-name': isGroupChannel(node),
                 'blue-name': isCategoryNode(node),
                 'font-bold': isCategoryNode(node),
                 'blue-action-name': isActionNode(node),
@@ -65,18 +56,18 @@
               }">{{ node.name }}</span>
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
-            <img class="ml-auto" src="img/add-files.svg" alt="add" (click)="openDialog()" />
+            <img class="ml-auto" src="img/add-files.svg" alt="add" (click)="openAddChannelDialog()" />
           </ng-container>
         </div>
       </mat-tree-node>
     </mat-tree>
   </mat-drawer>
 
-  <div class="pl-5 content extend" *ngIf="newChannel">
+  <div class="pl-5 content extend" *ngIf="showNewChat">
     <app-new-chat class="flex justify-content-between flex-auto"></app-new-chat>
   </div>
 
-  <div class="pl-5 content extend" *ngIf="!newChannel">
+  <div class="pl-5 content extend" *ngIf="!showNewChat">
     <app-chat *ngIf="selectedChannel"></app-chat>
   </div>
 </mat-drawer-container>

@@ -21,11 +21,13 @@ export class ChatService {
   ) {}
 
   async sortMessages(channel: TextChannel) {
+    /* debugger; */
     if (channel && channel.conversationId) {
       channel.conversationId.forEach((messageID) => {
         this.databaseService
           .readDataByID('messages', messageID)
           .then((messageFromDb) => {
+           /*  debugger; */
             let message = messageFromDb as ChatMessage;
             if (message.sender === this.userService.activeUser.username) {
               this.readMessage(message);
