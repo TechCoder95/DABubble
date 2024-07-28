@@ -21,6 +21,7 @@ export class PasswordResetComponent {
 
   passwordChange() {
     this.emailService.changePassword(this.email);
+    console.log('Password reset email sent');
   }
 
   goBack() {
