@@ -20,10 +20,15 @@
         (click)="openDialogChannelMembers($event)"
         [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
       >
-        @for (member of allUsers.slice(0,4); track $index) {
-        <img class="img" [src]="member.avatar" />
+        @for (user of assignedUsers.slice(0,5); track $index) {
+        <img class="img" [src]="user.avatar" />
         }
-        <p>+{{ allUsers.length - 4 }}</p>
+        <p class="missing-amount" *ngIf="getExtraUserCount() > 0">
+          +{{ getExtraUserCount() }}
+        </p>
+        <p *ngIf="getExtraUserCount() < 6">
+          {{ channelService.channel.assignedUser.length }}
+        </p>
       </div>
       <img
         [src]="addChannelMembersImg"

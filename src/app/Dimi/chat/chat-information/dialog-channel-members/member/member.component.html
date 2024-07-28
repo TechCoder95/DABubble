@@ -1,7 +1,7 @@
 <main>
   <div class="relative img-container">
-    <img [src]="allUsers.avatar" />
-    <div class="online-status" [ngClass]="allUsers.isLoggedIn ? 'green' : 'grey'"></div>
+    <img [src]="member.avatar" />
+    <div class="online-status" [ngClass]="online ? 'green' : 'grey'"></div>
   </div>
-  <p (click)="openInfo()">{{ allUsers.username }}</p>
+  <p (click)="openInfo()">{{ getUserName() }}</p>
 </main>

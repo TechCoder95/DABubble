@@ -6,16 +6,21 @@
         (click)="closeDialog()" />
     </section>
 
-    <section class="channel-members">
-      @for (member of data.allUsers; track $index) {
-      <app-member [allUsers]="member"></app-member>
-      }
-      <div class="add-member">
-        <div></div>
-        <p>Mitglied Hinzufügen</p>
-      </div>
+  <section class="channel-members">
+    <app-member [member]="activeUser"></app-member>
 
-    </section>
-  </main>
+    @for (member of channelMembers; track $index) {
+    <app-member [member]="member"></app-member>
+    }
+    <app-member
+      (mouseenter)="changeAddMembersImg(true)"
+      (mouseleave)="changeAddMembersImg(false)"
+      [member]="{
+        avatar: addMemberImg,
+        username: 'Mitglied hinzufügen'
+      }"
+    ></app-member>
+  </section>
+</main>
 
 </div>
