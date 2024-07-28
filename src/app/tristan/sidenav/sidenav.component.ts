@@ -101,14 +101,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
         if (currentUser?.activated) {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
-          this.updateTreeData();
+          await this.updateTreeData();
         } else {
           console.log('Kein aktiver Benutzer gefunden');
         }
       });
   }
 
-  ngOnDestroy() {
+  async ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
@@ -136,7 +136,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
       directMessage.id = newChannelId;
       this.channels.push(directMessage);
-      this.updateTreeData();
+      await this.updateTreeData();
     }
   }
 
@@ -155,7 +155,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       newChannel.id = newChannelId;
       this.channels.push(newChannel);
-      this.updateTreeData();
+      await this.updateTreeData();
     } catch (err) {
       console.error('Fehler beim Hinzufügen des neuen Kanals', err);
     }
@@ -228,7 +228,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async loadChannels() {
     await this.fetchChannels();
-    this.updateTreeData();
+    await this.updateTreeData();
   }
 
   async onNode(node: FlattenedNode) {
