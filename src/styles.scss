@@ -2,7 +2,7 @@
 @import "fonts.scss";
 
 
-*{
+* {
     font-family: 'Nunito' !important;
 }
 
@@ -16,4 +16,21 @@ body {
 body {
     margin: 0;
     background-color: #ECEEFE;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #535AF1;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    cursor: pointer;
+    background: #444DF2;
 }

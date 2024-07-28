@@ -6,6 +6,7 @@ import { ComponentType } from '@angular/cdk/portal';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
 import { ChannelService } from '../../../shared/services/channel.service';
+import { UserService } from '../../../shared/services/user.service';
 
 @Component({
   selector: 'app-chat-information',
@@ -16,32 +17,34 @@ import { ChannelService } from '../../../shared/services/channel.service';
 })
 export class ChatInformationComponent {
   isChannel: boolean = true;
-  tagImg = './img/tag.png';
+  tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.png';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
-  addChannelMembersImg = './img/add-members-default.png';
+  addChannelMembersImg = './img/add-members-default.svg';
+  allUsers = this.userService.users;
 
   constructor(
     public dialog: MatDialog,
-    public channelService: ChannelService
-  ) {}
+    public channelService: ChannelService,
+    private userService: UserService
+  ) {  }
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
-      this.tagImg = './img/tag-hover.png';
+      this.tagImg = './img/tag-hover.svg';
       this.arrowImg = './img/arrow-down-hover.png';
     } else {
-      this.tagImg = './img/tag.png';
+      this.tagImg = './img/tag.svg';
       this.arrowImg = './img/keyboard_arrow_down.png';
     }
   }
 
   changeAddMembersImg(hover: boolean) {
     if (hover) {
-      this.addChannelMembersImg = './img/add-members-hover.png';
+      this.addChannelMembersImg = './img/add-members-hover.svg';
     } else {
-      this.addChannelMembersImg = './img/add-members-default.png';
+      this.addChannelMembersImg = './img/add-members-default.svg';
     }
   }
 
@@ -62,7 +65,7 @@ export class ChatInformationComponent {
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
-    const dialogConfig = this.handleDialogConfig(event, 'channelMembers');
+    const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
       dialogConfig
@@ -97,7 +100,7 @@ export class ChatInformationComponent {
         },
         panelClass: 'custom-dialog-container',
       };
-    } else if (position === 'channelMembers') {
+    } else if (position === 'allUsers') {
       const dialogWidth = 372;
       return {
         position: {
@@ -105,7 +108,7 @@ export class ChatInformationComponent {
           left: `${rect.right - dialogWidth}px`,
         },
         panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.channelMembers },
+        data: { allUsers: this.allUsers },
       };
     } else {
       const dialogWidth = 542;
@@ -115,7 +118,7 @@ export class ChatInformationComponent {
           left: `${rect.right - dialogWidth}px`,
         },
         panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.channelMembers },
+        data: { allUsers: this.allUsers },
       };
     }
   }
@@ -129,22 +132,22 @@ export class ChatInformationComponent {
     });
   }
 
-  channelMembers = [
-    {
-      img: './img/2.svg',
-      name: 'Dimitrios Kapetanis (Du)',
-    },
-    {
-      img: './img/3.svg',
-      name: 'Rabia Ürkmez',
-    },
-    {
-      img: './img/4.svg',
-      name: 'Dominik Knezovic',
-    },
-    {
-      img: './img/5.svg',
-      name: 'Tristan Gehring',
-    },
-  ];
+  // channelMembers = [
+  //   {
+  //     img: './img/2.svg',
+  //     name: 'Dimitrios Kapetanis (Du)',
+  //   },
+  //   {
+  //     img: './img/3.svg',
+  //     name: 'Rabia Ürkmez',
+  //   },
+  //   {
+  //     img: './img/4.svg',
+  //     name: 'Dominik Knezovic',
+  //   },
+  //   {
+  //     img: './img/5.svg',
+  //     name: 'Tristan Gehring',
+  //   },
+  // ];
 }

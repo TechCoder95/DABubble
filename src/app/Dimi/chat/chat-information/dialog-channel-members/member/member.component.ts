@@ -15,15 +15,15 @@ DialogChannelMembersComponent;
   styleUrl: './member.component.scss',
 })
 export class MemberComponent {
-  @Input() member: any;
+  @Input() allUsers: any;
   online: boolean = false;
 
   constructor(public dialog: MatDialog) { }
 
   openInfo() {
-    console.log("das ist der: ", this.member);
+    console.log("das ist der: ", this.allUsers);
     this.dialog.open(OpenUserInfoComponent, {
-      data: { member: this.member }
+      data: { member: this.allUsers }
     });
   }
 
