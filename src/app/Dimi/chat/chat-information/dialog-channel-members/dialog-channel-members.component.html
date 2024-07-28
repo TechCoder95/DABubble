@@ -11,15 +11,17 @@
   </section>
 
   <section class="channel-members">
-    @for (member of data.channelMembers; track $index) {
+    <app-member [member]="activeUser"></app-member>
+
+    @for (member of channelMembers; track $index) {
     <app-member [member]="member"></app-member>
     }
     <app-member
       (mouseenter)="changeAddMembersImg(true)"
       (mouseleave)="changeAddMembersImg(false)"
       [member]="{
-        img: addMemberImg,
-        name: 'Mitglied hinzufügen'
+        avatar: addMemberImg,
+        username: 'Mitglied hinzufügen'
       }"
     ></app-member>
   </section>

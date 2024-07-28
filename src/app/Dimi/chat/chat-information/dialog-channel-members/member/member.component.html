@@ -3,5 +3,5 @@
     <img [src]="member.avatar" />
     <div class="online-status" [ngClass]="online ? 'green' : 'grey'"></div>
   </div>
-  <p (click)="openInfo()">{{ member.username }}</p>
+  <p (click)="openInfo()">{{ getUserName() }}</p>
 </main>
