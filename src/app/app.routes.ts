@@ -22,8 +22,8 @@ export const routes: Routes = [
       { path: 'register', component: AddUserComponent },
       { path: 'chooseAvatar', component: ChooseAvatarComponent },
       { path: 'login', component: LoginComponent },
-      { path: 'pw', component: PasswordResetComponent },
-      { path: 'pw-change', component: PasswordChangeComponent },
+      { path: 'password-reset', component: PasswordResetComponent },
+      { path: 'password-change', component: PasswordChangeComponent, canActivate: [isLoggedIn] },
       { path: 'imprint', component: ImprintComponent },
       { path: 'privacy', component: PrivacyComponent },
     ]
