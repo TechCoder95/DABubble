@@ -27,6 +27,7 @@ interface Node {
   type: 'groupChannel' | 'directMessage' | 'action';
   children?: Node[];
   avatar?: string;
+  isLoggedIn?: boolean;
 }
 
 interface FlattenedNode {

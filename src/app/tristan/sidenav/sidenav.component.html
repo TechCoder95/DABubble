@@ -15,8 +15,13 @@
           <ng-container *ngIf="node">
             <img *ngIf="isGroupChannel(node)" class="mr-3" src="img/tag-hover.svg" alt="channel" />
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
-            <img *ngIf="isDirectMessage(node)" class="mr-3 border-circle" style="width: 50px;" [src]="node.avatar"
+
+            <div *ngIf="isDirectMessage(node)" class="mr-3 img-container relative">
+              <img class="border-circle" [src]="node.avatar"
               alt="pm" />
+              <div class="online-status" [ngClass]="node.isLoggedIn ? 'green' : 'grey'"></div>
+            </div>
+
           </ng-container>
           <span (click)="onNode(node)" [ngClass]="{
               'cursor-pointer': true,
