@@ -1,11 +1,10 @@
-<main>
-  @for (receiveChatMessage of receiveChatMessages; track $index) {
+<main #scrollContainer>
+  @for (message of allMessages; track $index) { @if (message.sender ===
+  this.activeUser.username) {
+  <app-send-chat-message [sendMessage]="message" [user]="activeUser"></app-send-chat-message>
+  }@else {
   <app-receive-chat-message
-    [receiveMessage]="receiveChatMessage"
+    [receiveMessage]="message"
   ></app-receive-chat-message>
-  } @for (sendChatMessage of sendChatMessages; track $index) {
-  <app-send-chat-message
-    [sendMessage]="sendChatMessage"
-  ></app-send-chat-message>
-  }
+  } }
 </main>

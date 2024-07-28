@@ -9,10 +9,6 @@ import { UserService } from './user.service';
   providedIn: 'root',
 })
 export class ChatService {
-  private messageSource = new BehaviorSubject<ChatMessage | null>(null);
-  public message$ = this.messageSource.asObservable();
-  message!: ChatMessage;
-
   private sendMessages = new BehaviorSubject<ChatMessage | null>(null);
   public sendMessages$ = this.sendMessages.asObservable();
 
@@ -24,18 +20,14 @@ export class ChatService {
     private userService: UserService
   ) {}
 
-  addMessage(message: ChatMessage) {
-    this.messageSource.next(message);
-    this.message = message;
-    this.databaseService.addDataToDB('messages', message);
-  }
-
   async sortMessages(channel: TextChannel) {
+    /* debugger; */
     if (channel && channel.conversationId) {
       channel.conversationId.forEach((messageID) => {
         this.databaseService
           .readDataByID('messages', messageID)
           .then((messageFromDb) => {
+           /*  debugger; */
             let message = messageFromDb as ChatMessage;
             if (message.sender === this.userService.activeUser.username) {
               this.readMessage(message);

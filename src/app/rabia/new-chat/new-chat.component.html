@@ -1,0 +1,12 @@
+<mat-card>
+  <main>
+    <mat-card-subtitle class="font-bold text-2xl">Neue Nachricht</mat-card-subtitle>
+    <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse" [formControl]="searchControl">
+    <div *ngIf="searchResults.length > 0" class="search-results">
+      <div *ngFor="let user of searchResults" (click)="selectUser(user)">
+        {{ user.username }} ({{ user.mail }})
+      </div>
+    </div>
+  </main>
+  <app-chat-inputfield></app-chat-inputfield>
+</mat-card>

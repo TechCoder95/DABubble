@@ -1,7 +1,7 @@
 <main>
   <section>
     <div class="headline">
-      <h3>Leute hinzufügen</h3>
+      <h3 class="text-2xl">Leute hinzufügen</h3>
       <img
         [src]="closeImg"
         (mouseenter)="changeCloseImg(true)"
@@ -11,12 +11,27 @@
       />
     </div>
     <div class="channel-name">
-      <img src="./img/tag-hover.png" />
+      <img src="./img/tag-hover-thin.svg" />
       <p>{{ (channelService.selectedChannel$ | async)?.name }}</p>
     </div>
   </section>
 
   <section>
-    <input type="text" class="inputfield-name" placeholder="Name eingeben" #inputName/>
+    <input
+      type="text"
+      class="inputfield-name"
+      placeholder="Name eingeben"
+      [formControl]="searchControl"
+      #inputName
+    />
+  </section>
+
+  <section *ngIf="searchResults.length > 0">
+    <ul>
+      <li *ngFor="let user of searchResults">
+        {{ user.username }}
+        <button (click)="addUserToChannel(user)">Hinzufügen</button>
+      </li>
+    </ul>
   </section>
 </main>

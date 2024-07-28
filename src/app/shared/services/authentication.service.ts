@@ -1,9 +1,7 @@
-import { EventEmitter, Injectable, Output } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, User } from "firebase/auth";
-import { DatabaseService } from './database.service';
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
-import { DABubbleUser } from '../interfaces/user';
 import { EmailService } from './sendmail.service';
 
 @Injectable({
@@ -11,10 +9,11 @@ import { EmailService } from './sendmail.service';
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private router: Router, private emailService : EmailService) { }
+  constructor(private userService: UserService, private router: Router, private emailService: EmailService) { }
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
+  fehlerMeldung: string = "";
 
   //#region [Mail Authentication]
 
@@ -53,25 +52,30 @@ export class AuthenticationService {
       .then((userCredential) => {
         // Signed in 
         this.userService.googleUser = userCredential.user;
-        this.userService.login(userCredential.user).then(() => {
-          this.router.navigate(['/home']);
-        });
-        // ...
+        this.userService.login(userCredential.user)
       })
       .catch((error) => {
-        if (error.code === "auth/too-many-requests") {
-          alert("User wurde gesperrt, bitte versuchen Sie es später erneut");
+        if (error.code === "auth/user-not-found") {
+          this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
+        }
+        else if (error.code === "auth/network-request-failed") {
+          this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
+        }
+        else if (error.code === "auth/too-many-requests") {
+          this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
         }
         else if (error.code === "auth/invalid-credential") {
-          alert("Falsches Passwort");
+          this.fehlerMeldung = "Ungültige Anmeldeinformationen";
         }
         else if (error.code === "auth/invalid-email") {
-          alert("E-Mail-Adresse existiert nicht");
+          this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
         }
         else {
-          alert("Falsche Eingabe" + error.message);
+          alert(error.message);
         }
-      });
+
+      })
+
   }
 
   //#endregion
@@ -93,9 +97,7 @@ export class AuthenticationService {
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
-        this.userService.login(result.user).then(() => {
-          this.router.navigate(['/home']);
-        });
+        this.userService.login(result.user)
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -117,8 +119,7 @@ export class AuthenticationService {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
         const token = credential?.accessToken;
-        console.log('token:' + token);
-        
+
 
       }).catch((error) => {
         // Handle Errors here.
@@ -163,5 +164,5 @@ export class AuthenticationService {
   //#endregion
 
 
-  
+
 }

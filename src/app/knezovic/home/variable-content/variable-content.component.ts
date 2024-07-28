@@ -21,10 +21,15 @@ export class VariableContentComponent {
   constructor(private router: Router, private emailService: EmailService, private authService: AuthenticationService
   ) {
     this.emailService.verifyMail();
-    console.log(this.router.url);
     this.link = this.router.url;
   }
 
+  routeToImprint() {
+    this.router.navigate(['/user/imprint']);
+  }
 
+  routeToPrivacy() {
+    this.router.navigate(['/user/privacy']);
+  }
 
 }

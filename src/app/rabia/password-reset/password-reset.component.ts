@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-password-reset',
@@ -14,6 +15,14 @@ import { MatCardModule } from '@angular/material/card';
 export class PasswordResetComponent {
 
   email: string = '';
-  epassword: string = '';
 
+  constructor(private router: Router) {}
+
+  passwordChange() {
+    this.router.navigate(['/user/pw-change']);
+  }
+
+  goBack() {
+    this.router.navigate(['/user/login']);
+  }
 }

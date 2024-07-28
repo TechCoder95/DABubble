@@ -21,7 +21,6 @@ export class DAStorageService {
     const storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
     const mountainsRef = ref(storage, name);
     uploadBytes(mountainsRef, file).then((snapshot) => {
-      console.log(snapshot);
       console.log('Uploaded a blob or file!');
     });
     const metadata = {

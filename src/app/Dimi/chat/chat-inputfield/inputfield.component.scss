@@ -8,8 +8,7 @@
   width: -webkit-fill-available;
   margin: 20px;
   border: 1px solid rgba(173, 176, 217, 1);
-
-  >textarea {
+  > textarea {
     resize: none;
     border: none;
     outline: none;
@@ -25,8 +24,7 @@
 .arrange-input-options {
   display: flex;
   justify-content: space-between;
-
-  >.send-message-btn {
+  > .send-message-btn {
     cursor: pointer;
 
     &:hover {
@@ -39,28 +37,13 @@
   display: flex;
   align-items: center;
   gap: 5px;
-
-  >.emoji {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
+  > img {
+    cursor: pointer;
     height: 40px;
-    padding: 8px;
-
-
-    &:hover {
-      background-color: #ECEEFE;
-      border-radius: 100%;
-      
-    }
-
-
-    >img {
-      cursor: pointer;
-      height: 20px;
-      width: 20px;
-
+    width: 40px;
+    &:first-of-type {
+      border-right: 1px solid rgba(173, 176, 217, 1);
+      padding-right: 5px;
     }
   }
 

@@ -1,33 +1,42 @@
 <section class="inputfield">
-  <textarea name="" id="" [(ngModel)]="textareaValue" [placeholder]="placeholderText | async"></textarea>
+  <textarea
+    name=""
+    id=""
+    [(ngModel)]="textareaValue"
+    [placeholder]="placeholderText | async"
+  ></textarea>
 
   <div class="arrange-input-options">
     <div class="chat-options">
-      <div class="emoji">
-        <img
-        [src]="addFilesImg"
+      <div
+        class="emoji"
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
-      />
+      >
+        <img [src]="addFilesImg" />
       </div>
       <div>
-        <img src="/img/line.svg" alt="">
+        <img src="/img/line.svg" alt="" />
       </div>
-      <div class="emoji">
-        <img
-        [src]="addEmojiImg"
+      <div
+        class="emoji"
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
-      />
+      >
+        <img [src]="addEmojiImg" />
       </div>
-      <div class="emoji">
-        <img
-        [src]="addLinkImg"
+      <div
+        class="emoji"
         (mouseenter)="changeAddLinkImg(true)"
         (mouseleave)="changeAddLinkImg(false)"
-      />
+      >
+        <img [src]="addLinkImg" />
       </div>
     </div>
-    <img src="./img/send-message.svg" class="send-message-btn" (click)="sendMessage()"/>
+    <img
+      src="./img/send-message.svg"
+      class="send-message-btn"
+      (click)="sendMessage()"
+    />
   </div>
 </section>

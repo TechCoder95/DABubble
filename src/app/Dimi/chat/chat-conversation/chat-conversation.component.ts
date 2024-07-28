@@ -1,10 +1,14 @@
 import {
+  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
+  ElementRef,
   Input,
   OnDestroy,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
@@ -28,14 +32,20 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
-export class ChatConversationComponent implements OnInit, OnDestroy {
+export class ChatConversationComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
+  allMessages: ChatMessage[] = [];
+  private databaseSubscription!: Subscription;
   private channelSubscription!: Subscription;
-  private messageSubscription!: Subscription;
+  private sendMessagesSubscription!: Subscription;
+  private receiveMessagesSubscription!: Subscription;
+  @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   constructor(
     private chatService: ChatService,
@@ -47,42 +57,70 @@ export class ChatConversationComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    /*  this.databaseService.subscribeToMessages(); */
-    this.databaseService.onDataChange$.subscribe((channel) => {
-      console.log('onChangeSUBSCRIPTION');
-      this.sendChatMessages = [];
-      this.receiveChatMessages = [];
-      this.chatService.sortMessages(channel);
-    });
+    this.subscribeToDataChanges();
+    this.subscribeToChannelChanges();
+    this.subscribeToSendMessages();
+    this.subscribeToReceiveMessages();
+    /*  this.scrollToBottom(); */
+  }
+
+  ngAfterViewInit(): void {
+    setTimeout(() => this.scrollToBottom(), 500);
+  }
+
+  scrollToBottom() {
+    this.scrollContainer.nativeElement.scrollTop =
+      this.scrollContainer.nativeElement.scrollHeight;
+  }
+
+  subscribeToDataChanges() {
+    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
+      async (channel) => {
+        this.allMessages = [];
+        await this.chatService.sortMessages(channel);
+        this.scrollToBottom();
+      }
+    );
+  }
+
+  subscribeToChannelChanges() {
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
         console.log('CHANNELOBSERVe');
       }
     );
-    this.chatService.sendMessages$.subscribe((message) => {
-      console.log('sendMessagesSUBSCRIPTION');
-      if (message !== null) {
-        this.sendChatMessages.push(message);
+  }
+
+  subscribeToSendMessages() {
+    this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
+      (message) => {
+        if (message) {
+          this.allMessages.push(message);
+        }
       }
-    });
+    );
+  }
+
+  subscribeToReceiveMessages() {
     this.chatService.receiveMessages$.subscribe((message) => {
-      console.log('receiveMessagesSUBSCRIPTION');
       if (message !== null) {
-        this.receiveChatMessages.push(message);
-        console.log(this.receiveChatMessages);
+        this.allMessages.push(message);
       }
     });
   }
 
-  sendMessage() {}
-
   ngOnDestroy() {
+    if (this.databaseSubscription) {
+      this.databaseSubscription.unsubscribe();
+    }
     if (this.channelSubscription) {
       this.channelSubscription.unsubscribe();
     }
-    if (this.messageSubscription) {
-      // Bereinigung
-      this.messageSubscription.unsubscribe();
+    if (this.sendMessagesSubscription) {
+      this.sendMessagesSubscription.unsubscribe();
+    }
+    if (this.receiveMessagesSubscription) {
+      this.receiveMessagesSubscription.unsubscribe();
     }
   }
 }

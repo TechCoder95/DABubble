@@ -3,20 +3,20 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { EmailService } from '../../../shared/services/sendmail.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, private AuthService: AuthenticationService, private emailService: EmailService) { 
+  constructor(private UserService: UserService, private router: Router, public AuthService: AuthenticationService) {
 
     this.UserService.activeUserObserver$.subscribe((user) => {
       if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
@@ -36,6 +36,7 @@ export class LoginComponent {
    * Initiates the Google login process.
    */
   googleLogin() {
+    // alert("In Bearbeitung");
     this.AuthService.googleSignIn();
   }
 
@@ -61,9 +62,7 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword).then(() => {
-      this.UserService.checkOnlineStatus();
-    });
+    this.AuthService.mailSignIn(this.email, this.epassword)
   }
 
 
@@ -87,4 +86,11 @@ export class LoginComponent {
     this.AuthService.signInAsGuest();
   }
 
+  forgotPW() {
+    this.router.navigate(['/user/pw']);
+  }
+
+  changeInput() {
+    this.AuthService.fehlerMeldung = "";
+  }
 }
