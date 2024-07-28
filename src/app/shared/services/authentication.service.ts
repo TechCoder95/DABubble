@@ -13,6 +13,7 @@ export class AuthenticationService {
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
+  fehlerMeldung: string = "";
 
   //#region [Mail Authentication]
 
@@ -52,22 +53,29 @@ export class AuthenticationService {
         // Signed in 
         this.userService.googleUser = userCredential.user;
         this.userService.login(userCredential.user)
-          .catch((error) => {
-            if (error.code === "auth/too-many-requests") {
-              alert("User wurde gesperrt, bitte versuchen Sie es später erneut");
-            }
-            else if (error.code === "auth/invalid-credential") {
-              alert("Falsches Passwort");
-            }
-            else if (error.code === "auth/invalid-email") {
-              alert("E-Mail-Adresse existiert nicht");
-            }
-            else {
-              alert("Falsche Eingabe" + error.message);
-            }
+      })
+      .catch((error) => {
+        if (error.code === "auth/user-not-found") {
+          this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
+        }
+        else if (error.code === "auth/network-request-failed") {
+          this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
+        }
+        else if (error.code === "auth/too-many-requests") {
+          this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
+        }
+        else if (error.code === "auth/invalid-credential") {
+          this.fehlerMeldung = "Ungültige Anmeldeinformationen";
+        }
+        else if (error.code === "auth/invalid-email") {
+          this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
+        }
+        else {
+          alert(error.message);
+        }
 
-          })
-      });
+      })
+
   }
 
   //#endregion

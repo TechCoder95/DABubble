@@ -41,3 +41,20 @@ input {
         border: 1px solid #535AF1
     }
 }
+
+.search-results {
+    margin-top: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .search-results div {
+    padding: 5px;
+    cursor: pointer;
+  }
+  
+  .search-results div:hover {
+    background-color: #ddd;
+  }
+  

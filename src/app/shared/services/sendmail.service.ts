@@ -12,13 +12,14 @@ export class EmailService {
 
   activeUser!: DABubbleUser;
 
-  constructor(private auth: Auth, private router: Router, private userService: UserService) {
+  constructor(private auth: Auth, private router: Router, private userService: UserService) { }
 
-
-
-
-  }
-
+  
+  /**
+   * Sends an email verification link to the current user.
+   * If the user is authenticated, it sends an email verification link to the user's email address.
+   * After sending the email, it navigates the user to the chooseAvatar page.
+   */
   async sendMail() {
     const user = this.auth.currentUser;
     if (user) {
@@ -37,6 +38,12 @@ export class EmailService {
   }
 
 
+  /**
+   * Verifies the email of the user.
+   * Retrieves users from the database and checks if the current URL contains 'verifyEmail'.
+   * If the email in the URL matches a user's email, updates the activation status of the user and performs additional actions.
+   * Navigates to the home page after the verification process is complete.
+   */
   verifyMail() {
     this.userService.getUsersFromDB().then(() => {
       if (this.router.url.includes('verifyEmail')) {

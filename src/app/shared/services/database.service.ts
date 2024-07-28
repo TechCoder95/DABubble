@@ -19,7 +19,7 @@ import { TextChannel } from '../interfaces/textchannel';
 
 
 export interface DataId {
-  id : string;
+  id: string;
 }
 
 
@@ -31,17 +31,11 @@ export class DatabaseService {
 
   firestore: Firestore = inject(Firestore);
 
-
   private onDataChange = new BehaviorSubject<any | null>(null);
   public onDataChange$ = this.onDataChange.asObservable();
-
-
+  
   public onDomiDataChange = new BehaviorSubject<any | null>(null);
   public onDomiDataChange$ = this.onDomiDataChange.asObservable();
-
-
-  constructor() { }
-
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -92,7 +86,7 @@ export class DatabaseService {
     });
   }
 
-  
+
   /**
    * Adds data to the specified database.
    *
@@ -252,25 +246,23 @@ export class DatabaseService {
   }
 
 
+  /**
+   * Subscribes to data changes in a specific collection and with a specific data ID.
+   * @param collectionName - The name of the collection to subscribe to.
+   * @param dataId - The ID of the data to subscribe to.
+   */
+  async subscribeToData(collectionName: string, dataId: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where('id', '==', dataId))
 
- 
-/**
- * Subscribes to data changes in a specific collection and with a specific data ID.
- * @param collectionName - The name of the collection to subscribe to.
- * @param dataId - The ID of the data to subscribe to.
- */
- async subscribeToData(collectionName: string, dataId : string) {
-  const q = query(
-    collection(this.firestore, collectionName),
-    where('id', '==', dataId))
-
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    snapshot.docChanges().forEach((change) => {
-      let data = change.doc.data();
-      this.onDomiDataChange.next(data);
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+        this.onDomiDataChange.next(data);
+      });
     });
-  });
-}
+  }
 
 
 
