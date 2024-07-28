@@ -18,7 +18,6 @@ DialogChannelMembersComponent;
 export class MemberComponent {
   activeUser!: DABubbleUser;
   @Input() member: any;
-  online: boolean = false;
 
   constructor(public dialog: MatDialog, private userService: UserService) {
     this.activeUser = this.userService.activeUser;
