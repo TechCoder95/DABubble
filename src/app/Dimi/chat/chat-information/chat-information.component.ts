@@ -21,7 +21,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 export class ChatInformationComponent {
   activeUser!: DABubbleUser;
   isChannel: boolean = true;
-  tagImg = './img/tag.png';
+  tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.png';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
@@ -51,19 +51,19 @@ export class ChatInformationComponent {
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
-      this.tagImg = './img/tag-hover.png';
+      this.tagImg = './img/tag-hover.svg';
       this.arrowImg = './img/arrow-down-hover.png';
     } else {
-      this.tagImg = './img/tag.png';
+      this.tagImg = './img/tag.svg';
       this.arrowImg = './img/keyboard_arrow_down.png';
     }
   }
 
   changeAddMembersImg(hover: boolean) {
     if (hover) {
-      this.addChannelMembersImg = './img/add-members-hover.png';
+      this.addChannelMembersImg = './img/add-members-hover.svg';
     } else {
-      this.addChannelMembersImg = './img/add-members-default.png';
+      this.addChannelMembersImg = './img/add-members-default.svg';
     }
   }
 
@@ -84,7 +84,7 @@ export class ChatInformationComponent {
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
-    const dialogConfig = this.handleDialogConfig(event, 'channelMembers');
+    const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
       dialogConfig
@@ -119,7 +119,7 @@ export class ChatInformationComponent {
         },
         panelClass: 'custom-dialog-container',
       };
-    } else if (position === 'channelMembers') {
+    } else if (position === 'allUsers') {
       const dialogWidth = 372;
       return {
         position: {

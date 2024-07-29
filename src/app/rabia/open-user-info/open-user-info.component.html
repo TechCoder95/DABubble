@@ -6,17 +6,17 @@
             <div class="close" (click)="close()"></div>
         </div>
 
-        <img class="avatar" src="{{this.data.member.img}}">
+        <img class="avatar" src="{{this.data.member.avatar}}">
 
         <div class="flex flex-column w-full" style="gap: 15px;">
             <div class="flex justify-content-between align-items-center w-full">
-                <span class="font-bold text-4xl">{{this.data.member.name}}</span>
+                <span class="font-bold text-4xl">{{this.data.member.username}}</span>
             </div>
 
             <div class="flex align-items-center gap-3">
-                <div class="cycle" [ngClass]="this.userService.activeUser.isLoggedIn ? 'green' : 'grey'"></div>
+                <div class="cycle" [ngClass]="this.data.member.isLoggedIn ? 'green' : 'grey'"></div>
 
-                @if(this.userService.activeUser.isLoggedIn) {
+                @if(this.data.member.isLoggedIn) {
                 <span style="color: #92C83E;">Aktiv</span>
                 } @else {
                 <span style="color: #686868;">Abwesend</span>
@@ -33,7 +33,7 @@
                     <span class="font-bold text-xl">E-Mail-Adresse</span>
                 </div>
 
-                <span class="own-mail">{{this.userService.activeUser.mail}}</span>
+                <span class="own-mail">{{this.data.member.mail}}</span>
             </div>
         </div>
         <button mat-flat-button><img src="img/chat-bubble.svg" alt="">Nachricht</button>

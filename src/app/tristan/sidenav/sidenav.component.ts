@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import {
-  MatTreeFlatDataSource,
-  MatTreeFlattener,
-} from '@angular/material/tree';
+import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -19,7 +16,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { distinctUntilChanged, filter, take } from 'rxjs/operators';
+import { distinctUntilChanged, filter, Subscription } from 'rxjs';
 
 interface Node {
   id: string;
@@ -54,7 +51,7 @@ interface FlattenedNode {
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
-export class SidenavComponent implements OnInit {
+export class SidenavComponent implements OnInit, OnDestroy {
 
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
@@ -84,6 +81,9 @@ export class SidenavComponent implements OnInit {
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
   isCurrentUserActivated: boolean | undefined;
+  isLoggedIn: boolean | undefined;
+
+  private userSubscription: Subscription | undefined;
 
   constructor(
     private dbService: DatabaseService,
@@ -94,19 +94,24 @@ export class SidenavComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.userService.activeUserObserver$
-      // nur falls notwendig
-      .pipe(filter(user => !!user), distinctUntilChanged(), take(1)) // Nimmt nur den ersten Wert und beendet dann die Subscription
-      .subscribe(async (currentUser) => {
-        this.isCurrentUserActivated = currentUser.activated;
-        if (currentUser.activated) {
+    this.userSubscription = this.userService.activeUserObserver$
+      .pipe(distinctUntilChanged()).subscribe(async (currentUser) => {
+        this.isLoggedIn = currentUser?.isLoggedIn;
+        this.isCurrentUserActivated = currentUser?.activated;
+        if (currentUser?.activated) {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
-          await this.initializeTreeData();
+          await this.updateTreeData();
         } else {
           console.log('Kein aktiver Benutzer gefunden');
         }
       });
+  }
+
+  async ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
@@ -131,6 +136,7 @@ export class SidenavComponent implements OnInit {
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
       directMessage.id = newChannelId;
       this.channels.push(directMessage);
+      await this.updateTreeData();
     }
   }
 
@@ -148,9 +154,10 @@ export class SidenavComponent implements OnInit {
         newChannel
       );
       newChannel.id = newChannelId;
-      await this.loadChannels();
+      this.channels.push(newChannel);
+      await this.updateTreeData();
     } catch (err) {
-      console.error('Error adding new channel', err);
+      console.error('Fehler beim Hinzufügen des neuen Kanals', err);
     }
   }
 
@@ -182,7 +189,7 @@ export class SidenavComponent implements OnInit {
         const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
         const node: Node = {
           id: channel.id,
-          name: user?.username + " (Du)" || 'Unknown User',
+          name: user?.username + " (Du)" || 'Unbekannter Benutzer',
           type: 'directMessage' as const,
           children: [],
           avatar: user?.avatar
@@ -193,7 +200,7 @@ export class SidenavComponent implements OnInit {
     return directMessageNodes;
   }
 
-  private async initializeTreeData(): Promise<void> {
+  private async updateTreeData(): Promise<void> {
     const groupChannelNodes = this.createGroupChannelNodes();
     const directMessageNodes = await this.createDirectMessageNodes();
 
@@ -216,11 +223,12 @@ export class SidenavComponent implements OnInit {
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
     this.dataSource.data = this.TREE_DATA;
+    this.treeControl.expandAll();
   }
 
   async loadChannels() {
     await this.fetchChannels();
-    await this.initializeTreeData();
+    await this.updateTreeData();
   }
 
   async onNode(node: FlattenedNode) {

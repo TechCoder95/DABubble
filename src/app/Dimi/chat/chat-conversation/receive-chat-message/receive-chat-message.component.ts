@@ -1,6 +1,7 @@
 import { Component, Input, Output } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -12,8 +13,8 @@ import { CommonModule } from '@angular/common';
 export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
 
-  constructor() {
-     console.log(this.receiveMessage);
+  constructor(private userService: UserService) {
+    console.log(this.receiveMessage);
   }
 
   checkDate(date: number): string {
@@ -29,5 +30,15 @@ export class ReceiveChatMessageComponent {
         year: 'numeric',
       }).format(givenDate);
     }
+  }
+
+  getSenderName() {
+    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    return user?.username;
+  }
+
+  getSenderAvatar() {
+    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    return user?.avatar;
   }
 }

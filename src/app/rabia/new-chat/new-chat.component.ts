@@ -25,16 +25,13 @@ export class NewChatComponent implements OnInit {
   constructor(private userService: UserService) { }
 
   ngOnInit() {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(value => {
-        if (this.isSelectingUser) {
-          this.isSelectingUser = false;
-          return [];
-        }
-        return this.userService.searchUsersByNameOrEmail(value);
-      })
+    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
+      if (this.isSelectingUser) {
+        this.isSelectingUser = false;
+        return [];
+      }
+      return this.userService.searchUsersByNameOrEmail(value);
+    })
     ).subscribe(results => {
       this.searchResults = results;
     });
@@ -45,8 +42,7 @@ export class NewChatComponent implements OnInit {
     this.searchQuery = user.username;
     this.searchControl.setValue(user.username);
     this.searchResults = [];
-    this.selectedUser = user;    
+    this.selectedUser = user;
     console.log(this.selectedUser);
-    
   }
 }
