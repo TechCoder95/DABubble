@@ -8,22 +8,28 @@
       (click)="openDialogChannelInformation($event)"
       [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
-      <img [src]="tagImg" class="tag-img" />
+      <img [src]="tagImg" class="tag-img" *ngIf="!isPrivateChat"/>
+      <img src="">
 
       <h2>{{ (channelService.selectedChannel$ | async)?.name }}</h2>
-      <img class="arrow-down" [src]="arrowImg" />
+      <img class="arrow-down" [src]="arrowImg" *ngIf="!isPrivateChat" />
     </div>
 
-    <div class="channel-members">
+    <div class="channel-members" *ngIf="!isPrivateChat">
       <div
         class="channel-member-amount"
         (click)="openDialogChannelMembers($event)"
         [ngClass]="{ 'dialog-is-open': dialogChannelMembersIsOpen }"
       >
-        @for (member of channelMembers; track $index) {
-        <img class="img" [src]="member.img" />
+        @for (user of assignedUsers.slice(0,5); track $index) {
+        <img class="img" [src]="user.avatar" />
         }
-        <p>{{ channelMembers.length }}</p>
+        <p class="missing-amount" *ngIf="getExtraUserCount() > 0">
+          +{{ getExtraUserCount() }}
+        </p>
+        <p *ngIf="getExtraUserCount() < 6">
+          {{ channelService.channel.assignedUser.length }}
+        </p>
       </div>
       <img
         [src]="addChannelMembersImg"

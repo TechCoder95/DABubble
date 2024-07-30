@@ -1,8 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
+import { UserService } from '../../../../shared/services/user.service';
+import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { ChannelService } from '../../../../shared/services/channel.service';
+import { user } from '@angular/fire/auth';
+import { DialogAddChannelMembersComponent } from '../dialog-add-channel-members/dialog-add-channel-members.component';
 
 @Component({
   selector: 'app-dialog-channel-members',
@@ -11,14 +16,42 @@ import { MemberComponent } from './member/member.component';
   templateUrl: './dialog-channel-members.component.html',
   styleUrl: './dialog-channel-members.component.scss',
 })
-export class DialogChannelMembersComponent {
+export class DialogChannelMembersComponent implements OnInit {
+  closeImg = './img/close-default.png';
+  addMemberImg = './img/add-members-default.png';
+  activeUser!: DABubbleUser;
+  channelMembers: DABubbleUser[] = [];
+  readonly dialog = inject(MatDialog);
+
   constructor(
+    private userService: UserService,
+    public channelService: ChannelService,
     public dialogRef: MatDialogRef<DialogChannelMembersComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any
   ) {}
 
-  closeImg = './img/close-default.png';
-  addMemberImg = './img/add-members-default.png';
+  ngOnInit(): void {
+    this.activeUser = this.userService.activeUser;
+    console.log(this.activeUser);
+    this.channelService.selectedChannel$.subscribe((channel) => {
+      if (channel) {
+        channel.assignedUser.forEach((userID) => {
+          let user = this.userService.getOneUserbyId(userID);
+          if (user && user.id !== this.activeUser.id) {
+            this.channelMembers.push(user);
+          }
+        });
+      }
+    });
+    console.log(this.channelMembers);
+    console.log(this.activeUser);
+  }
+
+  addMembers() {
+    this.closeDialog();
+    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent);
+
+  }
 
   changeAddMembersImg(hover: boolean) {
     if (hover) {

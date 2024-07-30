@@ -1,26 +1,22 @@
-<main>
-  <section class="headline">
-    <h3>Mitglieder</h3>
-    <img
-      [src]="closeImg"
-      class="close"
-      (mouseenter)="changeCloseImg(true)"
-      (mouseleave)="changeCloseImg(false)"
-      (click)="closeDialog()"
-    />
-  </section>
+<div>
+  <main>
+    <section class="headline">
+      <h3>Mitglieder</h3>
+      <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
+        (click)="closeDialog()" />
+    </section>
 
   <section class="channel-members">
-    @for (member of data.channelMembers; track $index) {
+    <app-member [member]="activeUser"></app-member>
+
+    @for (member of channelMembers; track $index) {
     <app-member [member]="member"></app-member>
     }
-    <app-member
-      (mouseenter)="changeAddMembersImg(true)"
-      (mouseleave)="changeAddMembersImg(false)"
-      [member]="{
-        img: addMemberImg,
-        name: 'Mitglied hinzufügen'
-      }"
-    ></app-member>
+    <div (click)="addMembers()" class="add-member">
+      <div></div>
+      <p>Mitglied Hinzufügen</p>
+    </div>
   </section>
 </main>
+
+</div>

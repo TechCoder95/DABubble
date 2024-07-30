@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
 import { ChannelService } from '../../../shared/services/channel.service';
+import { UserService } from '../../../shared/services/user.service';
+import { DABubbleUser } from '../../../shared/interfaces/user';
+import { Subscription } from 'rxjs';
+import { TextChannel } from '../../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-chat-information',
@@ -15,54 +19,76 @@ import { ChannelService } from '../../../shared/services/channel.service';
   styleUrl: './chat-information.component.scss',
 })
 export class ChatInformationComponent {
+  activeUser!: DABubbleUser;
   isChannel: boolean = true;
-  tagImg = './img/tag.png';
-  arrowImg = './img/keyboard_arrow_down.png';
+  tagImg = './img/tag.svg';
+  arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
-  addChannelMembersImg = './img/add-members-default.png';
+  addChannelMembersImg = './img/add-members-default.svg';
+  assignedUsers: DABubbleUser[] = [];
+  isPrivateChat!: boolean;
+  /*  private channelSubscription!: Subscription; */
 
   constructor(
     public dialog: MatDialog,
-    public channelService: ChannelService
-  ) {}
+    public channelService: ChannelService,
+    private userService: UserService
+  ) {
+    this.activeUser = this.userService.activeUser;
+  }
+
+  ngOnInit(): void {
+    this.subscribeToChannelChanges();
+  }
+
+  subscribeToChannelChanges() {
+    this.channelService.selectedChannel$.subscribe((selectedChannel$: any) => {
+      if (selectedChannel$) {
+        this.assignedUsers = this.getAssignedUsers(selectedChannel$);
+        this.isPrivateChat = selectedChannel$.isPrivate;
+      }
+    });
+  }
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
-      this.tagImg = './img/tag-hover.png';
-      this.arrowImg = './img/arrow-down-hover.png';
+      this.tagImg = './img/tag-hover.svg';
+      this.arrowImg = './img/arrow-down-hover.svg';
     } else {
-      this.tagImg = './img/tag.png';
-      this.arrowImg = './img/keyboard_arrow_down.png';
+      this.tagImg = './img/tag.svg';
+      this.arrowImg = './img/keyboard_arrow_down.svg';
     }
   }
 
   changeAddMembersImg(hover: boolean) {
     if (hover) {
-      this.addChannelMembersImg = './img/add-members-hover.png';
+      this.addChannelMembersImg = './img/add-members-hover.svg';
     } else {
-      this.addChannelMembersImg = './img/add-members-default.png';
+      this.addChannelMembersImg = './img/add-members-default.svg';
     }
   }
 
   openDialogChannelInformation(event: MouseEvent) {
-    this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
-    if (this.dialogChannelInfoIsOpen) {
-      document.body.style.overflow = 'hidden';
+    if (!this.isPrivateChat) {
+      this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
+      if (this.dialogChannelInfoIsOpen) {
+        document.body.style.overflow = 'hidden';
+      }
+      this.changeTagImg(this.dialogChannelInfoIsOpen);
+      const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
+      const dialogRef = this.dialog.open(
+        DialogChannelInformationComponent,
+        dialogConfig
+      );
+      this.handleDialogClose(dialogRef);
     }
-    this.changeTagImg(this.dialogChannelInfoIsOpen);
-    const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
-    const dialogRef = this.dialog.open(
-      DialogChannelInformationComponent,
-      dialogConfig
-    );
-    this.handleDialogClose(dialogRef);
   }
 
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
-    const dialogConfig = this.handleDialogConfig(event, 'channelMembers');
+    const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
       dialogConfig
@@ -97,7 +123,7 @@ export class ChatInformationComponent {
         },
         panelClass: 'custom-dialog-container',
       };
-    } else if (position === 'channelMembers') {
+    } else if (position === 'allUsers') {
       const dialogWidth = 372;
       return {
         position: {
@@ -105,7 +131,7 @@ export class ChatInformationComponent {
           left: `${rect.right - dialogWidth}px`,
         },
         panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.channelMembers },
+        data: { channelMembers: this.assignedUsers },
       };
     } else {
       const dialogWidth = 542;
@@ -115,7 +141,7 @@ export class ChatInformationComponent {
           left: `${rect.right - dialogWidth}px`,
         },
         panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.channelMembers },
+        data: { channelMembers: this.assignedUsers },
       };
     }
   }
@@ -129,22 +155,19 @@ export class ChatInformationComponent {
     });
   }
 
-  channelMembers = [
-    {
-      img: './img/2.svg',
-      name: 'Dimitrios Kapetanis (Du)',
-    },
-    {
-      img: './img/3.svg',
-      name: 'Rabia Ürkmez',
-    },
-    {
-      img: './img/4.svg',
-      name: 'Dominik Knezovic',
-    },
-    {
-      img: './img/5.svg',
-      name: 'Tristan Gehring',
-    },
-  ];
+  getAssignedUsers(channel: TextChannel): DABubbleUser[] {
+    this.assignedUsers = [];
+    channel.assignedUser.forEach((userID) => {
+      let user: any = this.userService.getOneUserbyId(userID);
+      if (user) {
+        this.assignedUsers.push(user);
+      }
+    });
+    return this.assignedUsers;
+  }
+
+  getExtraUserCount(): number {
+    const totalAssignesUsers = this.assignedUsers.length;
+    return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
+  }
 }

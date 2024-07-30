@@ -79,6 +79,7 @@ export class InputfieldComponent {
       message: this.textareaValue,
       timestamp: new Date().getTime(),
       sender: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
       emoticons: [],
     };
     if (message.message !== '') {

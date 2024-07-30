@@ -85,13 +85,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private userSubscription: Subscription | undefined;
 
-  constructor(
-    private dbService: DatabaseService,
-    private dialog: MatDialog,
-    private channelService: ChannelService,
-    private userService: UserService
-  ) {
-  }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
     this.userSubscription = this.userService.activeUserObserver$
@@ -101,14 +95,27 @@ export class SidenavComponent implements OnInit, OnDestroy {
         if (currentUser?.activated) {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
-          this.updateTreeData();
+          await this.updateTreeData();
+          await this.loadLastChannelState();
         } else {
           console.log('Kein aktiver Benutzer gefunden');
         }
       });
   }
 
-  ngOnDestroy() {
+  async loadLastChannelState() {
+    const savedChannelId = sessionStorage.getItem('selectedChannelId');
+    if (savedChannelId) {
+      const selectedChannel = this.channels.find(channel => channel.id === savedChannelId);
+      if (selectedChannel) {
+        this.selectedChannel = selectedChannel;
+        this.channelService.selectChannel(selectedChannel);
+      }
+    }
+  }
+
+
+  async ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
     }
@@ -136,7 +143,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
       directMessage.id = newChannelId;
       this.channels.push(directMessage);
-      this.updateTreeData();
+      await this.updateTreeData();
     }
   }
 
@@ -155,7 +162,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       newChannel.id = newChannelId;
       this.channels.push(newChannel);
-      this.updateTreeData();
+      await this.updateTreeData();
     } catch (err) {
       console.error('Fehler beim Hinzufügen des neuen Kanals', err);
     }
@@ -228,7 +235,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async loadChannels() {
     await this.fetchChannels();
-    this.updateTreeData();
+    await this.updateTreeData();
   }
 
   async onNode(node: FlattenedNode) {
