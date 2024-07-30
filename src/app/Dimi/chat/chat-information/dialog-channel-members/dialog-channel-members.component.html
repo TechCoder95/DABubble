@@ -12,14 +12,10 @@
     @for (member of channelMembers; track $index) {
     <app-member [member]="member"></app-member>
     }
-    <app-member
-      (mouseenter)="changeAddMembersImg(true)"
-      (mouseleave)="changeAddMembersImg(false)"
-      [member]="{
-        avatar: addMemberImg,
-        username: 'Mitglied hinzufügen'
-      }"
-    ></app-member>
+    <div class="add-member">
+      <div></div>
+      <p>Mitglied Hinzufügen</p>
+    </div>
   </section>
 </main>
 
