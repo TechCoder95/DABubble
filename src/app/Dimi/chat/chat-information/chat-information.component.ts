@@ -28,6 +28,8 @@ export class ChatInformationComponent {
   addChannelMembersImg = './img/add-members-default.svg';
   assignedUsers: DABubbleUser[] = [];
   isPrivateChat!: boolean;
+  privateChatPartner?: DABubbleUser;
+  privatChatAvatar!: string | undefined;
   /*  private channelSubscription!: Subscription; */
 
   constructor(
@@ -47,6 +49,9 @@ export class ChatInformationComponent {
       if (selectedChannel$) {
         this.assignedUsers = this.getAssignedUsers(selectedChannel$);
         this.isPrivateChat = selectedChannel$.isPrivate;
+        if (selectedChannel$.isPrivate) {
+          this.getPrivateChatPartner(selectedChannel$);
+        }
       }
     });
   }
@@ -124,7 +129,7 @@ export class ChatInformationComponent {
         panelClass: 'custom-dialog-container',
       };
     } else if (position === 'allUsers') {
-      const dialogWidth = 372;
+      const dialogWidth = 432;
       return {
         position: {
           top: `${rect.bottom}px`,
@@ -169,5 +174,25 @@ export class ChatInformationComponent {
   getExtraUserCount(): number {
     const totalAssignesUsers = this.assignedUsers.length;
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
+  }
+
+  getPrivateChatPartner(selectChannel: TextChannel) {
+    const privateChatPartnerID = selectChannel.assignedUser.find(
+      (userID) => userID !== this.activeUser.id
+    );
+
+    this.privateChatPartner = privateChatPartnerID
+      ? this.userService.getOneUserbyId(privateChatPartnerID)
+      : undefined;
+
+    this.returnChatPartnerAvatar(selectChannel);
+  }
+
+  returnChatPartnerAvatar(selectChannel: TextChannel) {
+    if (selectChannel.assignedUser.length > 1) {
+      this.privatChatAvatar = this.privateChatPartner?.avatar;
+    } else {
+      this.privatChatAvatar = this.activeUser.avatar;
+    }
   }
 }
