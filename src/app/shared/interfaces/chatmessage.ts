@@ -4,6 +4,7 @@ export interface ChatMessage {
   message: string;
   timestamp: number;
   sender: string;
+  senderId:string;
   emoticons?: string[];
   id?: string;
 }

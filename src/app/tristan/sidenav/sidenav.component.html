@@ -17,9 +17,8 @@
             <img *ngIf="isActionNode(node)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
 
             <div *ngIf="isDirectMessage(node)" class="mr-3 img-container relative">
-              <img class="border-circle" [src]="node.avatar"
-              alt="pm" />
-              <div class="online-status" [ngClass]="node.isLoggedIn ? 'green' : 'grey'"></div>
+              <img class="border-circle" style="width: 50px;" [src]="node.avatar" alt="pm" />
+              <div class="online-status" [ngClass]="{ 'green': isLoggedIn, 'grey': !isLoggedIn }"></div>
             </div>
 
           </ng-container>
