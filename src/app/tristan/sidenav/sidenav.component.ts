@@ -85,13 +85,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private userSubscription: Subscription | undefined;
 
-  constructor(
-    private dbService: DatabaseService,
-    private dialog: MatDialog,
-    private channelService: ChannelService,
-    private userService: UserService
-  ) {
-  }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
     this.userSubscription = this.userService.activeUserObserver$
@@ -102,11 +96,24 @@ export class SidenavComponent implements OnInit, OnDestroy {
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
           await this.updateTreeData();
+          await this.loadLastChannelState();
         } else {
           console.log('Kein aktiver Benutzer gefunden');
         }
       });
   }
+
+  async loadLastChannelState() {
+    const savedChannelId = sessionStorage.getItem('selectedChannelId');
+    if (savedChannelId) {
+      const selectedChannel = this.channels.find(channel => channel.id === savedChannelId);
+      if (selectedChannel) {
+        this.selectedChannel = selectedChannel;
+        this.channelService.selectChannel(selectedChannel);
+      }
+    }
+  }
+
 
   async ngOnDestroy() {
     if (this.userSubscription) {

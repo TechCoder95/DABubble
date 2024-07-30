@@ -1,4 +1,4 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
@@ -10,11 +10,14 @@ import { UserService } from '../../../../shared/services/user.service';
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
 })
-export class ReceiveChatMessageComponent {
+export class ReceiveChatMessageComponent implements OnInit {
   @Input() receiveMessage!: ChatMessage;
 
-  constructor(private userService: UserService) {
-    console.log(this.receiveMessage);
+  constructor(private userService: UserService) {}
+
+  ngOnInit(): void {
+    this.getSenderName();
+    this.getSenderAvatar();
   }
 
   checkDate(date: number): string {

@@ -1,7 +1,7 @@
-<main>
+<main (click)="openInfo()">
   <div class="relative img-container">
     <img [src]="member.avatar" />
     <div class="online-status" [ngClass]="member.isLoggedIn ? 'green' : 'grey'"></div>
   </div>
-  <p (click)="openInfo()">{{ getUserName() }}</p>
+  <p>{{ getUserName() }}</p>
 </main>

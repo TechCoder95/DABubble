@@ -22,17 +22,18 @@ export class ChatInformationComponent {
   activeUser!: DABubbleUser;
   isChannel: boolean = true;
   tagImg = './img/tag.svg';
-  arrowImg = './img/keyboard_arrow_down.png';
+  arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
-  addChannelMembersImg = './img/add-members-default.png';
+  addChannelMembersImg = './img/add-members-default.svg';
   assignedUsers: DABubbleUser[] = [];
+  isPrivateChat!: boolean;
   /*  private channelSubscription!: Subscription; */
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
-    private userService: UserService,
+    private userService: UserService
   ) {
     this.activeUser = this.userService.activeUser;
   }
@@ -45,6 +46,7 @@ export class ChatInformationComponent {
     this.channelService.selectedChannel$.subscribe((selectedChannel$: any) => {
       if (selectedChannel$) {
         this.assignedUsers = this.getAssignedUsers(selectedChannel$);
+        this.isPrivateChat = selectedChannel$.isPrivate;
       }
     });
   }
@@ -52,10 +54,10 @@ export class ChatInformationComponent {
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
       this.tagImg = './img/tag-hover.svg';
-      this.arrowImg = './img/arrow-down-hover.png';
+      this.arrowImg = './img/arrow-down-hover.svg';
     } else {
       this.tagImg = './img/tag.svg';
-      this.arrowImg = './img/keyboard_arrow_down.png';
+      this.arrowImg = './img/keyboard_arrow_down.svg';
     }
   }
 
@@ -68,17 +70,19 @@ export class ChatInformationComponent {
   }
 
   openDialogChannelInformation(event: MouseEvent) {
-    this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
-    if (this.dialogChannelInfoIsOpen) {
-      document.body.style.overflow = 'hidden';
+    if (!this.isPrivateChat) {
+      this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
+      if (this.dialogChannelInfoIsOpen) {
+        document.body.style.overflow = 'hidden';
+      }
+      this.changeTagImg(this.dialogChannelInfoIsOpen);
+      const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
+      const dialogRef = this.dialog.open(
+        DialogChannelInformationComponent,
+        dialogConfig
+      );
+      this.handleDialogClose(dialogRef);
     }
-    this.changeTagImg(this.dialogChannelInfoIsOpen);
-    const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
-    const dialogRef = this.dialog.open(
-      DialogChannelInformationComponent,
-      dialogConfig
-    );
-    this.handleDialogClose(dialogRef);
   }
 
   dialogChannelMembersIsOpen: boolean = false;
