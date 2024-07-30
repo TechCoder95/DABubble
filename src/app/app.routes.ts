@@ -23,7 +23,7 @@ export const routes: Routes = [
       { path: 'chooseAvatar', component: ChooseAvatarComponent },
       { path: 'login', component: LoginComponent },
       { path: 'password-reset', component: PasswordResetComponent },
-      { path: 'password-change', component: PasswordChangeComponent, canActivate: [isLoggedIn] },
+      { path: 'password-change', component: PasswordChangeComponent},
       { path: 'imprint', component: ImprintComponent },
       { path: 'privacy', component: PrivacyComponent },
     ]

@@ -46,6 +46,8 @@ export class UserService {
         this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
           this.activeUserSubject.next(data);
+          
+          
         });
         this.activeGoogleUserObserver$.subscribe((googleUser) => {
           if (googleUser) {
@@ -58,6 +60,7 @@ export class UserService {
               let user = localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
 
               this.googleUser = JSON.parse(user!);
+              this.activeGoogleUserSubject.next(this.googleUser);
               console.log('Google User: ');
               console.log(this.googleUser);
             }
@@ -118,7 +121,7 @@ export class UserService {
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
    */
   async writeGuestToDB() {
-    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, activated: true, avatar: '/img/4.svg', activeChannels: [] };
+    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg', activeChannels: [] };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
     this.getUsersFromDB().then(() => {
@@ -211,7 +214,6 @@ export class UserService {
       username: user.username ? user.username : googleUser?.displayName || '',
       uid: user.uid || googleUser?.uid || '',
       isLoggedIn: user.isLoggedIn || true,
-      activated: googleUser?.emailVerified || false,
       activeChannels: user.activeChannels || [],
       avatar: user.avatar || '',
     };
@@ -257,6 +259,7 @@ export class UserService {
       this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
         .then(() => {
           localStorage.removeItem('userLogin');
+          localStorage.removeItem('uId');
           sessionStorage.removeItem('userLogin');
           sessionStorage.removeItem('selectedChannelId');
           this.activeUserSubject.next(null!);
@@ -273,7 +276,7 @@ export class UserService {
    * @param uid - The unique identifier of the user.
    */
   async register(email: string, username: string, uid: string) {
-    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], activated: false, avatar: '' };
+    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], avatar: '/img/avatar.svg' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
         this.getUsersFromDB();

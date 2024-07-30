@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
+import { EmailService } from './sendmail.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private router: Router) {
+  constructor(private userService: UserService,private emailService: EmailService) {
     console.log();
     this.setLocalPersistent();
 
@@ -36,7 +37,8 @@ export class AuthenticationService {
         this.userService.googleUser = userCredential.user
         this.userService.register(email, username, this.userService.googleUser.uid);
         localStorage.setItem("uId", this.userService.googleUser.uid);
-        this.userService.login(this.userService.googleUser)
+        this.emailService.sendMail();
+        // this.userService.login(this.userService.googleUser) // Dieser User muss in den Choose Avatar gesetzt werden!
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -152,7 +154,6 @@ export class AuthenticationService {
     signOut(this.auth)
       .then(() => {
         this.userService.logout();
-        this.userService.googleUser.delete();
       })
       .catch((error) => {
         // An error happened.
@@ -175,11 +176,6 @@ export class AuthenticationService {
 
     setPersistence(this.auth, browserLocalPersistence)
       .then(() => {
-        // Existing and future Auth states are now persisted in the current
-        // session only. Closing the window would clear any existing state even
-        // if a user forgets to sign out.
-        // ...
-        // New sign-in will be persisted with session persistence.
         console.log("Session persistence set!!!!!");
       })
       .catch((error) => {
@@ -190,9 +186,7 @@ export class AuthenticationService {
   }
 
 
- 
-
-
-  
+ resetPasswort(email: string) {
+ }
 
 }

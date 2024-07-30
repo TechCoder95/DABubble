@@ -88,19 +88,24 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
-    this.userSubscription = this.userService.activeUserObserver$
-      .pipe(distinctUntilChanged()).subscribe(async (currentUser) => {
-        this.isLoggedIn = currentUser?.isLoggedIn;
-        this.isCurrentUserActivated = currentUser?.activated;
-        if (currentUser?.activated) {
-          await this.loadUserChannels(currentUser);
-          await this.initializeDirectMessageForUser(currentUser);
-          await this.updateTreeData();
-          await this.loadLastChannelState();
-        } else {
-          console.log('Kein aktiver Benutzer gefunden');
-        }
-      });
+    this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
+      if (googleUser) {
+        this.isCurrentUserActivated = googleUser.emailVerified;
+      }
+    }
+    );
+
+    this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
+      this.isLoggedIn = currentUser?.isLoggedIn;
+      if ( this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+        await this.loadUserChannels(currentUser);
+        await this.initializeDirectMessageForUser(currentUser);
+        await this.updateTreeData();
+        await this.loadLastChannelState();
+      } else {
+        console.log('Kein aktiver Benutzer gefunden');
+      }
+    });
   }
 
   async loadLastChannelState() {
