@@ -12,7 +12,7 @@
     @for (member of channelMembers; track $index) {
     <app-member [member]="member"></app-member>
     }
-    <div class="add-member">
+    <div (click)="addMembers()" class="add-member">
       <div></div>
       <p>Mitglied Hinzufügen</p>
     </div>
