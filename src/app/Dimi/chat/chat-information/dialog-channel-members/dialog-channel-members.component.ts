@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, inject, Inject, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { user } from '@angular/fire/auth';
+import { DialogAddChannelMembersComponent } from '../dialog-add-channel-members/dialog-add-channel-members.component';
 
 @Component({
   selector: 'app-dialog-channel-members',
@@ -20,6 +21,7 @@ export class DialogChannelMembersComponent implements OnInit {
   addMemberImg = './img/add-members-default.png';
   activeUser!: DABubbleUser;
   channelMembers: DABubbleUser[] = [];
+  readonly dialog = inject(MatDialog);
 
   constructor(
     private userService: UserService,
@@ -43,6 +45,12 @@ export class DialogChannelMembersComponent implements OnInit {
     });
     console.log(this.channelMembers);
     console.log(this.activeUser);
+  }
+
+  addMembers() {
+    this.closeDialog();
+    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent);
+
   }
 
   changeAddMembersImg(hover: boolean) {

@@ -22,10 +22,10 @@ export class ChatInformationComponent {
   activeUser!: DABubbleUser;
   isChannel: boolean = true;
   tagImg = './img/tag.svg';
-  arrowImg = './img/keyboard_arrow_down.png';
+  arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
-  addChannelMembersImg = './img/add-members-default.png';
+  addChannelMembersImg = './img/add-members-default.svg';
   assignedUsers: DABubbleUser[] = [];
   /*  private channelSubscription!: Subscription; */
 
@@ -52,10 +52,10 @@ export class ChatInformationComponent {
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
       this.tagImg = './img/tag-hover.svg';
-      this.arrowImg = './img/arrow-down-hover.png';
+      this.arrowImg = './img/arrow-down-hover.svg';
     } else {
       this.tagImg = './img/tag.svg';
-      this.arrowImg = './img/keyboard_arrow_down.png';
+      this.arrowImg = './img/keyboard_arrow_down.svg';
     }
   }
 
