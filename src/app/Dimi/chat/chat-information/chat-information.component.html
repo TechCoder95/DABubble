@@ -8,13 +8,14 @@
       (click)="openDialogChannelInformation($event)"
       [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
-      <img [src]="tagImg" class="tag-img" />
+      <img [src]="tagImg" class="tag-img" *ngIf="!isPrivateChat"/>
+      <img src="">
 
       <h2>{{ (channelService.selectedChannel$ | async)?.name }}</h2>
-      <img class="arrow-down" [src]="arrowImg" />
+      <img class="arrow-down" [src]="arrowImg" *ngIf="!isPrivateChat" />
     </div>
 
-    <div class="channel-members">
+    <div class="channel-members" *ngIf="!isPrivateChat">
       <div
         class="channel-member-amount"
         (click)="openDialogChannelMembers($event)"
