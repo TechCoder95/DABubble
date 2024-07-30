@@ -57,10 +57,15 @@ export class ChatConversationComponent
   }
 
   ngOnInit() {
+    debugger;
     this.subscribeToDataChanges();
+    debugger;
     this.subscribeToChannelChanges();
+    debugger;
     this.subscribeToSendMessages();
+    debugger;
     this.subscribeToReceiveMessages();
+    debugger;
     /*  this.scrollToBottom(); */
   }
 
@@ -74,6 +79,10 @@ export class ChatConversationComponent
   }
 
   subscribeToDataChanges() {
+    if (this.databaseSubscription) {
+      return;
+    }
+
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
       async (channel) => {
         this.allMessages = [];
@@ -81,17 +90,38 @@ export class ChatConversationComponent
         this.scrollToBottom();
       }
     );
+    /* this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
+      async (channel) => {
+        this.allMessages = [];
+        await this.chatService.sortMessages(channel);
+        this.scrollToBottom();
+      }
+    ); */
   }
 
   subscribeToChannelChanges() {
+    if (this.channelSubscription) {
+      return;
+    }
+
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
         console.log('CHANNELOBSERVe');
+        // Hier können Sie den Code hinzufügen, um die Nachrichten zu laden
       }
     );
+    /*  this.channelSubscription = this.channelService.selectedChannel$.subscribe(
+      () => {
+        console.log('CHANNELOBSERVe');
+      }
+    ); */
   }
 
   subscribeToSendMessages() {
+    if (this.sendMessagesSubscription) {
+      return;
+    }
+
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
         if (message) {
@@ -99,14 +129,31 @@ export class ChatConversationComponent
         }
       }
     );
+    /* this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
+      (message) => {
+        if (message) {
+          this.allMessages.push(message);
+        }
+      }
+    ); */
   }
 
   subscribeToReceiveMessages() {
-    this.chatService.receiveMessages$.subscribe((message) => {
+    if (this.receiveMessagesSubscription) {
+      return;
+    }
+
+    this.receiveMessagesSubscription =
+      this.chatService.receiveMessages$.subscribe((message) => {
+        if (message !== null) {
+          this.allMessages.push(message);
+        }
+      });
+    /*  this.chatService.receiveMessages$.subscribe((message) => {
       if (message !== null) {
         this.allMessages.push(message);
       }
-    });
+    }); */
   }
 
   ngOnDestroy() {
