@@ -172,7 +172,7 @@ export class UserService {
       let loginUser = this.users.find(user => user.mail === googleUser.email);
 
       if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activated: googleUser.emailVerified, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
@@ -226,21 +226,6 @@ export class UserService {
   async updateLoggedInUser() {
     this.activeUser.isLoggedIn = true;
     this.updateUser(this.activeUser);
-  }
-
-
-  /**
-   * Updates the activation status of a user.
-   * @param user - The user object to update.
-   * @returns A Promise that resolves when the activation status is updated.
-   */
-  async updateActivationStatus(user: DABubbleUser) {
-    if (user.id) {
-      this.DatabaseService.updateDataInDB(this.collectionName, user.id, { activated: true })
-        .then(() => {
-          this.getUsersFromDB();
-        });
-    }
   }
 
 
