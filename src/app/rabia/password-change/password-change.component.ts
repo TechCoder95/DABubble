@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
+import { EmailService } from '../../shared/services/sendmail.service';
 
 @Component({
   selector: 'app-password-change',
@@ -13,12 +14,20 @@ import { Router } from '@angular/router';
   styleUrl: './password-change.component.scss'
 })
 export class PasswordChangeComponent {
-  email: string = '';
   newPassword: string = '';
+  newPassword2: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private emailService: EmailService) {}
 
   goBack() {
-    this.router.navigate(['/user/pw']);
+    this.router.navigate(['/user/password-reset']);
+  }
+
+  changepassword() {
+    if (this.newPassword === this.newPassword2) {
+      this.emailService.handleResetPassword(this.newPassword);
+    } else {
+      console.log('Passwords do not match');
+    }
   }
 }

@@ -87,7 +87,7 @@ export class LoginComponent {
   }
 
   forgotPW() {
-    this.router.navigate(['/user/pw']);
+    this.router.navigate(['/user/password-reset']);
   }
 
   changeInput() {
