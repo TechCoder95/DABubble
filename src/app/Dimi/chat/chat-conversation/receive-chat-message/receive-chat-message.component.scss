@@ -36,7 +36,6 @@ h5 {
 
 .message {
   position: relative;
-  /*  overflow-x: hidden; */
   display: flex;
   margin-block: 25px;
   padding-inline: 50px;
@@ -49,7 +48,7 @@ h5 {
     border-radius: 50%;
   }
   &:hover .slide-in {
-    animation: slideIn 0.2s forwards;
+    animation: slideIn 0.1s forwards;
     top: -12px;
     right: 10%;
   }

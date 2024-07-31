@@ -19,9 +19,15 @@
     (mouseenter)="hoverReaction('answer', true)"
     (mouseleave)="hoverReaction('answer', false)"
   />
-  <img
-    [src]="editMessageImg"
-    (mouseenter)="hoverReaction('edit', true)"
-    (mouseleave)="hoverReaction('edit', false)"
-  />
+  <section class="edit-message-section">
+    <img
+      [src]="editMessageImg"
+      (click)="editMessageDialog()"
+      (mouseenter)="hoverReaction('edit', true)"
+      (mouseleave)="hoverReaction('edit', false)"
+    />
+    <div class="edit-message-dialog" *ngIf="showEditMessageDialog">
+      <h3>Nachricht bearbeiten</h3>
+    </div>
+  </section>
 </main>

@@ -1,9 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './send-chat-message-reaction.component.html',
   styleUrl: './send-chat-message-reaction.component.scss',
 })
@@ -13,6 +14,7 @@ export class SendChatMessageReactionComponent {
   addReactionImg = './img/message-reaction-add-reaction.png';
   answerImg = './img/message-reaction-answer.png';
   editMessageImg = './img/message-reaction-edit-message.png';
+  showEditMessageDialog: boolean = false;
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -27,7 +29,18 @@ export class SendChatMessageReactionComponent {
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.png`;
     } else if (type === 'edit') {
-      this.editMessageImg = `${basePath}edit-message${hoverSuffix}.png`;
+      if (!this.showEditMessageDialog) {
+        this.editMessageImg = `${basePath}edit-message${hoverSuffix}.png`;
+      }
+    }
+  }
+
+  editMessageDialog() {
+    this.showEditMessageDialog = !this.showEditMessageDialog;
+    if (this.showEditMessageDialog) {
+      this.editMessageImg = './img/message-reaction-edit-message-hover.png';
+    } else {
+      this.editMessageImg = './img/message-reaction-edit-message.png';
     }
   }
 }

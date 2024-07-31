@@ -5,7 +5,7 @@ export interface ChatMessage {
   timestamp: number;
   sender: string;
   senderId:string;
-  threadConversationId?:string;
+  threadConversationId?:string[];
   emoticons?: string[];
   id?: string;
 }
