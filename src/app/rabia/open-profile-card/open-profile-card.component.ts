@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DAStorageService } from '../../shared/services/dastorage.service';
+import { EmailService } from '../../shared/services/sendmail.service';
 
 @Component({
   selector: 'app-open-profile-card',
@@ -17,16 +18,17 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
 export class OpenProfileCardComponent {
 
   editable: boolean = false;
+  emailInput: string = "";
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
 
-  constructor(private AuthService: AuthenticationService, public userService: UserService, private daStorage: DAStorageService) {
+  constructor(private AuthService: AuthenticationService, public userService: UserService, private daStorage: DAStorageService, private emailService: EmailService) {
   }
 
   saveProfile() {
     console.log(this.userService.activeUser);
+    this.editProfile();
+    this.emailService.updateGoogleEmail(this.emailInput);
 
-    this.updateProfile();
-    this.editable = !this.editable;
   }
 
   editProfile() {
@@ -52,10 +54,6 @@ export class OpenProfileCardComponent {
 
   upload(file: File) {
     this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
-  }
-
-  updateProfile() {
-    this.userService.updateUser(this.userService.activeUser)
   }
 
   closeEdit() {

@@ -169,7 +169,7 @@ export class UserService {
   async login(googleUser: User) {
     this.activeGoogleUserSubject.next(googleUser);
     this.getUsersFromDB().then(() => {
-      let loginUser = this.users.find(user => user.mail === googleUser.email);
+      let loginUser = this.users.find(user => user.uid === googleUser.uid);
 
       if (loginUser === undefined) {
         this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
@@ -186,11 +186,11 @@ export class UserService {
           });
         });
       } else {
-        if (loginUser.mail === googleUser.email && loginUser.id) {
+        if (loginUser.uid === googleUser.uid && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
           sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.checkOnlineStatus(loginUser);
-          this.updateLoggedInUser();
+          this.updateLoggedInUser(loginUser);
           this.activeUserSubject.next(loginUser);
           // console.log('User full Logged In');
         }
@@ -223,7 +223,8 @@ export class UserService {
   /**
    * Updates the logged-in user's status and calls the updateUser method.
    */
-  async updateLoggedInUser() {
+  async updateLoggedInUser(loginUser?: DABubbleUser) {
+    this.activeUser.mail = loginUser!.mail;
     this.activeUser.isLoggedIn = true;
     this.updateUser(this.activeUser);
   }

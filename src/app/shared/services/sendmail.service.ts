@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Auth, sendEmailVerification, sendPasswordResetEmail } from '@angular/fire/auth';
+import { Auth, sendEmailVerification, sendPasswordResetEmail, updateEmail } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { applyActionCode, checkActionCode, confirmPasswordReset, getAuth, verifyPasswordResetCode } from 'firebase/auth';
+import { applyActionCode, AuthCredential, checkActionCode, confirmPasswordReset, getAuth, verifyBeforeUpdateEmail, verifyPasswordResetCode } from 'firebase/auth';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { AuthenticationService } from './authentication.service';
 import { initializeApp } from 'firebase/app';
+import { reauthenticateWithCredential } from "firebase/auth";
 
 @Injectable({
   providedIn: 'root'
@@ -41,51 +42,6 @@ export class EmailService {
     }
   }
 
-
-  /**
-   * Verifies the email of the user.
-   * Retrieves users from the database and checks if the current URL contains 'verifyEmail'.
-   * If the email in the URL matches a user's email, updates the activation status of the user and performs additional actions.
-   * Navigates to the home page after the verification process is complete.
-   */
-  // verifyMail() {
-  //   this.userService.getUsersFromDB().then(() => {
-  //     if (this.router.url.includes('verifyEmail')) {
-  //       let split1 = this.router.url.split('%3Femail%3D')[1]
-  //       let split2 = split1.split('&')[0];
-  //       this.userService.users.map(user => {
-  //         if (user.mail === split2) {
-  //           this.activeUser = user;
-  //           if (!this.activeUser.activated) {
-  //             this.activeUser.activated = true;
-  //             this.userService.updateActivationStatus(this.activeUser).then(() => {
-  //               localStorage.setItem("userLogin", this.activeUser.id ? this.activeUser.id : '');
-  //               this.userService.activeUserSubject.next(this.activeUser);
-  //               this.userService.checkOnlineStatus(this.activeUser);
-  //               this.router.navigate(['/home']);
-  //             });
-  //           }
-  //           else {
-  //             this.router.navigate(['/home']);
-  //           }
-  //         }
-  //       });
-  //     }
-  //     else if (this.router.url.includes('resetPassword')) {
-  //       let split1 = this.router.url.split('%3Femail%3D')[1]
-  //       let split2 = split1.split('&')[0];
-  //       this.userService.users.map(user => {
-  //         if (user.mail === split2) {
-  //           this.activeUser = user;
-  //           this.router.navigate(['/password-change']);
-  //         }
-  //       });
-  //     }
-  //   });
-
-  // }
-
-
   changePassword(email: string) {
     const auth = getAuth();
     console.log(email);
@@ -97,9 +53,6 @@ export class EmailService {
         console.error(error);
       });
   }
-
-
-
 
 
   getParameterByName(name: string, url: string) {
@@ -144,12 +97,15 @@ export class EmailService {
         // Display email verification handler and UI.
         this.handleVerifyEmail(auth, actionCode!, continueUrl!, lang);
         break;
+      case 'verifyAndChangeEmail':
+        // Display email verification handler and UI.
+        this.handleVerifyEmail(auth, actionCode!, continueUrl!, lang);
+        break;
       default:
       // Error: invalid mode.
 
     };
   }
-
 
 
   accountEmail: string = '';
@@ -182,36 +138,33 @@ export class EmailService {
     }
   }
 
+
   handleVerifyEmail(auth: any, actionCode: string, continueUrl: string, lang: string) {
     // Localize the UI to the selected language as determined by the lang
     // parameter.
     // Try to apply the email verification code.
     applyActionCode(auth, actionCode).then((resp) => {
-      // Email address has been verified.
-
-      if (localStorage.getItem('userLogin')) {
+      if (localStorage.getItem('userLogin'))
         this.router.navigate(['/home']);
-      }
-      else {
-        this.router.navigate(['/user/login']);
-      }
-
-      // TODO: Display a confirmation message to the user.
-      // You could also provide the user with a link back to the app.
-
-      // TODO: If a continue URL is available, display a button which on
-      // click redirects the user back to the app via continueUrl with
-      // additional state determined from that URL's parameters.
-    }).catch((error) => {
-      // Code is invalid or expired. Ask the user to verify their email address
-      // again.
-    });
+      else
+        this.router.navigate(['/user/login'])
+    }).catch((error) =>
+      console.error(error)
+    );
   }
 
 
+  updateGoogleEmail(email: string) {
+    const auth = getAuth();
+    verifyBeforeUpdateEmail(auth.currentUser!, email).then(() => {
 
+      this.userService.logout();
 
+    }).catch((error) => {
+      // An error ocurred
+      // ...
+    });
 
-
+  }
 }
 

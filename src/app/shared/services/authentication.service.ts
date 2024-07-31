@@ -1,15 +1,17 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, updateEmail } from "firebase/auth";
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { EmailService } from './sendmail.service';
+import { updateProfile } from "firebase/auth";
+import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService,private emailService: EmailService) {
+  constructor(private userService: UserService, private emailService: EmailService) {
     console.log();
     this.setLocalPersistent();
 
@@ -171,9 +173,7 @@ export class AuthenticationService {
   //#endregion
 
 
-
   setLocalPersistent() {
-
     setPersistence(this.auth, browserLocalPersistence)
       .then(() => {
         console.log("Session persistence set!!!!!");
@@ -184,9 +184,5 @@ export class AuthenticationService {
         const errorMessage = error.message;
       });
   }
-
-
- resetPasswort(email: string) {
- }
 
 }
