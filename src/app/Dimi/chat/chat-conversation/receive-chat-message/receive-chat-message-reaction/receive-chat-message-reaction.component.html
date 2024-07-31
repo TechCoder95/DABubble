@@ -1,0 +1,22 @@
+<main>
+  <img
+    [src]="checkMarkImg"
+    (mouseenter)="hoverReaction('checkMark', true)"
+    (mouseleave)="hoverReaction('checkMark', false)"
+  />
+  <img
+    [src]="handsUpImg"
+    (mouseenter)="hoverReaction('handsUp', true)"
+    (mouseleave)="hoverReaction('handsUp', false)"
+  />
+  <img
+    [src]="addReactionImg"
+    (mouseenter)="hoverReaction('addReaction', true)"
+    (mouseleave)="hoverReaction('addReaction', false)"
+  />
+  <img
+    [src]="answerImg"
+    (mouseenter)="hoverReaction('answer', true)"
+    (mouseleave)="hoverReaction('answer', false)"
+  />
+</main>

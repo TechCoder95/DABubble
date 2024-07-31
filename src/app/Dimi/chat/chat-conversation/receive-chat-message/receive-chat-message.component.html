@@ -8,12 +8,13 @@
     <img [src]="getSenderAvatar()" />
     <div class="message-information">
       <div class="sender-and-time">
-        <h5>{{ receiveMessage.sender}}</h5>
+        <h5>{{ receiveMessage.sender }}</h5>
         <p>{{ receiveMessage.timestamp | date : "HH:mm" }} Uhr</p>
       </div>
       <span class="actual-message">
         <p>{{ receiveMessage.message }}</p>
       </span>
     </div>
+    <app-receive-chat-message-reaction class="slide-in"></app-receive-chat-message-reaction>
   </section>
 </main>

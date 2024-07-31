@@ -1,6 +1,6 @@
 main {
-  min-height: 150px;
-  margin-top: 32px;
+  padding-top: 32px;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -35,6 +35,8 @@ h5 {
 }
 
 .message {
+  position: relative;
+  /*  overflow-x: hidden; */
   display: flex;
   margin-block: 25px;
   padding-inline: 50px;
@@ -45,6 +47,11 @@ h5 {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+  }
+  &:hover .slide-in {
+    animation: slideIn 0.2s forwards;
+    top: -12px;
+    right: 10%;
   }
   &:hover {
     background-color: rgba(236, 238, 254, 1);
@@ -78,4 +85,19 @@ h5 {
       font-size: 18px;
     }
   }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  position: absolute;
+  right: -100%;
+  top: -12px;
 }

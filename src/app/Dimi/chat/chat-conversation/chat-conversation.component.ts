@@ -64,7 +64,7 @@ export class ChatConversationComponent
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.scrollToBottom(), 500);
+    setTimeout(() => this.scrollToBottom(), 1000);
   }
 
   scrollToBottom() {
