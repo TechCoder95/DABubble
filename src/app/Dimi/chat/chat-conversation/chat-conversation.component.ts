@@ -57,16 +57,10 @@ export class ChatConversationComponent
   }
 
   ngOnInit() {
-    debugger;
     this.subscribeToDataChanges();
-    debugger;
     this.subscribeToChannelChanges();
-    debugger;
     this.subscribeToSendMessages();
-    debugger;
     this.subscribeToReceiveMessages();
-    debugger;
-    /*  this.scrollToBottom(); */
   }
 
   ngAfterViewInit(): void {

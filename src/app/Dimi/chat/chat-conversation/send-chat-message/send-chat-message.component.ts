@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { SendChatMessageReactionComponent } from './send-chat-message-reaction/send-chat-message-reaction.component';
 
 @Component({
   selector: 'app-send-chat-message',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, SendChatMessageReactionComponent],
   templateUrl: './send-chat-message.component.html',
   styleUrl: './send-chat-message.component.scss',
 })
