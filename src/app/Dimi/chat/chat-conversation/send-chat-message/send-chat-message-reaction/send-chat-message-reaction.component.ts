@@ -6,6 +6,11 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { Emoji } from '../../../../../shared/interfaces/emoji';
+import { DatabaseService } from '../../../../../shared/services/database.service';
+import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
+import { DABubbleUser } from '../../../../../shared/interfaces/user';
+import { ChatService } from '../../../../../shared/services/chat.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -23,8 +28,16 @@ export class SendChatMessageReactionComponent {
   showEditMessageDialog: boolean = false;
   isInEditMode: boolean = false;
   messageDeleted: boolean = false;
+  emojiType!: string;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
+  @Input() sendMessage!: ChatMessage;
+  @Input() user!: DABubbleUser;
+
+  constructor(
+    private databaseService: DatabaseService,
+    private chatService: ChatService
+  ) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -62,5 +75,23 @@ export class SendChatMessageReactionComponent {
   deleteMessage() {
     this.messageDeleted = true;
     this.deleteStatusChange.emit(this.messageDeleted);
+  }
+
+  async handleEmojis(emojiType: string) {
+    debugger;
+    let emoji: Emoji = {
+      messageId: this.sendMessage.id!,
+      type: emojiType,
+      usersIds: [this.user.id!],
+    };
+
+    const newEmojiId = await this.databaseService.addChannelDataToDB(
+      'emojies',
+      emoji
+    );
+    emoji.id = newEmojiId;
+    console.log(emoji);
+    debugger;
+    this.chatService.sendEmoji(emoji);
   }
 }
