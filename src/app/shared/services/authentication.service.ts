@@ -1,10 +1,17 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, updateEmail } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  getRedirectResult,
+  setPersistence,
+  browserLocalPersistence
+} from "firebase/auth";
 import { UserService } from './user.service';
-import { Router } from '@angular/router';
 import { EmailService } from './sendmail.service';
-import { updateProfile } from "firebase/auth";
-import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -63,15 +70,15 @@ export class AuthenticationService {
         this.setLocalPersistent();
       })
       .catch((error) => {
-        if (error.code === "auth/user-not-found") 
+        if (error.code === "auth/user-not-found")
           this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
-        else if (error.code === "auth/network-request-failed") 
+        else if (error.code === "auth/network-request-failed")
           this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
-        else if (error.code === "auth/too-many-requests") 
+        else if (error.code === "auth/too-many-requests")
           this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
-        else if (error.code === "auth/invalid-credential") 
+        else if (error.code === "auth/invalid-credential")
           this.fehlerMeldung = "Ungültige Anmeldeinformationen";
-        else if (error.code === "auth/invalid-email") 
+        else if (error.code === "auth/invalid-email")
           this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
         else {
           alert(error.message);
