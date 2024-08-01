@@ -27,7 +27,8 @@
       (mouseleave)="hoverReaction('edit', false)"
     />
     <div class="edit-message-dialog" *ngIf="showEditMessageDialog">
-      <h3>Nachricht bearbeiten</h3>
+      <h3 (click)="editMessage()">Nachricht bearbeiten</h3>
+      <h3 (click)="deleteMessage()">Nachricht löschen</h3>
     </div>
   </section>
 </main>

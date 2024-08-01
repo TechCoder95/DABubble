@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -15,6 +21,10 @@ export class SendChatMessageReactionComponent {
   answerImg = './img/message-reaction-answer.png';
   editMessageImg = './img/message-reaction-edit-message.png';
   showEditMessageDialog: boolean = false;
+  isInEditMode: boolean = false;
+  messageDeleted: boolean = false;
+  @Output() editModeChange = new EventEmitter<boolean>();
+  @Output() deleteStatusChange = new EventEmitter<boolean>();
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -42,5 +52,15 @@ export class SendChatMessageReactionComponent {
     } else {
       this.editMessageImg = './img/message-reaction-edit-message.png';
     }
+  }
+
+  editMessage() {
+    this.isInEditMode = true;
+    this.editModeChange.emit(this.isInEditMode);
+  }
+
+  deleteMessage() {
+    this.messageDeleted = true;
+    this.deleteStatusChange.emit(this.messageDeleted);
   }
 }

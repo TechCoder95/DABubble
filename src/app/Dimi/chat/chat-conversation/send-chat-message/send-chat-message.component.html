@@ -1,21 +1,41 @@
-<main>
-  <section class="message-day">
+<main #mainContainer>
+  <section class="message-day" *ngIf="!inEditMessageMode">
     <p></p>
     <h4>{{ checkDate(sendMessage.timestamp) }}</h4>
   </section>
 
-  <section class="message">
-    <app-send-chat-message-reaction class="slide-in"></app-send-chat-message-reaction>
+  <section class="message" *ngIf="!inEditMessageMode">
+    <app-send-chat-message-reaction
+      *ngIf="!sendMessage.deleted"
+      (editModeChange)="onEditModeChange($event)"
+      (deleteStatusChange)="onDelete($event)"
+      class="slide-in"
+    ></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
         <h5>{{ getUserName() }}</h5>
         <p>{{ sendMessage.timestamp | date : "HH.mm" }} Uhr</p>
       </div>
-      <div class="actual-message">
+      <div class="actual-message" *ngIf="!sendMessage.deleted">
         <p>
           {{ sendMessage.message }}
+          <span *ngIf="sendMessage.edited">bearbeitet</span>
         </p>
       </div>
+      <p *ngIf="sendMessage.deleted" class="message-deleted-notification">
+        Diese Nachricht wurde gelöscht
+      </p>
+    </div>
+    <img [src]="getUserAvatar()" />
+  </section>
+
+  <section *ngIf="inEditMessageMode" class="in-edit-mode-section">
+    <div>
+      <textarea [(ngModel)]="sendMessage.message" name="" id=""></textarea>
+      <span>
+        <button class="cancel-btn" (click)="cancel()">Abbrechen</button>
+        <button class="save-message-btn" (click)="save()">Speichern</button>
+      </span>
     </div>
     <img [src]="getUserAvatar()" />
   </section>

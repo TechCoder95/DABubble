@@ -27,9 +27,9 @@ export class ChatService {
         this.databaseService
           .readDataByID('messages', messageID)
           .then((messageFromDb) => {
-           /*  debugger; */
+            /*  debugger; */
             let message = messageFromDb as ChatMessage;
-            if (message.sender === this.userService.activeUser.username) {
+            if (message.senderName === this.userService.activeUser.username) {
               this.readMessage(message);
             } else {
               this.receiveMessage(message);
@@ -40,14 +40,42 @@ export class ChatService {
       console.log('KEINE NACHRICHTEN');
     }
   }
+  
 
-  sendMessage(message: ChatMessage) {
+   async sendMessage(message: ChatMessage) {
+    try {
+      let messagesFromDb: ChatMessage[] = [];
+      // Lese die vorhandenen Nachrichten aus der Datenbank
+      await this.databaseService.readDatafromDB('messages', messagesFromDb);
+      // Überprüfe, ob eine Nachricht mit der gleichen ID bereits existiert
+      const messageExists = messagesFromDb.some((msg) => msg.id === message.id);
+      if (!messageExists) {
+        // Nachricht existiert nicht, füge sie hinzu
+        this.sendMessages.next(message);
+        await this.databaseService.addDataToDB('messages', message);
+      }
+      // Füge die Nachricht zum Kanal hinzu
+      const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
+      const messageId = messageExists ? message.id! : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
+      await this.databaseService.addMessageToChannel(selectedChannelId, messageId);
+  
+      // Aktualisiere die Nachrichten aus der Datenbank
+      await this.databaseService.readDatafromDB('messages', messagesFromDb);
+      console.log('MESSAGESFROMDB', messagesFromDb);
+  
+    } catch (error) {
+      console.error('Fehler beim Senden der Nachricht:', error);
+    }
+  
+  /* sendMessage(message: ChatMessage) {
     let messagesFromDb: ChatMessage[] = [];
-    this.sendMessages.next(message);
+
+    /* this.sendMessages.next(message);
     this.databaseService.addDataToDB('messages', message).then(() => {
       this.databaseService
         .readDatafromDB('messages', messagesFromDb)
         .then(() => {
+          debugger;
           console.log('MESSAGESFROMDB' + messagesFromDb);
           messagesFromDb.forEach((messageInArray) => {
             if (
@@ -64,7 +92,7 @@ export class ChatService {
             }
           });
         });
-    });
+    }); */
   }
 
   readMessage(message: ChatMessage) {
