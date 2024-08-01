@@ -35,7 +35,7 @@
                     <span class="font-bold text-xl">E-Mail-Adresse</span>
                 </div>
 
-                <span class="own-mail">{{this.userService.activeUser.mail}}</span>
+                <span class="own-mail">{{this.userService.googleUser.email}}</span>
             </div>
         </div>
 
@@ -72,7 +72,7 @@
                 <img src="img/mail-focus.svg" alt="">
                 <span class="font-bold text-xl">E-Mail-Adresse</span>
             </div>
-            <input type="text" name="mail" [(ngModel)]="this.userService.activeUser.mail">
+            <input type="text" name="mail" [(ngModel)]="emailInput" placeholder="{{this.userService.activeUser.mail}}">
         </div>
 
 

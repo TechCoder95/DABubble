@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, updateEmail } from "firebase/auth";
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
 import { EmailService } from './sendmail.service';
+import { updateProfile } from "firebase/auth";
+import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService,private emailService: EmailService) {
-    console.log();
+  constructor(private userService: UserService, private emailService: EmailService) {
     this.setLocalPersistent();
-
     if (this.auth.currentUser !== null) {
       this.userService.activeGoogleUserSubject.next(this.auth.currentUser);
     }
@@ -47,6 +47,7 @@ export class AuthenticationService {
       });
   }
 
+
   /**
    * Signs in a user with email and password.
    * 
@@ -62,33 +63,25 @@ export class AuthenticationService {
         this.setLocalPersistent();
       })
       .catch((error) => {
-        if (error.code === "auth/user-not-found") {
+        if (error.code === "auth/user-not-found") 
           this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
-        }
-        else if (error.code === "auth/network-request-failed") {
+        else if (error.code === "auth/network-request-failed") 
           this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
-        }
-        else if (error.code === "auth/too-many-requests") {
+        else if (error.code === "auth/too-many-requests") 
           this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
-        }
-        else if (error.code === "auth/invalid-credential") {
+        else if (error.code === "auth/invalid-credential") 
           this.fehlerMeldung = "Ungültige Anmeldeinformationen";
-        }
-        else if (error.code === "auth/invalid-email") {
+        else if (error.code === "auth/invalid-email") 
           this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
-        }
         else {
           alert(error.message);
         }
-
       })
-
   }
 
+
   //#endregion
-
   //#region [Google Authentication]
-
   //Google Auth
 
 
@@ -118,6 +111,7 @@ export class AuthenticationService {
       });
   }
 
+
   /**
    * Retrieves the Google Access Token and performs necessary actions based on the result.
    */
@@ -127,8 +121,6 @@ export class AuthenticationService {
         // This gives you a Google Access Token. You can use it to access Google APIs.
         const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
         const token = credential?.accessToken;
-
-
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -141,11 +133,11 @@ export class AuthenticationService {
       });
   }
 
+
   //#endregion
-
   //#region [User Authentication]
-
   //Für alle gültig
+
 
   /**
    * Signs out the user.
@@ -158,8 +150,8 @@ export class AuthenticationService {
       .catch((error) => {
         // An error happened.
       });
-
   }
+
 
   /**
    * Signs in the user as a guest.
@@ -168,25 +160,20 @@ export class AuthenticationService {
     this.userService.guestLogin();
   }
 
+
   //#endregion
 
 
-
+  /**
+    * Sets the local persistence for the authentication session.
+    * @returns A Promise that resolves when the session persistence is set successfully, or rejects with an error if there was an issue.
+    */
   setLocalPersistent() {
-
     setPersistence(this.auth, browserLocalPersistence)
-      .then(() => {
-        console.log("Session persistence set!!!!!");
-      })
+      .then(() => { })
       .catch((error) => {
-        // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
       });
   }
-
-
- resetPasswort(email: string) {
- }
-
 }
