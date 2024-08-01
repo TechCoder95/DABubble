@@ -16,21 +16,19 @@ export class UserService {
   activeUser!: DABubbleUser;
   googleUser!: User;
   guestName: string = 'Guest';
+
+  //Aktiver User aus der Datenbank Firestore wird in das Subject geschrieben
   activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
   activeUserObserver$ = this.activeUserSubject.asObservable();
 
-
+  //Aktiver Google User wird in das Subject geschrieben
   activeGoogleUserSubject = new BehaviorSubject<User>(this.googleUser);
   activeGoogleUserObserver$ = this.activeGoogleUserSubject.asObservable();
 
-
-
   avatarSelected: boolean = false;
-
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
-    // console.log('User Service Initialized');
     this.getUsersFromDB().then(() => {
       if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
@@ -46,27 +44,18 @@ export class UserService {
         this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
           this.activeUserSubject.next(data);
-          
-          
         });
         this.activeGoogleUserObserver$.subscribe((googleUser) => {
           if (googleUser) {
             this.googleUser = googleUser;
-            console.log(this.googleUser.email);
           }
           else {
-
             if (localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
               let user = localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
-
               this.googleUser = JSON.parse(user!);
               this.activeGoogleUserSubject.next(this.googleUser);
-              console.log('Google User: ');
-              console.log(this.googleUser);
             }
           }
-
-
         });
       }
     });
@@ -133,7 +122,6 @@ export class UserService {
           sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
           this.updateLoggedInUser();
           this.checkOnlineStatus(this.activeUser);
-          // console.log('Guest User Logged In');
           this.router.navigate(['/home']);
         }
       });
@@ -192,7 +180,6 @@ export class UserService {
           this.checkOnlineStatus(loginUser);
           this.updateLoggedInUser(loginUser);
           this.activeUserSubject.next(loginUser);
-          // console.log('User full Logged In');
         }
       }
     });
@@ -321,6 +308,13 @@ export class UserService {
     return channels;
   }
 
+
+  /**
+   * Searches for users by name or email.
+   * 
+   * @param searchText - The text to search for in the username or email.
+   * @returns A promise that resolves to an array of DABubbleUser objects matching the search criteria.
+   */
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
     const q = query(
@@ -355,14 +349,6 @@ export class UserService {
         users.push(data);
       }
     });
-
     return users;
   }
-
-
-
-
-
-
-
 }
