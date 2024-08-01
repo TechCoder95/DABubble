@@ -84,13 +84,6 @@ export class ChatConversationComponent
         this.scrollToBottom();
       }
     );
-    /* this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
-      async (channel) => {
-        this.allMessages = [];
-        await this.chatService.sortMessages(channel);
-        this.scrollToBottom();
-      }
-    ); */
   }
 
   subscribeToChannelChanges() {
@@ -101,14 +94,8 @@ export class ChatConversationComponent
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
         console.log('CHANNELOBSERVe');
-        // Hier können Sie den Code hinzufügen, um die Nachrichten zu laden
       }
     );
-    /*  this.channelSubscription = this.channelService.selectedChannel$.subscribe(
-      () => {
-        console.log('CHANNELOBSERVe');
-      }
-    ); */
   }
 
   subscribeToSendMessages() {
@@ -121,15 +108,9 @@ export class ChatConversationComponent
         if (message) {
           this.allMessages.push(message);
         }
+        setTimeout(() => this.scrollToBottom(), 500);
       }
     );
-    /* this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
-      (message) => {
-        if (message) {
-          this.allMessages.push(message);
-        }
-      }
-    ); */
   }
 
   subscribeToReceiveMessages() {
@@ -142,12 +123,8 @@ export class ChatConversationComponent
         if (message !== null) {
           this.allMessages.push(message);
         }
+        setTimeout(() => this.scrollToBottom(), 500);
       });
-    /*  this.chatService.receiveMessages$.subscribe((message) => {
-      if (message !== null) {
-        this.allMessages.push(message);
-      }
-    }); */
   }
 
   ngOnDestroy() {

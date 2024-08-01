@@ -26,7 +26,7 @@
       (mouseenter)="hoverReaction('edit', true)"
       (mouseleave)="hoverReaction('edit', false)"
     />
-    <div class="edit-message-dialog" *ngIf="showEditMessageDialog">
+    <div class="edit-message-dialog" *ngIf="showEditMessageDialog" (click)="editMessage()">
       <h3>Nachricht bearbeiten</h3>
     </div>
   </section>

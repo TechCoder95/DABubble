@@ -1,11 +1,14 @@
-<main>
-  <section class="message-day">
+<main #mainContainer>
+  <section class="message-day" *ngIf="!inEditMessageMode">
     <p></p>
     <h4>{{ checkDate(sendMessage.timestamp) }}</h4>
   </section>
 
-  <section class="message">
-    <app-send-chat-message-reaction class="slide-in"></app-send-chat-message-reaction>
+  <section class="message" *ngIf="!inEditMessageMode">
+    <app-send-chat-message-reaction
+      (editModeChange)="onEditModeChange($event)"
+      class="slide-in"
+    ></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
         <h5>{{ getUserName() }}</h5>
@@ -14,8 +17,20 @@
       <div class="actual-message">
         <p>
           {{ sendMessage.message }}
+          <span *ngIf="sendMessage.edited">bearbeitet</span>
         </p>
       </div>
+    </div>
+    <img [src]="getUserAvatar()" />
+  </section>
+
+  <section *ngIf="inEditMessageMode" class="in-edit-mode-section">
+    <div>
+      <textarea [(ngModel)]="sendMessage.message" name="" id=""></textarea>
+      <span>
+        <button class="cancel-btn" (click)="cancel()">Abbrechen</button>
+        <button class="save-message-btn" (click)="save()">Speichern</button>
+      </span>
     </div>
     <img [src]="getUserAvatar()" />
   </section>

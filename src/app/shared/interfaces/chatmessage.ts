@@ -4,8 +4,9 @@ export interface ChatMessage {
   message: string;
   timestamp: number;
   sender: string;
-  senderId:string;
-  threadConversationId?:string[];
+  senderId: string;
+  threadConversationId?: string[];
   emoticons?: string[];
   id?: string;
+  edited?: boolean;
 }

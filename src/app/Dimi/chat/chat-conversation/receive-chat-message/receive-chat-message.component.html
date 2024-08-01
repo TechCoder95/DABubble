@@ -12,7 +12,9 @@
         <p>{{ receiveMessage.timestamp | date : "HH:mm" }} Uhr</p>
       </div>
       <span class="actual-message">
-        <p>{{ receiveMessage.message }}</p>
+        <p>{{ receiveMessage.message }}
+          <span *ngIf="receiveMessage.edited">bearbeitet</span>
+        </p>
       </span>
     </div>
     <app-receive-chat-message-reaction class="slide-in"></app-receive-chat-message-reaction>

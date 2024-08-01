@@ -82,6 +82,10 @@ h5 {
     padding: 15px;
     > p {
       font-size: 18px;
+      > span {
+        font-size: 10px;
+        color: gray;
+      }
     }
   }
 }
