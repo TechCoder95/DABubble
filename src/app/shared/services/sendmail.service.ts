@@ -1,12 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Auth, sendEmailVerification, sendPasswordResetEmail } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { applyActionCode, checkActionCode, confirmPasswordReset, getAuth, verifyPasswordResetCode } from 'firebase/auth';
+import { applyActionCode, confirmPasswordReset, getAuth, verifyBeforeUpdateEmail, verifyPasswordResetCode } from 'firebase/auth';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
-import { DatabaseService } from './database.service';
-import { AuthenticationService } from './authentication.service';
-import { initializeApp } from 'firebase/app';
 
 @Injectable({
   providedIn: 'root'
@@ -14,9 +11,9 @@ import { initializeApp } from 'firebase/app';
 export class EmailService {
 
   activeUser!: DABubbleUser;
+  accountEmail: string = '';
 
-  constructor(private auth: Auth, private router: Router, private userService: UserService) {
-  }
+  constructor(private auth: Auth, private router: Router, private userService: UserService) { }
 
 
   /**
@@ -43,65 +40,24 @@ export class EmailService {
 
 
   /**
-   * Verifies the email of the user.
-   * Retrieves users from the database and checks if the current URL contains 'verifyEmail'.
-   * If the email in the URL matches a user's email, updates the activation status of the user and performs additional actions.
-   * Navigates to the home page after the verification process is complete.
+   * Sends a password reset email to the specified email address.
+   * 
+   * @param email - The email address to send the password reset email to.
    */
-  // verifyMail() {
-  //   this.userService.getUsersFromDB().then(() => {
-  //     if (this.router.url.includes('verifyEmail')) {
-  //       let split1 = this.router.url.split('%3Femail%3D')[1]
-  //       let split2 = split1.split('&')[0];
-  //       this.userService.users.map(user => {
-  //         if (user.mail === split2) {
-  //           this.activeUser = user;
-  //           if (!this.activeUser.activated) {
-  //             this.activeUser.activated = true;
-  //             this.userService.updateActivationStatus(this.activeUser).then(() => {
-  //               localStorage.setItem("userLogin", this.activeUser.id ? this.activeUser.id : '');
-  //               this.userService.activeUserSubject.next(this.activeUser);
-  //               this.userService.checkOnlineStatus(this.activeUser);
-  //               this.router.navigate(['/home']);
-  //             });
-  //           }
-  //           else {
-  //             this.router.navigate(['/home']);
-  //           }
-  //         }
-  //       });
-  //     }
-  //     else if (this.router.url.includes('resetPassword')) {
-  //       let split1 = this.router.url.split('%3Femail%3D')[1]
-  //       let split2 = split1.split('&')[0];
-  //       this.userService.users.map(user => {
-  //         if (user.mail === split2) {
-  //           this.activeUser = user;
-  //           this.router.navigate(['/password-change']);
-  //         }
-  //       });
-  //     }
-  //   });
-
-  // }
-
-
   changePassword(email: string) {
     const auth = getAuth();
-    console.log(email);
     sendPasswordResetEmail(auth, email)
-      .then(() => {
-        console.log('Email sent');
-      }
-      ).catch((error) => {
-        console.error(error);
-      });
+      .then(() => { })
+      .catch((error) => { console.error(error); });
   }
 
 
-
-
-
+  /**
+   * Retrieves the value of a query parameter from a given URL.
+   * @param name - The name of the query parameter to retrieve.
+   * @param url - The URL to search for the query parameter. If not provided, the current window location will be used.
+   * @returns The value of the query parameter, or null if it doesn't exist.
+   */
   getParameterByName(name: string, url: string) {
     if (!url) url = window.location.href;
     name = name.replace(/[\[\]]/g, '\\$&');
@@ -113,105 +69,81 @@ export class EmailService {
   }
 
 
+  /**
+   * Handles the email action based on the mode parameter.
+   * Retrieves necessary parameters from the URL and performs the corresponding action.
+   */
   handleEmail() {
-    // Get the action to complete.
     const mode = this.getParameterByName('mode', window.location.href);
-    // Get the one-time code from the query parameter.
     const actionCode = this.getParameterByName('oobCode', window.location.href);
     if (actionCode !== null)
       sessionStorage.setItem('actionCode', actionCode);
-    // (Optional) Get the continue URL from the query parameter if available.
     const continueUrl = this.getParameterByName('continueUrl', window.location.href);
-    // (Optional) Get the language code if available.
     const lang = this.getParameterByName('lang', window.location.href) || 'en';
-
-    // Configure the Firebase SDK.
-    // This is the minimum configuration required for the API to be used.
-    const config = {
-      'apiKey': "AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE" // Copy this key from the web initialization
-      // snippet found in the Firebase console.
-    };
-
+    const config = { 'apiKey': "AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE" };
     const auth = getAuth();
-
-    // Handle the user management action.
     switch (mode) {
       case 'resetPassword':
-        // Display reset password handler and UI.
         this.router.navigate(['/user/password-change']);
         break;
       case 'verifyEmail':
-        // Display email verification handler and UI.
+        this.handleVerifyEmail(auth, actionCode!, continueUrl!, lang);
+        break;
+      case 'verifyAndChangeEmail':
         this.handleVerifyEmail(auth, actionCode!, continueUrl!, lang);
         break;
       default:
       // Error: invalid mode.
-
     };
   }
 
 
-
-  accountEmail: string = '';
-
+  /**
+   * Handles the password reset process.
+   * 
+   * @param password - The new password to be set.
+   */
   handleResetPassword(password: string) {
-    // Localize the UI to the selected language as determined by the lang
-    // parameter.
-
-    // Verify the password reset code is valid.
     if (sessionStorage.getItem('actionCode')) {
       verifyPasswordResetCode(this.auth, sessionStorage.getItem('actionCode')!).then((email) => {
         this.accountEmail = email as string;
-        // TODO: Show the reset screen with the user's email and ask the user for
-        // the new password.
-
-        // Save the new password.
         confirmPasswordReset(this.auth, sessionStorage.getItem('actionCode')!, password).then((resp) => {
-          // Password reset has been confirmed and new password updated.
-          console.log('Password reset successful');
-          console.log();
-
-        }).catch((error) => {
-          // Error occurred during confirmation. The code might have expired or the
-          // password is too weak.
-        });
-      }).catch((error) => {
-        // Invalid or expired action code. Ask user to try to reset the password
-        // again.
-      });
+        }).catch((error) => { });
+      }).catch((error) => { });
     }
   }
 
+
+  /**
+   * Handles the verification of email using the provided action code.
+   * 
+   * @param auth - The authentication object.
+   * @param actionCode - The action code for email verification.
+   * @param continueUrl - The URL to redirect the user after successful verification.
+   * @param lang - The language code for localizing the UI.
+   */
   handleVerifyEmail(auth: any, actionCode: string, continueUrl: string, lang: string) {
-    // Localize the UI to the selected language as determined by the lang
-    // parameter.
-    // Try to apply the email verification code.
     applyActionCode(auth, actionCode).then((resp) => {
-      // Email address has been verified.
-
-      if (localStorage.getItem('userLogin')) {
+      if (localStorage.getItem('userLogin'))
         this.router.navigate(['/home']);
-      }
-      else {
-        this.router.navigate(['/user/login']);
-      }
-
-      // TODO: Display a confirmation message to the user.
-      // You could also provide the user with a link back to the app.
-
-      // TODO: If a continue URL is available, display a button which on
-      // click redirects the user back to the app via continueUrl with
-      // additional state determined from that URL's parameters.
-    }).catch((error) => {
-      // Code is invalid or expired. Ask the user to verify their email address
-      // again.
-    });
+      else
+        this.router.navigate(['/user/login'])
+    }).catch((error) =>
+      console.error(error)
+    );
   }
 
 
-
-
-
-
+  /**
+   * Updates the Google email for the current user.
+   * 
+   * @param email - The new email address to update.
+   */
+  updateGoogleEmail(email: string) {
+    const auth = getAuth();
+    verifyBeforeUpdateEmail(auth.currentUser!, email).then(() => {
+      this.userService.logout();
+    }).catch((error) => { });
+  }
 }
 
