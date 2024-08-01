@@ -29,7 +29,7 @@ export class ChatService {
           .then((messageFromDb) => {
             /*  debugger; */
             let message = messageFromDb as ChatMessage;
-            if (message.sender === this.userService.activeUser.username) {
+            if (message.senderName === this.userService.activeUser.username) {
               this.readMessage(message);
             } else {
               this.receiveMessage(message);

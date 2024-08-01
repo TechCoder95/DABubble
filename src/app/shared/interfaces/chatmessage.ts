@@ -1,12 +1,13 @@
 export interface ChatMessage {
   channelId: string;
-  name?: string;
+  channelName?: string;
   message: string;
   timestamp: number;
-  sender: string;
+  senderName: string;
   senderId: string;
   threadConversationId?: string[];
   emoticons?: string[];
   id?: string;
   edited?: boolean;
+  deleted?: boolean;
 }

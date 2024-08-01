@@ -77,13 +77,14 @@ export class InputfieldComponent {
   async sendMessage() {
     let message: ChatMessage = {
       channelId: this.channelService.channel.id,
-      name: this.channelService.channel.name,
+      channelName: this.channelService.channel.name,
       message: this.textareaValue,
       timestamp: new Date().getTime(),
-      sender: this.activeUser.username || 'guest',
+      senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
       emoticons: [],
       edited: false,
+      deleted: false,
     };
 
     if (message.message !== '') {

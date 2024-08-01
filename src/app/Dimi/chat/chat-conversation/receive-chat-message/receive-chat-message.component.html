@@ -8,15 +8,21 @@
     <img [src]="getSenderAvatar()" />
     <div class="message-information">
       <div class="sender-and-time">
-        <h5>{{ receiveMessage.sender }}</h5>
+        <h5>{{ receiveMessage.senderName }}</h5>
         <p>{{ receiveMessage.timestamp | date : "HH:mm" }} Uhr</p>
       </div>
-      <span class="actual-message">
-        <p>{{ receiveMessage.message }}
+      <span class="actual-message" *ngIf="!receiveMessage.deleted">
+        <p>
+          {{ receiveMessage.message }}
           <span *ngIf="receiveMessage.edited">bearbeitet</span>
         </p>
       </span>
+      <p *ngIf="receiveMessage.deleted" class="message-deleted-notification">
+        Diese Nachricht wurde gelöscht
+      </p>
     </div>
-    <app-receive-chat-message-reaction class="slide-in"></app-receive-chat-message-reaction>
+    <app-receive-chat-message-reaction
+      class="slide-in"
+    ></app-receive-chat-message-reaction>
   </section>
 </main>

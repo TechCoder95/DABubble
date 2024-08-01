@@ -22,7 +22,9 @@ export class SendChatMessageReactionComponent {
   editMessageImg = './img/message-reaction-edit-message.png';
   showEditMessageDialog: boolean = false;
   isInEditMode: boolean = false;
+  messageDeleted: boolean = false;
   @Output() editModeChange = new EventEmitter<boolean>();
+  @Output() deleteStatusChange = new EventEmitter<boolean>();
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -55,5 +57,10 @@ export class SendChatMessageReactionComponent {
   editMessage() {
     this.isInEditMode = true;
     this.editModeChange.emit(this.isInEditMode);
+  }
+
+  deleteMessage() {
+    this.messageDeleted = true;
+    this.deleteStatusChange.emit(this.messageDeleted);
   }
 }

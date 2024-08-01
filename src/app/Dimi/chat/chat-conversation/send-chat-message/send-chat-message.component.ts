@@ -19,6 +19,7 @@ export class SendChatMessageComponent implements OnInit {
   @Input() user!: DABubbleUser;
   @Input() sendMessage!: ChatMessage;
   inEditMessageMode: boolean = false;
+  messageDeleted: boolean = false;
   @ViewChild('mainContainer') mainContainer!: ElementRef;
   originalMessage!: string;
 
@@ -72,6 +73,7 @@ export class SendChatMessageComponent implements OnInit {
   async save() {
     debugger;
     console.log(this.sendMessage.id);
+    this.mainContainer.nativeElement.style.background = 'unset';
     this.sendMessage.edited = true;
     await this.databaseService.updateDataInDB(
       'messages',
@@ -79,5 +81,17 @@ export class SendChatMessageComponent implements OnInit {
       this.sendMessage
     );
     this.inEditMessageMode = false;
+  }
+
+  async onDelete(event: boolean) {
+    debugger;
+    this.messageDeleted = event;
+    this.sendMessage.message = '';
+    this.sendMessage.deleted = true;
+    await this.databaseService.updateDataInDB(
+      'messages',
+      this.sendMessage.id!,
+      this.sendMessage
+    );
   }
 }
