@@ -3,7 +3,7 @@ import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 
@@ -14,10 +14,17 @@ export class UserService {
 
   users: DABubbleUser[] = [];
   activeUser!: DABubbleUser;
-  googleUser: User | null = null;
+  googleUser!: User;
   guestName: string = 'Guest';
   activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
   activeUserObserver$ = this.activeUserSubject.asObservable();
+
+
+  activeGoogleUserSubject = new BehaviorSubject<User>(this.googleUser);
+  activeGoogleUserObserver$ = this.activeGoogleUserSubject.asObservable();
+
+
+
   avatarSelected: boolean = false;
 
   collectionName: string = 'users';
@@ -39,6 +46,24 @@ export class UserService {
         this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
           this.activeUserSubject.next(data);
+        });
+        this.activeGoogleUserObserver$.subscribe((googleUser) => {
+          if (googleUser) {
+            this.googleUser = googleUser;
+            console.log(this.googleUser.email);
+          }
+          else {
+
+            if (localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
+              let user = localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
+
+              this.googleUser = JSON.parse(user!);
+              console.log('Google User: ');
+              console.log(this.googleUser);
+            }
+          }
+
+
         });
       }
     });
@@ -139,6 +164,7 @@ export class UserService {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
+    this.activeGoogleUserSubject.next(googleUser);
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.mail === googleUser.email);
 
@@ -224,19 +250,19 @@ export class UserService {
    * and navigates to the login page.
    */
   async logout() {
-      if (sessionStorage.getItem('userLogin')) {
-        this.guestLogout();
-      } else {
-        let id = localStorage.getItem('userLogin')!;
-        this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
-          .then(() => {
-            localStorage.removeItem('userLogin');
-            sessionStorage.removeItem('userLogin');
-            sessionStorage.removeItem('selectedChannelId');
-            this.activeUserSubject.next(null!);
-            this.router.navigate(['/user/login']);
-          });
-      }
+    if (sessionStorage.getItem('userLogin')) {
+      this.guestLogout();
+    } else {
+      let id = localStorage.getItem('userLogin')!;
+      this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
+        .then(() => {
+          localStorage.removeItem('userLogin');
+          sessionStorage.removeItem('userLogin');
+          sessionStorage.removeItem('selectedChannelId');
+          this.activeUserSubject.next(null!);
+          this.router.navigate(['/user/login']);
+        });
+    }
   }
 
 
@@ -280,7 +306,7 @@ export class UserService {
       .then(() => { this.getUsersFromDB(); });
   }
 
-  
+
   /**
    * Retrieves a user by their ID.
    * @param id - The ID of the user to retrieve.
@@ -305,7 +331,7 @@ export class UserService {
     snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
     return channels;
   }
- 
+
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
     const q = query(

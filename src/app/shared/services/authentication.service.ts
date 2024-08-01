@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, User } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset } from "firebase/auth";
 import { UserService } from './user.service';
 import { Router } from '@angular/router';
-import { EmailService } from './sendmail.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private router: Router, private emailService: EmailService) { }
+  constructor(private userService: UserService, private router: Router) {
+    console.log();
+    this.setLocalPersistent();
+
+    if (this.auth.currentUser !== null) {
+      this.userService.activeGoogleUserSubject.next(this.auth.currentUser);
+    }
+  }
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
@@ -30,9 +36,7 @@ export class AuthenticationService {
         this.userService.googleUser = userCredential.user
         this.userService.register(email, username, this.userService.googleUser.uid);
         localStorage.setItem("uId", this.userService.googleUser.uid);
-        this.userService.login(this.userService.googleUser).then(() => {
-          this.emailService.sendMail();
-        });
+        this.userService.login(this.userService.googleUser)
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -53,6 +57,7 @@ export class AuthenticationService {
         // Signed in 
         this.userService.googleUser = userCredential.user;
         this.userService.login(userCredential.user)
+        this.setLocalPersistent();
       })
       .catch((error) => {
         if (error.code === "auth/user-not-found") {
@@ -98,6 +103,7 @@ export class AuthenticationService {
         // The signed-in user info.
         this.userService.googleUser = result.user;
         this.userService.login(result.user)
+        this.setLocalPersistent();
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -146,7 +152,7 @@ export class AuthenticationService {
     signOut(this.auth)
       .then(() => {
         this.userService.logout();
-        this.userService.googleUser = null;
+        this.userService.googleUser.delete();
       })
       .catch((error) => {
         // An error happened.
@@ -164,5 +170,29 @@ export class AuthenticationService {
   //#endregion
 
 
+
+  setLocalPersistent() {
+
+    setPersistence(this.auth, browserLocalPersistence)
+      .then(() => {
+        // Existing and future Auth states are now persisted in the current
+        // session only. Closing the window would clear any existing state even
+        // if a user forgets to sign out.
+        // ...
+        // New sign-in will be persisted with session persistence.
+        console.log("Session persistence set!!!!!");
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+      });
+  }
+
+
+ 
+
+
+  
 
 }
