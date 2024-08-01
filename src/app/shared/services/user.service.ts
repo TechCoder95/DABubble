@@ -271,6 +271,11 @@ export class UserService {
       });
   }
 
+  updateUsername(username: string) {
+    this.activeUser.username = username;
+    this.updateUser(this.activeUser);
+  }
+
 
   /**
    * Deletes a user from the database.

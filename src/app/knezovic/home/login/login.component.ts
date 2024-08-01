@@ -17,7 +17,6 @@ import { EmailService } from '../../../shared/services/sendmail.service';
 export class LoginComponent {
 
   constructor(private UserService: UserService, private router: Router, public AuthService: AuthenticationService) {
-
     this.UserService.activeUserObserver$.subscribe((user) => {
       if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
         this.router.navigate(['/home']);
@@ -82,13 +81,16 @@ export class LoginComponent {
     this.router.navigate(['/user/register']);
   }
 
+
   loginAsGuest() {
     this.AuthService.signInAsGuest();
   }
 
+
   forgotPW() {
     this.router.navigate(['/user/password-reset']);
   }
+
 
   changeInput() {
     this.AuthService.fehlerMeldung = "";

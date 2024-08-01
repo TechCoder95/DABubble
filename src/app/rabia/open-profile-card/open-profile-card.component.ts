@@ -27,7 +27,9 @@ export class OpenProfileCardComponent {
   saveProfile() {
     console.log(this.userService.activeUser);
     this.editProfile();
-    this.emailService.updateGoogleEmail(this.emailInput);
+    this.userService.updateUsername(this.userService.activeUser.username!);
+    if (this.emailInput != "") 
+      this.emailService.updateGoogleEmail(this.emailInput);
 
   }
 
