@@ -32,14 +32,10 @@ export class ChooseAvatarComponent {
 
 
   constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
-    let id = localStorage.getItem("userLogin");
     this.UserService.getUsersFromDB().then(() => {
-      this.UserService.users.map(user => user.id === id ? this.UserService.activeUser = user : null);
+      this.UserService.users.map(user => user.uid === this.UserService.googleUser.uid ? this.UserService.activeUser = user : null);
 
       if (this.UserService.activeUser) {
-        if (this.UserService.activeUser.avatar == "") {
-          this.router.navigate(['/user/chooseAvatar']);
-        }
       }
       else {
         this.router.navigate(['/user/login']);
@@ -95,8 +91,7 @@ export class ChooseAvatarComponent {
   async updateDatabase() {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
-        this.UserService.checkOnlineStatus(this.UserService.activeUser);
-        this.router.navigate(['/home'])
+        this.router.navigate(['/user/login'])
       });
   }
 

@@ -1,6 +1,6 @@
 main {
-  min-height: 150px;
-  margin-top: 32px;
+  padding-top: 32px;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
 }
@@ -35,6 +35,7 @@ h5 {
 }
 
 .message {
+  position: relative;
   display: flex;
   margin-block: 25px;
   padding-inline: 50px;
@@ -45,6 +46,11 @@ h5 {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+  }
+  &:hover .slide-in {
+    animation: slideIn 0.1s forwards;
+    top: -12px;
+    right: 10%;
   }
   &:hover {
     background-color: rgba(236, 238, 254, 1);
@@ -76,6 +82,30 @@ h5 {
     padding: 15px;
     > p {
       font-size: 18px;
+      > span {
+        font-size: 10px;
+        color: gray;
+      }
     }
   }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slide-in {
+  position: absolute;
+  right: -100%;
+  top: -12px;
+}
+
+.message-deleted-notification {
+  color: rgba(83, 90, 241, 1);
+  font-size: 10px;
 }

@@ -27,12 +27,15 @@ export class ChatInformationComponent {
   dialogChannelInfoIsOpen: boolean = false;
   addChannelMembersImg = './img/add-members-default.svg';
   assignedUsers: DABubbleUser[] = [];
+  isPrivateChat!: boolean;
+  privateChatPartner?: DABubbleUser;
+  privatChatAvatar!: string | undefined;
   /*  private channelSubscription!: Subscription; */
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
-    private userService: UserService,
+    private userService: UserService
   ) {
     this.activeUser = this.userService.activeUser;
   }
@@ -45,6 +48,10 @@ export class ChatInformationComponent {
     this.channelService.selectedChannel$.subscribe((selectedChannel$: any) => {
       if (selectedChannel$) {
         this.assignedUsers = this.getAssignedUsers(selectedChannel$);
+        this.isPrivateChat = selectedChannel$.isPrivate;
+        if (selectedChannel$.isPrivate) {
+          this.getPrivateChatPartner(selectedChannel$);
+        }
       }
     });
   }
@@ -68,17 +75,19 @@ export class ChatInformationComponent {
   }
 
   openDialogChannelInformation(event: MouseEvent) {
-    this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
-    if (this.dialogChannelInfoIsOpen) {
-      document.body.style.overflow = 'hidden';
+    if (!this.isPrivateChat) {
+      this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
+      if (this.dialogChannelInfoIsOpen) {
+        document.body.style.overflow = 'hidden';
+      }
+      this.changeTagImg(this.dialogChannelInfoIsOpen);
+      const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
+      const dialogRef = this.dialog.open(
+        DialogChannelInformationComponent,
+        dialogConfig
+      );
+      this.handleDialogClose(dialogRef);
     }
-    this.changeTagImg(this.dialogChannelInfoIsOpen);
-    const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
-    const dialogRef = this.dialog.open(
-      DialogChannelInformationComponent,
-      dialogConfig
-    );
-    this.handleDialogClose(dialogRef);
   }
 
   dialogChannelMembersIsOpen: boolean = false;
@@ -120,7 +129,7 @@ export class ChatInformationComponent {
         panelClass: 'custom-dialog-container',
       };
     } else if (position === 'allUsers') {
-      const dialogWidth = 372;
+      const dialogWidth = 432;
       return {
         position: {
           top: `${rect.bottom}px`,
@@ -165,5 +174,25 @@ export class ChatInformationComponent {
   getExtraUserCount(): number {
     const totalAssignesUsers = this.assignedUsers.length;
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
+  }
+
+  getPrivateChatPartner(selectChannel: TextChannel) {
+    const privateChatPartnerID = selectChannel.assignedUser.find(
+      (userID) => userID !== this.activeUser.id
+    );
+
+    this.privateChatPartner = privateChatPartnerID
+      ? this.userService.getOneUserbyId(privateChatPartnerID)
+      : undefined;
+
+    this.returnChatPartnerAvatar(selectChannel);
+  }
+
+  returnChatPartnerAvatar(selectChannel: TextChannel) {
+    if (selectChannel.assignedUser.length > 1) {
+      this.privatChatAvatar = this.privateChatPartner?.avatar;
+    } else {
+      this.privatChatAvatar = this.activeUser.avatar;
+    }
   }
 }
