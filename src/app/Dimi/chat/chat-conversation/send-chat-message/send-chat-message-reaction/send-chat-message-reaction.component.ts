@@ -17,7 +17,7 @@ import {
 export class SendChatMessageReactionComponent {
   checkMarkImg = './img/message-reaction-check-mark.png';
   handsUpImg = './img/message-reaction-hands-up.png';
-  addReactionImg = './img/message-reaction-add-reaction.png';
+  addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.png';
   editMessageImg = './img/message-reaction-edit-message.png';
   showEditMessageDialog: boolean = false;
@@ -35,7 +35,7 @@ export class SendChatMessageReactionComponent {
     } else if (type === 'handsUp') {
       this.handsUpImg = `${basePath}hands-up${hoverSuffix}.png`;
     } else if (type === 'addReaction') {
-      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.png`;
+      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.png`;
     } else if (type === 'edit') {

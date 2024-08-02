@@ -74,7 +74,10 @@
 
   <div class="pl-5 content extend" *ngIf="!showNewChat">
     <app-chat *ngIf="selectedChannel"></app-chat>
+    <app-thread class=" pl-5"></app-thread>
   </div>
+
+
 </mat-drawer-container>
 
 <button class="absolute top-50 z-5 -rotate-90" [ngStyle]="{ 'margin-left': '-50px' }" (click)="drawer.toggle()"
