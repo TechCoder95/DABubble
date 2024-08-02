@@ -55,7 +55,7 @@ export class OpenProfileCardComponent {
   }
 
   upload(file: File) {
-    this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
+    this.daStorage.uploadFile(file, sessionStorage.getItem("uId")!);
   }
 
   closeEdit() {

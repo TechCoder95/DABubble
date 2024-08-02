@@ -25,10 +25,12 @@ export class VariableContentComponent {
   }
 
   routeToImprint() {
+    this.authService.registerProcess = false;
     this.router.navigate(['/user/imprint']);
   }
 
   routeToPrivacy() {
+    this.authService.registerProcess = false;
     this.router.navigate(['/user/privacy']);
   }
 

@@ -80,7 +80,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
-  isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
 
   private userSubscription: Subscription | undefined;
@@ -88,16 +87,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
-    this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
-      if (googleUser) {
-        this.isCurrentUserActivated = googleUser.emailVerified;
-      }
-    }
-    );
 
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
-      if ( this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+      if (currentUser) {
         await this.loadUserChannels(currentUser);
         await this.initializeDirectMessageForUser(currentUser);
         await this.updateTreeData();

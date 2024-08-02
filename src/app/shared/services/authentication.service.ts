@@ -30,6 +30,8 @@ export class AuthenticationService {
   provider = new GoogleAuthProvider();
   fehlerMeldung: string = "";
 
+  registerProcess:boolean = false;
+
   //#region [Mail Authentication]
 
   /**
@@ -44,9 +46,9 @@ export class AuthenticationService {
         // Signed up 
         this.userService.googleUser = userCredential.user
         this.userService.register(email, username, this.userService.googleUser.uid);
-        localStorage.setItem("uId", this.userService.googleUser.uid);
+        sessionStorage.setItem("uId", this.userService.googleUser.uid);
         this.emailService.sendMail();
-        // this.userService.login(this.userService.googleUser) // Dieser User muss in den Choose Avatar gesetzt werden!
+        this.registerProcess = true;
       })
       .catch((error) => {
         const errorCode = error.code;

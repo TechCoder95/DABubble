@@ -1,20 +1,5 @@
-input[type="search"] {
-    width: 40%;
-    padding: 10px;
-    height: 50px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    margin-right: 10px;
-    font-size: 20px;
-    outline: none;
-
-    &:hover {
-        border: 1px solid #ADB0D9
-    }
-
-    &:focus {
-        border: 1px solid #535AF1
-    }
+.search{
+    width: 50%;
 }
 
 .img-container {
@@ -55,4 +40,11 @@ img {
     position: absolute;
     right: 0;
     bottom: 0;
+}
+
+.register {
+    margin: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    color: #535AF1;
 }
