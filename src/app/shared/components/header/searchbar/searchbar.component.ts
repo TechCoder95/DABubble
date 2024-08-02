@@ -2,8 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
-import { ChannelService } from '../../../services/channel.service';
-import { ChatService } from '../../../services/chat.service';
+import { DatabaseService } from '../../../services/database.service';
+import { ChatMessage } from '../../../interfaces/chatmessage';
+import { TextChannel } from '../../../interfaces/textchannel';
 
 @Component({
   selector: 'app-searchbar',
@@ -16,11 +17,27 @@ export class SearchbarComponent {
 
   searchInput: string = '';
   searchResults: any[] = [];
+  channels: TextChannel[] = [];
+  messages: ChatMessage[] = [];
 
-  constructor(private userService:UserService, private channelService:ChannelService, private chatService : ChatService) { }
+
+
+  constructor(private userService: UserService, private databaseService: DatabaseService) {
+
+    this.channels = [];
+    this.messages = [];
+
+    this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
+      this.channels = channels;
+      this.channels.forEach(channel => {
+        this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
+          this.messages = messages;
+        });
+      });
+    });
+  }
 
   search() {
-    console.log('searching for: ' + this.searchInput);
     this.searchResults = [];
     this.userService.users.forEach(user => {
       if (user.username?.includes(this.searchInput)) {
@@ -32,28 +49,26 @@ export class SearchbarComponent {
       }
     });
 
-    // Todo: Die Suche für die Channel und die Messages muss noch eingebaut werden!
 
+    this.channels.forEach(channel => {
+      if (channel.name?.includes(this.searchInput)) {
+        let searchItem = {
+          title: 'Channel: ',
+          description: channel.name
+        }
+        this.searchResults.push(searchItem);
+      }
+    });
 
-    // this.channelService.channel.forEach(channel => {
-    //   if (channel.name?.includes(this.searchInput)) {
-    //     let searchItem = {
-    //       title: channel.name,
-    //     }
-    //     this.searchResults.push(searchItem);
-    //   }
-    // });
-
-    // this.chatService..forEach(message => {
-    //   if (message.content?.includes(this.searchInput)) {
-    //     let searchItem = {
-    //       title: message.content,
-    //     }
-    //     this.searchResults.push(searchItem);
-    //   }
-    // }
-
-
+    this.messages.forEach(message => {
+      if (message.message?.includes(this.searchInput) && message.deleted === false) {
+        let searchItem = {
+          title: 'Message: ',
+          description: message.message
+        }
+        this.searchResults.push(searchItem);
+      }
+    });
   }
 
 
