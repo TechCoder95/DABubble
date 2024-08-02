@@ -33,8 +33,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewInit {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -54,6 +53,7 @@ export class ChatConversationComponent
     private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
+
   }
 
   ngOnInit() {
@@ -61,6 +61,7 @@ export class ChatConversationComponent
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
+
   }
 
   ngAfterViewInit(): void {

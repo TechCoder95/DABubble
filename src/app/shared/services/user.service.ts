@@ -119,7 +119,6 @@ export class UserService {
           this.activeUser = user;
           this.activeUserSubject.next(this.completeUser(this.activeUser));
           sessionStorage.setItem('userLogin', this.activeUser.id!);
-          sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
           this.updateLoggedInUser();
           this.checkOnlineStatus(this.activeUser);
           this.router.navigate(['/home']);
@@ -160,12 +159,11 @@ export class UserService {
       let loginUser = this.users.find(user => user.uid === googleUser.uid);
 
       if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
                 localStorage.setItem('userLogin', user.id);
-                sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser();
                 this.router.navigate(['/user/chooseAvatar']);
@@ -176,7 +174,6 @@ export class UserService {
       } else {
         if (loginUser.uid === googleUser.uid && loginUser.id) {
           localStorage.setItem('userLogin', loginUser.id);
-          sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
           this.checkOnlineStatus(loginUser);
           this.updateLoggedInUser(loginUser);
           this.activeUserSubject.next(loginUser);

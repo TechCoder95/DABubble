@@ -8,7 +8,8 @@ import {
   signInWithPopup,
   getRedirectResult,
   setPersistence,
-  browserLocalPersistence
+  browserLocalPersistence,
+  browserSessionPersistence
 } from "firebase/auth";
 import { UserService } from './user.service';
 import { EmailService } from './sendmail.service';
@@ -176,7 +177,7 @@ export class AuthenticationService {
     * @returns A Promise that resolves when the session persistence is set successfully, or rejects with an error if there was an issue.
     */
   setLocalPersistent() {
-    setPersistence(this.auth, browserLocalPersistence)
+    setPersistence(this.auth, browserSessionPersistence)
       .then(() => { })
       .catch((error) => {
         const errorCode = error.code;
