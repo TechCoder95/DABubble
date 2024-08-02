@@ -7,9 +7,10 @@
 <div class="searchResultsCard">
     <div class="flex flex-column">
         @for (result of searchResults; track $index) {
-        @if (result.title.includes(searchInput)) {
-        <div class="flex align-items-center searchResultItem">
-            <p>{{result.title}}</p>
+        @if (result.description.includes(searchInput)) {
+        <div class="searchResultItem">
+            <p><b>{{result.title}} </b> <br>
+                {{result.description}}</p>
         </div>
         }
         }
