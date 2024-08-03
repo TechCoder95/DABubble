@@ -15,13 +15,13 @@ export class ThreadComponent {
 
 
   constructor(private sideNav: SidenavComponent) {
-    console.log("siehsh" ,this.sideNav.showNewChat);
+    console.log("siehsh" ,this.sideNav.showSingleThread);
     
   }
 
 
   close() {
-    this.sideNav.showNewChat = true;
+    this.sideNav.showSingleThread = true;
   }
   
 }

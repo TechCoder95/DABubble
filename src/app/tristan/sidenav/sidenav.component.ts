@@ -84,6 +84,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   showNewChat: boolean = false;
   isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
+  showSingleThread: boolean = false;
 
   private userSubscription: Subscription | undefined;
 
