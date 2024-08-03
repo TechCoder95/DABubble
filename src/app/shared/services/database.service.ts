@@ -14,7 +14,7 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { arrayUnion } from 'firebase/firestore';
+import { arrayUnion, arrayRemove } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
 
 export interface DataId {
@@ -120,11 +120,24 @@ export class DatabaseService {
    * @param {string} emojiDocId - Die ID des Emoji-Dokuments, das hinzugefügt werden soll.
    * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn das Emoji erfolgreich hinzugefügt wurde.
    */
-  async addEmojiToMessage(messageDoc: string, emojiDocId: string): Promise<void> {
-      const messageDocRef = doc(this.firestore, 'messages', messageDoc);
-      await updateDoc(messageDocRef, {
-        emoticons: arrayUnion(emojiDocId),
-      });
+  async addEmojiToMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayUnion(emojiDocId),
+    });
+  }
+
+  async removeEmojiFromMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayRemove(emojiDocId),
+    });
   }
 
   /**

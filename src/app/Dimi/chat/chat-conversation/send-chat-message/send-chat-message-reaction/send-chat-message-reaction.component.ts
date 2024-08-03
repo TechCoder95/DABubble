@@ -84,14 +84,6 @@ export class SendChatMessageReactionComponent {
       type: emojiType,
       usersIds: [this.user.id!],
     };
-
-    const newEmojiId = await this.databaseService.addChannelDataToDB(
-      'emojies',
-      emoji
-    );
-    emoji.id = newEmojiId;
-    console.log(emoji);
-    debugger;
-    this.chatService.sendEmoji(emoji);
+    this.chatService.sendEmoji(emoji, this.sendMessage, this.user);
   }
 }

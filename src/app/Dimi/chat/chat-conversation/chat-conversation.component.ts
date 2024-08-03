@@ -77,7 +77,6 @@ export class ChatConversationComponent
   subscribeToActiveUser() {
     this.activeUserSubscription =
       this.userService.activeUserObserver$.subscribe((user) => {
-        debugger;
         if (user) {
           this.activeUser = user;
           console.log(this.activeUser);
