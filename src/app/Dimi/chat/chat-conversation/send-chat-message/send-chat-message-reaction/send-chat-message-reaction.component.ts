@@ -26,6 +26,8 @@ export class SendChatMessageReactionComponent {
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
 
+  showThisChat: boolean = false;
+
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
@@ -62,5 +64,10 @@ export class SendChatMessageReactionComponent {
   deleteMessage() {
     this.messageDeleted = true;
     this.deleteStatusChange.emit(this.messageDeleted);
+  }
+
+  openMessage() {
+    console.log('ola');
+    this.showThisChat = true;
   }
 }

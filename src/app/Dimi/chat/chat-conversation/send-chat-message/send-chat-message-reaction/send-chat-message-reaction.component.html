@@ -14,7 +14,7 @@
     (mouseenter)="hoverReaction('addReaction', true)"
     (mouseleave)="hoverReaction('addReaction', false)"
   />
-  <img
+  <img (click)="openMessage()"
     [src]="answerImg"
     (mouseenter)="hoverReaction('answer', true)"
     (mouseleave)="hoverReaction('answer', false)"

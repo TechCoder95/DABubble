@@ -14,6 +14,11 @@ section {
         padding: 15px;
     }
 
+    app-thread-emoji {
+        position: fixed;
+        right: -100%;
+    }
+
     &:hover {
         cursor: pointer;
         background-color: #eceefe;
@@ -22,4 +27,18 @@ section {
             background-color: white;
         }
     }
+
+    &:hover app-thread-emoji {
+        animation: slideIn 0.1s forwards;
+    }
 }
+
+@keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+      right: 72px;
+    }
+  }
