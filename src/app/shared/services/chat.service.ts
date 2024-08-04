@@ -62,13 +62,7 @@ export class ChatService {
       }
       // Füge die Nachricht zum Kanal hinzu
       const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
-      const messageId = messageExists
-        ? message.id!
-        : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
-      await this.databaseService.addMessageToChannel(
-        selectedChannelId,
-        messageId
-      );
+    
 
       console.log("Füge Nachricht dem Kanal hinzu: ", selectedChannelId);
 
