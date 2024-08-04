@@ -1,16 +1,14 @@
 <section class="flex">
-    <img class="avatar" src="./img/1.svg" alt="">
+    <img class="avatar" [src]="getSenderAvatar()">
 
     <div class="flex flex-column gap-2">
         <div class="flex align-items-center" style="gap: 20px;">
-            <h2 class="m-0">{{ticket.senderName}}</h2>
-            <span>11:11 Uhr</span>
+            <h2 class="m-0">{{ ticket.senderName }}</h2>
+            <span>{{ ticket.timestamp | date : "HH:mm" }} Uhr</span>
             <app-thread-emoji></app-thread-emoji>
         </div>
 
-        <div class="text-bubble">
-            Blumenkohl ist gut für dich
-        </div>
+        <div class="text-bubble">{{ ticket.message }}</div>
     </div>
 </section>
 
