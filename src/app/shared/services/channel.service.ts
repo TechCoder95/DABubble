@@ -10,14 +10,16 @@ import { DABubbleUser } from '../interfaces/user';
   providedIn: 'root',
 })
 export class ChannelService {
-  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(
-    null
-  );
+  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
+  private createdChannel = new BehaviorSubject<TextChannel | null>(null);
+
+  selectedChannel$ = this.selectedChannelSubject.asObservable();
+  createdChannel$ = this.createdChannel.asObservable();
+
+  channel!: TextChannel;
 
   constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService) { }
 
-  selectedChannel$ = this.selectedChannelSubject.asObservable();
-  channel!: TextChannel;
 
   /**
    * Selects a channel.
@@ -92,7 +94,6 @@ export class ChannelService {
   }
 
   async createDirectChannelIfNotExists(addedUser: DABubbleUser): Promise<TextChannel> {
-    // Check if channel exists
     const currentUser = this.userService.activeUser;
     const userChannels = await this.databaseService.getUserChannels(addedUser.id!);
     let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(addedUser.id!));
@@ -100,7 +101,6 @@ export class ChannelService {
     console.log("Hinzugefügter Nutzer: ", addedUser);
 
     if (!existingChannel) {
-      // Create new private channel
       let newChannel: TextChannel = {
         id: '',
         name: addedUser.username!,
@@ -113,6 +113,7 @@ export class ChannelService {
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
       newChannel.id = newChannelId;
       existingChannel = newChannel;
+      this.createdChannel.next(existingChannel);
     }
 
     return existingChannel;

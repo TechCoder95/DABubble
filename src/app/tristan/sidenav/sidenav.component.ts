@@ -83,6 +83,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
 
+  private createdChannelSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
 
   constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
@@ -106,6 +107,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
         console.log('Kein aktiver Benutzer gefunden');
       }
     });
+
+    this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
+      if (channel) {
+        this.channels.push(channel);
+        this.updateTreeData();
+      }
+    });
   }
 
   async loadLastChannelState() {
@@ -119,10 +127,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-
   async ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.createdChannelSubscription) {
+      this.createdChannelSubscription.unsubscribe();
     }
   }
 
@@ -244,7 +254,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return directMessageNodes;
   }
 
-  private async updateTreeData(): Promise<void> {
+  async updateTreeData(): Promise<void> {
     const groupChannelNodes = await this.createGroupChannelNodes();
     const directMessageNodes = await this.createDirectMessageNodes();
 
@@ -266,6 +276,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     };
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
+    console.log("Gruppenchannels aktualisiert: ", channelsStructure);
+    console.log("Direktnachrichten aktualisiert: ", directMessagesStructure);
     this.dataSource.data = this.TREE_DATA;
     this.treeControl.expandAll();
   }
