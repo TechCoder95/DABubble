@@ -97,7 +97,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
-      if ( this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+      if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
         await this.loadUserChannels(currentUser);
         await this.initializeDirectMessageForUser(currentUser);
         await this.updateTreeData();
@@ -194,23 +194,56 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return nodes;
   }
 
+  // private async createDirectMessageNodes(): Promise<Node[]> {
+  //   const directMessageNodes: Node[] = [];
+  //   for (const channel of this.channels) {
+  //     if (channel.isPrivate && this.isDefined(channel)) {
+  //       const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
+  //       const node: Node = {
+  //         id: channel.id,
+  //         name: channel.assignedUser.length == 1 ? user?.username + " (Du)" : user?.username + "",
+  //         type: 'directMessage' as const,
+  //         children: [],
+  //         avatar: user?.avatar
+  //       };
+  //       directMessageNodes.push(node);
+  //     }
+  //   }
+  //   return directMessageNodes;
+  // }
+
   private async createDirectMessageNodes(): Promise<Node[]> {
     const directMessageNodes: Node[] = [];
+    const currentUser = this.userService.activeUser;
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel)) {
-        const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
-        const node: Node = {
-          id: channel.id,
-          name: user?.username + " (Du)" || 'Unbekannter Benutzer',
-          type: 'directMessage' as const,
-          children: [],
-          avatar: user?.avatar
-        };
-        directMessageNodes.push(node);
+        const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
+        if (otherUserId) {
+          const user = await this.userService.getOneUserbyId(otherUserId);
+          const node: Node = {
+            id: channel.id,
+            name: user?.username || 'Unbekannter Benutzer',
+            type: 'directMessage' as const,
+            children: [],
+            avatar: user?.avatar
+          };
+          directMessageNodes.push(node);
+        } else {
+          const node: Node = {
+            id: channel.id,
+            name: currentUser?.username + " (Du)",
+            type: 'directMessage' as const,
+            children: [],
+            avatar: currentUser?.avatar
+          };
+          directMessageNodes.push(node);
+        }
       }
     }
     return directMessageNodes;
   }
+
+
 
   private async updateTreeData(): Promise<void> {
     const groupChannelNodes = this.createGroupChannelNodes();

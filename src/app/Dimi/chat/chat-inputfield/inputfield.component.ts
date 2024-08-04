@@ -75,6 +75,11 @@ export class InputfieldComponent {
   }
 
   async sendMessage() {
+    let selectedUser = this.userService.getSelectedUser();
+    if (selectedUser) {
+      this.channelService.createDirectChannelIfNotExists(selectedUser);
+    }
+
     let message: ChatMessage = {
       channelId: this.channelService.channel.id,
       channelName: this.channelService.channel.name,

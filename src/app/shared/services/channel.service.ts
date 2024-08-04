@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
 import { ChatService } from './chat.service';
+import { UserService } from './user.service';
+import { DABubbleUser } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +14,7 @@ export class ChannelService {
     null
   );
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService) {}
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService) { }
 
   selectedChannel$ = this.selectedChannelSubject.asObservable();
   channel!: TextChannel;
@@ -87,5 +89,32 @@ export class ChannelService {
 
   getCleanJSON(updates: { [key: string]: any }): {} {
     return updates;
+  }
+
+  async createDirectChannelIfNotExists(addedUser: DABubbleUser): Promise<TextChannel> {
+    // Check if channel exists
+    const currentUser = this.userService.activeUser;
+    const userChannels = await this.databaseService.getUserChannels(addedUser.id!);
+    let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(addedUser.id!));
+    console.log("Aktueller Nutzer: ", currentUser);
+    console.log("Hinzugefügter Nutzer: ", addedUser);
+
+    if (!existingChannel) {
+      // Create new private channel
+      let newChannel: TextChannel = {
+        id: '',
+        name: addedUser.username!,
+        assignedUser: [currentUser.id!, addedUser.id!],
+        isPrivate: true,
+        description: '',
+        conversationId: [],
+        owner: currentUser.id!
+      };
+      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+      newChannel.id = newChannelId;
+      existingChannel = newChannel;
+    }
+
+    return existingChannel;
   }
 }
