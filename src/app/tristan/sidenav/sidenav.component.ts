@@ -49,7 +49,7 @@ interface FlattenedNode {
     ChatComponent,
     NewChatComponent,
     ThreadComponent
-],
+  ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
@@ -83,6 +83,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
   isLoggedIn: boolean | undefined;
+  isCurrentUserActivated: boolean | undefined;
+
 
   private createdChannelSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
@@ -93,7 +95,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     public channelService: ChannelService,
     private userService: UserService
   ) { }
-  
+
   async ngOnInit() {
     this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
       if (googleUser) {
@@ -101,21 +103,22 @@ export class SidenavComponent implements OnInit, OnDestroy {
         console.log('Google User aktiviert:', this.isCurrentUserActivated);
       }
     });
-  
+
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
       if (currentUser) {
-      console.log('Benutzer eingeloggt:', this.isLoggedIn);
-      if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
-        await this.loadUserChannels(currentUser);
-        await this.initializeDirectMessageForUser(currentUser);
-        await this.updateTreeData();
-        await this.loadLastChannelState();
-      } else {
-        console.log('Kein aktiver Benutzer gefunden');
+        console.log('Benutzer eingeloggt:', this.isLoggedIn);
+        if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+          await this.loadUserChannels(currentUser);
+          await this.initializeDirectMessageForUser(currentUser);
+          await this.updateTreeData();
+          await this.loadLastChannelState();
+        } else {
+          console.log('Kein aktiver Benutzer gefunden');
+        }
       }
     });
-  
+
     this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
       if (channel) {
         this.channels.push(channel);
@@ -123,7 +126,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
 
   async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
