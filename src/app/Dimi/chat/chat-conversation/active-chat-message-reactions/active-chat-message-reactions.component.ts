@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Emoji } from '../../../../../shared/interfaces/emoji';
-import { UserService } from '../../../../../shared/services/user.service';
-import { DatabaseService } from '../../../../../shared/services/database.service';
-import { DABubbleUser } from '../../../../../shared/interfaces/user';
-import { ChatService } from '../../../../../shared/services/chat.service';
+import { Emoji } from '../../../../shared/interfaces/emoji';
+import { UserService } from '../../../../shared/services/user.service';
+import { DatabaseService } from '../../../../shared/services/database.service';
+import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { ChatService } from '../../../../shared/services/chat.service';
 import { Subscription } from 'rxjs';
 import { ReactionComponent } from './reaction/reaction.component';
 
@@ -33,7 +33,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    /*  this.subscribeToDataChanges(); */
+    this.loadEmojis();
     this.subscribeToEmoji();
   }
 
@@ -47,22 +47,23 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
     return emoji.messageId === this.sendMessage.id;
   }
 
-  /* subscribeToDataChanges() {
-    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
-      async (message) => {
-        this.allEmojis = [];
-        await this.chatService.sortEmojis(message);
-      }
-    );
-  } */
+  loadEmojis() {
+    const emojisOnMessage = this.sendMessage.emoticons;
+    emojisOnMessage.forEach(async (emojiID: string) => {
+      const emoji: any = await this.databaseService.readDataByID(
+        'emojies',
+        emojiID
+      );
+      this.allEmojis.push(emoji);
+    });
+  }
 
   subscribeToEmoji() {
     this.emojiSubscription = this.chatService.sendMessagesEmoji$.subscribe(
       (emoji) => {
         if (emoji) {
-          debugger;
           const existingEmojiIndex = this.getExistingEmojiIndex(emoji);
-          if (existingEmojiIndex !== -1) {
+          if (this.emojiAlreadyExists(existingEmojiIndex)) {
             this.handleExistingEmoji(emoji, existingEmojiIndex);
           } else {
             this.allEmojis.push(emoji);
@@ -72,6 +73,10 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
         }
       }
     );
+  }
+
+  emojiAlreadyExists(existingEmojiIndex: number) {
+    return existingEmojiIndex !== -1;
   }
 
   getExistingEmojiIndex(emoji: Emoji) {

@@ -3,16 +3,23 @@ import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
 import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reaction/receive-chat-message-reaction.component';
+import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
+import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-receive-chat-message',
   standalone: true,
-  imports: [CommonModule, ReceiveChatMessageReactionComponent],
+  imports: [
+    CommonModule,
+    ReceiveChatMessageReactionComponent,
+    ActiveChatMessageReactionsComponent,
+  ],
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
 })
 export class ReceiveChatMessageComponent implements OnInit {
   @Input() receiveMessage!: ChatMessage;
+  @Input() user!: DABubbleUser;
 
   constructor(private userService: UserService) {}
 

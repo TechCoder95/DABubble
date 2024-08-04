@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Emoji } from '../../../../../../shared/interfaces/emoji';
+import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { CommonModule } from '@angular/common';
 
 @Component({
