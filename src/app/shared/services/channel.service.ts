@@ -3,6 +3,8 @@ import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
 import { ChatService } from './chat.service';
+import { UserService } from './user.service';
+import { DABubbleUser } from '../interfaces/user';
 
 @Injectable({
   providedIn: 'root',
@@ -10,14 +12,16 @@ import { ChatService } from './chat.service';
 export class ChannelService {
   showSingleThread: boolean = false;
   
-  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(
-    null
-  );
-
-  constructor(private databaseService: DatabaseService, private chatService: ChatService) {}
+  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
+  private createdChannel = new BehaviorSubject<TextChannel | null>(null);
 
   selectedChannel$ = this.selectedChannelSubject.asObservable();
+  createdChannel$ = this.createdChannel.asObservable();
+
   channel!: TextChannel;
+
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService) { }
+
 
   /**
    * Selects a channel.
@@ -27,7 +31,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    // console.log(this.channel);
+    sessionStorage.setItem('selectedChannelId', channel.id);
     this.getActiveMessages(this.channel);
   }
 
@@ -89,5 +93,38 @@ export class ChannelService {
 
   getCleanJSON(updates: { [key: string]: any }): {} {
     return updates;
+  }
+
+  async createDirectChannelIfNotExists(user: DABubbleUser): Promise<TextChannel> {
+    const currentUser = this.userService.activeUser;
+
+    let userChannels = await this.databaseService.getUserChannels(currentUser.id!);
+    let existingChannel = userChannels.find(channel => channel.isPrivate &&
+      channel.assignedUser.includes(currentUser.id!) &&
+      channel.assignedUser.includes(user.id!));
+
+    if (!existingChannel) {
+      let newChannel: TextChannel = {
+        id: '',
+        name: `Chat with ${user.username}`,
+        assignedUser: [currentUser.id!, user.id!],
+        isPrivate: true,
+        description: '',
+        conversationId: [],
+        owner: currentUser.id!
+      };
+      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+      newChannel.id = newChannelId;
+      existingChannel = newChannel;
+      this.createdChannel.next(existingChannel);
+
+      console.log('Neuer Direct Message Channel erstellt:', existingChannel);
+      console.log('Dokument ID des neuen Channels:', newChannelId);
+    } else {
+      console.log('Existierender Channel gefunden:', existingChannel);
+    }
+
+    this.selectChannel(existingChannel);
+    return existingChannel;
   }
 }

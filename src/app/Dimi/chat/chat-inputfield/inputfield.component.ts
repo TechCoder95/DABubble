@@ -1,6 +1,6 @@
 import { Component, Pipe } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { map, Observable, pipe } from 'rxjs';
+import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -8,6 +8,7 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
+import { TextChannel } from '../../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -22,6 +23,7 @@ export class InputfieldComponent {
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
   activeUser!: DABubbleUser;
+  selectedChannel: TextChannel | null = null;
 
   constructor(
     public channelService: ChannelService,
@@ -30,6 +32,9 @@ export class InputfieldComponent {
     private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
+    this.channelService.selectedChannel$.subscribe(channel => {
+      this.selectedChannel = channel;
+    });
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -75,32 +80,40 @@ export class InputfieldComponent {
   }
 
   async sendMessage() {
-    let message: ChatMessage = {
-      channelId: this.channelService.channel.id,
-      channelName: this.channelService.channel.name,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      emoticons: [],
-      edited: false,
-      deleted: false,
-    };
+    let selectedUser = this.userService.getSelectedUser();
+    if (selectedUser) {
+      const channel = await this.channelService.createDirectChannelIfNotExists(selectedUser);
+      this.channelService.selectChannel(channel);
+      this.selectedChannel = channel;
+    }
 
-    if (message.message !== '') {
-      try {
-        const newMessageId = await this.databaseService.addChannelDataToDB(
-          'messages',
-          message
-        );
-        message.id = newMessageId;
-        this.chatService.sendMessage(message);
-        this.textareaValue = '';
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
+    if (this.selectedChannel) {
+      let message: ChatMessage = {
+        channelId: this.selectedChannel.id,
+        channelName: this.selectedChannel.name,
+        message: this.textareaValue,
+        timestamp: new Date().getTime(),
+        senderName: this.activeUser.username || 'guest',
+        senderId: this.activeUser.id || 'senderIdDefault',
+        emoticons: [],
+        edited: false,
+        deleted: false,
+      };
+
+      if (message.message !== '') {
+        try {
+          const newMessageId = await this.databaseService.addChannelDataToDB('messages', message);
+          message.id = newMessageId;
+          this.chatService.sendMessage(message);
+          this.textareaValue = '';
+        } catch (error) {
+          console.error('Fehler beim Senden der Nachricht:', error);
+        }
+      } else {
+        alert('Du musst eine Nachricht eingeben');
       }
     } else {
-      alert('Du musst eine Nachricht eingeben');
+      console.error('Kein Channel ausgewählt');
     }
   }
 }

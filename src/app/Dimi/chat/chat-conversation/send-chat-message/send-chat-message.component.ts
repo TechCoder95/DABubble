@@ -102,7 +102,6 @@ export class SendChatMessageComponent implements OnInit {
   }
 
   async onDelete(event: boolean) {
-    debugger;
     this.messageDeleted = event;
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;

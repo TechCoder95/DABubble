@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { applyActionCode, confirmPasswordReset, getAuth, verifyBeforeUpdateEmail, verifyPasswordResetCode } from 'firebase/auth';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
+import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root'
@@ -124,7 +125,7 @@ export class EmailService {
    */
   handleVerifyEmail(auth: any, actionCode: string, continueUrl: string, lang: string) {
     applyActionCode(auth, actionCode).then((resp) => {
-      if (localStorage.getItem('userLogin'))
+      if (sessionStorage.getItem('userLogin'))
         this.router.navigate(['/home']);
       else
         this.router.navigate(['/user/login'])

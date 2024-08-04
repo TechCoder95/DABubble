@@ -3,10 +3,10 @@ import { ActivatedRouteSnapshot, CanActivateFn, mapToCanActivate, RouterStateSna
 export const isLoggedIn: CanActivateFn = (route, state) => {
   route: ActivatedRouteSnapshot;
   state: RouterStateSnapshot;
-  if (localStorage.getItem('userLogin')) {
+  if (sessionStorage.getItem('userLogin')) {
     return true
   }
-  else if (sessionStorage.getItem('userLogin')) {
+  else if (sessionStorage.getItem('userLoginGuest')) {
     return true;
   }
   else {

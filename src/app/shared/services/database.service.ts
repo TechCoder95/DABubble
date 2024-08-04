@@ -195,13 +195,30 @@ export class DatabaseService {
    * @param id - The ID of the document to retrieve.
    * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
    */
+  public async getDatabyID(collectionName:string, where: any, userId: string) {
+    const dataCollectionRef = this.getDataRef(collectionName);
+    const whereis: any = where;
+    const q = query(dataCollectionRef, where(whereis, '==', userId));
+    const snapshot = await getDocs(q);
+    const array: any[] = [];
+    snapshot.forEach((doc) => array.push(doc.data()));
+    return array;
+  }
+
+
+  /**
+   * Retrieves data from a Firestore collection by ID.
+   * @param collectionName - The name of the Firestore collection.
+   * @param id - The ID of the document to retrieve.
+   * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
+   */
   async readDataByID(collectionName: string, id: string) {
-    const docSnap = await getDoc(doc(this.firestore, collectionName, id));
+    const docSnap = await getDoc(doc(this.firestore, collectionName, id));  
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
       console.log('No such document!');
-      return;
+      return null;
     }
   }
 

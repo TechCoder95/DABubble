@@ -17,7 +17,7 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
 })
-export class ReceiveChatMessageComponent implements OnInit {
+export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
 

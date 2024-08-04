@@ -23,7 +23,7 @@ export class ChatService {
   constructor(
     private databaseService: DatabaseService,
     private userService: UserService
-  ) {}
+  ) { }
 
   async sortMessages(channel: TextChannel) {
     /* debugger; */
@@ -34,10 +34,12 @@ export class ChatService {
           .then((messageFromDb) => {
             /*  debugger; */
             let message = messageFromDb as ChatMessage;
-            if (message.senderName === this.userService.activeUser.username) {
-              this.readMessage(message);
-            } else {
-              this.receiveMessage(message);
+            if (message !== null) {
+              if (message.senderName === this.userService.activeUser.username) {
+                this.readMessage(message);
+              } else {
+                this.receiveMessage(message);
+              }
             }
           });
       });
@@ -60,13 +62,12 @@ export class ChatService {
       }
       // Füge die Nachricht zum Kanal hinzu
       const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
-      const messageId = messageExists
-        ? message.id!
-        : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
-      await this.databaseService.addMessageToChannel(
-        selectedChannelId,
-        messageId
-      );
+    
+
+      console.log("Füge Nachricht dem Kanal hinzu: ", selectedChannelId);
+
+      const messageId = messageExists ? message.id! : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
+      await this.databaseService.addMessageToChannel(selectedChannelId, messageId);
 
       // Aktualisiere die Nachrichten aus der Datenbank
       await this.databaseService.readDatafromDB('messages', messagesFromDb);

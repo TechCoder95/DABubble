@@ -27,9 +27,7 @@
         ></app-active-chat-message-reactions>
       </div>
     </div>
-    <app-receive-chat-message-reaction
-      *ngIf="!receiveMessage.deleted"
-      class="slide-in"
-    ></app-receive-chat-message-reaction>
+    <app-receive-chat-message-reaction [ticket]="receiveMessage" *ngIf="!receiveMessage.deleted"
+      class="slide-in"></app-receive-chat-message-reaction>
   </section>
 </main>
