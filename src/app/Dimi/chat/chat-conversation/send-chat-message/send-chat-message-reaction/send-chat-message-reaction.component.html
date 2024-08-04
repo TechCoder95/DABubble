@@ -20,8 +20,8 @@
   (mouseleave)="hoverReaction('addReaction', false)"
 />
 </div>
-<div class="bg">
-  <img (click)="openMessage()"
+<div class="bg" (click)="openMessage()">
+  <img
   [src]="answerImg"
   (mouseenter)="hoverReaction('answer', true)"
   (mouseleave)="hoverReaction('answer', false)"
