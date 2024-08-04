@@ -29,7 +29,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    // console.log(this.channel);
+    sessionStorage.setItem('selectedChannelId', channel.id);
     this.getActiveMessages(this.channel);
   }
 
@@ -97,8 +97,6 @@ export class ChannelService {
     const currentUser = this.userService.activeUser;
     const userChannels = await this.databaseService.getUserChannels(addedUser.id!);
     let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(addedUser.id!));
-    console.log("Aktueller Nutzer: ", currentUser);
-    console.log("Hinzugefügter Nutzer: ", addedUser);
 
     if (!existingChannel) {
       let newChannel: TextChannel = {
