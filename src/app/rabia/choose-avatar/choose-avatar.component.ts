@@ -7,6 +7,7 @@ import { UserService } from '../../shared/services/user.service';
 import { DAStorageService } from '../../shared/services/dastorage.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { DABubbleUser } from '../../shared/interfaces/user';
+import { AuthenticationService } from '../../shared/services/authentication.service';
 
 
 
@@ -31,13 +32,14 @@ export class ChooseAvatarComponent {
 
 
 
-  constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService) {
+  constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService, private authService: AuthenticationService) {
     this.UserService.getUsersFromDB().then(() => {
       this.UserService.users.map(user => user.uid === this.UserService.googleUser.uid ? this.UserService.activeUser = user : null);
 
       if (this.UserService.activeUser) {
       }
       else {
+        this.authService.registerProcess = false;
         this.router.navigate(['/user/login']);
       }
     }
@@ -56,6 +58,7 @@ export class ChooseAvatarComponent {
 
 
   goBackToRegister() {
+    this.authService.registerProcess = true;
     this.router.navigate(['/users/register']);
   }
 
@@ -76,12 +79,11 @@ export class ChooseAvatarComponent {
 
 
   upload(file: File) {
-    this.daStorage.uploadFile(file, localStorage.getItem("uId")!);
+    this.daStorage.uploadFile(file, sessionStorage.getItem("uId")!);
   }
 
   saveUser() {
     this.registerUser = true;
-    console.log("sollte richtig sein", this.registerUser);
     setTimeout(() => {
       this.updateDatabase()
     }, 2000);
@@ -91,6 +93,7 @@ export class ChooseAvatarComponent {
   async updateDatabase() {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
+        this.authService.registerProcess = false;
         this.router.navigate(['/user/login'])
       });
   }
