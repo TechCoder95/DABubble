@@ -29,16 +29,24 @@ export class SearchbarComponent {
 
     this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
       this.channels = channels;
-      this.channels.forEach(channel => {
+      channels.forEach(channel => {
         this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
-          this.messages = messages;
+          this.messages = this.messages.concat(messages);
         });
       });
     });
   }
 
+
   search() {
     this.searchResults = [];
+    this.pushUsers();
+    this.pushChannels();
+    this.pushMessages();
+  }
+
+
+  pushUsers() {
     this.userService.users.forEach(user => {
       if (user.username?.includes(this.searchInput)) {
         let searchItem = {
@@ -46,10 +54,13 @@ export class SearchbarComponent {
           description: user.username
         }
         this.searchResults.push(searchItem);
+
       }
     });
+  }
 
 
+  pushChannels() {
     this.channels.forEach(channel => {
       if (channel.name?.includes(this.searchInput)) {
         let searchItem = {
@@ -59,7 +70,10 @@ export class SearchbarComponent {
         this.searchResults.push(searchItem);
       }
     });
+  }
 
+
+  pushMessages() {
     this.messages.forEach(message => {
       if (message.message?.includes(this.searchInput) && message.deleted === false) {
         let searchItem = {
@@ -70,8 +84,4 @@ export class SearchbarComponent {
       }
     });
   }
-
-
-
-
 }
