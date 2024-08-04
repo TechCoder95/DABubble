@@ -7,12 +7,12 @@
 
         
     <div class="w-full flex flex-column align-items-center">
-        <input [disabled]="disabledInput" type="text" [(ngModel)]="email" (ngModelChange)="changeInput()" placeholder="Email" name="email" #mail="ngModel" required>
+        <input [disabled]="this.authService.loginSuccess" type="text" [(ngModel)]="email" (ngModelChange)="changeInput()" placeholder="Email" name="email" #mail="ngModel" required>
         @if (!mail.valid && !mail.disabled && mail.touched) {<div class="alert"> <span>*Diese E-Mail-Adresse ist leider ungültig</span>
         </div>}
     </div>
     <div class="w-full flex flex-column align-items-center">
-        <input [disabled]="disabledInput" type="password" [(ngModel)]="epassword" (ngModelChange)="changeInput()" placeholder="Password" name="password"
+        <input [disabled]="this.authService.loginSuccess" type="password" [(ngModel)]="epassword" (ngModelChange)="changeInput()" placeholder="Password" name="password"
             #password="ngModel" required>
         @if (!password.valid && !password.disabled && password.touched) {<div class="alert"> <span>Falsches Passwort. Bitte noch einmal versuchen.</span></div>}
     </div>
@@ -42,7 +42,7 @@
         </button>
     </div>
     <div class="flex w-full h-full justify-content-center align-items-center">
-        <button [disabled]="disabledInput" type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
+        <button [disabled]="this.authService.loginSuccess" type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
             name="registrieren">Anmelden</button>
         <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"
             (click)="loginAsGuest()" title="back" name="back">Gäste-Login</button>
@@ -50,6 +50,6 @@
 </form>
 </div>
 
-@if (message) {
+@if (this.authService.showMessage) {
     <img class="message" src="/img/login.svg" alt="">
 }

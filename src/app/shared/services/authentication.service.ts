@@ -30,6 +30,9 @@ export class AuthenticationService {
   provider = new GoogleAuthProvider();
   fehlerMeldung: string = "";
 
+  loginSuccess: boolean = false;
+  showMessage: boolean = false;
+
   registerProcess:boolean = false;
 
   //#region [Mail Authentication]
@@ -51,6 +54,7 @@ export class AuthenticationService {
         this.registerProcess = true;
       })
       .catch((error) => {
+        window.location.reload(); //Todo: Muss noch richtig gemacht werden
         const errorCode = error.code;
         const errorMessage = error.message;
         // ..
@@ -68,11 +72,18 @@ export class AuthenticationService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         // Signed in 
+        this.showMessage = true;
+        this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
+      
+        setTimeout(() => {
         this.userService.login(userCredential.user)
         this.setLocalPersistent();
+        }, 1000);
+      
       })
       .catch((error) => {
+        this.showMessage = false;
         if (error.code === "auth/user-not-found")
           this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
         else if (error.code === "auth/network-request-failed")
@@ -102,13 +113,18 @@ export class AuthenticationService {
   googleSignIn() {
     signInWithPopup(this.auth, this.provider)
       .then((result) => {
+        this.showMessage = true;
+        this.loginSuccess = true;
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
+        
+        setTimeout(() => {
         this.userService.login(result.user)
         this.setLocalPersistent();
+        }, 1000);
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -167,7 +183,11 @@ export class AuthenticationService {
    * Signs in the user as a guest.
    */
   signInAsGuest() {
+    this.showMessage = true;
+    this.loginSuccess = true;
+    setTimeout(() => {
     this.userService.guestLogin();
+    }, 1000);
   }
 
 
@@ -180,7 +200,10 @@ export class AuthenticationService {
     */
   setLocalPersistent() {
     setPersistence(this.auth, browserSessionPersistence)
-      .then(() => { })
+      .then(() => {
+        this.showMessage = false;
+        this.loginSuccess = false;
+       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

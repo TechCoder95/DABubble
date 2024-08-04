@@ -26,8 +26,6 @@ export class LoginComponent {
 
   email: string = '';
   epassword: string = '';
-  message: boolean = false;
-  disabledInput: boolean = false;
 
   get user(): DABubbleUser {
     return this.UserService.activeUser;
@@ -37,11 +35,7 @@ export class LoginComponent {
    * Initiates the Google login process.
    */
   googleLogin() {
-    this.message = true;
-    this.disabledInput = true;
-    setTimeout(() => {
       this.authService.googleSignIn();
-    }, 250);
   }
 
 
@@ -51,11 +45,7 @@ export class LoginComponent {
    */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
-      this.message = true;
-      this.disabledInput = true;
-      setTimeout(() => {
         this.login();
-      }, 1000);
     }
     else {
       console.info('Form is not valid');
@@ -91,11 +81,7 @@ export class LoginComponent {
 
 
   loginAsGuest() {
-    this.message = true;
-    this.disabledInput = true;
-    setTimeout(() => {
       this.authService.signInAsGuest();
-    }, 1000);
   }
 
 
