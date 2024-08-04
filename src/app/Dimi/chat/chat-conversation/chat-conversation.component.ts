@@ -45,6 +45,7 @@ export class ChatConversationComponent
   private channelSubscription!: Subscription;
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
+  private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   constructor(
@@ -53,7 +54,7 @@ export class ChatConversationComponent
     private channelService: ChannelService,
     private databaseService: DatabaseService
   ) {
-    this.activeUser = this.userService.activeUser;
+    /*  this.activeUser = this.userService.activeUser; */
   }
 
   ngOnInit() {
@@ -61,6 +62,7 @@ export class ChatConversationComponent
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
+    this.subscribeToActiveUser();
   }
 
   ngAfterViewInit(): void {
@@ -70,6 +72,16 @@ export class ChatConversationComponent
   scrollToBottom() {
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
+  }
+
+  subscribeToActiveUser() {
+    this.activeUserSubscription =
+      this.userService.activeUserObserver$.subscribe((user) => {
+        if (user) {
+          this.activeUser = user;
+          console.log(this.activeUser);
+        }
+      });
   }
 
   subscribeToDataChanges() {
@@ -108,7 +120,7 @@ export class ChatConversationComponent
         if (message) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 500);
+        setTimeout(() => this.scrollToBottom(), 1000);
       }
     );
   }
@@ -123,7 +135,7 @@ export class ChatConversationComponent
         if (message !== null) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 500);
+        setTimeout(() => this.scrollToBottom(), 1000);
       });
   }
 

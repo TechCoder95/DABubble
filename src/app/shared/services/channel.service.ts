@@ -10,6 +10,8 @@ import { DABubbleUser } from '../interfaces/user';
   providedIn: 'root',
 })
 export class ChannelService {
+  showSingleThread: boolean = false;
+  
   private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
   private createdChannel = new BehaviorSubject<TextChannel | null>(null);
 

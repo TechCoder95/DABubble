@@ -14,26 +14,22 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { arrayUnion } from 'firebase/firestore';
+import { arrayUnion, arrayRemove } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
-
 
 export interface DataId {
   id: string;
 }
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
-
-
   firestore: Firestore = inject(Firestore);
 
   private onDataChange = new BehaviorSubject<any | null>(null);
   public onDataChange$ = this.onDataChange.asObservable();
-  
+
   public onDomiDataChange = new BehaviorSubject<any | null>(null);
   public onDomiDataChange$ = this.onDomiDataChange.asObservable();
 
@@ -47,7 +43,6 @@ export class DatabaseService {
     return collection(this.firestore, collectionName);
   }
 
-
   /**
    * Sets the reference to the specified database collection.
    *
@@ -57,7 +52,6 @@ export class DatabaseService {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
-
 
   /**
    * Reads data from the specified database and populates the provided array with the retrieved data.
@@ -86,7 +80,6 @@ export class DatabaseService {
     });
   }
 
-
   /**
    * Adds data to the specified database.
    *
@@ -107,7 +100,6 @@ export class DatabaseService {
     }
   }
 
-
   /**
    * Adds a message to a channel.
    * @param {string} channelDoc - The document ID of the channel.
@@ -121,6 +113,32 @@ export class DatabaseService {
     });
   }
 
+  /**
+   * Fügt einem Nachrichten-Dokument ein Emoji hinzu.
+   *
+   * @param {string} messageDoc - Die ID des Nachrichten-Dokuments, dem das Emoji hinzugefügt werden soll.
+   * @param {string} emojiDocId - Die ID des Emoji-Dokuments, das hinzugefügt werden soll.
+   * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn das Emoji erfolgreich hinzugefügt wurde.
+   */
+  async addEmojiToMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayUnion(emojiDocId),
+    });
+  }
+
+  async removeEmojiFromMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayRemove(emojiDocId),
+    });
+  }
 
   /**
    * Updates data in the specified database and document.
@@ -138,7 +156,6 @@ export class DatabaseService {
     );
   }
 
-
   /**
    * Deletes data from the specified database and document ID.
    *
@@ -151,7 +168,6 @@ export class DatabaseService {
       console.error('Error deleting Data', err);
     });
   }
-
 
   /**
    * Retrieves messages from a given channel.
@@ -173,7 +189,6 @@ export class DatabaseService {
     return messages;
   }
 
-
   /**
    * Retrieves data from a Firestore collection by ID.
    * @param collectionName - The name of the Firestore collection.
@@ -190,10 +205,9 @@ export class DatabaseService {
     }
   }
 
-
   /**
    * Adds channel data to the database.
-   * 
+   *
    * @param collectionName - The name of the collection in the database.
    * @param data - The data to be added to the database.
    * @returns A Promise that resolves to the ID of the added document.
@@ -211,22 +225,23 @@ export class DatabaseService {
     }
   }
 
-
   /**
    * Retrieves the text channels assigned to a specific user.
-   * 
+   *
    * @param userId - The ID of the user.
    * @returns A promise that resolves to an array of TextChannel objects.
    */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
     const channelsCollectionRef = this.getDataRef('channels');
-    const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
+    const q = query(
+      channelsCollectionRef,
+      where('assignedUser', 'array-contains', userId)
+    );
     const snapshot = await getDocs(q);
     const channels: TextChannel[] = [];
-    snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
+    snapshot.forEach((doc) => channels.push(doc.data() as TextChannel));
     return channels;
   }
-
 
   /**
    * Subscribes to messages in a specified channel or the currently selected channel.
@@ -235,7 +250,11 @@ export class DatabaseService {
   async subscribeToMessages(channel?: TextChannel) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', channel?.id || sessionStorage.getItem('selectedChannelId'))
+      where(
+        'id',
+        '==',
+        channel?.id || sessionStorage.getItem('selectedChannelId')
+      )
     );
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
@@ -245,7 +264,6 @@ export class DatabaseService {
     });
   }
 
-
   /**
    * Subscribes to data changes in a specific collection and with a specific data ID.
    * @param collectionName - The name of the collection to subscribe to.
@@ -254,7 +272,8 @@ export class DatabaseService {
   async subscribeToData(collectionName: string, dataId: string) {
     const q = query(
       collection(this.firestore, collectionName),
-      where('id', '==', dataId))
+      where('id', '==', dataId)
+    );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
@@ -263,9 +282,6 @@ export class DatabaseService {
       });
     });
   }
-
-
-
 }
 
 /* async addMessageToChannel(channelDoc: string, messageDocId: string) {

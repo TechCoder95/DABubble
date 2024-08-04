@@ -1,4 +1,12 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
@@ -7,11 +15,19 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { SendChatMessageReactionComponent } from './send-chat-message-reaction/send-chat-message-reaction.component';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService } from '../../../../shared/services/database.service';
+import { Emoji } from '../../../../shared/interfaces/emoji';
+import { ActiveChatMessageReactionsComponent } from './active-chat-message-reactions/active-chat-message-reactions.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-send-chat-message',
   standalone: true,
-  imports: [CommonModule, SendChatMessageReactionComponent, FormsModule],
+  imports: [
+    CommonModule,
+    SendChatMessageReactionComponent,
+    FormsModule,
+    ActiveChatMessageReactionsComponent,
+  ],
   templateUrl: './send-chat-message.component.html',
   styleUrl: './send-chat-message.component.scss',
 })
@@ -22,9 +38,11 @@ export class SendChatMessageComponent implements OnInit {
   messageDeleted: boolean = false;
   @ViewChild('mainContainer') mainContainer!: ElementRef;
   originalMessage!: string;
+  emojiType!: string;
+  /* @Output() valueChanged = new EventEmitter<string>(); */
+  activeChatMessageReactionsComponent: any;
 
   constructor(
-    private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService
   ) {}
@@ -93,5 +111,9 @@ export class SendChatMessageComponent implements OnInit {
       this.sendMessage.id!,
       this.sendMessage
     );
+  }
+
+  onEmojiChange(event: string) {
+    this.emojiType = event;
   }
 }

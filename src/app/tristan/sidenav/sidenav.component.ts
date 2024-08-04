@@ -17,6 +17,7 @@ import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 import { distinctUntilChanged, filter, Subscription } from 'rxjs';
+import { ThreadComponent } from "../../rabia/thread/thread.component";
 
 interface Node {
   id: string;
@@ -46,8 +47,9 @@ interface FlattenedNode {
     MatIconModule,
     MatButtonModule,
     ChatComponent,
-    NewChatComponent
-  ],
+    NewChatComponent,
+    ThreadComponent
+],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
@@ -89,7 +91,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(
     private dbService: DatabaseService,
     private dialog: MatDialog,
-    private channelService: ChannelService,
+    public channelService: ChannelService,
     private userService: UserService
   ) { }
   

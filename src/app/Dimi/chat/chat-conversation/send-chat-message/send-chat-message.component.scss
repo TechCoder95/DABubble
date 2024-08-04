@@ -1,6 +1,6 @@
 main {
   /* min-height: 150px; */
-  margin-top: 32px;
+  /*  margin-top: 32px; */
   display: flex;
   flex-direction: column;
 }
@@ -38,7 +38,7 @@ h5 {
   position: relative;
   display: flex;
   justify-content: flex-end;
-  margin-top: 25px;
+  margin-block: 32px;
   padding-inline: 50px;
   padding-block: 10px;
   gap: 20px;

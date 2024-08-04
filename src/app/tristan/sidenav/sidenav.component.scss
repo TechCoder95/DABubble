@@ -16,10 +16,9 @@
   font-weight: bolder;
 }
 
-.blue-filter:hover {
-  filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%)
-    hue-rotate(228deg) brightness(97%) contrast(95%);
-}
+// .blue-filter:hover {
+//   filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%) hue-rotate(228deg) brightness(97%) contrast(95%);
+// }
 
 .content {
   background-color: #eceefe;
@@ -34,7 +33,8 @@ mat-drawer-container {
   height: 100%;
   display: flex;
   border-radius: 30px;
-  > app-chat {
+
+  >app-chat {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -56,6 +56,46 @@ mat-drawer-container {
     height: 50px;
   }
 }
+
+.new-message {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/new-message.svg);
+
+  &:hover {
+    cursor: pointer;
+    background-color: #ECEEFE;
+    border-radius: 100%;
+    transition: 75ms;
+    background-image: url(/img/new-message-hover.svg);
+  }
+}
+
+.add-channel {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/add-files.svg);
+
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;
+    border-radius: 100%;
+    transition: 75ms;
+    background-image: url(/img/add-files-hover.svg);
+  }
+}
+
+// .hover {
+//   &:hover {
+//     background-color: white !important;
+//     border-radius: 100%;
+//     // filter: invert(98%) sepia(94%) saturate(4479%) hue-rotate(180deg) brightness(106%) contrast(104%);
+//   }
+// }
 
 .online-status {
   width: 14px;
