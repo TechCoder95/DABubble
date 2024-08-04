@@ -22,7 +22,7 @@
       </p>
     </div>
     <app-receive-chat-message-reaction
-    [ticket]="receiveMessage"
+      *ngIf="!receiveMessage.deleted"
       class="slide-in"
     ></app-receive-chat-message-reaction>
   </section>
