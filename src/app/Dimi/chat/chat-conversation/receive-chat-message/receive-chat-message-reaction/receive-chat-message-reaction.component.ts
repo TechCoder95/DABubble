@@ -1,4 +1,9 @@
 import { Component, Input } from '@angular/core';
+import { Emoji } from '../../../../../shared/interfaces/emoji';
+import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
+import { DABubbleUser } from '../../../../../shared/interfaces/user';
+import { ChatService } from '../../../../../shared/services/chat.service';
+import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../../shared/services/channel.service';
 import { TicketService } from '../../../../../shared/services/ticket.service';
 
@@ -17,7 +22,11 @@ export class ReceiveChatMessageReactionComponent {
   addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.svg';
 
-  constructor(private channelService: ChannelService, private ticketService: TicketService) {}
+  @Input() receivedMessage!: ChatMessage;
+  @Input() user!: DABubbleUser;
+
+
+  constructor(private channelService: ChannelService, private ticketService: TicketService, private chatService: ChatService) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -38,5 +47,16 @@ export class ReceiveChatMessageReactionComponent {
     this.channelService.showSingleThread = true;
     console.log("blumenkohl", this.ticket);
     this.ticketService.setTicket(this.ticket);
+  }
+
+  
+  handleEmojis(emojiType: string) {
+    debugger;
+    let emoji: Emoji = {
+      messageId: this.receivedMessage.id!,
+      type: emojiType,
+      usersIds: [this.user.id!],
+    };
+    this.chatService.sendEmoji(emoji, this.receivedMessage, this.user);
   }
 }

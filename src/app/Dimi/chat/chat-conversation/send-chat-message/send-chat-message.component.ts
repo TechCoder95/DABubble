@@ -16,7 +16,7 @@ import { SendChatMessageReactionComponent } from './send-chat-message-reaction/s
 import { FormsModule } from '@angular/forms';
 import { DatabaseService } from '../../../../shared/services/database.service';
 import { Emoji } from '../../../../shared/interfaces/emoji';
-import { ActiveChatMessageReactionsComponent } from './active-chat-message-reactions/active-chat-message-reactions.component';
+import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { Subscription } from 'rxjs';
 
 @Component({
