@@ -6,6 +6,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { ChannelService } from '../../../../../shared/services/channel.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -17,14 +18,17 @@ import {
 export class SendChatMessageReactionComponent {
   checkMarkImg = './img/message-reaction-check-mark.png';
   handsUpImg = './img/message-reaction-hands-up.png';
-  addReactionImg = './img/message-reaction-add-reaction.png';
+  addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.png';
   editMessageImg = './img/message-reaction-edit-message.png';
   showEditMessageDialog: boolean = false;
   isInEditMode: boolean = false;
   messageDeleted: boolean = false;
+  emojiType!: string;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
+
+  constructor(private channelService: ChannelService) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -35,7 +39,7 @@ export class SendChatMessageReactionComponent {
     } else if (type === 'handsUp') {
       this.handsUpImg = `${basePath}hands-up${hoverSuffix}.png`;
     } else if (type === 'addReaction') {
-      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.png`;
+      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.png`;
     } else if (type === 'edit') {
@@ -62,5 +66,9 @@ export class SendChatMessageReactionComponent {
   deleteMessage() {
     this.messageDeleted = true;
     this.deleteStatusChange.emit(this.messageDeleted);
+  }
+
+  openMessage() {
+    this.channelService.showSingleThread = true;
   }
 }
