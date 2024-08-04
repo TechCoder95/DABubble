@@ -13,6 +13,25 @@ h3 {
   margin-block-end: 0;
 }
 
+.bg {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+
+  img {
+    width: 21px;
+    height: 21px;
+  }
+
+  &:hover {
+    background-color: #eceefe;
+    border-radius: 100%;
+  }
+}
+
 .edit-message-section {
   position: relative;
 }
@@ -26,10 +45,12 @@ h3 {
   background-color: white;
   padding: 5px 10px;
   cursor: pointer;
-  > h3 {
+
+  >h3 {
     padding: 5px 10px;
     background-color: white;
     border-radius: 30px;
+
     &:hover {
       background: rgba(236, 238, 254, 1);
       color: rgba(83, 90, 241, 1);
