@@ -5,7 +5,7 @@ import { TicketService } from '../../../../../shared/services/ticket.service';
 @Component({
   selector: 'app-receive-chat-message-reaction',
   standalone: true,
-  imports: [CommonModule],
+  imports: [],
   templateUrl: './receive-chat-message-reaction.component.html',
   styleUrl: './receive-chat-message-reaction.component.scss',
 })
