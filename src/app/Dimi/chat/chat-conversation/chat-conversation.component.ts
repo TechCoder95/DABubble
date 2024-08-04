@@ -119,7 +119,7 @@ export class ChatConversationComponent
         if (message) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 500);
+        setTimeout(() => this.scrollToBottom(), 1000);
       }
     );
   }
@@ -134,7 +134,7 @@ export class ChatConversationComponent
         if (message !== null) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 500);
+        setTimeout(() => this.scrollToBottom(), 1000);
       });
   }
 
