@@ -6,6 +6,7 @@
 
   <section class="message" *ngIf="!inEditMessageMode">
     <app-send-chat-message-reaction
+    [ticket]="sendMessage"
       *ngIf="!sendMessage.deleted"
       (editModeChange)="onEditModeChange($event)"
       (deleteStatusChange)="onDelete($event)"

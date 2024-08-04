@@ -7,3 +7,22 @@ main {
   border-radius: 25px 25px 0px 25px;
   border: 1px solid rgba(173, 176, 217, 1);
 }
+
+.bg {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+
+  img {
+    width: 21px;
+    height: 21px;
+  }
+
+  &:hover {
+    background-color: #eceefe;
+    border-radius: 100%;
+  }
+}
