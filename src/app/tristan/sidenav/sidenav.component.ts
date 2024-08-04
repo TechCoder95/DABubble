@@ -86,18 +86,24 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private createdChannelSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
-
+  constructor(
+    private dbService: DatabaseService,
+    private dialog: MatDialog,
+    private channelService: ChannelService,
+    private userService: UserService
+  ) { }
+  
   async ngOnInit() {
     this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
       if (googleUser) {
         this.isCurrentUserActivated = googleUser.emailVerified;
+        console.log('Google User aktiviert:', this.isCurrentUserActivated);
       }
-    }
-    );
-
+    });
+  
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
+      console.log('Benutzer eingeloggt:', this.isLoggedIn);
       if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
         await this.loadUserChannels(currentUser);
         await this.initializeDirectMessageForUser(currentUser);
@@ -107,7 +113,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         console.log('Kein aktiver Benutzer gefunden');
       }
     });
-
+  
     this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
       if (channel) {
         this.channels.push(channel);
@@ -115,6 +121,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
     });
   }
+  
 
   async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');

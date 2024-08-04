@@ -93,16 +93,19 @@ export class ChannelService {
     return updates;
   }
 
-  async createDirectChannelIfNotExists(addedUser: DABubbleUser): Promise<TextChannel> {
+  async createDirectChannelIfNotExists(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
-    const userChannels = await this.databaseService.getUserChannels(addedUser.id!);
-    let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(addedUser.id!));
+
+    let userChannels = await this.databaseService.getUserChannels(currentUser.id!);
+    let existingChannel = userChannels.find(channel => channel.isPrivate &&
+      channel.assignedUser.includes(currentUser.id!) &&
+      channel.assignedUser.includes(user.id!));
 
     if (!existingChannel) {
       let newChannel: TextChannel = {
         id: '',
-        name: addedUser.username!,
-        assignedUser: [currentUser.id!, addedUser.id!],
+        name: `Chat with ${user.username}`,
+        assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
         conversationId: [],
@@ -112,8 +115,14 @@ export class ChannelService {
       newChannel.id = newChannelId;
       existingChannel = newChannel;
       this.createdChannel.next(existingChannel);
+
+      console.log('Neuer Direct Message Channel erstellt:', existingChannel);
+      console.log('Dokument ID des neuen Channels:', newChannelId);
+    } else {
+      console.log('Existierender Channel gefunden:', existingChannel);
     }
 
+    this.selectChannel(existingChannel);
     return existingChannel;
   }
 }

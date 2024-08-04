@@ -70,6 +70,7 @@ export class UserService {
   checkOnlineStatus(user: DABubbleUser) {
     if (user) {
       this.activeUser = user;
+      console.log('Online-Status des Benutzers:', user.isLoggedIn);
       this.activeUserSubject.next(user);
     } else {
       this.activeUser = null!;
@@ -213,6 +214,7 @@ export class UserService {
   async updateLoggedInUser(loginUser?: DABubbleUser) {
     this.activeUser.mail = loginUser!.mail;
     this.activeUser.isLoggedIn = true;
+    console.log('Benutzer ist jetzt eingeloggt:', this.activeUser.isLoggedIn);
     this.updateUser(this.activeUser);
   }
 
@@ -362,4 +364,7 @@ export class UserService {
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
+
+
+  
 }
