@@ -39,6 +39,46 @@
   }
 }
 
+.new-message {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/new-message.svg);
+
+  &:hover {
+    cursor: pointer;
+    background-color: #ECEEFE;
+    border-radius: 100%;
+    transition: 75ms;
+    background-image: url(/img/new-message-hover.svg);
+  }
+}
+
+.add-channel {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/add-files.svg);
+
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;
+    border-radius: 100%;
+    transition: 75ms;
+    background-image: url(/img/add-files-hover.svg);
+  }
+}
+
+// .hover {
+//   &:hover {
+//     background-color: white !important;
+//     border-radius: 100%;
+//     // filter: invert(98%) sepia(94%) saturate(4479%) hue-rotate(180deg) brightness(106%) contrast(104%);
+//   }
+// }
+
 .online-status {
   width: 14px;
   height: 14px;

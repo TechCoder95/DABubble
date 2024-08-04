@@ -17,6 +17,7 @@ import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 import { distinctUntilChanged, filter, Subscription } from 'rxjs';
+import { ThreadComponent } from "../../rabia/thread/thread.component";
 
 interface Node {
   id: string;
@@ -46,8 +47,9 @@ interface FlattenedNode {
     MatIconModule,
     MatButtonModule,
     ChatComponent,
-    NewChatComponent
-  ],
+    NewChatComponent,
+    ThreadComponent
+],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
@@ -83,24 +85,30 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
 
+
   private userSubscription: Subscription | undefined;
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
-    this.userSubscription = this.userService.activeUserObserver$
-      .pipe(distinctUntilChanged()).subscribe(async (currentUser) => {
-        this.isLoggedIn = currentUser?.isLoggedIn;
-        this.isCurrentUserActivated = currentUser?.activated;
-        if (currentUser?.activated) {
-          await this.loadUserChannels(currentUser);
-          await this.initializeDirectMessageForUser(currentUser);
-          await this.updateTreeData();
-          await this.loadLastChannelState();
-        } else {
-          console.log('Kein aktiver Benutzer gefunden');
-        }
-      });
+    this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
+      if (googleUser) {
+        this.isCurrentUserActivated = googleUser.emailVerified;
+      }
+    }
+    );
+
+    this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
+      this.isLoggedIn = currentUser?.isLoggedIn;
+      if ( this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+        await this.loadUserChannels(currentUser);
+        await this.initializeDirectMessageForUser(currentUser);
+        await this.updateTreeData();
+        await this.loadLastChannelState();
+      } else {
+        console.log('Kein aktiver Benutzer gefunden');
+      }
+    });
   }
 
   async loadLastChannelState() {

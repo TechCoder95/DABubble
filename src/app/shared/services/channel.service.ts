@@ -8,6 +8,8 @@ import { ChatService } from './chat.service';
   providedIn: 'root',
 })
 export class ChannelService {
+  showSingleThread: boolean = false;
+  
   private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(
     null
   );

@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
+import { EmailService } from '../../shared/services/sendmail.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -16,10 +17,11 @@ export class PasswordResetComponent {
 
   email: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private emailService: EmailService) {}
 
   passwordChange() {
-    this.router.navigate(['/user/pw-change']);
+    this.emailService.changePassword(this.email);
+    console.log('Password reset email sent');
   }
 
   goBack() {

@@ -1,0 +1,8 @@
+<section *ngIf="sendMessage.emoticons?.length > 0">
+  @for (emoji of allEmojis; track $index) {
+  <app-reaction
+    [emoji]="emoji"
+    *ngIf="isReactionForCurrentMessage(emoji)"
+  ></app-reaction>
+  }
+</section>

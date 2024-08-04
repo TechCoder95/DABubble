@@ -45,6 +45,7 @@ export class ChatConversationComponent
   private channelSubscription!: Subscription;
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
+  private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
   constructor(
@@ -53,7 +54,7 @@ export class ChatConversationComponent
     private channelService: ChannelService,
     private databaseService: DatabaseService
   ) {
-    this.activeUser = this.userService.activeUser;
+    /*  this.activeUser = this.userService.activeUser; */
   }
 
   ngOnInit() {
@@ -61,11 +62,11 @@ export class ChatConversationComponent
     this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
-    /*  this.scrollToBottom(); */
+    this.subscribeToActiveUser();
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => this.scrollToBottom(), 500);
+    setTimeout(() => this.scrollToBottom(), 1000);
   }
 
   scrollToBottom() {
@@ -73,7 +74,21 @@ export class ChatConversationComponent
       this.scrollContainer.nativeElement.scrollHeight;
   }
 
+  subscribeToActiveUser() {
+    this.activeUserSubscription =
+      this.userService.activeUserObserver$.subscribe((user) => {
+        if (user) {
+          this.activeUser = user;
+          console.log(this.activeUser);
+        }
+      });
+  }
+
   subscribeToDataChanges() {
+    if (this.databaseSubscription) {
+      return;
+    }
+
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
       async (channel) => {
         this.allMessages = [];
@@ -84,6 +99,10 @@ export class ChatConversationComponent
   }
 
   subscribeToChannelChanges() {
+    if (this.channelSubscription) {
+      return;
+    }
+
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
         console.log('CHANNELOBSERVe');
@@ -92,21 +111,32 @@ export class ChatConversationComponent
   }
 
   subscribeToSendMessages() {
+    if (this.sendMessagesSubscription) {
+      return;
+    }
+
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
         if (message) {
           this.allMessages.push(message);
         }
+        setTimeout(() => this.scrollToBottom(), 500);
       }
     );
   }
 
   subscribeToReceiveMessages() {
-    this.chatService.receiveMessages$.subscribe((message) => {
-      if (message !== null) {
-        this.allMessages.push(message);
-      }
-    });
+    if (this.receiveMessagesSubscription) {
+      return;
+    }
+
+    this.receiveMessagesSubscription =
+      this.chatService.receiveMessages$.subscribe((message) => {
+        if (message !== null) {
+          this.allMessages.push(message);
+        }
+        setTimeout(() => this.scrollToBottom(), 500);
+      });
   }
 
   ngOnDestroy() {

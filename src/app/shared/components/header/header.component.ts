@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DABubbleUser } from '../../interfaces/user';
 import { isLoggedIn } from '../../guards/authguard.guard';
+import { User } from 'firebase/auth';
 
 @Component({
   selector: 'app-header',
@@ -20,6 +21,7 @@ import { isLoggedIn } from '../../guards/authguard.guard';
 export class HeaderComponent {
 
   activeUser!: DABubbleUser;
+  activeGoogleUser!: User;
   public dialog = inject(MatDialog);
 
   searchInput: string = '';
@@ -27,8 +29,17 @@ export class HeaderComponent {
   constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) {
 
     this.userService.activeUserObserver$.subscribe((user: DABubbleUser) => {
+      if(window.location.pathname !== '/user/chooseAvatar') {
       this.activeUser = user;
+      }
     });
+
+    this.userService.activeGoogleUserObserver$.subscribe((user: User) => {
+      if(window.location.pathname !== '/user/chooseAvatar') {
+        this.activeGoogleUser = user;
+        }
+    });
+
 
   }
 

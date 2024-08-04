@@ -5,7 +5,6 @@ export interface DABubbleUser {
     username?: string;
     password?: string;
     isLoggedIn?: boolean;
-    activated?: boolean;
     activeChannels?: string[];
     avatar: string;
 }

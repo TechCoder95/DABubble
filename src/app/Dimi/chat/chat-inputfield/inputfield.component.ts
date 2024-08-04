@@ -7,6 +7,7 @@ import { ChatService } from '../../../shared/services/chat.service';
 import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
+import { DatabaseService } from '../../../shared/services/database.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -25,7 +26,8 @@ export class InputfieldComponent {
   constructor(
     public channelService: ChannelService,
     private chatService: ChatService,
-    private userService: UserService
+    private userService: UserService,
+    private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
   }
@@ -72,19 +74,31 @@ export class InputfieldComponent {
     );
   }
 
-  sendMessage() {
+  async sendMessage() {
     let message: ChatMessage = {
       channelId: this.channelService.channel.id,
-      name: this.channelService.channel.name,
+      channelName: this.channelService.channel.name,
       message: this.textareaValue,
       timestamp: new Date().getTime(),
-      sender: this.activeUser.username || 'guest',
+      senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
       emoticons: [],
+      edited: false,
+      deleted: false,
     };
+
     if (message.message !== '') {
-      this.chatService.sendMessage(message);
-      this.textareaValue = '';
+      try {
+        const newMessageId = await this.databaseService.addChannelDataToDB(
+          'messages',
+          message
+        );
+        message.id = newMessageId;
+        this.chatService.sendMessage(message);
+        this.textareaValue = '';
+      } catch (error) {
+        console.error('Fehler beim Senden der Nachricht:', error);
+      }
     } else {
       alert('Du musst eine Nachricht eingeben');
     }
