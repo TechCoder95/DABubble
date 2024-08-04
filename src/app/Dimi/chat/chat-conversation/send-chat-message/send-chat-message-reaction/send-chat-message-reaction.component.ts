@@ -6,11 +6,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
-import { Emoji } from '../../../../../shared/interfaces/emoji';
-import { DatabaseService } from '../../../../../shared/services/database.service';
-import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
-import { DABubbleUser } from '../../../../../shared/interfaces/user';
-import { ChatService } from '../../../../../shared/services/chat.service';
+import { ChannelService } from '../../../../../shared/services/channel.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -22,7 +18,7 @@ import { ChatService } from '../../../../../shared/services/chat.service';
 export class SendChatMessageReactionComponent {
   checkMarkImg = './img/message-reaction-check-mark.png';
   handsUpImg = './img/message-reaction-hands-up.png';
-  addReactionImg = './img/message-reaction-add-reaction.png';
+  addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.png';
   editMessageImg = './img/message-reaction-edit-message.png';
   showEditMessageDialog: boolean = false;
@@ -31,13 +27,8 @@ export class SendChatMessageReactionComponent {
   emojiType!: string;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
-  @Input() sendMessage!: ChatMessage;
-  @Input() user!: DABubbleUser;
 
-  constructor(
-    private databaseService: DatabaseService,
-    private chatService: ChatService
-  ) {}
+  constructor(private channelService: ChannelService) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -48,7 +39,7 @@ export class SendChatMessageReactionComponent {
     } else if (type === 'handsUp') {
       this.handsUpImg = `${basePath}hands-up${hoverSuffix}.png`;
     } else if (type === 'addReaction') {
-      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.png`;
+      this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.png`;
     } else if (type === 'edit') {
@@ -77,13 +68,7 @@ export class SendChatMessageReactionComponent {
     this.deleteStatusChange.emit(this.messageDeleted);
   }
 
-  async handleEmojis(emojiType: string) {
-    debugger;
-    let emoji: Emoji = {
-      messageId: this.sendMessage.id!,
-      type: emojiType,
-      usersIds: [this.user.id!],
-    };
-    this.chatService.sendEmoji(emoji, this.sendMessage, this.user);
+  openMessage() {
+    this.channelService.showSingleThread = true;
   }
 }

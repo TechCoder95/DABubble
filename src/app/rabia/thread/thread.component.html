@@ -1,0 +1,16 @@
+<mat-card class="h-full">
+    <main>
+        <div class="flex align-items-center justify-content-between w-full">
+            <div class="flex align-items-center" style="gap: 5px;">
+                <mat-card-subtitle class="font-bold text-2xl">Thread</mat-card-subtitle>
+                <img src="./img/tag-hover-thin.svg" alt="">
+                <span class="purple">Entwicklerteam</span>
+            </div>
+
+            <div (click)="close()" class="close"></div>
+        </div>
+    </main>
+
+    <app-thread-chat></app-thread-chat>
+    <app-chat-inputfield></app-chat-inputfield>
+</mat-card>
