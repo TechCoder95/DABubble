@@ -61,11 +61,36 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
       (emoji) => {
         if (emoji) {
           debugger;
-          this.allEmojis.push(emoji);
+          const existingEmojiIndex = this.getExistingEmojiIndex(emoji);
+          if (existingEmojiIndex !== -1) {
+            this.handleExistingEmoji(emoji, existingEmojiIndex);
+          } else {
+            this.allEmojis.push(emoji);
+          }
           this.currentEmoji = emoji;
           console.log(this.allEmojis);
         }
       }
     );
+  }
+
+  getExistingEmojiIndex(emoji: Emoji) {
+    return this.allEmojis.findIndex((e) => e.type === emoji.type);
+  }
+
+  handleExistingEmoji(newEmoji: Emoji, existingEmojiIndex: number) {
+    //Wenn Emoji schon existiert, dann update
+    const existingEmoji = this.allEmojis[existingEmojiIndex];
+    if (newEmoji.usersIds.length === 0) {
+      //Entferne den Emoji, wenn der neue EMoji eine Länge von 0 hat
+      this.allEmojis.splice(existingEmojiIndex, 1);
+    } else if (existingEmoji.usersIds !== newEmoji.usersIds) {
+      //Aktualisiere den Emoji ansonsten
+      this.allEmojis[existingEmojiIndex] = newEmoji;
+    }
+  }
+
+  emojiExists(emoji: Emoji) {
+    return this.allEmojis.some((e) => e.type === emoji.type);
   }
 }

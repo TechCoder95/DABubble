@@ -1,32 +1,43 @@
 <main>
-  <img
-    [src]="checkMarkImg"
-    (mouseenter)="hoverReaction('checkMark', true)"
-    (mouseleave)="hoverReaction('checkMark', false)"
-    (click)="handleEmojis('checkMark')"
-  />
-  <img
-    [src]="handsUpImg"
-    (mouseenter)="hoverReaction('handsUp', true)"
-    (mouseleave)="hoverReaction('handsUp', false)"
-  />
-  <img
-    [src]="addReactionImg"
-    (mouseenter)="hoverReaction('addReaction', true)"
-    (mouseleave)="hoverReaction('addReaction', false)"
-  />
-  <img (click)="openMessage()"
-    [src]="answerImg"
-    (mouseenter)="hoverReaction('answer', true)"
-    (mouseleave)="hoverReaction('answer', false)"
-  />
-  <section class="edit-message-section">
+  <div class="bg">
     <img
-      [src]="editMessageImg"
-      (click)="editMessageDialog()"
-      (mouseenter)="hoverReaction('edit', true)"
-      (mouseleave)="hoverReaction('edit', false)"
+      [src]="checkMarkImg"
+      (mouseenter)="hoverReaction('checkMark', true)"
+      (mouseleave)="hoverReaction('checkMark', false)"
+      (click)="handleEmojis('checkMark')"
     />
+  </div>
+  <div class="bg">
+    <img
+      [src]="handsUpImg"
+      (mouseenter)="hoverReaction('handsUp', true)"
+      (mouseleave)="hoverReaction('handsUp', false)"
+    />
+  </div>
+  <div class="bg">
+    <img
+      [src]="addReactionImg"
+      (mouseenter)="hoverReaction('addReaction', true)"
+      (mouseleave)="hoverReaction('addReaction', false)"
+    />
+  </div>
+  <div class="bg">
+    <img
+      (click)="openMessage()"
+      [src]="answerImg"
+      (mouseenter)="hoverReaction('answer', true)"
+      (mouseleave)="hoverReaction('answer', false)"
+    />
+  </div>
+  <section class="edit-message-section">
+    <div class="bg">
+      <img
+        [src]="editMessageImg"
+        (click)="editMessageDialog()"
+        (mouseenter)="hoverReaction('edit', true)"
+        (mouseleave)="hoverReaction('edit', false)"
+      />
+    </div>
     <div class="edit-message-dialog" *ngIf="showEditMessageDialog">
       <h3 (click)="editMessage()">Nachricht bearbeiten</h3>
       <h3 (click)="deleteMessage()">Nachricht löschen</h3>
