@@ -86,7 +86,7 @@ export class SendChatMessageReactionComponent {
   }
 
   handleEmojis(emojiType: string) {
-    debugger;
+     ;
     let emoji: Emoji = {
       messageId: this.sendMessage.id!,
       type: emojiType,

@@ -89,7 +89,7 @@ export class SendChatMessageComponent implements OnInit {
   }
 
   async save() {
-    debugger;
+     ;
     console.log(this.sendMessage.id);
     this.mainContainer.nativeElement.style.background = 'unset';
     this.sendMessage.edited = true;

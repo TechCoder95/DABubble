@@ -43,6 +43,7 @@ export class ReceiveChatMessageReactionComponent {
     }
   }
 
+
   openMessage() {
     this.channelService.showSingleThread = true;
     console.log("blumenkohl", this.ticket);
@@ -51,7 +52,6 @@ export class ReceiveChatMessageReactionComponent {
 
   
   handleEmojis(emojiType: string) {
-    debugger;
     let emoji: Emoji = {
       messageId: this.receivedMessage.id!,
       type: emojiType,
