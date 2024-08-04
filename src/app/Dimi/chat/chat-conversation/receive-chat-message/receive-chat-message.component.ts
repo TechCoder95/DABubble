@@ -11,9 +11,8 @@ import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reac
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
 })
-export class ReceiveChatMessageComponent implements OnInit {
+export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
-  // justId = this.receiveMessage.id;
 
   constructor(private userService: UserService) {}
 

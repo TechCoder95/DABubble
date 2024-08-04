@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
+import { TicketService } from '../../../../../shared/services/ticket.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -26,8 +27,9 @@ export class SendChatMessageReactionComponent {
   messageDeleted: boolean = false;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
+  @Input() ticket: any;
 
-  constructor(private channelService: ChannelService) { }
+  constructor(private channelService: ChannelService, private ticketService: TicketService) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -69,5 +71,7 @@ export class SendChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
+    console.log("broccoli", this.ticket);
+    this.ticketService.setTicket(this.ticket);
   }
 }

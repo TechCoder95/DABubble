@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
+import { ReceiveChatMessageComponent } from '../receive-chat-message.component';
+import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
+import { TicketService } from '../../../../../shared/services/ticket.service';
 
 @Component({
   selector: 'app-receive-chat-message-reaction',
@@ -9,12 +12,14 @@ import { ChannelService } from '../../../../../shared/services/channel.service';
   styleUrl: './receive-chat-message-reaction.component.scss',
 })
 export class ReceiveChatMessageReactionComponent {
+  @Input() ticket: any;
+  
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.svg';
 
-  constructor(private channelService: ChannelService) { }
+  constructor(private channelService: ChannelService, private ticketService: TicketService) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -33,5 +38,7 @@ export class ReceiveChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
+    console.log("blumenkohl", this.ticket);
+    this.ticketService.setTicket(this.ticket);
   }
 }
