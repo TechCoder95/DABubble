@@ -7,6 +7,10 @@ import {
   Output,
 } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
+import { Emoji } from '../../../../../shared/interfaces/emoji';
+import { ChatService } from '../../../../../shared/services/chat.service';
+import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
+import { DABubbleUser } from '../../../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -27,8 +31,10 @@ export class SendChatMessageReactionComponent {
   emojiType!: string;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
+  @Input() sendMessage!:ChatMessage;
+  @Input() user!: DABubbleUser;
 
-  constructor(private channelService: ChannelService) { }
+  constructor(private channelService: ChannelService,private chatService:ChatService) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -70,5 +76,14 @@ export class SendChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
+  }
+
+  handleEmojis(emojiType:string){
+    let emoji:Emoji = {
+      messageId: this.sendMessage.id!,
+      type: emojiType,
+      usersIds: [],
+    }
+    this.chatService.sendEmoji(emoji,this.sendMessage,this.user);
   }
 }
