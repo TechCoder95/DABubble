@@ -351,4 +351,15 @@ export class UserService {
     });
     return users;
   }
+
+  private selectedUserSubject = new BehaviorSubject<DABubbleUser | null>(null);
+  selectedUser$ = this.selectedUserSubject.asObservable();
+
+  setSelectedUser(user: DABubbleUser | null) {
+    this.selectedUserSubject.next(user);
+  }
+
+  getSelectedUser(): DABubbleUser | null {
+    return this.selectedUserSubject.value;
+  }
 }

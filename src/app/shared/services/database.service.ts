@@ -181,12 +181,12 @@ export class DatabaseService {
    * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
    */
   async readDataByID(collectionName: string, id: string) {
-    const docSnap = await getDoc(doc(this.firestore, collectionName, id));
+    const docSnap = await getDoc(doc(this.firestore, collectionName, id));  
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
       console.log('No such document!');
-      return;
+      return null;
     }
   }
 
