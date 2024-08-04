@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 
 
 @Component({
-  selector: 'app-thread-chat',
+  selector: 'app-thread-receive-chat',
   standalone: true,
   imports: [ThreadEmojiComponent, ThreadMyEmojiComponent, CommonModule],
   templateUrl: './thread-receive-chat.component.html',

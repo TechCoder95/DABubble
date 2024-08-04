@@ -7,11 +7,12 @@ import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { ThreadInputComponent } from "./thread-input/thread-input.component";
 import { UserService } from '../../shared/services/user.service';
+import { ThreadSendChatComponent } from "./thread-send-chat/thread-send-chat.component";
 
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [MatCardModule, ThreadReceiveChatComponent, InputfieldComponent, CommonModule, ThreadInputComponent],
+  imports: [MatCardModule, ThreadReceiveChatComponent, InputfieldComponent, CommonModule, ThreadInputComponent, ThreadSendChatComponent],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss'
 })
