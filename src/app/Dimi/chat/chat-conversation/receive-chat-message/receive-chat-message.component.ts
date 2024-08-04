@@ -13,6 +13,7 @@ import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reac
 })
 export class ReceiveChatMessageComponent implements OnInit {
   @Input() receiveMessage!: ChatMessage;
+  // justId = this.receiveMessage.id;
 
   constructor(private userService: UserService) {}
 
