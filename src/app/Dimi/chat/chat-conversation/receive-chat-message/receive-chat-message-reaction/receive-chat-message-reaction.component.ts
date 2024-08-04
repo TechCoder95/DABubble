@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
+import { Emoji } from '../../../../../shared/interfaces/emoji';
+import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
+import { DABubbleUser } from '../../../../../shared/interfaces/user';
+import { ChatService } from '../../../../../shared/services/chat.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-receive-chat-message-reaction',
   standalone: true,
-  imports: [],
+  imports: [CommonModule],
   templateUrl: './receive-chat-message-reaction.component.html',
   styleUrl: './receive-chat-message-reaction.component.scss',
 })
@@ -12,6 +17,10 @@ export class ReceiveChatMessageReactionComponent {
   handsUpImg = './img/message-reaction-hands-up.png';
   addReactionImg = './img/message-reaction-add-reaction.png';
   answerImg = './img/message-reaction-answer.png';
+  @Input() receivedMessage!: ChatMessage;
+  @Input() user!: DABubbleUser;
+
+  constructor(private chatService: ChatService) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -26,5 +35,15 @@ export class ReceiveChatMessageReactionComponent {
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.png`;
     }
+  }
+
+  handleEmojis(emojiType: string) {
+    debugger;
+    let emoji: Emoji = {
+      messageId: this.receivedMessage.id!,
+      type: emojiType,
+      usersIds: [this.user.id!],
+    };
+    this.chatService.sendEmoji(emoji, this.receivedMessage, this.user);
   }
 }
