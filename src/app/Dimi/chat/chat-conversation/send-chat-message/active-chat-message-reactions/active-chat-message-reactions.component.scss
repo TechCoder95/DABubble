@@ -1,6 +1,5 @@
-div {
-  border: 1px solid black;
+section {
   display: flex;
-  max-width: fit-content;
-  max-height: 25px;
+  justify-content: flex-end;
+  gap: 10px;
 }

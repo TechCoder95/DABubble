@@ -1,4 +1,8 @@
-<div *ngIf="allEmojis.length > 0">
-  <img src="./img/checkMarkEmoji.png" />
-  <p>1</p>
-</div>
+<section *ngIf="sendMessage.emoticons?.length > 0">
+  @for (emoji of allEmojis; track $index) {
+  <app-reaction
+    [emoji]="emoji"
+    *ngIf="isReactionForCurrentMessage(emoji)"
+  ></app-reaction>
+  }
+</section>

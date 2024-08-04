@@ -6,11 +6,12 @@ import { DatabaseService } from '../../../../../shared/services/database.service
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { Subscription } from 'rxjs';
+import { ReactionComponent } from './reaction/reaction.component';
 
 @Component({
   selector: 'app-active-chat-message-reactions',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactionComponent],
   templateUrl: './active-chat-message-reactions.component.html',
   styleUrl: './active-chat-message-reactions.component.scss',
 })
@@ -32,6 +33,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    /*  this.subscribeToDataChanges(); */
     this.subscribeToEmoji();
   }
 
@@ -41,11 +43,24 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
     }
   }
 
+  isReactionForCurrentMessage(emoji: Emoji): boolean {
+    return emoji.messageId === this.sendMessage.id;
+  }
+
+  /* subscribeToDataChanges() {
+    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
+      async (message) => {
+        this.allEmojis = [];
+        await this.chatService.sortEmojis(message);
+      }
+    );
+  } */
 
   subscribeToEmoji() {
     this.emojiSubscription = this.chatService.sendMessagesEmoji$.subscribe(
       (emoji) => {
         if (emoji) {
+          debugger;
           this.allEmojis.push(emoji);
           this.currentEmoji = emoji;
           console.log(this.allEmojis);
@@ -53,5 +68,4 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
       }
     );
   }
-
 }
