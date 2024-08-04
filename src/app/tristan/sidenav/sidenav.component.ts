@@ -84,11 +84,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
   showNewChat: boolean = false;
   isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
-  showSingleThread: boolean = false;
+
 
   private userSubscription: Subscription | undefined;
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, private channelService: ChannelService, private userService: UserService) { }
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService) { }
 
   async ngOnInit() {
     this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {

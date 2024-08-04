@@ -3,6 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ThreadChatComponent } from "./thread-chat/thread-chat.component";
 import { InputfieldComponent } from "../../Dimi/chat/chat-inputfield/inputfield.component";
 import { SidenavComponent } from '../../tristan/sidenav/sidenav.component';
+import { ChannelService } from '../../shared/services/channel.service';
 
 @Component({
   selector: 'app-thread',
@@ -12,16 +13,14 @@ import { SidenavComponent } from '../../tristan/sidenav/sidenav.component';
   styleUrl: './thread.component.scss'
 })
 export class ThreadComponent {
+  showSingleThread!: boolean;
+ 
 
-
-  constructor(private sideNav: SidenavComponent) {
-    console.log("siehsh" ,this.sideNav.showSingleThread);
-    
-  }
+  constructor(private channelService: ChannelService) { }
 
 
   close() {
-    this.sideNav.showSingleThread = true;
+    this.channelService.showSingleThread = false;
   }
   
 }

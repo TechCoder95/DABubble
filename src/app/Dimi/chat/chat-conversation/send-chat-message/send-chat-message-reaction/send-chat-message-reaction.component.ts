@@ -6,6 +6,7 @@ import {
   Input,
   Output,
 } from '@angular/core';
+import { ChannelService } from '../../../../../shared/services/channel.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -26,7 +27,7 @@ export class SendChatMessageReactionComponent {
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
 
-  showThisChat: boolean = false;
+  constructor(private channelService: ChannelService) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -67,7 +68,6 @@ export class SendChatMessageReactionComponent {
   }
 
   openMessage() {
-    console.log('ola');
-    this.showThisChat = true;
+    this.channelService.showSingleThread = true;
   }
 }
