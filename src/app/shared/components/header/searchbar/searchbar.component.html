@@ -1,0 +1,24 @@
+<div class="flex">
+    <input type="search" aria-label="awd" [(ngModel)]="searchInput" (ngModelChange)="search()"
+        placeholder="Devspace durchsuchen">
+    <img [ngClass]="{'d-none': searchInput !== ''}" src="/img/search.svg" alt="">
+</div>
+@if (searchInput !== '') {
+<div class="searchResultsCard">
+    <div class="flex flex-column">
+        @for (result of searchResults; track $index) {
+        @if (result.description.includes(searchInput)) {
+        <div class="searchResultItem">
+            <p><b>{{result.title}} </b> <br>
+                {{result.description}}</p>
+        </div>
+        }
+        }
+        @if (searchResults.length == 0) {
+        <div class="flex align-items-center searchResultItem">
+            <p>Keine Ergebnisse gefunden</p>
+        </div>
+        }
+    </div>
+</div>
+}

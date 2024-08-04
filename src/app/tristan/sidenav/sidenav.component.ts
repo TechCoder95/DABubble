@@ -82,7 +82,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
-  isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
 
   private createdChannelSubscription: Subscription | undefined;
@@ -105,6 +104,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
+      if (currentUser) {
       console.log('Benutzer eingeloggt:', this.isLoggedIn);
       if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
         await this.loadUserChannels(currentUser);

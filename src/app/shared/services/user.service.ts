@@ -30,16 +30,16 @@ export class UserService {
 
   constructor(private DatabaseService: DatabaseService, private router: Router) {
     this.getUsersFromDB().then(() => {
-      if (sessionStorage.getItem('userLogin')) {
-        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
+      if (sessionStorage.getItem('userLoginGuest')) {
+        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLoginGuest')!)!;
         this.activeUserSubject.next(this.activeUser);
         this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
           this.activeUserSubject.next(data);
         });
       }
-      else if (localStorage.getItem('userLogin')) {
-        this.activeUser = this.users.find(user => user.id === localStorage.getItem('userLogin')!)!;
+      else if (sessionStorage.getItem('userLogin')) {
+        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
         this.activeUserSubject.next(this.activeUser);
         this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
@@ -50,8 +50,8 @@ export class UserService {
             this.googleUser = googleUser;
           }
           else {
-            if (localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
-              let user = localStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
+            if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
+              let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
               this.googleUser = JSON.parse(user!);
               this.activeGoogleUserSubject.next(this.googleUser);
             }
@@ -119,8 +119,7 @@ export class UserService {
         if (user.mail === guestUser.mail && user.id) {
           this.activeUser = user;
           this.activeUserSubject.next(this.completeUser(this.activeUser));
-          sessionStorage.setItem('userLogin', this.activeUser.id!);
-          sessionStorage.setItem('selectedChannelId', this.activeUser.activeChannels![0] as string);
+          sessionStorage.setItem('userLoginGuest', this.activeUser.id!);
           this.updateLoggedInUser();
           this.checkOnlineStatus(this.activeUser);
           this.router.navigate(['/home']);
@@ -136,11 +135,11 @@ export class UserService {
    * deletes the user data from the database, and reloads the page.
    */
   guestLogout() {
-    let id = sessionStorage.getItem('userLogin')!;
+    let id = sessionStorage.getItem('userLoginGuest')!;
     this.activeUser = null!;
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
-        sessionStorage.removeItem('userLogin');
+        sessionStorage.removeItem('userLoginGuest');
         this.activeUserSubject.next(null!);
         this.getUsersFromDB().then(() => {
           window.location.reload();
@@ -161,14 +160,15 @@ export class UserService {
       let loginUser = this.users.find(user => user.uid === googleUser.uid);
 
       if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: false, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
           this.getUsersFromDB().then(() => {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
-                localStorage.setItem('userLogin', user.id);
-                sessionStorage.setItem('selectedChannelId', user.activeChannels![0] as string);
+                sessionStorage.setItem('userLogin', user.id);
                 this.activeUserSubject.next(this.completeUser(user, googleUser));
                 this.updateLoggedInUser();
+                
+
                 this.router.navigate(['/user/chooseAvatar']);
               }
             });
@@ -176,8 +176,7 @@ export class UserService {
         });
       } else {
         if (loginUser.uid === googleUser.uid && loginUser.id) {
-          localStorage.setItem('userLogin', loginUser.id);
-          sessionStorage.setItem('selectedChannelId', loginUser.activeChannels![0] as string);
+          sessionStorage.setItem('userLogin', loginUser.id);
           this.checkOnlineStatus(loginUser);
           this.updateLoggedInUser(loginUser);
           this.activeUserSubject.next(loginUser);
@@ -212,7 +211,9 @@ export class UserService {
    * Updates the logged-in user's status and calls the updateUser method.
    */
   async updateLoggedInUser(loginUser?: DABubbleUser) {
-    this.activeUser.mail = loginUser!.mail;
+    if (loginUser) {
+      this.activeUser.mail = loginUser!.mail;
+    }
     this.activeUser.isLoggedIn = true;
     console.log('Benutzer ist jetzt eingeloggt:', this.activeUser.isLoggedIn);
     this.updateUser(this.activeUser);
@@ -227,14 +228,14 @@ export class UserService {
    * and navigates to the login page.
    */
   async logout() {
-    if (sessionStorage.getItem('userLogin')) {
+    if (sessionStorage.getItem('userLoginGuest')) {
       this.guestLogout();
     } else {
-      let id = localStorage.getItem('userLogin')!;
+      let id = sessionStorage.getItem('userLogin')!;
       this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
         .then(() => {
-          localStorage.removeItem('userLogin');
-          localStorage.removeItem('uId');
+          sessionStorage.removeItem('userLogin');
+          sessionStorage.removeItem('uId');
           sessionStorage.removeItem('userLogin');
           sessionStorage.removeItem('selectedChannelId');
           this.activeUserSubject.next(null!);
@@ -271,6 +272,11 @@ export class UserService {
         this.activeUserSubject.next(user);
         this.getUsersFromDB();
       });
+  }
+
+  updateUsername(username: string) {
+    this.activeUser.username = username;
+    this.updateUser(this.activeUser);
   }
 
 

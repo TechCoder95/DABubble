@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { Router } from '@angular/router';
 import { EmailService } from '../../shared/services/sendmail.service';
+import { AuthenticationService } from '../../shared/services/authentication.service';
 
 @Component({
   selector: 'app-password-change',
@@ -16,18 +17,37 @@ import { EmailService } from '../../shared/services/sendmail.service';
 export class PasswordChangeComponent {
   newPassword: string = '';
   newPassword2: string = '';
+  minLength: number = 6;
 
-  constructor(private router: Router, private emailService: EmailService) {}
+  constructor(private router: Router, private emailService: EmailService, private authService:AuthenticationService) {}
 
   goBack() {
-    this.router.navigate(['/user/password-reset']);
+    this.authService.registerProcess = false;
+    this.router.navigate(['/user/login']);
   }
 
   changepassword() {
     if (this.newPassword === this.newPassword2) {
       this.emailService.handleResetPassword(this.newPassword);
+      //ToDo: Add a success message!
+
+      setTimeout(() => {
+        this.authService.registerProcess = false;
+      this.router.navigate(['/user/login']);
+      }, 3000);
+    
     } else {
       console.log('Passwords do not match');
+    }
+  }
+
+
+  onSubmit(ngForm: NgForm) {
+    if (ngForm.submitted && ngForm.form.valid) {
+      this.changepassword();
+    } else {
+      console.info('Form is not valid');
+      ngForm.resetForm();
     }
   }
 }
