@@ -93,7 +93,7 @@ export class InputfieldComponent {
         await this.send();
         break;
       case MessageType.Threads:
-        await this.send();
+        await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
         break;
       case MessageType.NewDirect:
         await this.setSelectedChannel();
