@@ -1,4 +1,4 @@
-import { Component, Pipe } from '@angular/core';
+import { Component, Input, Pipe } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -9,6 +9,8 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { MessageType } from '../../../shared/components/enums/messagetype';
+
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -17,6 +19,8 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
+
+
 export class InputfieldComponent {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
@@ -24,6 +28,7 @@ export class InputfieldComponent {
   textareaValue: string = '';
   activeUser!: DABubbleUser;
   selectedChannel: TextChannel | null = null;
+  @Input() messageType: MessageType = MessageType.Directs;
 
   constructor(
     public channelService: ChannelService,
@@ -79,14 +84,27 @@ export class InputfieldComponent {
     );
   }
 
-  async sendMessage() {
-    let selectedUser = this.userService.getSelectedUser();
-    if (selectedUser) {
-      const channel = await this.channelService.createDirectChannelIfNotExists(selectedUser);
-      this.channelService.selectChannel(channel);
-      this.selectedChannel = channel;
+  async sendMessage(type: MessageType) {
+    switch (type) {
+      case MessageType.Groups:
+        await this.send();
+        break;
+      case MessageType.Directs:
+        await this.send();
+        break;
+      case MessageType.Threads:
+        await this.send();
+        break;
+      case MessageType.NewDirect:
+        await this.setSelectedChannel();
+        await this.send();
+        break;
+      default:
+        break;
     }
+  }
 
+  async send() {
     if (this.selectedChannel) {
       let message: ChatMessage = {
         channelId: this.selectedChannel.id,
@@ -116,4 +134,14 @@ export class InputfieldComponent {
       console.error('Kein Channel ausgewählt');
     }
   }
+
+  async setSelectedChannel() {
+    let selectedUser = this.userService.getSelectedUser();
+    if (selectedUser) {
+      const channel = await this.channelService.createDirectChannelIfNotExists(selectedUser);
+      this.channelService.selectChannel(channel);
+      this.selectedChannel = channel;
+    }
+  }
+
 }

@@ -17,6 +17,7 @@ import { DatabaseService } from '../../shared/services/database.service';
 import { ChannelService } from '../../shared/services/channel.service';
 import { user } from '@angular/fire/auth';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
+import { MessageType } from '../../shared/components/enums/messagetype';
 
 @Component({
   selector: 'app-chat',
@@ -35,7 +36,8 @@ export class ChatComponent implements OnInit, OnDestroy{
   messages: ChatMessage[] = [];
   users: DABubbleUser[] = [];
   private channelSubscription!: Subscription;
-
+  messageType: MessageType = MessageType.Groups; // eventuell todo: kein Unterschied zwischen Direct und Group Messages
+                                                // dimi fragen
   constructor(
     private dbService: DatabaseService,
     private channelService: ChannelService
