@@ -10,5 +10,4 @@ export interface ChatMessage {
   id?: string;
   edited?: boolean;
   deleted?: boolean;
-  singleMessageId?: string
 }

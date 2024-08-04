@@ -25,7 +25,7 @@ export class ThreadComponent {
 
 
   constructor(public channelService: ChannelService, private userService: UserService) {
-    console.log("hi", this.receiveMessage);
+    console.log("hi", channelService.channel.conversationId);
     
    }
 
