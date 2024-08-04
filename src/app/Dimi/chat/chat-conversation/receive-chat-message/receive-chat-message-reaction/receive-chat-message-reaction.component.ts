@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
-import { ReceiveChatMessageComponent } from '../receive-chat-message.component';
-import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { TicketService } from '../../../../../shared/services/ticket.service';
 
 @Component({

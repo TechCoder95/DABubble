@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { ThreadChatComponent } from "./thread-chat/thread-chat.component";
+import { ThreadReceiveChatComponent } from "./thread-receive-chat/thread-receive-chat.component";
 import { InputfieldComponent } from "../../Dimi/chat/chat-inputfield/inputfield.component";
 import { ChannelService } from '../../shared/services/channel.service';
 import { map, Observable } from 'rxjs';
@@ -11,7 +11,7 @@ import { UserService } from '../../shared/services/user.service';
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [MatCardModule, ThreadChatComponent, InputfieldComponent, CommonModule, ThreadInputComponent],
+  imports: [MatCardModule, ThreadReceiveChatComponent, InputfieldComponent, CommonModule, ThreadInputComponent],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss'
 })

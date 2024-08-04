@@ -11,10 +11,10 @@ import { CommonModule } from '@angular/common';
   selector: 'app-thread-chat',
   standalone: true,
   imports: [ThreadEmojiComponent, ThreadMyEmojiComponent, CommonModule],
-  templateUrl: './thread-chat.component.html',
-  styleUrl: './thread-chat.component.scss'
+  templateUrl: './thread-receive-chat.component.html',
+  styleUrl: './thread-receive-chat.component.scss'
 })
-export class ThreadChatComponent {
+export class ThreadReceiveChatComponent {
   @Input() receiveMessage!: ChatMessage;
   ticket: any;
 
