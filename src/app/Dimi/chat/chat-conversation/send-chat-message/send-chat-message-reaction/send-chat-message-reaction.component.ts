@@ -31,10 +31,13 @@ export class SendChatMessageReactionComponent {
   emojiType!: string;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
-  @Input() sendMessage!:ChatMessage;
+  @Input() sendMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
 
-  constructor(private channelService: ChannelService,private chatService:ChatService) { }
+  constructor(
+    private channelService: ChannelService,
+    private chatService: ChatService
+  ) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -44,7 +47,7 @@ export class SendChatMessageReactionComponent {
     //   this.checkMarkImg = `${basePath}check-mark${hoverSuffix}.png`;
     // } else if (type === 'handsUp') {
     //   this.handsUpImg = `${basePath}hands-up${hoverSuffix}.svg`;
-     if (type === 'addReaction') {
+    if (type === 'addReaction') {
       this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.svg`;
@@ -78,12 +81,13 @@ export class SendChatMessageReactionComponent {
     this.channelService.showSingleThread = true;
   }
 
-  handleEmojis(emojiType:string){
-    let emoji:Emoji = {
+  handleEmojis(emojiType: string) {
+    debugger;
+    let emoji: Emoji = {
       messageId: this.sendMessage.id!,
       type: emojiType,
-      usersIds: [],
-    }
-    this.chatService.sendEmoji(emoji,this.sendMessage,this.user);
+      usersIds: [this.user.id!],
+    };
+    this.chatService.sendEmoji(emoji, this.sendMessage, this.user);
   }
 }
