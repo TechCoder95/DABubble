@@ -183,7 +183,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
   }
 
-  private createGroupChannelNodes(): Node[] {
+  createGroupChannelNodes(): Node[] {
     const nodes = this.channels
       .filter(channel => !channel.isPrivate && this.isDefined(channel))
       .map(channel => ({
@@ -194,59 +194,58 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return nodes;
   }
 
-  // private async createDirectMessageNodes(): Promise<Node[]> {
-  //   const directMessageNodes: Node[] = [];
-  //   for (const channel of this.channels) {
-  //     if (channel.isPrivate && this.isDefined(channel)) {
-  //       const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
-  //       const node: Node = {
-  //         id: channel.id,
-  //         name: channel.assignedUser.length == 1 ? user?.username + " (Du)" : user?.username + "",
-  //         type: 'directMessage' as const,
-  //         children: [],
-  //         avatar: user?.avatar
-  //       };
-  //       directMessageNodes.push(node);
-  //     }
-  //   }
-  //   return directMessageNodes;
-  // }
-
-  private async createDirectMessageNodes(): Promise<Node[]> {
-    const directMessageNodes: Node[] = [];
-    const currentUser = this.userService.activeUser;
+  private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
     for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel)) {
+      if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
+        const node: Node = {
+          id: channel.id,
+          name: currentUser.username + " (Du)",
+          type: 'directMessage' as const,
+          children: [],
+          avatar: currentUser.avatar
+        };
+        return node;
+      }
+    }
+    return null;
+  }
+
+  private async createOtherDirectChannelNodes(currentUser: DABubbleUser): Promise<Node[]> {
+    const directMessageNodes: Node[] = [];
+    for (const channel of this.channels) {
+      if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
         const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
         if (otherUserId) {
           const user = await this.userService.getOneUserbyId(otherUserId);
-          const node: Node = {
-            id: channel.id,
-            name: user?.username || 'Unbekannter Benutzer',
-            type: 'directMessage' as const,
-            children: [],
-            avatar: user?.avatar
-          };
-          directMessageNodes.push(node);
-        } else {
-          const node: Node = {
-            id: channel.id,
-            name: currentUser?.username + " (Du)",
-            type: 'directMessage' as const,
-            children: [],
-            avatar: currentUser?.avatar
-          };
-          directMessageNodes.push(node);
+          if (user) {
+            const node: Node = {
+              id: channel.id,
+              name: user?.username + "",
+              type: 'directMessage' as const,
+              children: [],
+              avatar: user.avatar
+            };
+            directMessageNodes.push(node);
+          }
         }
       }
     }
     return directMessageNodes;
   }
 
-
+  async createDirectMessageNodes(): Promise<Node[]> {
+    const directMessageNodes: Node[] = [];
+    const currentUser = this.userService.activeUser;
+    const ownNode = await this.createOwnDirectChannelNode(currentUser);
+    if (ownNode)
+      directMessageNodes.push(ownNode);
+    const otherNodes = await this.createOtherDirectChannelNodes(currentUser);
+    directMessageNodes.push(...otherNodes);
+    return directMessageNodes;
+  }
 
   private async updateTreeData(): Promise<void> {
-    const groupChannelNodes = this.createGroupChannelNodes();
+    const groupChannelNodes = await this.createGroupChannelNodes();
     const directMessageNodes = await this.createDirectMessageNodes();
 
     const channelsStructure: Node = {
