@@ -17,6 +17,9 @@ export class UserService {
   googleUser!: User;
   guestName: string = 'Guest';
 
+  private selectedUserSubject = new BehaviorSubject<DABubbleUser | null>(null);
+  selectedUser$ = this.selectedUserSubject.asObservable();
+
   //Aktiver User aus der Datenbank Firestore wird in das Subject geschrieben
   activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
   activeUserObserver$ = this.activeUserSubject.asObservable();
@@ -359,9 +362,6 @@ export class UserService {
     });
     return users;
   }
-
-  private selectedUserSubject = new BehaviorSubject<DABubbleUser | null>(null);
-  selectedUser$ = this.selectedUserSubject.asObservable();
 
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
