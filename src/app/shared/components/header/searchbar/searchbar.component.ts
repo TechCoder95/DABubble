@@ -41,8 +41,8 @@ export class SearchbarComponent {
   search() {
     this.searchResults = [];
     this.pushUsers();
-    this.pushChannels();
     this.pushMessages();
+    this.pushChannels();
   }
 
 
@@ -59,7 +59,6 @@ export class SearchbarComponent {
     });
   }
 
-
   pushChannels() {
     this.channels.forEach(channel => {
       if (channel.name?.includes(this.searchInput)) {
@@ -69,9 +68,10 @@ export class SearchbarComponent {
         }
         this.searchResults.push(searchItem);
       }
-    });
+    }
+    );
   }
-
+  
 
   pushMessages() {
     this.messages.forEach(message => {
@@ -84,4 +84,5 @@ export class SearchbarComponent {
       }
     });
   }
+
 }

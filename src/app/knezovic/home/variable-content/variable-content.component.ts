@@ -18,8 +18,7 @@ export class VariableContentComponent {
 
   link!: string;
 
-  constructor(private router: Router, private emailService: EmailService, private authService: AuthenticationService
-  ) {
+  constructor(private router: Router, private emailService: EmailService, private authService: AuthenticationService) {
     this.emailService.handleEmail()
     this.link = this.router.url;
   }

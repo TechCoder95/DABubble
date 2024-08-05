@@ -9,8 +9,18 @@
         @for (result of searchResults; track $index) {
         @if (result.description.includes(searchInput)) {
         <div class="searchResultItem">
+            @if (result.title === "User: ") {
             <p><b>{{result.title}} </b> <br>
                 {{result.description}}</p>
+            }
+            @else if (result.title === "Channel: ") {
+            <p><b>{{result.title}} </b> <br>
+                {{result.description}}</p>
+            }
+            @else if (result.title === "Message: ") {
+            <p><b>{{result.title}} </b> <br>
+                {{result.description}}</p>
+            }
         </div>
         }
         }
