@@ -24,7 +24,6 @@ export class SearchbarComponent {
   messages: ChatMessage[] = [];
 
 
-
   constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService) {
 
     this.channels = [];
@@ -91,7 +90,6 @@ export class SearchbarComponent {
 
 
   openProfile(profileUsername: string) {
-    console.log("User Geöffnet");
     this.userService.users.forEach(user => {
       if (user.username === profileUsername) {
         this.openInfo(user);
