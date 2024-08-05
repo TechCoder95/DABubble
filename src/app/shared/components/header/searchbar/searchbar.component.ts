@@ -117,6 +117,7 @@ export class SearchbarComponent {
     );
   }
 
+  
   scrollToMessage(messageId: string) {
     this.messages.forEach(message => {
       this.openChannel(message.channelName!);
