@@ -43,8 +43,6 @@ export class ChatService {
             }
           });
       });
-    } else {
-      console.error('KEINE NACHRICHTEN');
     }
   }
 

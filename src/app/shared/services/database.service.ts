@@ -216,7 +216,6 @@ export class DatabaseService {
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      console.error('No such document!');
       return null;
     }
   }

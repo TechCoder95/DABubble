@@ -47,18 +47,14 @@ export class ChatConversationComponent
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
-  constructor(
-    private chatService: ChatService,
-    private userService: UserService,
-    private channelService: ChannelService,
-    private databaseService: DatabaseService
-  ) {
-    /*  this.activeUser = this.userService.activeUser; */
+  constructor( private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) { 
+
+
+
   }
 
   ngOnInit() {
     this.subscribeToDataChanges();
-    this.subscribeToChannelChanges();
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
     this.subscribeToActiveUser();
@@ -86,7 +82,6 @@ export class ChatConversationComponent
     if (this.databaseSubscription) {
       return;
     }
-
     this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
       async (channel) => {
         this.allMessages = [];
@@ -96,22 +91,10 @@ export class ChatConversationComponent
     );
   }
 
-  subscribeToChannelChanges() {
-    if (this.channelSubscription) {
-      return;
-    }
-
-    this.channelSubscription = this.channelService.selectedChannel$.subscribe(
-      () => {
-      }
-    );
-  }
-
   subscribeToSendMessages() {
     if (this.sendMessagesSubscription) {
       return;
     }
-
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
         if (message) {
@@ -126,7 +109,6 @@ export class ChatConversationComponent
     if (this.receiveMessagesSubscription) {
       return;
     }
-
     this.receiveMessagesSubscription =
       this.chatService.receiveMessages$.subscribe((message) => {
         if (message !== null) {
@@ -139,9 +121,6 @@ export class ChatConversationComponent
   ngOnDestroy() {
     if (this.databaseSubscription) {
       this.databaseSubscription.unsubscribe();
-    }
-    if (this.channelSubscription) {
-      this.channelSubscription.unsubscribe();
     }
     if (this.sendMessagesSubscription) {
       this.sendMessagesSubscription.unsubscribe();
