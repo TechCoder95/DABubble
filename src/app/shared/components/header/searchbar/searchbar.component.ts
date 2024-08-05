@@ -8,6 +8,7 @@ import { TextChannel } from '../../../interfaces/textchannel';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenUserInfoComponent } from '../../../../rabia/open-user-info/open-user-info.component';
 import { ChannelService } from '../../../services/channel.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-searchbar',
@@ -24,7 +25,7 @@ export class SearchbarComponent {
   messages: ChatMessage[] = [];
 
 
-  constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService) {
+  constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService, public router: Router) {
 
     this.channels = [];
     this.messages = [];
@@ -81,7 +82,8 @@ export class SearchbarComponent {
         let searchItem = {
           title: 'Message: ',
           description: message.message,
-          channel: this.channels.find(channel => channel.id === message.channelId)?.name
+          channel: this.channels.find(channel => channel.id === message.channelId)?.name,
+          id: message.id
         }
         this.searchResults.push(searchItem);
       }
@@ -113,6 +115,23 @@ export class SearchbarComponent {
       }
     }
     );
+  }
+
+  scrollToMessage(messageId: string) {
+    this.messages.forEach(message => {
+      this.openChannel(message.channelName!);
+      if (message.id === messageId) {
+        setTimeout(() => {
+          document.getElementById(message.id!)?.scrollIntoView()
+          setTimeout(() => {
+            document.getElementById(message.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+          }, 1000);
+          setTimeout(() => {
+            document.getElementById(message.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+          }, 2000);
+        }, 500);
+      }
+    });
   }
 
 }
