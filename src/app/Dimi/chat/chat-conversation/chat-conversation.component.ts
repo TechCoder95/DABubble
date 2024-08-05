@@ -1,15 +1,4 @@
-import {
-  AfterViewChecked,
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  Input,
-  OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -40,24 +29,32 @@ export class ChatConversationComponent
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
-  private databaseSubscription!: Subscription;
-  private channelSubscription!: Subscription;
+
+  //Hier befindet sich der 2.Observer!
+
+  // private databaseSubscription!: Subscription;
+
+  @Input() selectedChannel: any;
+
+
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
-  constructor( private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) { 
-
-
+  constructor(private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) {
 
   }
 
   ngOnInit() {
-    this.subscribeToDataChanges();
+    this.selectedChannel.subscribe((channel: any) => {
+      this.chatService.sortMessages(channel);
+      this.allMessages = [];
+    });
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
     this.subscribeToActiveUser();
+
   }
 
   ngAfterViewInit(): void {
@@ -70,6 +67,9 @@ export class ChatConversationComponent
   }
 
   subscribeToActiveUser() {
+    if (this.activeUserSubscription) {
+      return;
+    }
     this.activeUserSubscription =
       this.userService.activeUserObserver$.subscribe((user) => {
         if (user) {
@@ -78,18 +78,16 @@ export class ChatConversationComponent
       });
   }
 
-  subscribeToDataChanges() {
-    if (this.databaseSubscription) {
-      return;
-    }
-    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
-      async (channel) => {
-        this.allMessages = [];
-        await this.chatService.sortMessages(channel);
-        this.scrollToBottom();
-      }
-    );
-  }
+  // subscribeToDataChanges() {
+  //   if (this.databaseSubscription) {
+  //     return;
+  //   }
+  //   this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
+  //     async (channel) => {
+  //       await this.chatService.sortMessages(channel);
+  //     }
+  //   );
+  // }
 
   subscribeToSendMessages() {
     if (this.sendMessagesSubscription) {
@@ -119,9 +117,9 @@ export class ChatConversationComponent
   }
 
   ngOnDestroy() {
-    if (this.databaseSubscription) {
-      this.databaseSubscription.unsubscribe();
-    }
+    // if (this.databaseSubscription) {
+    //   this.databaseSubscription.unsubscribe();
+    // }
     if (this.sendMessagesSubscription) {
       this.sendMessagesSubscription.unsubscribe();
     }

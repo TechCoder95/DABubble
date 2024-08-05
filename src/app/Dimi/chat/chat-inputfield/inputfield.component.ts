@@ -1,4 +1,4 @@
-import { Component, Input, Pipe } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Pipe } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -30,6 +30,10 @@ export class InputfieldComponent {
   selectedChannel: TextChannel | null = null;
   @Input() messageType: MessageType = MessageType.Directs;
 
+  @Output() selectedChannelChanged = new EventEmitter<TextChannel>();
+
+  //hier swillich den aktiven Channel an das parent component weitergeben
+
   constructor(
     public channelService: ChannelService,
     private chatService: ChatService,
@@ -37,9 +41,17 @@ export class InputfieldComponent {
     private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
-    this.channelService.selectedChannel$.subscribe(channel => {
-      this.selectedChannel = channel;
-    });
+    this.subscribeToDataChanges();
+  }
+
+
+   subscribeToDataChanges() {
+    this.databaseService.onDataChange$.subscribe(
+      async (channel) => {
+        this.selectedChannel = channel;
+        this.selectedChannelChanged.emit(channel);
+      }
+    );
   }
 
   changeAddFilesImg(hover: boolean) {
