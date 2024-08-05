@@ -156,4 +156,15 @@ export class InputfieldComponent {
     }
   }
 
+
+
+  handleEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.sendMessage(this.messageType);
+    }
+  }
+
+
+
 }
