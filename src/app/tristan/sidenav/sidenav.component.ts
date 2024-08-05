@@ -100,21 +100,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
       if (googleUser) {
         this.isCurrentUserActivated = googleUser.emailVerified;
-        console.log('Google User aktiviert:', this.isCurrentUserActivated);
       }
     });
 
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
       if (currentUser) {
-        console.log('Benutzer eingeloggt:', this.isLoggedIn);
         if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
           await this.loadUserChannels(currentUser);
           await this.initializeDirectMessageForUser(currentUser);
           await this.updateTreeData();
           await this.loadLastChannelState();
-        } else {
-          console.log('Kein aktiver Benutzer gefunden');
         }
       }
     });
@@ -288,8 +284,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     };
 
     this.TREE_DATA = [channelsStructure, directMessagesStructure];
-    console.log("Gruppenchannels aktualisiert: ", channelsStructure);
-    console.log("Direktnachrichten aktualisiert: ", directMessagesStructure);
     this.dataSource.data = this.TREE_DATA;
     this.treeControl.expandAll();
   }

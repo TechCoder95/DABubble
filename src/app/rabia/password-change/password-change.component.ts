@@ -29,15 +29,10 @@ export class PasswordChangeComponent {
   changepassword() {
     if (this.newPassword === this.newPassword2) {
       this.emailService.handleResetPassword(this.newPassword);
-      //ToDo: Add a success message!
-
       setTimeout(() => {
         this.authService.registerProcess = false;
       this.router.navigate(['/user/login']);
       }, 3000);
-    
-    } else {
-      console.log('Passwords do not match');
     }
   }
 

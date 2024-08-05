@@ -69,7 +69,6 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
             this.allEmojis.push(emoji);
           }
           this.currentEmoji = emoji;
-          console.log(this.allEmojis);
         }
       }
     );

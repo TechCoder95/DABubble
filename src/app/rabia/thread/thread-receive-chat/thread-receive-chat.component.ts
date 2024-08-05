@@ -20,8 +20,6 @@ export class ThreadReceiveChatComponent {
 
   constructor(public ticketService: TicketService, private userService: UserService) {
     this.ticket = this.ticketService.getTicket();
-
-    console.log("jiuiu", this.ticket);
     this.getSenderAvatar();
   }
 

@@ -50,7 +50,6 @@ export class ThreadInputComponent {
     this.addLinkImg = './img/add-link-default.svg';
   }
   sendMessage() {
-    console.log("ho");
     
   }
 }

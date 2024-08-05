@@ -25,7 +25,6 @@ export class OpenProfileCardComponent {
   }
 
   saveProfile() {
-    console.log(this.userService.activeUser);
     this.editProfile();
     this.userService.updateUsername(this.userService.activeUser.username!);
     if (this.emailInput != "") 
@@ -38,7 +37,6 @@ export class OpenProfileCardComponent {
   }
 
   changeAvatar(event: Event): void {
-    console.log("das bild", this.userService.activeUser.avatar);
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];

@@ -44,7 +44,7 @@ export class ChatService {
           });
       });
     } else {
-      console.log('KEINE NACHRICHTEN');
+      console.error('KEINE NACHRICHTEN');
     }
   }
 
@@ -62,46 +62,15 @@ export class ChatService {
       }
       // Füge die Nachricht zum Kanal hinzu
       const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
-    
-
-      console.log("Füge Nachricht dem Kanal hinzu: ", selectedChannelId);
 
       const messageId = messageExists ? message.id! : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
       await this.databaseService.addMessageToChannel(selectedChannelId, messageId);
 
       // Aktualisiere die Nachrichten aus der Datenbank
       await this.databaseService.readDatafromDB('messages', messagesFromDb);
-      console.log('MESSAGESFROMDB', messagesFromDb);
     } catch (error) {
       console.error('Fehler beim Senden der Nachricht:', error);
     }
-
-    /* sendMessage(message: ChatMessage) {
-    let messagesFromDb: ChatMessage[] = [];
-
-    /* this.sendMessages.next(message);
-    this.databaseService.addDataToDB('messages', message).then(() => {
-      this.databaseService
-        .readDatafromDB('messages', messagesFromDb)
-        .then(() => {
-           ;
-          console.log('MESSAGESFROMDB' + messagesFromDb);
-          messagesFromDb.forEach((messageInArray) => {
-            if (
-              messageInArray.channelId ===
-                sessionStorage.getItem('selectedChannelId') &&
-              messageInArray.timestamp === message.timestamp
-            ) {
-              let messageDocId = messageInArray.id;
-              console.log(messageDocId);
-              this.databaseService.addMessageToChannel(
-                sessionStorage.getItem('selectedChannelId')!,
-                messageDocId!
-              );
-            }
-          });
-        });
-    }); */
   }
 
   readMessage(message: ChatMessage) {

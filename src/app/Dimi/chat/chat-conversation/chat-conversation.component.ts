@@ -78,7 +78,6 @@ export class ChatConversationComponent
       this.userService.activeUserObserver$.subscribe((user) => {
         if (user) {
           this.activeUser = user;
-          console.log(this.activeUser);
         }
       });
   }
@@ -104,7 +103,6 @@ export class ChatConversationComponent
 
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
       () => {
-        console.log('CHANNELOBSERVe');
       }
     );
   }
