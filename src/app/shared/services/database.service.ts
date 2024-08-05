@@ -71,7 +71,6 @@ export class DatabaseService {
           array.length = 0;
           array.push(...results);
           resolve();
-          // console.log('Data read successfully');
         },
         reject
       );
@@ -217,7 +216,6 @@ export class DatabaseService {
     if (docSnap.exists()) {
       return docSnap.data();
     } else {
-      console.log('No such document!');
       return null;
     }
   }

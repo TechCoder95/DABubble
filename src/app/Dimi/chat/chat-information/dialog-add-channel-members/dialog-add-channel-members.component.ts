@@ -56,11 +56,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   }
 
   async addUserToChannel(user: DABubbleUser) {
-    console.log("User geladen: ", user);
     const channel = await firstValueFrom(this.channelService.selectedChannel$);
-    console.log('Channel geladen: ', channel);
     if (channel) {
-      console.log("der channel", channel);
       if (!channel.assignedUser.includes(user.id!)) {
         channel.assignedUser.push(user.id!);
         await this.channelService.updateChannel(channel);
