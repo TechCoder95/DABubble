@@ -106,7 +106,7 @@ export class ChannelService {
     if (!existingChannel) {
       let newChannel: TextChannel = {
         id: '',
-        name: `Chat with ${user.username}`,
+        name: user.username!,
         assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
