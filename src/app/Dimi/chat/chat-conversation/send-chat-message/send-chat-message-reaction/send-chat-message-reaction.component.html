@@ -21,7 +21,7 @@
       (mouseleave)="hoverReaction('addReaction', false)"
     />
   </div>
-  <div class="bg">
+  <div class="bg" *ngIf="!isPrivate">
     <img
       (click)="openMessage()"
       [src]="answerImg"

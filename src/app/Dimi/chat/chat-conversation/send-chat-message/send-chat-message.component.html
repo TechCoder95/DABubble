@@ -6,13 +6,14 @@
 
   <section class="message" *ngIf="!inEditMessageMode">
     <app-send-chat-message-reaction
-    [ticket]="sendMessage"
+     [ticket]="sendMessage"
       *ngIf="!sendMessage.deleted"
       (editModeChange)="onEditModeChange($event)"
       (deleteStatusChange)="onDelete($event)"
       class="slide-in"
       [sendMessage]="sendMessage"
       [user]="user"
+      [isPrivate]="isPrivate"
     ></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">

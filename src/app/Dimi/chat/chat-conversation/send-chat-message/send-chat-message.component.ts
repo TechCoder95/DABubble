@@ -34,6 +34,7 @@ import { Subscription } from 'rxjs';
 export class SendChatMessageComponent implements OnInit {
   @Input() user!: DABubbleUser;
   @Input() sendMessage!: ChatMessage;
+  @Input() isPrivate!: boolean | undefined;
   inEditMessageMode: boolean = false;
   messageDeleted: boolean = false;
   @ViewChild('mainContainer') mainContainer!: ElementRef;
@@ -89,7 +90,6 @@ export class SendChatMessageComponent implements OnInit {
   }
 
   async save() {
-     ;
     console.log(this.sendMessage.id);
     this.mainContainer.nativeElement.style.background = 'unset';
     this.sendMessage.edited = true;

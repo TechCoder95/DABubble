@@ -33,7 +33,8 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewInit
+{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -46,6 +47,7 @@ export class ChatConversationComponent
   private receiveMessagesSubscription!: Subscription;
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  isPrivate!: boolean | undefined;
 
   constructor(
     private chatService: ChatService,
@@ -103,8 +105,9 @@ export class ChatConversationComponent
     }
 
     this.channelSubscription = this.channelService.selectedChannel$.subscribe(
-      () => {
+      (channel) => {
         console.log('CHANNELOBSERVe');
+        this.isPrivate = channel?.isPrivate;
       }
     );
   }

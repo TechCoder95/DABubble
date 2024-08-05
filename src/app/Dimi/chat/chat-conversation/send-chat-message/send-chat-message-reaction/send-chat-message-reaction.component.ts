@@ -35,9 +35,11 @@ export class SendChatMessageReactionComponent {
   @Input() sendMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
   @Input() ticket: any;
+  @Input() isPrivate!: boolean | undefined;
 
   constructor(
-    private channelService: ChannelService, private ticketService: TicketService,
+    private channelService: ChannelService,
+    private ticketService: TicketService,
     private chatService: ChatService
   ) {}
 
@@ -81,12 +83,11 @@ export class SendChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
-    console.log("broccoli", this.ticket);
+    console.log('broccoli', this.ticket);
     this.ticketService.setTicket(this.ticket);
   }
 
   handleEmojis(emojiType: string) {
-     ;
     let emoji: Emoji = {
       messageId: this.sendMessage.id!,
       type: emojiType,
@@ -94,5 +95,4 @@ export class SendChatMessageReactionComponent {
     };
     this.chatService.sendEmoji(emoji, this.sendMessage, this.user);
   }
-
 }
