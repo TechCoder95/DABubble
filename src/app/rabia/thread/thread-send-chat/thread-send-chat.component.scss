@@ -1,0 +1,44 @@
+section {
+    padding: 16px 40px;
+    gap: 20px;
+    position: relative;
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 100%;
+    }
+
+    .text-bubble {
+        border-radius: 30px 0 30px 30px;
+        background-color: #797EF3;
+        color: white;
+        padding: 15px;
+    }
+
+    app-thread-my-emoji {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    &:hover {
+        cursor: pointer;
+        background-color: #eceefe;
+
+    }
+
+    &:hover app-thread-my-emoji {
+        animation: slideIn 0.1s forwards;
+    }
+}
+
+@keyframes slideIn {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+     
+    }
+  }

@@ -5,6 +5,7 @@ mat-card {
     flex-direction: column;
     flex-grow: 1;
     justify-content: space-between;
+    width: 25vw;
 }
 
 :host ::ng-deep mat-card {
@@ -15,7 +16,6 @@ mat-card {
 
 main {
     background-color: white;
-    width: 40vh;
     padding: 40px;
     box-sizing: border-box;
     height: 100px;
