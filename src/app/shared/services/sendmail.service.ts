@@ -81,7 +81,7 @@ export class EmailService {
       sessionStorage.setItem('actionCode', actionCode);
     const continueUrl = this.getParameterByName('continueUrl', window.location.href);
     const lang = this.getParameterByName('lang', window.location.href) || 'en';
-    const config = { 'apiKey': "AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE" };
+    const config = { 'apiKey': "AIzaSyCyX84ckP7Gy77ZkfrLaW1NYgFSBWc7-Y8" };
     const auth = getAuth();
     switch (mode) {
       case 'resetPassword':

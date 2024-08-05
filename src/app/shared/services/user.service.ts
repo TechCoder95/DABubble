@@ -53,8 +53,8 @@ export class UserService {
             this.googleUser = googleUser;
           }
           else {
-            if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
-              let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
+            if (sessionStorage.getItem('firebase:authUser:AIzaSyCyX84ckP7Gy77ZkfrLaW1NYgFSBWc7-Y8:[DEFAULT]')) {
+              let user = sessionStorage.getItem('firebase:authUser:AIzaSyCyX84ckP7Gy77ZkfrLaW1NYgFSBWc7-Y8:[DEFAULT]');
               this.googleUser = JSON.parse(user!);
               this.activeGoogleUserSubject.next(this.googleUser);
             }

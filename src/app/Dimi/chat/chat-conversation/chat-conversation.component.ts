@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -22,17 +22,13 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked {
+  implements OnInit, OnDestroy, AfterViewInit {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
-
-  //Hier befindet sich der 2.Observer!
-
-  // private databaseSubscription!: Subscription;
 
   @Input() selectedChannel: any;
 
@@ -42,9 +38,7 @@ export class ChatConversationComponent
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
 
-  constructor(private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) {
-
-  }
+  constructor(private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) { }
 
   ngOnInit() {
     this.selectedChannel.subscribe((channel: any) => {
@@ -57,14 +51,19 @@ export class ChatConversationComponent
 
   }
 
-  ngAfterViewChecked() {
-    this.scrollToBottom();
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 1000);
   }
 
   scrollToBottom() {
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
   }
+
 
   subscribeToActiveUser() {
     if (this.activeUserSubscription) {
@@ -78,16 +77,6 @@ export class ChatConversationComponent
       });
   }
 
-  // subscribeToDataChanges() {
-  //   if (this.databaseSubscription) {
-  //     return;
-  //   }
-  //   this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
-  //     async (channel) => {
-  //       await this.chatService.sortMessages(channel);
-  //     }
-  //   );
-  // }
 
   subscribeToSendMessages() {
     if (this.sendMessagesSubscription) {
@@ -98,7 +87,6 @@ export class ChatConversationComponent
         if (message) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 1000);
       }
     );
   }
@@ -112,14 +100,11 @@ export class ChatConversationComponent
         if (message !== null) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 1000);
       });
   }
 
+
   ngOnDestroy() {
-    // if (this.databaseSubscription) {
-    //   this.databaseSubscription.unsubscribe();
-    // }
     if (this.sendMessagesSubscription) {
       this.sendMessagesSubscription.unsubscribe();
     }
