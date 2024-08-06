@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { DatabaseService } from '../../../../../shared/services/database.service';
 import { UserService } from '../../../../../shared/services/user.service';
+import { ChatService } from '../../../../../shared/services/chat.service';
 
 @Component({
   selector: 'app-reaction',
@@ -15,8 +16,12 @@ import { UserService } from '../../../../../shared/services/user.service';
 export class ReactionComponent {
   @Input() emoji!: Emoji;
   @Input() activeUser!: DABubbleUser;
+  @Input() message!: any;
 
-  constructor(private userService: UserService) {}
+  constructor(
+    private userService: UserService,
+    private chatService: ChatService
+  ) {}
 
   getEmojiImg(emoji: Emoji) {
     if (emoji.type === 'checkMark') {
@@ -40,7 +45,7 @@ export class ReactionComponent {
       if (user && user.username) {
         let username = user.username;
         if (user.id === this.activeUser.id) {
-          username = 'du';
+          username = 'Du';
         }
         emojiReactors.push(username);
       }
@@ -49,8 +54,12 @@ export class ReactionComponent {
   }
 
   usersReactionString(emojiReactors: string[]): string {
-    if (emojiReactors.length === 1 && emojiReactors[0] === 'du') {
-      return 'Du hast reagiert';
+    if (emojiReactors.length === 1 && emojiReactors[0] === 'Du') {
+      return `<strong>${emojiReactors[0]}</strong> hast reagiert`;
+    }
+
+    if (emojiReactors.length === 1 && !emojiReactors.includes('du')) {
+      return `<strong>${emojiReactors[0]}</strong> hat reagiert`;
     }
 
     if (emojiReactors.length > 1) {
@@ -59,5 +68,9 @@ export class ReactionComponent {
     } else {
       return emojiReactors.join('');
     }
+  }
+
+  handleClick(emoji: Emoji) {
+    this.chatService.sendEmoji(emoji, this.message);
   }
 }

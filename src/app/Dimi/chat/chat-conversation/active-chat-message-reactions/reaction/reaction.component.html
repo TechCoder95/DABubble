@@ -1,7 +1,8 @@
-<main>
+<main (click)="handleClick(emoji)">
   <section>
     <img [src]="getEmojiImg(emoji)" />
-    <p>{{ getEmojiReactionUsers() }}</p>
+    <!-- <p>{{ getEmojiReactionUsers() }}</p> -->
+    <p [innerHTML]="getEmojiReactionUsers()"></p>
   </section>
   <img [src]="getEmojiImg(emoji)" />
   <p>{{ getEmojiReactionsAmount(emoji) }}</p>

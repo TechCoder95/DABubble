@@ -24,8 +24,10 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     z-index: 1000;
     color: white;
+    min-width: 130px;
     > p {
       margin: 0;
+      text-align: center;
     }
   }
 

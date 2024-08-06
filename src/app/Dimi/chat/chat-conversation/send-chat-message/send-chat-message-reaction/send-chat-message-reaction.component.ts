@@ -41,7 +41,9 @@ export class SendChatMessageReactionComponent {
     private channelService: ChannelService,
     private ticketService: TicketService,
     private chatService: ChatService
-  ) {}
+  ) {
+    /* console.log('IS PRIVAT VARIABLE IS ' + channelService.channel.isPrivate); */
+  }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';

@@ -1,4 +1,16 @@
-import { AfterContentChecked, AfterContentInit, AfterViewChecked, AfterViewInit, Component, ElementRef, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterContentInit,
+  AfterViewChecked,
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+  ViewChild,
+} from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -22,7 +34,8 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked {
+  implements OnInit, OnDestroy, AfterViewChecked
+{
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -32,14 +45,18 @@ export class ChatConversationComponent
 
   @Input() selectedChannel: any;
 
-
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
-  isPrivate!: boolean | undefined;
+  isPrivate: boolean = this.channelService.channel.isPrivate;
 
-  constructor(private chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService) { }
+  constructor(
+    private chatService: ChatService,
+    private userService: UserService,
+    private channelService: ChannelService,
+    private databaseService: DatabaseService
+  ) {}
 
   ngOnInit() {
     this.selectedChannel.subscribe((channel: any) => {
@@ -49,7 +66,6 @@ export class ChatConversationComponent
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
     this.subscribeToActiveUser();
-
   }
 
   ngAfterViewChecked(): void {
@@ -65,7 +81,6 @@ export class ChatConversationComponent
       this.scrollContainer.nativeElement.scrollHeight;
   }
 
-
   subscribeToActiveUser() {
     if (this.activeUserSubscription) {
       return;
@@ -77,7 +92,6 @@ export class ChatConversationComponent
         }
       });
   }
-
 
   subscribeToSendMessages() {
     if (this.sendMessagesSubscription) {
@@ -103,7 +117,6 @@ export class ChatConversationComponent
         }
       });
   }
-
 
   ngOnDestroy() {
     if (this.sendMessagesSubscription) {
