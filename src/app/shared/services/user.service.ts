@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { setDoc, doc } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
@@ -369,5 +370,29 @@ export class UserService {
     return this.selectedUserSubject.value;
   }
 
+  async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
+    const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
+    const q = query(usersRef, where('uid', '==', uid));
+    const snapshot = await getDocs(q);
 
+    if (snapshot.empty) {
+      return undefined;
+    } else {
+      const doc = snapshot.docs[0];
+      return { id: doc.id, ...doc.data() } as DABubbleUser;
+    }
+  }
+
+  async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
+    try {
+      const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
+      user.id = userRef.id;
+
+      await setDoc(userRef, user);
+    } catch (err) {
+      console.error('Error adding user to DB', err);
+      throw err;
+    }
+  }
+  
 }
