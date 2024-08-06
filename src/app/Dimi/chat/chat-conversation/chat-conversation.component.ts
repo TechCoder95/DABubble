@@ -22,7 +22,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewChecked {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
   activeUser!: DABubbleUser;
@@ -51,7 +51,7 @@ export class ChatConversationComponent
 
   }
 
-  ngAfterViewInit(): void {
+  ngAfterViewChecked(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
     setTimeout(() => {
