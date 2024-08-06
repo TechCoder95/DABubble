@@ -32,7 +32,6 @@ export class DialogChannelMembersComponent implements OnInit {
 
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
-    console.log(this.activeUser);
     this.channelService.selectedChannel$.subscribe((channel) => {
       if (channel) {
         channel.assignedUser.forEach((userID) => {
@@ -43,8 +42,6 @@ export class DialogChannelMembersComponent implements OnInit {
         });
       }
     });
-    console.log(this.channelMembers);
-    console.log(this.activeUser);
   }
 
   addMembers() {

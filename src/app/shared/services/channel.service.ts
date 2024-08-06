@@ -106,7 +106,7 @@ export class ChannelService {
     if (!existingChannel) {
       let newChannel: TextChannel = {
         id: '',
-        name: `Chat with ${user.username}`,
+        name: user.username!,
         assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
@@ -117,13 +117,7 @@ export class ChannelService {
       newChannel.id = newChannelId;
       existingChannel = newChannel;
       this.createdChannel.next(existingChannel);
-
-      console.log('Neuer Direct Message Channel erstellt:', existingChannel);
-      console.log('Dokument ID des neuen Channels:', newChannelId);
-    } else {
-      console.log('Existierender Channel gefunden:', existingChannel);
     }
-
     this.selectChannel(existingChannel);
     return existingChannel;
   }
