@@ -46,7 +46,6 @@ export class MemberComponent implements OnDestroy {
   }
 
   openInfo() {
-    console.log('das ist der: ', this.member);
     this.dialog.open(OpenUserInfoComponent, {
       data: { member: this.member },
     });

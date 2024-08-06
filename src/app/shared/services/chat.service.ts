@@ -26,13 +26,13 @@ export class ChatService {
   ) { }
 
   async sortMessages(channel: TextChannel) {
-    /* debugger; */
+    /*  ; */
     if (channel && channel.conversationId) {
       channel.conversationId.forEach((messageID) => {
         this.databaseService
           .readDataByID('messages', messageID)
           .then((messageFromDb) => {
-            /*  debugger; */
+            /*   ; */
             let message = messageFromDb as ChatMessage;
             if (message !== null) {
               if (message.senderName === this.userService.activeUser.username) {
@@ -84,7 +84,7 @@ export class ChatService {
       this.databaseService
         .readDatafromDB('messages', messagesFromDb)
         .then(() => {
-          debugger;
+           ;
           console.log('MESSAGESFROMDB' + messagesFromDb);
           messagesFromDb.forEach((messageInArray) => {
             if (
@@ -124,7 +124,7 @@ export class ChatService {
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
 
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
-    debugger;
+     ;
     if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
       this.handleExistingEmojiOnMessage(
         newEmoji,
@@ -225,7 +225,7 @@ export class ChatService {
   }
 
   userHasAlreadyReacted(emoji: Emoji, existingEmoji: Emoji): boolean {
-    debugger;
+     ;
     const userHasAlreadyReacted = existingEmoji.usersIds.includes(
       emoji.usersIds[0]
     );

@@ -1,4 +1,4 @@
-import { Component, Inject, inject } from '@angular/core';
+import { Component, Inject, inject, Input } from '@angular/core';
 import { UserService } from '../../shared/services/user.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -17,7 +17,6 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 export class OpenUserInfoComponent {
 
   readonly dialogRef = inject(MatDialogRef<OpenUserInfoComponent>);
-
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public userService: UserService) {
     

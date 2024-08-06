@@ -5,6 +5,9 @@ import { UserService } from '../../../services/user.service';
 import { DatabaseService } from '../../../services/database.service';
 import { ChatMessage } from '../../../interfaces/chatmessage';
 import { TextChannel } from '../../../interfaces/textchannel';
+import { MatDialog } from '@angular/material/dialog';
+import { OpenUserInfoComponent } from '../../../../rabia/open-user-info/open-user-info.component';
+import { ChannelService } from '../../../services/channel.service';
 
 @Component({
   selector: 'app-searchbar',
@@ -22,7 +25,7 @@ export class SearchbarComponent {
 
 
 
-  constructor(private userService: UserService, private databaseService: DatabaseService) {
+  constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService) {
 
     this.channels = [];
     this.messages = [];
@@ -41,8 +44,8 @@ export class SearchbarComponent {
   search() {
     this.searchResults = [];
     this.pushUsers();
-    this.pushChannels();
     this.pushMessages();
+    this.pushChannels();
   }
 
 
@@ -51,10 +54,10 @@ export class SearchbarComponent {
       if (user.username?.includes(this.searchInput)) {
         let searchItem = {
           title: 'User: ',
-          description: user.username
+          description: user.username,
+          photo: user.avatar
         }
         this.searchResults.push(searchItem);
-
       }
     });
   }
@@ -78,10 +81,40 @@ export class SearchbarComponent {
       if (message.message?.includes(this.searchInput) && message.deleted === false) {
         let searchItem = {
           title: 'Message: ',
-          description: message.message
+          description: message.message,
+          channel: this.channels.find(channel => channel.id === message.channelId)?.name
         }
         this.searchResults.push(searchItem);
       }
     });
   }
+
+
+  openProfile(profileUsername: string) {
+    console.log("User Geöffnet");
+    this.userService.users.forEach(user => {
+      if (user.username === profileUsername) {
+        this.openInfo(user);
+      }
+    }
+    );
+  }
+
+
+  openInfo(user: any) {
+    this.dialog.open(OpenUserInfoComponent, {
+      data: { member: user },
+    });
+  }
+
+
+  openChannel(channelName: string) {
+    this.channels.forEach(channel => {
+      if (channel.name === channelName) {
+        this.channelService.selectChannel(channel);
+      }
+    }
+    );
+  }
+
 }

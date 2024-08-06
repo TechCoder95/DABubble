@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
-import { AuthenticationService } from '../../../shared/services/authentication.service';
-import { EmailService } from '../../../shared/services/sendmail.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service'; // Add this line
 
 @Component({
   selector: 'app-login',
@@ -80,11 +79,19 @@ export class LoginComponent {
   }
 
 
+  /**
+   * Logs in the user as a guest.
+   */
   loginAsGuest() {
       this.authService.signInAsGuest();
   }
 
 
+  /**
+   * Initiates the password reset process.
+   * Sets the registerProcess flag of the authService to true.
+   * Navigates to the '/user/password-reset' route.
+   */
   forgotPW() {
     this.authService.registerProcess = true;
     this.router.navigate(['/user/password-reset']);

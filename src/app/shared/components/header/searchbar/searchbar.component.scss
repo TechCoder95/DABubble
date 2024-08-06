@@ -19,7 +19,7 @@ input[type="search"] {
 }
 
 
-img{
+.search{
     position: relative;
     right: 60px;
     cursor: pointer;
@@ -40,14 +40,32 @@ img{
     z-index: 100;
 }
 
+.card-groesse{
+    max-height: 500px;
+    overflow: auto;
+    padding: 10px;
+}
+
 .searchResultItem{
     display: flex;
     align-items: center;
+    width: 95%;
     padding: 5px;
+    margin-right: 10px;
     border-radius: 25px;
     cursor: pointer;
 
     &:hover{
         background-color: #ECEEFE;
     }
+}
+
+.profilePhoto{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+p{
+    font-weight: bold;
 }
