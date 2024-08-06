@@ -17,6 +17,7 @@ import { TicketService } from '../../../../../shared/services/ticket.service';
 export class ReceiveChatMessageReactionComponent {
   @Input() ticket: any;
   @Input() user!: DABubbleUser;
+  @Input() isPrivate!: boolean | undefined;
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
@@ -49,8 +50,6 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   handleEmojis(emojiType: string) {
-    debugger;
-    console.log(this.ticket);
     let emoji: Emoji = {
       messageId: this.ticket.id!,
       type: emojiType,
