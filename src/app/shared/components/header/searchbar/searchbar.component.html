@@ -20,11 +20,11 @@
                 <p>#{{result.description}}</p>
             </div>
             }
-            @else if (result.title === "Message: ") {
-            <div class="w-full flex align-items-center gap-2" (click)="scrollToMessage(result.id)">
-                <p>{{result.description + " "}} </p><span>in</span><p>{{"#" + result.channel}}</p>
+            <!-- @else if (result.title === "Message: ") {
+            <div class="w-full" (click)="scrollToMessage(result.id)">
+                <p>{{result.description + " "}} </p>in<p>{{"#" + result.channel}}</p>
             </div>
-            }
+            } -->
         </div>
         }
         }
