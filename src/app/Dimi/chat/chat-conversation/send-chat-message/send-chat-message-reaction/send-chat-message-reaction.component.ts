@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
+import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
@@ -33,11 +34,16 @@ export class SendChatMessageReactionComponent {
   @Output() deleteStatusChange = new EventEmitter<boolean>();
   @Input() sendMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
+  @Input() ticket: any;
+  @Input() isPrivate!: boolean | undefined;
 
   constructor(
     private channelService: ChannelService,
+    private ticketService: TicketService,
     private chatService: ChatService
-  ) {}
+  ) {
+    /* console.log('IS PRIVAT VARIABLE IS ' + channelService.channel.isPrivate); */
+  }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -79,15 +85,15 @@ export class SendChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
+    this.ticketService.setTicket(this.ticket);
   }
 
   handleEmojis(emojiType: string) {
-    debugger;
     let emoji: Emoji = {
       messageId: this.sendMessage.id!,
       type: emojiType,
       usersIds: [this.user.id!],
     };
-    this.chatService.sendEmoji(emoji, this.sendMessage, this.user);
+    this.chatService.sendEmoji(emoji, this.sendMessage);
   }
 }

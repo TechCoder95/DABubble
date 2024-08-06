@@ -9,11 +9,12 @@ import { Router } from '@angular/router';
 import { DABubbleUser } from '../../interfaces/user';
 import { isLoggedIn } from '../../guards/authguard.guard';
 import { User } from 'firebase/auth';
+import { SearchbarComponent } from "./searchbar/searchbar.component";
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, SearchbarComponent],
   providers: [],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
@@ -26,7 +27,10 @@ export class HeaderComponent {
 
   searchInput: string = '';
 
-  constructor(private AuthService: AuthenticationService, private userService: UserService, private router: Router) {
+  url: string = window.location.pathname;
+  route: string = this.url.split('/')[1];
+
+  constructor(public AuthService: AuthenticationService, private userService: UserService, private router: Router) {
 
     this.userService.activeUserObserver$.subscribe((user: DABubbleUser) => {
       if(window.location.pathname !== '/user/chooseAvatar') {
@@ -48,7 +52,16 @@ export class HeaderComponent {
   }
 
   goToRegister() {
+    this.AuthService.registerProcess = true;
     this.router.navigate(['/user/register']);
+  }
+
+  checkGuest(){
+    if (sessionStorage.getItem('userLoginGuest')) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

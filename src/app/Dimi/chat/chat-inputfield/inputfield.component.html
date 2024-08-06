@@ -2,6 +2,8 @@
   <textarea
     name=""
     id=""
+    
+    (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="placeholderText | async"
   ></textarea>
@@ -36,7 +38,7 @@
     <img
       src="./img/send-message.svg"
       class="send-message-btn"
-      (click)="sendMessage()"
+      (click)="sendMessage(messageType)"
     />
   </div>
 </section>

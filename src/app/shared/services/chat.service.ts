@@ -26,23 +26,23 @@ export class ChatService {
   ) {}
 
   async sortMessages(channel: TextChannel) {
-    /* debugger; */
+    /*  ; */
     if (channel && channel.conversationId) {
       channel.conversationId.forEach((messageID) => {
         this.databaseService
           .readDataByID('messages', messageID)
           .then((messageFromDb) => {
-            /*  debugger; */
+            /*   ; */
             let message = messageFromDb as ChatMessage;
-            if (message.senderName === this.userService.activeUser.username) {
-              this.readMessage(message);
-            } else {
-              this.receiveMessage(message);
+            if (message !== null) {
+              if (message.senderName === this.userService.activeUser.username) {
+                this.readMessage(message);
+              } else {
+                this.receiveMessage(message);
+              }
             }
           });
       });
-    } else {
-      console.log('KEINE NACHRICHTEN');
     }
   }
 
@@ -60,6 +60,7 @@ export class ChatService {
       }
       // Füge die Nachricht zum Kanal hinzu
       const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
+
       const messageId = messageExists
         ? message.id!
         : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
@@ -70,37 +71,9 @@ export class ChatService {
 
       // Aktualisiere die Nachrichten aus der Datenbank
       await this.databaseService.readDatafromDB('messages', messagesFromDb);
-      console.log('MESSAGESFROMDB', messagesFromDb);
     } catch (error) {
       console.error('Fehler beim Senden der Nachricht:', error);
     }
-
-    /* sendMessage(message: ChatMessage) {
-    let messagesFromDb: ChatMessage[] = [];
-
-    /* this.sendMessages.next(message);
-    this.databaseService.addDataToDB('messages', message).then(() => {
-      this.databaseService
-        .readDatafromDB('messages', messagesFromDb)
-        .then(() => {
-          debugger;
-          console.log('MESSAGESFROMDB' + messagesFromDb);
-          messagesFromDb.forEach((messageInArray) => {
-            if (
-              messageInArray.channelId ===
-                sessionStorage.getItem('selectedChannelId') &&
-              messageInArray.timestamp === message.timestamp
-            ) {
-              let messageDocId = messageInArray.id;
-              console.log(messageDocId);
-              this.databaseService.addMessageToChannel(
-                sessionStorage.getItem('selectedChannelId')!,
-                messageDocId!
-              );
-            }
-          });
-        });
-    }); */
   }
 
   readMessage(message: ChatMessage) {
@@ -112,50 +85,42 @@ export class ChatService {
   }
 
   /* ==================================================================== */
-  async sendEmoji(
-    newEmoji: Emoji,
-    message: ChatMessage,
-    activeUser: DABubbleUser
-  ) {
+  async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
     let emojisFromDB: Emoji[] = [];
 
     /* Lese die vorhandenen Emojies aus der Datenbank */
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
 
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
-    debugger;
     if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
-      this.handleExistingEmojiOnMessage(
-        newEmoji,
-        message,
-        emojisFromDB,
-        activeUser
-      );
-      /* this.sendMessagesEmoji.next(); */
+      this.handleExistingEmojiOnMessage(newEmoji, message, emojisFromDB);
     } else {
-      /* Wenn Emoji bei Nachricht noch gar nicht existiert */
-      newEmoji.id = await this.getNewEmojiId(newEmoji);
-      await this.databaseService.addEmojiToMessage(
-        newEmoji.messageId,
-        newEmoji.id!
-      );
-      this.sendMessagesEmoji.next(newEmoji);
+      this.createNewEmojiOnMessage(newEmoji);
     }
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+  }
+
+  async createNewEmojiOnMessage(newEmoji: Emoji) {
+    /* Wenn Emoji bei Nachricht noch gar nicht existiert */
+    newEmoji.id = await this.getNewEmojiId(newEmoji);
+    await this.databaseService.addEmojiToMessage(
+      newEmoji.messageId,
+      newEmoji.id!
+    );
+    this.sendMessagesEmoji.next(newEmoji);
   }
 
   handleExistingEmojiOnMessage(
     emoji: Emoji,
     message: ChatMessage,
-    emojisFromDB: Emoji[],
-    activeUser: DABubbleUser
+    emojisFromDB: Emoji[]
   ) {
     const existingEmoji: any = this.getExistingEmoji(emoji, emojisFromDB);
     /* Überprüfen, ob der activeUser schon reagiert hat */
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
-      this.eliminateUserReaction(existingEmoji, activeUser);
+      this.eliminateUserReaction(existingEmoji, message);
     } else {
-      this.addUserReaction(existingEmoji, activeUser);
+      this.addUserReaction(existingEmoji, message);
     }
   }
 
@@ -177,10 +142,10 @@ export class ChatService {
     return emojiDoc ? emojiDoc.id : undefined;
   }
 
-  async eliminateUserReaction(existingEmoji: Emoji, activeUser: DABubbleUser) {
-    const activeUserId = activeUser.id;
+  async eliminateUserReaction(existingEmoji: Emoji, message: ChatMessage) {
+    /*  const activeUserId = activeUser.id; */
     existingEmoji.usersIds = existingEmoji.usersIds.filter(
-      (userId) => userId !== activeUserId
+      (userId) => userId !== message.senderId
     );
 
     if (existingEmoji.usersIds.length === 0) {
@@ -199,8 +164,8 @@ export class ChatService {
     this.sendMessagesEmoji.next(existingEmoji);
   }
 
-  async addUserReaction(existingEmoji: Emoji, activeUser: DABubbleUser) {
-    existingEmoji.usersIds.push(activeUser.id!);
+  async addUserReaction(existingEmoji: Emoji, message: ChatMessage) {
+    existingEmoji.usersIds.push(message.senderId);
     await this.databaseService.updateDataInDB(
       'emojies',
       existingEmoji.id!,
@@ -224,7 +189,6 @@ export class ChatService {
   }
 
   userHasAlreadyReacted(emoji: Emoji, existingEmoji: Emoji): boolean {
-    debugger;
     const userHasAlreadyReacted = existingEmoji.usersIds.includes(
       emoji.usersIds[0]
     );

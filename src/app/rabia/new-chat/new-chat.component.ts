@@ -7,6 +7,7 @@ import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { InputfieldComponent } from "../../Dimi/chat/chat-inputfield/inputfield.component";
 import { CommonModule } from '@angular/common';
+import { MessageType } from '../../shared/components/enums/messagetype';
 
 @Component({
   selector: 'app-new-chat',
@@ -20,7 +21,7 @@ export class NewChatComponent implements OnInit {
   searchResults: DABubbleUser[] = [];
   searchQuery: string | undefined;
   isSelectingUser: boolean = false;
-  selectedUser: DABubbleUser | undefined;
+  messageType = MessageType.NewDirect;
 
   constructor(private userService: UserService) { }
 
@@ -42,7 +43,6 @@ export class NewChatComponent implements OnInit {
     this.searchQuery = user.username;
     this.searchControl.setValue(user.username);
     this.searchResults = [];
-    this.selectedUser = user;
-    console.log(this.selectedUser);
+    this.userService.setSelectedUser(user);
   }
 }

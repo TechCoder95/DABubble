@@ -1,0 +1,66 @@
+.inputfield {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px;
+    height: 100px;
+    border-radius: 20px;
+    width: -webkit-fill-available;
+    margin: 20px;
+    border: 1px solid rgba(173, 176, 217, 1);
+  
+    > textarea {
+      resize: none;
+      border: none;
+      outline: none;
+      background-color: rgb(253, 251, 255);
+      font-size: 16px;
+  
+      &::placeholder {
+        color: rgba(104, 104, 104, 1);
+      }
+    }
+  }
+  
+  .arrange-input-options {
+    display: flex;
+    justify-content: space-between;
+  
+    > .send-message-btn {
+      cursor: pointer;
+      width: 24px;
+      height: 56px;
+  
+      &:hover {
+        opacity: 0.6;
+      }
+    }
+  }
+  
+  .chat-options {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  
+    > .emoji {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      padding: 8px;
+      cursor: pointer;
+  
+      &:hover {
+        background-color: #eceefe;
+        border-radius: 100%;
+      }
+  
+      > img {
+        cursor: pointer;
+        height: 20px;
+        width: 20px;
+      }
+    }
+  }
+  

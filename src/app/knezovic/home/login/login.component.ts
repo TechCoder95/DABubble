@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
-import { AuthenticationService } from '../../../shared/services/authentication.service';
-import { EmailService } from '../../../shared/services/sendmail.service';
+import { AuthenticationService } from '../../../shared/services/authentication.service'; // Add this line
 
 @Component({
   selector: 'app-login',
@@ -16,10 +15,9 @@ import { EmailService } from '../../../shared/services/sendmail.service';
 })
 export class LoginComponent {
 
-  constructor(private UserService: UserService, private router: Router, public AuthService: AuthenticationService) {
-
+  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService) {
     this.UserService.activeUserObserver$.subscribe((user) => {
-      if (localStorage.getItem('userLogin') || sessionStorage.getItem('userLogin')) {
+      if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
         this.router.navigate(['/home']);
       }
     });
@@ -36,8 +34,7 @@ export class LoginComponent {
    * Initiates the Google login process.
    */
   googleLogin() {
-    // alert("In Bearbeitung");
-    this.AuthService.googleSignIn();
+      this.authService.googleSignIn();
   }
 
 
@@ -47,14 +44,12 @@ export class LoginComponent {
    */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
-      console.info('Form is valid');
-      this.login();
+        this.login();
     }
     else {
       console.info('Form is not valid');
       ngForm.resetForm();
     }
-    ngForm.resetForm();
   }
 
 
@@ -62,7 +57,7 @@ export class LoginComponent {
    * Performs the login operation.
    */
   login() {
-    this.AuthService.mailSignIn(this.email, this.epassword)
+    this.authService.mailSignIn(this.email, this.epassword)
   }
 
 
@@ -79,18 +74,31 @@ export class LoginComponent {
    * Navigates to the registration page.
    */
   goToRegister() {
+    this.authService.registerProcess = true;
     this.router.navigate(['/user/register']);
   }
 
+
+  /**
+   * Logs in the user as a guest.
+   */
   loginAsGuest() {
-    this.AuthService.signInAsGuest();
+      this.authService.signInAsGuest();
   }
 
+
+  /**
+   * Initiates the password reset process.
+   * Sets the registerProcess flag of the authService to true.
+   * Navigates to the '/user/password-reset' route.
+   */
   forgotPW() {
+    this.authService.registerProcess = true;
     this.router.navigate(['/user/password-reset']);
   }
 
+
   changeInput() {
-    this.AuthService.fehlerMeldung = "";
+    this.authService.fehlerMeldung = "";
   }
 }

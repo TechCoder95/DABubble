@@ -1,6 +1,6 @@
-import { Component, Pipe } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Pipe } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { map, Observable, pipe } from 'rxjs';
+import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -8,6 +8,9 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
+import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { MessageType } from '../../../shared/components/enums/messagetype';
+
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -16,12 +19,20 @@ import { DatabaseService } from '../../../shared/services/database.service';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
+
+
 export class InputfieldComponent {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
   activeUser!: DABubbleUser;
+  selectedChannel: TextChannel | null = null;
+  @Input() messageType: MessageType = MessageType.Directs;
+
+  @Output() selectedChannelChanged = new EventEmitter<TextChannel>();
+
+  //hier swillich den aktiven Channel an das parent component weitergeben
 
   constructor(
     public channelService: ChannelService,
@@ -30,6 +41,17 @@ export class InputfieldComponent {
     private databaseService: DatabaseService
   ) {
     this.activeUser = this.userService.activeUser;
+    this.subscribeToDataChanges();
+  }
+
+
+   subscribeToDataChanges() {
+    this.databaseService.onDataChange$.subscribe(
+      async (channel) => {
+        this.selectedChannel = channel;
+        this.selectedChannelChanged.emit(channel);
+      }
+    );
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -74,33 +96,75 @@ export class InputfieldComponent {
     );
   }
 
-  async sendMessage() {
-    let message: ChatMessage = {
-      channelId: this.channelService.channel.id,
-      channelName: this.channelService.channel.name,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      emoticons: [],
-      edited: false,
-      deleted: false,
-    };
-
-    if (message.message !== '') {
-      try {
-        const newMessageId = await this.databaseService.addChannelDataToDB(
-          'messages',
-          message
-        );
-        message.id = newMessageId;
-        this.chatService.sendMessage(message);
-        this.textareaValue = '';
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
-      }
-    } else {
-      alert('Du musst eine Nachricht eingeben');
+  async sendMessage(type: MessageType) {
+    switch (type) {
+      case MessageType.Groups:
+        await this.send();
+        break;
+      case MessageType.Directs:
+        await this.send();
+        break;
+      case MessageType.Threads:
+        await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
+        break;
+      case MessageType.NewDirect:
+        await this.setSelectedChannel();
+        await this.send();
+        break;
+      default:
+        break;
     }
   }
+
+  async send() {
+    if (this.selectedChannel) {
+      let message: ChatMessage = {
+        channelId: this.selectedChannel.id,
+        channelName: this.selectedChannel.name,
+        message: this.textareaValue,
+        timestamp: new Date().getTime(),
+        senderName: this.activeUser.username || 'guest',
+        senderId: this.activeUser.id || 'senderIdDefault',
+        emoticons: [],
+        edited: false,
+        deleted: false,
+      };
+
+      if (message.message !== '') {
+        try {
+          const newMessageId = await this.databaseService.addChannelDataToDB('messages', message);
+          message.id = newMessageId;
+          this.chatService.sendMessage(message);
+          this.textareaValue = '';
+        } catch (error) {
+          console.error('Fehler beim Senden der Nachricht:', error);
+        }
+      } else {
+        alert('Du musst eine Nachricht eingeben');
+      }
+    } else {
+      console.error('Kein Channel ausgewählt');
+    }
+  }
+
+  async setSelectedChannel() {
+    let selectedUser = this.userService.getSelectedUser();
+    if (selectedUser) {
+      const channel = await this.channelService.createDirectChannelIfNotExists(selectedUser);
+      this.channelService.selectChannel(channel);
+      this.selectedChannel = channel;
+    }
+  }
+
+
+
+  handleEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+      this.sendMessage(this.messageType);
+    }
+  }
+
+
+
 }

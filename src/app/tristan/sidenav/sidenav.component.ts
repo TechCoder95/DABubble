@@ -49,7 +49,7 @@ interface FlattenedNode {
     ChatComponent,
     NewChatComponent,
     ThreadComponent
-],
+  ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
@@ -82,34 +82,47 @@ export class SidenavComponent implements OnInit, OnDestroy {
   selectedChannel: TextChannel | null = null;
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
-  isCurrentUserActivated: boolean | undefined;
   isLoggedIn: boolean | undefined;
+  isCurrentUserActivated: boolean | undefined;
 
 
+  private createdChannelSubscription: Subscription | undefined;
   private userSubscription: Subscription | undefined;
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService) { }
+  constructor(
+    private dbService: DatabaseService,
+    private dialog: MatDialog,
+    public channelService: ChannelService,
+    private userService: UserService
+  ) { }
 
   async ngOnInit() {
     this.userService.activeGoogleUserSubject.subscribe(async (googleUser) => {
       if (googleUser) {
         this.isCurrentUserActivated = googleUser.emailVerified;
       }
-    }
-    );
+    });
 
     this.userSubscription = this.userService.activeUserObserver$.subscribe(async (currentUser) => {
       this.isLoggedIn = currentUser?.isLoggedIn;
-      if ( this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
-        await this.loadUserChannels(currentUser);
-        await this.initializeDirectMessageForUser(currentUser);
-        await this.updateTreeData();
-        await this.loadLastChannelState();
-      } else {
-        console.log('Kein aktiver Benutzer gefunden');
+      if (currentUser) {
+        if (this.isCurrentUserActivated) { // Hier muss das verfiedEmal vom googleUser überprüft werden
+          await this.loadUserChannels(currentUser);
+          await this.initializeDirectMessageForUser(currentUser);
+          await this.updateTreeData();
+          await this.loadLastChannelState();
+        }
+      }
+    });
+
+    this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
+      if (channel) {
+        this.channels.push(channel);
+        this.updateTreeData();
       }
     });
   }
+
 
   async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
@@ -122,10 +135,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-
   async ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.createdChannelSubscription) {
+      this.createdChannelSubscription.unsubscribe();
     }
   }
 
@@ -186,7 +201,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
   }
 
-  private createGroupChannelNodes(): Node[] {
+  createGroupChannelNodes(): Node[] {
     const nodes = this.channels
       .filter(channel => !channel.isPrivate && this.isDefined(channel))
       .map(channel => ({
@@ -197,26 +212,58 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return nodes;
   }
 
-  private async createDirectMessageNodes(): Promise<Node[]> {
-    const directMessageNodes: Node[] = [];
+  private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
     for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel)) {
-        const user = await this.userService.getOneUserbyId(channel.assignedUser[0]);
+      if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
         const node: Node = {
           id: channel.id,
-          name: user?.username + " (Du)" || 'Unbekannter Benutzer',
+          name: currentUser.username + " (Du)",
           type: 'directMessage' as const,
           children: [],
-          avatar: user?.avatar
+          avatar: currentUser.avatar
         };
-        directMessageNodes.push(node);
+        return node;
+      }
+    }
+    return null;
+  }
+
+  private async createOtherDirectChannelNodes(currentUser: DABubbleUser): Promise<Node[]> {
+    const directMessageNodes: Node[] = [];
+    for (const channel of this.channels) {
+      if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
+        const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
+        if (otherUserId) {
+          const user = await this.userService.getOneUserbyId(otherUserId);
+          if (user) {
+            const node: Node = {
+              id: channel.id,
+              name: user?.username + "",
+              type: 'directMessage' as const,
+              children: [],
+              avatar: user.avatar
+            };
+            directMessageNodes.push(node);
+          }
+        }
       }
     }
     return directMessageNodes;
   }
 
-  private async updateTreeData(): Promise<void> {
-    const groupChannelNodes = this.createGroupChannelNodes();
+  async createDirectMessageNodes(): Promise<Node[]> {
+    const directMessageNodes: Node[] = [];
+    const currentUser = this.userService.activeUser;
+    const ownNode = await this.createOwnDirectChannelNode(currentUser);
+    if (ownNode)
+      directMessageNodes.push(ownNode);
+    const otherNodes = await this.createOtherDirectChannelNodes(currentUser);
+    directMessageNodes.push(...otherNodes);
+    return directMessageNodes;
+  }
+
+  async updateTreeData(): Promise<void> {
+    const groupChannelNodes = await this.createGroupChannelNodes();
     const directMessageNodes = await this.createDirectMessageNodes();
 
     const channelsStructure: Node = {

@@ -32,17 +32,17 @@ export class AddUserComponent {
   readonly dialog = inject(MatDialog);
 
 
-  constructor(private UserService: UserService, private router: Router, private AuthService : AuthenticationService) { }
+  constructor(private UserService: UserService, private router: Router, private authService : AuthenticationService) { }
 
 
   register(mail: string, password: string, username: string) {
-    this.AuthService.MailSignUp(mail, password, username);
+    this.authService.MailSignUp(mail, password, username);
     this.acceptPolicy = true;
   }
 
+
   onSubmit(ngForm: NgForm) {
-    if (ngForm.submitted && ngForm.form.valid) {
-      console.info('Form is valid');
+    if (ngForm.submitted && ngForm.form.valid && this.acceptPolicy) {
       this.register(this.user.mail, this.user.password, this.user.username);
       this.getUsers();
     }
@@ -52,22 +52,20 @@ export class AddUserComponent {
     }
   }
 
+
   getUsers() {
     this.UserService.getUsersFromDB();
 
     if (this.UserService.users.length > 0) {
       const lastUser = this.UserService.users[this.UserService.users.length - 1];
     } else {
-      console.log("Das Array ist leer.");
+      console.error("Das Array ist leer.");
     }
   }
 
+  
   goToLogin() {
+    this.authService.registerProcess = false;
     this.router.navigate(['/user/login']);
   }
-
-  // checkFields() {
-  //   this.acceptPolicy = this.user.fullName !== '' && this.user.email !== '' && this.user.password !== '';
-  // }
-
 }

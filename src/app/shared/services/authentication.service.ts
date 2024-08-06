@@ -1,10 +1,18 @@
 import { Injectable } from '@angular/core';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, getRedirectResult, setPersistence, browserLocalPersistence, checkActionCode, applyActionCode, sendPasswordResetEmail, verifyPasswordResetCode, confirmPasswordReset, updateEmail } from "firebase/auth";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  GoogleAuthProvider,
+  signInWithPopup,
+  getRedirectResult,
+  setPersistence,
+  browserLocalPersistence,
+  browserSessionPersistence
+} from "firebase/auth";
 import { UserService } from './user.service';
-import { Router } from '@angular/router';
 import { EmailService } from './sendmail.service';
-import { updateProfile } from "firebase/auth";
-import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +30,11 @@ export class AuthenticationService {
   provider = new GoogleAuthProvider();
   fehlerMeldung: string = "";
 
+  loginSuccess: boolean = false;
+  showMessage: boolean = false;
+
+  registerProcess:boolean = false;
+
   //#region [Mail Authentication]
 
   /**
@@ -36,11 +49,12 @@ export class AuthenticationService {
         // Signed up 
         this.userService.googleUser = userCredential.user
         this.userService.register(email, username, this.userService.googleUser.uid);
-        localStorage.setItem("uId", this.userService.googleUser.uid);
+        sessionStorage.setItem("uId", this.userService.googleUser.uid);
         this.emailService.sendMail();
-        // this.userService.login(this.userService.googleUser) // Dieser User muss in den Choose Avatar gesetzt werden!
+        this.registerProcess = true;
       })
       .catch((error) => {
+        window.location.reload(); //Todo: Muss noch richtig gemacht werden
         const errorCode = error.code;
         const errorMessage = error.message;
         // ..
@@ -58,20 +72,27 @@ export class AuthenticationService {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
         // Signed in 
+        this.showMessage = true;
+        this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
+      
+        setTimeout(() => {
         this.userService.login(userCredential.user)
         this.setLocalPersistent();
+        }, 1000);
+      
       })
       .catch((error) => {
-        if (error.code === "auth/user-not-found") 
+        this.showMessage = false;
+        if (error.code === "auth/user-not-found")
           this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
-        else if (error.code === "auth/network-request-failed") 
+        else if (error.code === "auth/network-request-failed")
           this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
-        else if (error.code === "auth/too-many-requests") 
+        else if (error.code === "auth/too-many-requests")
           this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
-        else if (error.code === "auth/invalid-credential") 
+        else if (error.code === "auth/invalid-credential")
           this.fehlerMeldung = "Ungültige Anmeldeinformationen";
-        else if (error.code === "auth/invalid-email") 
+        else if (error.code === "auth/invalid-email")
           this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
         else {
           alert(error.message);
@@ -92,13 +113,18 @@ export class AuthenticationService {
   googleSignIn() {
     signInWithPopup(this.auth, this.provider)
       .then((result) => {
+        this.showMessage = true;
+        this.loginSuccess = true;
         // This gives you a Google Access Token. You can use it to access the Google API.
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
+        
+        setTimeout(() => {
         this.userService.login(result.user)
         this.setLocalPersistent();
+        }, 1000);
       }).catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
@@ -157,7 +183,11 @@ export class AuthenticationService {
    * Signs in the user as a guest.
    */
   signInAsGuest() {
+    this.showMessage = true;
+    this.loginSuccess = true;
+    setTimeout(() => {
     this.userService.guestLogin();
+    }, 1000);
   }
 
 
@@ -169,8 +199,11 @@ export class AuthenticationService {
     * @returns A Promise that resolves when the session persistence is set successfully, or rejects with an error if there was an issue.
     */
   setLocalPersistent() {
-    setPersistence(this.auth, browserLocalPersistence)
-      .then(() => { })
+    setPersistence(this.auth, browserSessionPersistence)
+      .then(() => {
+        this.showMessage = false;
+        this.loginSuccess = false;
+       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

@@ -4,11 +4,13 @@
   <app-send-chat-message
     [sendMessage]="message"
     [user]="activeUser"
+    [isPrivate]="isPrivate"
   ></app-send-chat-message>
   }@else {
   <app-receive-chat-message
     [receiveMessage]="message"
     [user]="activeUser"
+    [isPrivate]="isPrivate"
   ></app-receive-chat-message>
   } }
 </main>

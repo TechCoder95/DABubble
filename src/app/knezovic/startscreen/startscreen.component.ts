@@ -15,7 +15,7 @@ export class StartscreenComponent {
   constructor(private router: Router) { }
 
   ngOnInit(): void {
-    if (localStorage.getItem('userLogin')) {
+    if (sessionStorage.getItem('userLogin')) {
       this.router.navigate(['/home']);
     }
     else {

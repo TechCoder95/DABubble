@@ -1,5 +1,5 @@
 <mat-card>
   <app-chat-information></app-chat-information>
-  <app-chat-conversation #scrollContainer></app-chat-conversation>
-  <app-chat-inputfield></app-chat-inputfield>
+  <app-chat-conversation [selectedChannel]="selectedChannelChanged.asObservable()" #scrollContainer></app-chat-conversation>
+  <app-chat-inputfield [messageType]="messageType" (selectedChannelChanged)="selectedChannel($event)"></app-chat-inputfield>
 </mat-card>

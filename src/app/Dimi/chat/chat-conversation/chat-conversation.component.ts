@@ -1,7 +1,8 @@
 import {
+  AfterContentChecked,
+  AfterContentInit,
   AfterViewChecked,
   AfterViewInit,
-  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -33,7 +34,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements OnInit, OnDestroy, AfterViewChecked
 {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
@@ -41,32 +42,38 @@ export class ChatConversationComponent
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
-  private databaseSubscription!: Subscription;
-  private channelSubscription!: Subscription;
+
+  @Input() selectedChannel: any;
+
   private sendMessagesSubscription!: Subscription;
   private receiveMessagesSubscription!: Subscription;
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  isPrivate: boolean = this.channelService.channel.isPrivate;
 
   constructor(
     private chatService: ChatService,
     private userService: UserService,
     private channelService: ChannelService,
     private databaseService: DatabaseService
-  ) {
-    /*  this.activeUser = this.userService.activeUser; */
-  }
+  ) {}
 
   ngOnInit() {
-    this.subscribeToDataChanges();
-    this.subscribeToChannelChanges();
+    this.selectedChannel.subscribe((channel: any) => {
+      this.chatService.sortMessages(channel);
+      this.allMessages = [];
+    });
     this.subscribeToSendMessages();
     this.subscribeToReceiveMessages();
     this.subscribeToActiveUser();
   }
 
-  ngAfterViewInit(): void {
-    setTimeout(() => this.scrollToBottom(), 1000);
+  ngAfterViewChecked(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 1000);
   }
 
   scrollToBottom() {
@@ -75,52 +82,26 @@ export class ChatConversationComponent
   }
 
   subscribeToActiveUser() {
+    if (this.activeUserSubscription) {
+      return;
+    }
     this.activeUserSubscription =
       this.userService.activeUserObserver$.subscribe((user) => {
         if (user) {
           this.activeUser = user;
-          console.log(this.activeUser);
         }
       });
-  }
-
-  subscribeToDataChanges() {
-    if (this.databaseSubscription) {
-      return;
-    }
-
-    this.databaseSubscription = this.databaseService.onDataChange$.subscribe(
-      async (channel) => {
-        this.allMessages = [];
-        await this.chatService.sortMessages(channel);
-        this.scrollToBottom();
-      }
-    );
-  }
-
-  subscribeToChannelChanges() {
-    if (this.channelSubscription) {
-      return;
-    }
-
-    this.channelSubscription = this.channelService.selectedChannel$.subscribe(
-      () => {
-        console.log('CHANNELOBSERVe');
-      }
-    );
   }
 
   subscribeToSendMessages() {
     if (this.sendMessagesSubscription) {
       return;
     }
-
     this.sendMessagesSubscription = this.chatService.sendMessages$.subscribe(
       (message) => {
         if (message) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 1000);
       }
     );
   }
@@ -129,23 +110,15 @@ export class ChatConversationComponent
     if (this.receiveMessagesSubscription) {
       return;
     }
-
     this.receiveMessagesSubscription =
       this.chatService.receiveMessages$.subscribe((message) => {
         if (message !== null) {
           this.allMessages.push(message);
         }
-        setTimeout(() => this.scrollToBottom(), 1000);
       });
   }
 
   ngOnDestroy() {
-    if (this.databaseSubscription) {
-      this.databaseSubscription.unsubscribe();
-    }
-    if (this.channelSubscription) {
-      this.channelSubscription.unsubscribe();
-    }
     if (this.sendMessagesSubscription) {
       this.sendMessagesSubscription.unsubscribe();
     }

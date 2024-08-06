@@ -4,7 +4,7 @@
     <h4>{{ checkDate(receiveMessage.timestamp) }}</h4>
   </section>
 
-  <section class="message">
+  <section class="message" id="{{receiveMessage.id}}">
     <img [src]="getSenderAvatar()" />
     <div class="message-information">
       <div class="sender-and-time">
@@ -22,14 +22,12 @@
       </p>
       <div>
         <app-active-chat-message-reactions
-          [sendMessage]="receiveMessage"
+          [message]="receiveMessage"
           [user]="user"
         ></app-active-chat-message-reactions>
       </div>
     </div>
-    <app-receive-chat-message-reaction
-      *ngIf="!receiveMessage.deleted"
-      class="slide-in"
-    ></app-receive-chat-message-reaction>
+    <app-receive-chat-message-reaction [ticket]="receiveMessage" [isPrivate]="isPrivate" *ngIf="!receiveMessage.deleted"
+      class="slide-in"></app-receive-chat-message-reaction>
   </section>
 </main>
