@@ -1,10 +1,16 @@
 <main #scrollContainer>
-  @for (message of allMessages; track $index) {
-  @if (message.senderName === this.activeUser.username) {
-  <app-send-chat-message [sendMessage]="message" [user]="activeUser"></app-send-chat-message>
-  }
-  @else {
-  <app-receive-chat-message [receiveMessage]="message" [user]="activeUser"></app-receive-chat-message>
-  }
-  }
+  @for (message of allMessages; track $index) { @if (message.senderName ===
+  this.activeUser.username) {
+  <app-send-chat-message
+    [sendMessage]="message"
+    [user]="activeUser"
+    [isPrivate]="isPrivate"
+  ></app-send-chat-message>
+  }@else {
+  <app-receive-chat-message
+    [receiveMessage]="message"
+    [user]="activeUser"
+    [isPrivate]="isPrivate"
+  ></app-receive-chat-message>
+  } }
 </main>

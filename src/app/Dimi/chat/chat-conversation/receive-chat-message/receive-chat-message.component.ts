@@ -20,6 +20,7 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
+  @Input() isPrivate!: boolean | undefined;
 
   constructor(private userService: UserService) {}
 
