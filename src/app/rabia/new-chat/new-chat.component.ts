@@ -44,6 +44,5 @@ export class NewChatComponent implements OnInit {
     this.searchControl.setValue(user.username);
     this.searchResults = [];
     this.userService.setSelectedUser(user);
-    console.log("Ausgewählter User: ", user);
   }
 }

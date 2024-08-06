@@ -49,7 +49,6 @@ export class ReceiveChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
-    console.log('blumenkohl', this.ticket);
     this.ticketService.setTicket(this.ticket);
   }
 

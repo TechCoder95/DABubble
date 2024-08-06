@@ -80,7 +80,6 @@ export class SendChatMessageComponent implements OnInit {
   onEditModeChange(event: boolean) {
     this.inEditMessageMode = event;
     this.mainContainer.nativeElement.style.background = 'Antiquewhite';
-    console.log(this.inEditMessageMode);
   }
 
   cancel() {
@@ -90,7 +89,6 @@ export class SendChatMessageComponent implements OnInit {
   }
 
   async save() {
-    console.log(this.sendMessage.id);
     this.mainContainer.nativeElement.style.background = 'unset';
     this.sendMessage.edited = true;
     await this.databaseService.updateDataInDB(

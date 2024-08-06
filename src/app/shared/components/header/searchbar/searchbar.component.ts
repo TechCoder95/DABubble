@@ -8,6 +8,7 @@ import { TextChannel } from '../../../interfaces/textchannel';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenUserInfoComponent } from '../../../../rabia/open-user-info/open-user-info.component';
 import { ChannelService } from '../../../services/channel.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-searchbar',
@@ -24,8 +25,7 @@ export class SearchbarComponent {
   messages: ChatMessage[] = [];
 
 
-
-  constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService) {
+  constructor(private userService: UserService, private databaseService: DatabaseService, public dialog: MatDialog, private channelService: ChannelService, public router: Router) {
 
     this.channels = [];
     this.messages = [];
@@ -82,7 +82,8 @@ export class SearchbarComponent {
         let searchItem = {
           title: 'Message: ',
           description: message.message,
-          channel: this.channels.find(channel => channel.id === message.channelId)?.name
+          channel: this.channels.find(channel => channel.id === message.channelId)?.name,
+          id: message.id
         }
         this.searchResults.push(searchItem);
       }
@@ -91,7 +92,6 @@ export class SearchbarComponent {
 
 
   openProfile(profileUsername: string) {
-    console.log("User Geöffnet");
     this.userService.users.forEach(user => {
       if (user.username === profileUsername) {
         this.openInfo(user);
@@ -105,6 +105,8 @@ export class SearchbarComponent {
     this.dialog.open(OpenUserInfoComponent, {
       data: { member: user },
     });
+
+    this.resetInput();
   }
 
 
@@ -113,8 +115,29 @@ export class SearchbarComponent {
       if (channel.name === channelName) {
         this.channelService.selectChannel(channel);
       }
-    }
-    );
+    });
+    this.resetInput();
   }
 
+
+  scrollToMessage(messageId: string) {
+    let message = this.messages.find(message => message.id === messageId);
+    let x = message as unknown as ChatMessage;
+    this.openChannel(x.channelName!);
+    if (x.id === messageId) {
+      document.getElementById(x.id!)?.scrollIntoView()
+      setTimeout(() => {
+        document.getElementById(x.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      }, 1000);
+      setTimeout(() => {
+        document.getElementById(x.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+        this.resetInput();
+      }, 2000);
+    }
+
+  }
+
+  resetInput() {
+    this.searchInput = '';
+  }
 }

@@ -2,6 +2,8 @@
   <textarea
     name=""
     id=""
+    
+    (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="placeholderText | async"
   ></textarea>

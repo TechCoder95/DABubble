@@ -83,7 +83,6 @@ export class SendChatMessageReactionComponent {
 
   openMessage() {
     this.channelService.showSingleThread = true;
-    console.log('broccoli', this.ticket);
     this.ticketService.setTicket(this.ticket);
   }
 

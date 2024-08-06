@@ -4,7 +4,7 @@
     <h4>{{ checkDate(receiveMessage.timestamp) }}</h4>
   </section>
 
-  <section class="message">
+  <section class="message" id="{{receiveMessage.id}}">
     <img [src]="getSenderAvatar()" />
     <div class="message-information">
       <div class="sender-and-time">
