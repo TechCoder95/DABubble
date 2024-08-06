@@ -16,15 +16,11 @@ import { TicketService } from '../../../../../shared/services/ticket.service';
 })
 export class ReceiveChatMessageReactionComponent {
   @Input() ticket: any;
-  @Input() isPrivate!: boolean | undefined;
-
+  @Input() user!: DABubbleUser;
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.svg';
-
-  @Input() receivedMessage!: ChatMessage;
-  @Input() user!: DABubbleUser;
 
   constructor(
     private channelService: ChannelService,
@@ -53,11 +49,13 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   handleEmojis(emojiType: string) {
+    debugger;
+    console.log(this.ticket);
     let emoji: Emoji = {
-      messageId: this.receivedMessage.id!,
+      messageId: this.ticket.id!,
       type: emojiType,
-      usersIds: [this.user.id!],
+      usersIds: [this.ticket.senderId],
     };
-    this.chatService.sendEmoji(emoji, this.receivedMessage, this.user);
+    this.chatService.sendEmoji(emoji, this.ticket);
   }
 }
