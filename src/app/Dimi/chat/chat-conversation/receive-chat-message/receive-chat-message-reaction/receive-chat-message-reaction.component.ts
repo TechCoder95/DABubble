@@ -53,7 +53,7 @@ export class ReceiveChatMessageReactionComponent {
     let emoji: Emoji = {
       messageId: this.ticket.id!,
       type: emojiType,
-      usersIds: [this.ticket.senderId],
+      usersIds: [this.user.id!],
     };
     this.chatService.sendEmoji(emoji, this.ticket);
   }

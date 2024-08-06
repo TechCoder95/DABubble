@@ -56,13 +56,11 @@ export class ReactionComponent {
   usersReactionString(emojiReactors: string[]): string {
     if (emojiReactors.length === 1 && emojiReactors[0] === 'Du') {
       return `<strong>${emojiReactors[0]}</strong> hast reagiert`;
-    }
-
-    if (emojiReactors.length === 1 && !emojiReactors.includes('du')) {
+    } else if (emojiReactors.length === 1 && !emojiReactors.includes('du')) {
       return `<strong>${emojiReactors[0]}</strong> hat reagiert`;
-    }
-
-    if (emojiReactors.length > 1) {
+    } else if (emojiReactors.length === 2) {
+      return `<strong>${emojiReactors[0]}</strong> und <strong>${emojiReactors[1]}</strong> haben reagiert`;
+    } else if (emojiReactors.length > 2) {
       const lastUser = emojiReactors.pop();
       return `${emojiReactors.join(', ')} und ${lastUser} haben reagiert`;
     } else {
@@ -70,7 +68,7 @@ export class ReactionComponent {
     }
   }
 
-  handleClick(emoji: Emoji) {
+  /* handleClick(emoji: Emoji) {
     this.chatService.sendEmoji(emoji, this.message);
-  }
+  } */
 }
