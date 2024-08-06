@@ -1,4 +1,7 @@
-<section *ngIf="allEmojis.length > 0">
+<section
+  *ngIf="allEmojis.length > 0"
+  [ngClass]="{ activeUserClass: user.id === message.senderId }"
+>
   @for (emoji of allEmojis; track $index) {
   <app-reaction
     [emoji]="emoji"

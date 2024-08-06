@@ -4,9 +4,9 @@
     <h4>{{ checkDate(sendMessage.timestamp) }}</h4>
   </section>
 
-  <section class="message" *ngIf="!inEditMessageMode"  id="{{sendMessage.id}}">
+  <section class="message" *ngIf="!inEditMessageMode" id="{{ sendMessage.id }}">
     <app-send-chat-message-reaction
-    [ticket]="sendMessage"
+      [ticket]="sendMessage"
       *ngIf="!sendMessage.deleted"
       (editModeChange)="onEditModeChange($event)"
       (deleteStatusChange)="onDelete($event)"
@@ -30,7 +30,7 @@
       </p>
       <div>
         <app-active-chat-message-reactions
-          [sendMessage]="sendMessage"
+          [message]="sendMessage"
           [user]="user"
         ></app-active-chat-message-reactions>
       </div>

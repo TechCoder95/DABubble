@@ -16,17 +16,17 @@ import { TicketService } from '../../../../../shared/services/ticket.service';
 })
 export class ReceiveChatMessageReactionComponent {
   @Input() ticket: any;
-  
+  @Input() user!: DABubbleUser;
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.svg';
 
-  @Input() receivedMessage!: ChatMessage;
-  @Input() user!: DABubbleUser;
-
-
-  constructor(private channelService: ChannelService, private ticketService: TicketService, private chatService: ChatService) {}
+  constructor(
+    private channelService: ChannelService,
+    private ticketService: TicketService,
+    private chatService: ChatService
+  ) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -36,26 +36,26 @@ export class ReceiveChatMessageReactionComponent {
     //   this.checkMarkImg = `${basePath}check-mark${hoverSuffix}.png`;
     // } else if (type === 'handsUp') {
     //   this.handsUpImg = `${basePath}hands-up${hoverSuffix}.png`;
-     if (type === 'addReaction') {
+    if (type === 'addReaction') {
       this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
       this.answerImg = `${basePath}answer${hoverSuffix}.svg`;
     }
   }
 
-
   openMessage() {
     this.channelService.showSingleThread = true;
     this.ticketService.setTicket(this.ticket);
   }
 
-  
   handleEmojis(emojiType: string) {
+    debugger;
+    console.log(this.ticket);
     let emoji: Emoji = {
-      messageId: this.receivedMessage.id!,
+      messageId: this.ticket.id!,
       type: emojiType,
-      usersIds: [this.user.id!],
+      usersIds: [this.ticket.senderId],
     };
-    this.chatService.sendEmoji(emoji, this.receivedMessage, this.user);
+    this.chatService.sendEmoji(emoji, this.ticket);
   }
 }
