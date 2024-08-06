@@ -91,21 +91,23 @@ export class ChatService {
     /* Lese die vorhandenen Emojies aus der Datenbank */
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
 
-    debugger;
-
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
     if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
       this.handleExistingEmojiOnMessage(newEmoji, message, emojisFromDB);
     } else {
-      /* Wenn Emoji bei Nachricht noch gar nicht existiert */
-      newEmoji.id = await this.getNewEmojiId(newEmoji);
-      await this.databaseService.addEmojiToMessage(
-        newEmoji.messageId,
-        newEmoji.id!
-      );
-      this.sendMessagesEmoji.next(newEmoji);
+      this.createNewEmojiOnMessage(newEmoji);
     }
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+  }
+
+  async createNewEmojiOnMessage(newEmoji: Emoji) {
+    /* Wenn Emoji bei Nachricht noch gar nicht existiert */
+    newEmoji.id = await this.getNewEmojiId(newEmoji);
+    await this.databaseService.addEmojiToMessage(
+      newEmoji.messageId,
+      newEmoji.id!
+    );
+    this.sendMessagesEmoji.next(newEmoji);
   }
 
   handleExistingEmojiOnMessage(

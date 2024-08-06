@@ -1,4 +1,8 @@
-<div>
+<main>
+  <section>
+    <img [src]="getEmojiImg(emoji)" />
+    <p>{{ getEmojiReactionUsers() }}</p>
+  </section>
   <img [src]="getEmojiImg(emoji)" />
-  <p>{{getEmojiReactionsAmount(emoji)}}</p>
-</div>
+  <p>{{ getEmojiReactionsAmount(emoji) }}</p>
+</main>

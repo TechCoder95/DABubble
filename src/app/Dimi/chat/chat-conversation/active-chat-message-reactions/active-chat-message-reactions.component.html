@@ -5,6 +5,7 @@
   @for (emoji of allEmojis; track $index) {
   <app-reaction
     [emoji]="emoji"
+    [activeUser]="user"
     *ngIf="isReactionForCurrentMessage(emoji)"
   ></app-reaction>
   }
