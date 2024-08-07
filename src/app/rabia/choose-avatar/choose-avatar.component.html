@@ -18,7 +18,7 @@
             <p>Aus der Liste wählen</p>
         </div>
 
-        <div class="flex gap-2">
+        <div class="flex gap-2 mobile-view">
             <div class="cycle-avatar flex w-full" *ngFor="let image of images">
                 <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
             </div>
