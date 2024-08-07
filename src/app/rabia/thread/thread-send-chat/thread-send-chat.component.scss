@@ -18,8 +18,9 @@ section {
 
     app-thread-my-emoji {
         position: absolute;
-        left: 0;
+        left: -100%;
         top: 0;
+        z-index: -1;
     }
 
     &:hover {
@@ -35,10 +36,12 @@ section {
 
 @keyframes slideIn {
     from {
-      transform: translateX(0);
+        left: -100%;
+        z-index: -1;
     }
     to {
-      transform: translateX(-100%);
+      left: 8px;
+      z-index: 0;
      
     }
   }
