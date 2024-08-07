@@ -30,6 +30,7 @@ export class ChatInformationComponent {
   isPrivateChat!: boolean;
   privateChatPartner?: DABubbleUser;
   privatChatAvatar!: string | undefined;
+  privateChatPartnerName!:string | undefined;
   /*  private channelSubscription!: Subscription; */
 
   constructor(
@@ -181,10 +182,12 @@ export class ChatInformationComponent {
       (userID) => userID !== this.activeUser.id
     );
 
-    this.privateChatPartner = privateChatPartnerID
-      ? this.userService.getOneUserbyId(privateChatPartnerID)
-      : undefined;
-
+    if(privateChatPartnerID){
+      this.privateChatPartner = this.userService.getOneUserbyId(privateChatPartnerID!);
+      this.privateChatPartnerName = this.privateChatPartner?.username
+    }else{
+      this.privateChatPartnerName = this.activeUser.username+' (Du)';
+    }
     this.returnChatPartnerAvatar(selectChannel);
   }
 

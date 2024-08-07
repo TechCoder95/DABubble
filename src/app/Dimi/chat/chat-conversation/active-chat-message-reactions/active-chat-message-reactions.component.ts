@@ -7,6 +7,8 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { Subscription } from 'rxjs';
 import { ReactionComponent } from './reaction/reaction.component';
+import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
+import { tick } from '@angular/core/testing';
 
 @Component({
   selector: 'app-active-chat-message-reactions',
@@ -16,7 +18,7 @@ import { ReactionComponent } from './reaction/reaction.component';
   styleUrl: './active-chat-message-reactions.component.scss',
 })
 export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
-  @Input() sendMessage!: any;
+  @Input() message!: any;
   @Input() user!: DABubbleUser;
   activeUser!: DABubbleUser;
   private emojiSubscription!: Subscription;
@@ -43,12 +45,14 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
     }
   }
 
-  isReactionForCurrentMessage(emoji: Emoji): boolean {
-    return emoji.messageId === this.sendMessage.id;
+  isReactionForCurrentMessage(emoji: Emoji) {
+      return emoji.messageId === this.message.id;
+   
   }
 
   loadEmojis() {
-    const emojisOnMessage = this.sendMessage.emoticons;
+    let emojisOnMessage = this.message.emoticons;
+
     emojisOnMessage.forEach(async (emojiID: string) => {
       const emoji: any = await this.databaseService.readDataByID(
         'emojies',

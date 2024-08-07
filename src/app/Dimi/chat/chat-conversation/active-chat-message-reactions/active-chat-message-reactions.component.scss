@@ -1,5 +1,17 @@
 section {
   display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.activeUserClass{
+  display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
+
+/* .receiveClass{
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+} */

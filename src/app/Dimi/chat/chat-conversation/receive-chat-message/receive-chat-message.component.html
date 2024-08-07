@@ -22,12 +22,12 @@
       </p>
       <div>
         <app-active-chat-message-reactions
-          [sendMessage]="receiveMessage"
+          [message]="receiveMessage"
           [user]="user"
         ></app-active-chat-message-reactions>
       </div>
     </div>
-    <app-receive-chat-message-reaction [ticket]="receiveMessage" *ngIf="!receiveMessage.deleted"
+    <app-receive-chat-message-reaction [user]="user" [ticket]="receiveMessage" [isPrivate]="isPrivate" *ngIf="!receiveMessage.deleted"
       class="slide-in"></app-receive-chat-message-reaction>
   </section>
 </main>

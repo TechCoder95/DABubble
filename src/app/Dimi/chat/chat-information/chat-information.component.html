@@ -9,9 +9,16 @@
       [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
       <img [src]="tagImg" class="tag-img" *ngIf="!isPrivateChat" />
-      <img [src]="privatChatAvatar" class="privat-chat-avatar" *ngIf="isPrivateChat" />
+      <img
+        [src]="privatChatAvatar"
+        class="privat-chat-avatar"
+        *ngIf="isPrivateChat"
+      />
 
-      <h2>{{ (channelService.selectedChannel$ | async)?.name }}</h2>
+      <h2 *ngIf="!isPrivateChat">
+        {{ (channelService.selectedChannel$ | async)?.name }}
+      </h2>
+      <h2 *ngIf="isPrivateChat">{{ privateChatPartnerName }}</h2>
       <img class="arrow-down" [src]="arrowImg" *ngIf="!isPrivateChat" />
     </div>
 
