@@ -24,7 +24,7 @@
       [receiveMessage]="message"
       [user]="activeUser"
       [isPrivate]="isPrivate"
-      [repeatedMessage]="false"
+      [repeatedMessage]="true"
     ></app-receive-chat-message>
 
     } @else if (message.senderName === this.activeUser.username) {

@@ -42,8 +42,7 @@ export class SendChatMessageComponent implements OnInit {
   emojiType!: string;
   /* @Output() valueChanged = new EventEmitter<string>(); */
   activeChatMessageReactionsComponent: any;
-  @Input() repeatedMessage!: boolean;
-  messageIsFromSameUser!: boolean;
+  @Input() repeatedMessage!: boolean | undefined;
 
   constructor(
     private userService: UserService,
@@ -52,7 +51,6 @@ export class SendChatMessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
-    this.messageIsFromSameUser = this.repeatedMessage;
   }
 
   getUserName() {
