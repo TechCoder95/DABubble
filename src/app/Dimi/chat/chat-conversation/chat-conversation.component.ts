@@ -93,14 +93,14 @@ export class ChatConversationComponent
     return groupedMessages;
   }
 
-  // Method to format the date with the day of the week
   formatDateWithDay(timestamp: any): string {
     const messageDate = new Date(timestamp);
     const options: Intl.DateTimeFormatOptions = {
-      weekday: 'long', // 'long' is a valid value
-      year: 'numeric', // 'numeric' is a valid value
-      month: 'long', // 'long' is a valid value
-      day: 'numeric' // 'numeric' is a valid value
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'Europe/Berlin',
     };
     return messageDate.toLocaleDateString('de-DE', options);
   }

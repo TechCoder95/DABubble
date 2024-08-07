@@ -21,6 +21,7 @@ export class ReceiveChatMessageComponent {
   @Input() receiveMessage!: ChatMessage;
   @Input() user!: DABubbleUser;
   @Input() isPrivate!: boolean | undefined;
+  @Input() repeatedMessage!:boolean | undefined;
 
   constructor(private userService: UserService) {}
 
