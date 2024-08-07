@@ -6,12 +6,12 @@
   >
     <img [src]="getSenderAvatar()" *ngIf="!repeatedMessage" />
     <div class="message-information">
-      <div class="sender-and-time">
+      <div class="sender-and-time" [ngClass]="{ 'jc-end': repeatedMessage }">
         <h5 *ngIf="!repeatedMessage">{{ receiveMessage.senderName }}</h5>
         <p>{{ receiveMessage.timestamp | date : "HH:mm" }} Uhr</p>
       </div>
       <span class="actual-message" *ngIf="!receiveMessage.deleted">
-        <p>
+        <p [ngClass]="{ 'mw-70': repeatedMessage }">
           {{ receiveMessage.message }}
           <span *ngIf="receiveMessage.edited">bearbeitet</span>
         </p>
