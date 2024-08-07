@@ -1,8 +1,8 @@
 <main #mainContainer>
-  <section class="message-day" *ngIf="!inEditMessageMode">
+  <!-- <section class="message-day" *ngIf="!inEditMessageMode">
     <p></p>
     <h4>{{ checkDate(sendMessage.timestamp) }}</h4>
-  </section>
+  </section> -->
 
   <section class="message" *ngIf="!inEditMessageMode" id="{{ sendMessage.id }}">
     <app-send-chat-message-reaction

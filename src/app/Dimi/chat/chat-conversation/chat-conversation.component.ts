@@ -42,8 +42,6 @@ export class ChatConversationComponent
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
-  sortedMessages: ChatMessage[] = [];
-  groupedMessages: { [key: string]: ChatMessage[] } = {};
 
   @Input() selectedChannel: any;
 
@@ -73,9 +71,38 @@ export class ChatConversationComponent
   ngAfterViewChecked(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
-   /*  setTimeout(() => {
+    /*  setTimeout(() => {
       this.scrollToBottom();
     }, 1000); */
+  }
+
+  checkDate(timestamp: number): string {
+    let messageDate = new Date(timestamp);
+    return messageDate.toLocaleDateString();
+  }
+
+  groupMessagesByDate() {
+    let groupedMessages: any = {};
+    this.allMessages.forEach((message) => {
+      let date = this.checkDate(message.timestamp);
+      if (!groupedMessages[date]) {
+        groupedMessages[date] = [];
+      }
+      groupedMessages[date].push(message);
+    });
+    return groupedMessages;
+  }
+
+  // Method to format the date with the day of the week
+  formatDateWithDay(timestamp: any): string {
+    const messageDate = new Date(timestamp);
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long', // 'long' is a valid value
+      year: 'numeric', // 'numeric' is a valid value
+      month: 'long', // 'long' is a valid value
+      day: 'numeric' // 'numeric' is a valid value
+    };
+    return messageDate.toLocaleDateString('de-DE', options);
   }
 
   scrollToBottom() {
