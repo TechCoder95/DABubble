@@ -5,6 +5,7 @@ import { TicketService } from '../../../shared/services/ticket.service';
 import { UserService } from '../../../shared/services/user.service';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
+import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 
 
 @Component({
@@ -15,7 +16,7 @@ import { CommonModule } from '@angular/common';
   styleUrl: './thread-receive-chat.component.scss'
 })
 export class ThreadReceiveChatComponent {
-  @Input() receiveMessage!: ChatMessage;
+  @Input() receiveMessage!: ThreadMessage;
   ticket: any;
 
   constructor(public ticketService: TicketService, private userService: UserService) {

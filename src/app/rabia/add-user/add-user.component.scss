@@ -94,3 +94,53 @@ input {
     font-size: 14px;
     margin: 5px;
 }
+
+@media (max-width: 650px) {
+
+    .container {
+        padding: 40px 8px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    .container {
+        padding: 16px 8px;
+    }
+
+    .arrow-back {
+        top: 24px;
+    }
+
+    mat-card-title {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 450px) {
+
+    .arrow-back {
+        top: 16px;
+    }
+
+    mat-card-title {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 400px) {
+
+    .arrow-back {
+        top: 11px;
+        left: -8px;
+    }
+
+    mat-card-title {
+        font-size: 24px;
+    }
+
+    mat-checkbox {
+        padding-bottom: 8px;
+    }
+}
