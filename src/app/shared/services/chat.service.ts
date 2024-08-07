@@ -193,4 +193,6 @@ export class ChatService {
     );
     return userHasAlreadyReacted;
   }
+
+  /* ========================================================== */
 }
