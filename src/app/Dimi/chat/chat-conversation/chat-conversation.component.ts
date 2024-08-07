@@ -42,6 +42,8 @@ export class ChatConversationComponent
   sendChatMessages: ChatMessage[] = [];
   receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
+  sortedMessages: ChatMessage[] = [];
+  groupedMessages: { [key: string]: ChatMessage[] } = {};
 
   @Input() selectedChannel: any;
 
@@ -71,9 +73,9 @@ export class ChatConversationComponent
   ngAfterViewChecked(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
-    setTimeout(() => {
+   /*  setTimeout(() => {
       this.scrollToBottom();
-    }, 1000);
+    }, 1000); */
   }
 
   scrollToBottom() {

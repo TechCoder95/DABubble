@@ -1,31 +1,32 @@
 <main>
-  <div class="bg">
-    <img
-      [src]="checkMarkImg"
-      (mouseenter)="hoverReaction('checkMark', true)"
-      (mouseleave)="hoverReaction('checkMark', false)"
-      (click)="handleEmojis('checkMark')"
-    />
+  <div
+    class="bg"
+    (mouseenter)="hoverReaction('checkMark', true)"
+    (mouseleave)="hoverReaction('checkMark', false)"
+    (click)="handleEmojis('checkMark')"
+  >
+    <img [src]="checkMarkImg" />
   </div>
-  <div class="bg">
-    <img
-      [src]="handsUpImg"
-      (mouseenter)="hoverReaction('handsUp', true)"
-      (mouseleave)="hoverReaction('handsUp', false)"
-    />
+  <div
+    class="bg"
+    (mouseenter)="hoverReaction('handsUp', true)"
+    (mouseleave)="hoverReaction('handsUp', false)"
+  >
+    <img [src]="handsUpImg" (click)="handleEmojis('handsUp')" />
   </div>
-  <div class="bg">
-    <img
-      [src]="addReactionImg"
-      (mouseenter)="hoverReaction('addReaction', true)"
-      (mouseleave)="hoverReaction('addReaction', false)"
-    />
+  <div
+    class="bg"
+    (mouseenter)="hoverReaction('addReaction', true)"
+    (mouseleave)="hoverReaction('addReaction', false)"
+  >
+    <img [src]="addReactionImg" />
   </div>
-  <div class="bg" (click)="openMessage()" *ngIf="!isPrivate">
-    <img
-      [src]="answerImg"
-      (mouseenter)="hoverReaction('answer', true)"
-      (mouseleave)="hoverReaction('answer', false)"
-    />
+  <div
+    class="bg"
+    (click)="openMessage()"
+    (mouseenter)="hoverReaction('answer', true)"
+    (mouseleave)="hoverReaction('answer', false)"
+  >
+    <img [src]="answerImg" />
   </div>
 </main>
