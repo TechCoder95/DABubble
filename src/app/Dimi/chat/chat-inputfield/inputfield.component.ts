@@ -10,6 +10,8 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/components/enums/messagetype';
+import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
+import { TicketService } from '../../../shared/services/ticket.service';
 
 
 @Component({
@@ -28,9 +30,13 @@ export class InputfieldComponent {
   textareaValue: string = '';
   activeUser!: DABubbleUser;
   selectedChannel: TextChannel | null = null;
+  selectedThread: boolean = false;
+  ticket: any;
+
   @Input() messageType: MessageType = MessageType.Directs;
 
   @Output() selectedChannelChanged = new EventEmitter<TextChannel>();
+
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -38,14 +44,16 @@ export class InputfieldComponent {
     public channelService: ChannelService,
     private chatService: ChatService,
     private userService: UserService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private ticketService: TicketService
   ) {
     this.activeUser = this.userService.activeUser;
     this.subscribeToDataChanges();
+    this.ticket = this.ticketService.getTicket();
   }
 
 
-   subscribeToDataChanges() {
+  subscribeToDataChanges() {
     this.databaseService.onDataChange$.subscribe(
       async (channel) => {
         this.selectedChannel = channel;
@@ -142,6 +150,20 @@ export class InputfieldComponent {
       } else {
         alert('Du musst eine Nachricht eingeben');
       }
+    } else if (this.selectedThread) {
+      let threadMessage: ThreadMessage = {
+        ticketId: this.ticket.id,
+        message: this.textareaValue,
+        timestamp: new Date().getTime(),
+        senderName: this.activeUser.username || 'guest',
+        senderId: this.activeUser.id || 'senderIdDefault',
+        emoticons: [],
+        edited: false,
+        deleted: false,
+      };
+
+      console.log("mal sehen ob das klappt mit dem Thread", threadMessage);
+      
     } else {
       console.error('Kein Channel ausgewählt');
     }
