@@ -1,16 +1,24 @@
 <main #scrollContainer>
-  @for (message of allMessages; track $index) { @if (message.senderName ===
-  this.activeUser.username) {
-  <app-send-chat-message
-    [sendMessage]="message"
-    [user]="activeUser"
-    [isPrivate]="isPrivate"
-  ></app-send-chat-message>
-  }@else {
-  <app-receive-chat-message
-    [receiveMessage]="message"
-    [user]="activeUser"
-    [isPrivate]="isPrivate"
-  ></app-receive-chat-message>
-  } }
+  <div>
+    @for(date of groupMessagesByDate() | keyvalue; track $index){
+    <section class="message-day">
+      <p></p>
+      <h4>{{ formatDateWithDay(date.key)  }}</h4>
+    </section>
+
+    @for (message of allMessages; track $index) { @if (message.senderName ===
+    this.activeUser.username) {
+    <app-send-chat-message
+      [sendMessage]="message"
+      [user]="activeUser"
+      [isPrivate]="isPrivate"
+    ></app-send-chat-message>
+    }@else {
+    <app-receive-chat-message
+      [receiveMessage]="message"
+      [user]="activeUser"
+      [isPrivate]="isPrivate"
+    ></app-receive-chat-message>
+    } }}
+  </div>
 </main>

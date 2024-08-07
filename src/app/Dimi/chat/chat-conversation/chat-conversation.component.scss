@@ -6,5 +6,34 @@ main {
   flex-direction: column;
   height: 95%;
   overflow-y: auto;
-  padding-top: 24px;
+ /*  padding-top: 24px; */
+  position: relative;
+}
+
+.message-day {
+  z-index: 5;
+  position: sticky;
+  padding-top: 2px;
+  top: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(253, 251, 255);
+  > p {
+    background: rgba(173, 176, 217, 1);
+    height: 1px;
+    width: 90%;
+  }
+  > h4 {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(253, 251, 255);
+    border-radius: 30px;
+    padding: 5px 15px;
+    border: 1px solid rgba(173, 176, 217, 1);
+    font-size: 18px;
+  }
 }
