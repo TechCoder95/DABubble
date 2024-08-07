@@ -1,10 +1,10 @@
 <main #mainContainer>
-  <section class="message-day" *ngIf="!inEditMessageMode">
-    <p></p>
-    <h4>{{ checkDate(sendMessage.timestamp) }}</h4>
-  </section>
-
-  <section class="message" *ngIf="!inEditMessageMode" id="{{ sendMessage.id }}">
+  <section
+    class="message"
+    *ngIf="!inEditMessageMode"
+    id="{{ sendMessage.id }}"
+    [ngClass]="{ 'adjust-padding-right': repeatedMessage }"
+  >
     <app-send-chat-message-reaction
       [ticket]="sendMessage"
       *ngIf="!sendMessage.deleted"
@@ -17,7 +17,7 @@
     ></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
-        <h5>{{ getUserName() }}</h5>
+        <h5 *ngIf="!repeatedMessage">{{ getUserName() }}</h5>
         <p>{{ sendMessage.timestamp | date : "HH.mm" }} Uhr</p>
       </div>
       <div class="actual-message" *ngIf="!sendMessage.deleted">
@@ -36,7 +36,7 @@
         ></app-active-chat-message-reactions>
       </div>
     </div>
-    <img [src]="getUserAvatar()" />
+    <img [src]="getUserAvatar()" *ngIf="!repeatedMessage" />
   </section>
 
   <section *ngIf="inEditMessageMode" class="in-edit-mode-section">

@@ -71,9 +71,38 @@ export class ChatConversationComponent
   ngAfterViewChecked(): void {
     //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
     //Add 'implements AfterViewInit' to the class.
-    setTimeout(() => {
+    /*  setTimeout(() => {
       this.scrollToBottom();
-    }, 1000);
+    }, 1000); */
+  }
+
+  checkDate(timestamp: number): string {
+    let messageDate = new Date(timestamp);
+    return messageDate.toLocaleDateString();
+  }
+
+  groupMessagesByDate() {
+    let groupedMessages: any = {};
+    this.allMessages.forEach((message) => {
+      let date = this.checkDate(message.timestamp);
+      if (!groupedMessages[date]) {
+        groupedMessages[date] = [];
+      }
+      groupedMessages[date].push(message);
+    });
+    return groupedMessages;
+  }
+
+  formatDateWithDay(timestamp: any): string {
+    const messageDate = new Date(timestamp);
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'Europe/Berlin',
+    };
+    return messageDate.toLocaleDateString('de-DE', options);
   }
 
   scrollToBottom() {

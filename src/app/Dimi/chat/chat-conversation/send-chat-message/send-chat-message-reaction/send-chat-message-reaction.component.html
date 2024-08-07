@@ -15,29 +15,20 @@
       (click)="handleEmojis('handsUp')"
     />
   </div>
-  <div class="bg">
-    <img
-      [src]="addReactionImg"
-      (mouseenter)="hoverReaction('addReaction', true)"
-      (mouseleave)="hoverReaction('addReaction', false)"
-    />
-  </div>
-  <div class="bg" *ngIf="!isPrivate">
-    <img
-      (click)="openMessage()"
-      [src]="answerImg"
-      (mouseenter)="hoverReaction('answer', true)"
-      (mouseleave)="hoverReaction('answer', false)"
-    />
+  <div
+    class="bg"
+    (mouseenter)="hoverReaction('addReaction', true)"
+    (mouseleave)="hoverReaction('addReaction', false)"
+  >
+    <img [src]="addReactionImg" />
   </div>
   <section class="edit-message-section">
-    <div class="bg">
-      <img
-        [src]="editMessageImg"
-        (click)="editMessageDialog()"
-        (mouseenter)="hoverReaction('edit', true)"
-        (mouseleave)="hoverReaction('edit', false)"
-      />
+    <div
+      class="bg"
+      (mouseenter)="hoverReaction('edit', true)"
+      (mouseleave)="hoverReaction('edit', false)"
+    >
+      <img [src]="editMessageImg" (click)="editMessageDialog()" />
     </div>
     <div class="edit-message-dialog" *ngIf="showEditMessageDialog">
       <h3 (click)="editMessage()">Nachricht bearbeiten</h3>
