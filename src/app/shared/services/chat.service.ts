@@ -23,7 +23,7 @@ export class ChatService {
   constructor(
     private databaseService: DatabaseService,
     private userService: UserService
-  ) { }
+  ) {}
 
   async sortMessages(channel: TextChannel) {
     /*  ; */
@@ -61,8 +61,13 @@ export class ChatService {
       // Füge die Nachricht zum Kanal hinzu
       const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
 
-      const messageId = messageExists ? message.id! : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
-      await this.databaseService.addMessageToChannel(selectedChannelId, messageId);
+      const messageId = messageExists
+        ? message.id!
+        : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
+      await this.databaseService.addMessageToChannel(
+        selectedChannelId,
+        messageId
+      );
 
       // Aktualisiere die Nachrichten aus der Datenbank
       await this.databaseService.readDatafromDB('messages', messagesFromDb);
@@ -80,50 +85,42 @@ export class ChatService {
   }
 
   /* ==================================================================== */
-  async sendEmoji(
-    newEmoji: Emoji,
-    message: ChatMessage,
-    activeUser: DABubbleUser
-  ) {
+  async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
     let emojisFromDB: Emoji[] = [];
 
     /* Lese die vorhandenen Emojies aus der Datenbank */
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
 
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
-     ;
     if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
-      this.handleExistingEmojiOnMessage(
-        newEmoji,
-        message,
-        emojisFromDB,
-        activeUser
-      );
-      /* this.sendMessagesEmoji.next(); */
+      this.handleExistingEmojiOnMessage(newEmoji, message, emojisFromDB);
     } else {
-      /* Wenn Emoji bei Nachricht noch gar nicht existiert */
-      newEmoji.id = await this.getNewEmojiId(newEmoji);
-      await this.databaseService.addEmojiToMessage(
-        newEmoji.messageId,
-        newEmoji.id!
-      );
-      this.sendMessagesEmoji.next(newEmoji);
+      this.createNewEmojiOnMessage(newEmoji);
     }
     await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+  }
+
+  async createNewEmojiOnMessage(newEmoji: Emoji) {
+    /* Wenn Emoji bei Nachricht noch gar nicht existiert */
+    newEmoji.id = await this.getNewEmojiId(newEmoji);
+    await this.databaseService.addEmojiToMessage(
+      newEmoji.messageId,
+      newEmoji.id!
+    );
+    this.sendMessagesEmoji.next(newEmoji);
   }
 
   handleExistingEmojiOnMessage(
     emoji: Emoji,
     message: ChatMessage,
-    emojisFromDB: Emoji[],
-    activeUser: DABubbleUser
+    emojisFromDB: Emoji[]
   ) {
     const existingEmoji: any = this.getExistingEmoji(emoji, emojisFromDB);
     /* Überprüfen, ob der activeUser schon reagiert hat */
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
-      this.eliminateUserReaction(existingEmoji, activeUser);
+      this.eliminateUserReaction(existingEmoji, emoji);
     } else {
-      this.addUserReaction(existingEmoji, activeUser);
+      this.addUserReaction(existingEmoji, emoji);
     }
   }
 
@@ -145,10 +142,10 @@ export class ChatService {
     return emojiDoc ? emojiDoc.id : undefined;
   }
 
-  async eliminateUserReaction(existingEmoji: Emoji, activeUser: DABubbleUser) {
-    const activeUserId = activeUser.id;
+  async eliminateUserReaction(existingEmoji: Emoji, emoji: Emoji) {
+    /*  const activeUserId = activeUser.id; */
     existingEmoji.usersIds = existingEmoji.usersIds.filter(
-      (userId) => userId !== activeUserId
+      (userId) => userId !== emoji.usersIds[0]
     );
 
     if (existingEmoji.usersIds.length === 0) {
@@ -167,8 +164,8 @@ export class ChatService {
     this.sendMessagesEmoji.next(existingEmoji);
   }
 
-  async addUserReaction(existingEmoji: Emoji, activeUser: DABubbleUser) {
-    existingEmoji.usersIds.push(activeUser.id!);
+  async addUserReaction(existingEmoji: Emoji, emoji: Emoji) {
+    existingEmoji.usersIds.push(emoji.usersIds[0]);
     await this.databaseService.updateDataInDB(
       'emojies',
       existingEmoji.id!,
@@ -192,7 +189,6 @@ export class ChatService {
   }
 
   userHasAlreadyReacted(emoji: Emoji, existingEmoji: Emoji): boolean {
-     ;
     const userHasAlreadyReacted = existingEmoji.usersIds.includes(
       emoji.usersIds[0]
     );
