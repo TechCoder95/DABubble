@@ -46,8 +46,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   }
 
   isReactionForCurrentMessage(emoji: Emoji) {
-      return emoji.messageId === this.message.id;
-   
+    return emoji.messageId === this.message.id;
   }
 
   loadEmojis() {
@@ -58,6 +57,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
         'emojies',
         emojiID
       );
+
       this.allEmojis.push(emoji);
     });
   }
@@ -77,28 +77,36 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
       }
     );
   }
-
+  
   emojiAlreadyExists(existingEmojiIndex: number) {
     return existingEmojiIndex !== -1;
   }
-
+  
   getExistingEmojiIndex(emoji: Emoji) {
-    return this.allEmojis.findIndex((e) => e.type === emoji.type);
+    return this.allEmojis.findIndex((e) => e.type === emoji.type && e.messageId === emoji.messageId);
   }
-
+  
   handleExistingEmoji(newEmoji: Emoji, existingEmojiIndex: number) {
-    //Wenn Emoji schon existiert, dann update
     const existingEmoji = this.allEmojis[existingEmojiIndex];
     if (newEmoji.usersIds.length === 0) {
-      //Entferne den Emoji, wenn der neue EMoji eine Länge von 0 hat
+      // Entferne den Emoji, wenn die neue Emoji-Liste leer ist
       this.allEmojis.splice(existingEmojiIndex, 1);
-    } else if (existingEmoji.usersIds !== newEmoji.usersIds) {
-      //Aktualisiere den Emoji ansonsten
+    } else if (!this.areUserIdsEqual(existingEmoji.usersIds, newEmoji.usersIds)) {
+      // Aktualisiere den Emoji, wenn die Benutzer-IDs unterschiedlich sind
       this.allEmojis[existingEmojiIndex] = newEmoji;
     }
   }
-
+  
+  areUserIdsEqual(usersIds1: string[], usersIds2: string[]) {
+    if (usersIds1.length !== usersIds2.length) {
+      return false;
+    }
+    const sortedIds1 = [...usersIds1].sort();
+    const sortedIds2 = [...usersIds2].sort();
+    return sortedIds1.every((id, index) => id === sortedIds2[index]);
+  }
+  
   emojiExists(emoji: Emoji) {
-    return this.allEmojis.some((e) => e.type === emoji.type);
+    return this.allEmojis.some((e) => e.type === emoji.type && e.messageId === emoji.messageId);
   }
 }
