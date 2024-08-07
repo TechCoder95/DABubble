@@ -105,6 +105,8 @@ export class SearchbarComponent {
     this.dialog.open(OpenUserInfoComponent, {
       data: { member: user },
     });
+
+    this.resetInput();
   }
 
 
@@ -113,26 +115,29 @@ export class SearchbarComponent {
       if (channel.name === channelName) {
         this.channelService.selectChannel(channel);
       }
-    }
-    );
-  }
-
-  
-  scrollToMessage(messageId: string) {
-    this.messages.forEach(message => {
-      this.openChannel(message.channelName!);
-      if (message.id === messageId) {
-        setTimeout(() => {
-          document.getElementById(message.id!)?.scrollIntoView()
-          setTimeout(() => {
-            document.getElementById(message.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
-          }, 1000);
-          setTimeout(() => {
-            document.getElementById(message.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0)';
-          }, 2000);
-        }, 500);
-      }
     });
+    this.resetInput();
   }
 
+
+  scrollToMessage(messageId: string) {
+    let message = this.messages.find(message => message.id === messageId);
+    let x = message as unknown as ChatMessage;
+    this.openChannel(x.channelName!);
+    if (x.id === messageId) {
+      document.getElementById(x.id!)?.scrollIntoView()
+      setTimeout(() => {
+        document.getElementById(x.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0.1)';
+      }, 1000);
+      setTimeout(() => {
+        document.getElementById(x.id!)!.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+        this.resetInput();
+      }, 2000);
+    }
+
+  }
+
+  resetInput() {
+    this.searchInput = '';
+  }
 }
