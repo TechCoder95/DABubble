@@ -1,5 +1,5 @@
 main {
-  padding-top: 32px;
+  padding-top: 16px;
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
@@ -37,7 +37,6 @@ h5 {
 .message {
   position: relative;
   display: flex;
-  margin-block: 25px;
   padding-inline: 50px;
   padding-block: 10px;
   gap: 20px;
@@ -109,4 +108,8 @@ h5 {
 .message-deleted-notification {
   color: rgba(83, 90, 241, 1);
   font-size: 10px;
+}
+
+.adjust-padding-left {
+  padding-inline: 120px 50px;
 }

@@ -38,11 +38,11 @@ h5 {
   position: relative;
   display: flex;
   justify-content: flex-end;
-  margin-block: 32px;
   padding-inline: 50px;
   padding-block: 10px;
   gap: 20px;
   transition: background-color 0.3s ease-in-out;
+  margin-top: 16px;
   > img {
     height: 50px;
     width: 50px;
@@ -161,4 +161,8 @@ h5 {
   border: 1px solid rgba(121, 126, 243, 1) !important;
   color: rgba(121, 126, 243, 1);
   background: white;
+}
+
+.adjust-padding-right {
+  padding-inline: 50px 120px;
 }
