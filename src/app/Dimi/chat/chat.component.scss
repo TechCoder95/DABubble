@@ -32,3 +32,16 @@ app-chat-conversation {
 //   background: rgb(253, 251, 255);
 //   border-radius: 0px 0px 30px 30px;
 // }
+
+
+
+@media (max-width: 910px) {
+
+  mat-drawer {
+    width: 100vw;
+    left: 0;
+    right: 0;
+    top: 0;
+    border-radius: 0 !important;
+  }
+}
