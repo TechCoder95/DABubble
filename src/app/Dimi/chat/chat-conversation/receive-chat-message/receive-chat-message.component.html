@@ -1,4 +1,4 @@
-<main  [ngClass]="{ 'pt-none': repeatedMessage }">
+<main [ngClass]="{ 'pt-none': repeatedMessage }">
   <section
     class="message"
     id="{{ receiveMessage.id }}"
@@ -8,7 +8,14 @@
     <div class="message-information">
       <div class="sender-and-time" [ngClass]="{ 'jc-end': repeatedMessage }">
         <h5 *ngIf="!repeatedMessage">{{ receiveMessage.senderName }}</h5>
-        <p *ngIf="!repeatedMessageInUnder5Minutes && !repeatedMessage">{{ receiveMessage.timestamp | date : "HH:mm" }} Uhr</p>
+        <p
+          *ngIf="
+            !repeatedMessage ||
+            (repeatedMessage && !repeatedMessageInUnder5Minutes)
+          "
+        >
+          {{ receiveMessage.timestamp | date : "HH:mm" }} Uhr
+        </p>
       </div>
       <span class="actual-message" *ngIf="!receiveMessage.deleted">
         <p [ngClass]="{ 'mw-70': repeatedMessage }">
