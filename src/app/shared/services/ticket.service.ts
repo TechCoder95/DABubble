@@ -3,8 +3,9 @@ import { ThreadMessage } from '../interfaces/threadmessage';
 import { DatabaseService } from './database.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
+
 export class TicketService {
   private _ticket: any;
 
@@ -12,20 +13,20 @@ export class TicketService {
 
   setTicket(ticket: any) {
     this._ticket = ticket;
-    
-  }
+    }
 
   getTicket() {
     return this._ticket;
   }
 
   async sendThreads(thread: ThreadMessage) {
-    debugger;
     let threadsFromDb: ThreadMessage[] = [];
 
     // Lese die vorhandenen Nachrichten aus der Datenbank
     await this.databaseService.readDatafromDB('threads', threadsFromDb);
 
     await this.databaseService.addDataToDB('threads', thread);
+    console.log("finde ich hier etwas? ",threadsFromDb);
+    
   }
 }

@@ -3,13 +3,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ThreadReceiveChatComponent } from './thread-receive-chat/thread-receive-chat.component';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
 import { ChannelService } from '../../shared/services/channel.service';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  Observable,
-  switchMap,
-} from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../shared/services/user.service';
 import { ThreadSendChatComponent } from './thread-send-chat/thread-send-chat.component';
@@ -44,7 +38,7 @@ export class ThreadComponent {
     public ticketService: TicketService,
     public channelService: ChannelService,
     private userService: UserService
-  ) {}
+  ) { }
 
   // ngOnInit() {
   //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {

@@ -98,7 +98,6 @@ export class InputfieldComponent {
   }
   inThreads: boolean = false;
   async sendMessage(type: MessageType) {
-    debugger;
     switch (type) {
       case MessageType.Groups:
         await this.send();
@@ -135,7 +134,6 @@ export class InputfieldComponent {
   } */
 
   async send() {
-    debugger;
     if (!this.inThreads) {
       let message: ChatMessage = {
         channelId: this.selectedChannel!.id,
@@ -165,7 +163,6 @@ export class InputfieldComponent {
         alert('Du musst eine Nachricht eingeben');
       }
     } else if (this.inThreads) {
-      debugger;
       let threadMessage: ThreadMessage = {
         ticketId: this.ticket.id,
         message: this.textareaValue,
@@ -176,6 +173,18 @@ export class InputfieldComponent {
         edited: false,
         deleted: false,
       };
+      if (threadMessage.message !== '') {
+        try {
+          const newMessageId = await this.databaseService.addChannelDataToDB('threads', threadMessage);
+          threadMessage.id = newMessageId;
+          this.ticketService.sendThreads(threadMessage);
+          this.textareaValue = '';
+        } catch (error) {
+          console.error('Fehler beim Senden der Nachricht:', error);
+        }
+      } else {
+        alert('Du musst eine Nachricht eingeben');
+      }
 
       await this.ticketService.sendThreads(threadMessage);
       console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
