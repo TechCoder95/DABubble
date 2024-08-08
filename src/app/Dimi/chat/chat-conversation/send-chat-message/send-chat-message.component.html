@@ -8,6 +8,7 @@
     <app-send-chat-message-reaction
       [ticket]="sendMessage"
       *ngIf="!sendMessage.deleted"
+      [ngClass]="{ 'position-component': repeatedMessage }"
       (editModeChange)="onEditModeChange($event)"
       (deleteStatusChange)="onDelete($event)"
       class="slide-in"

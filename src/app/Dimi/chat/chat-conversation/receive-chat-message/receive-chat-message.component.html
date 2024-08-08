@@ -1,4 +1,4 @@
-<main>
+<main  [ngClass]="{ 'pt-none': repeatedMessage }">
   <section
     class="message"
     id="{{ receiveMessage.id }}"
@@ -32,6 +32,7 @@
       [isPrivate]="isPrivate"
       *ngIf="!receiveMessage.deleted"
       class="slide-in"
+      [ngClass]="{ 'position-component': repeatedMessage }"
     ></app-receive-chat-message-reaction>
   </section>
 </main>

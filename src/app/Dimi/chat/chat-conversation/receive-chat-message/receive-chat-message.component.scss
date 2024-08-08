@@ -3,6 +3,7 @@ main {
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 p,
@@ -124,4 +125,8 @@ h5 {
 
 .mw-70{
   min-width: 70px;
+}
+
+.position-component{
+  top: 0px !important;
 }

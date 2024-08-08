@@ -20,7 +20,6 @@ export class TicketService {
   }
 
   async sendThreads(thread: ThreadMessage) {
-    debugger;
     let threadsFromDb: ThreadMessage[] = [];
 
     // Lese die vorhandenen Nachrichten aus der Datenbank

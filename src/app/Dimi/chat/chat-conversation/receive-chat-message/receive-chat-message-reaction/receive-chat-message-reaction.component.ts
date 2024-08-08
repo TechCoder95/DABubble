@@ -45,7 +45,6 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   openMessage() {
-    debugger
     this.channelService.showSingleThread = true;
     this.ticketService.setTicket(this.ticket);
   }

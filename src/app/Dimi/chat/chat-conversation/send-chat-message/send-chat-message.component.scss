@@ -165,4 +165,9 @@ h5 {
 
 .adjust-padding-right {
   padding-inline: 50px 120px;
+  margin-top: unset !important;
+}
+
+.position-component {
+  top: 0px !important;
 }
