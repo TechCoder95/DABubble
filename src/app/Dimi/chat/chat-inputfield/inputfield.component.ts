@@ -98,7 +98,6 @@ export class InputfieldComponent {
   }
   inThreads: boolean = false;
   async sendMessage(type: MessageType) {
-    debugger;
     switch (type) {
       case MessageType.Groups:
         await this.send();
@@ -135,7 +134,6 @@ export class InputfieldComponent {
   } */
 
   async send() {
-    debugger;
     if (!this.inThreads) {
       let message: ChatMessage = {
         channelId: this.selectedChannel!.id,
@@ -165,7 +163,6 @@ export class InputfieldComponent {
         alert('Du musst eine Nachricht eingeben');
       }
     } else if (this.inThreads) {
-      debugger;
       let threadMessage: ThreadMessage = {
         ticketId: this.ticket.id,
         message: this.textareaValue,

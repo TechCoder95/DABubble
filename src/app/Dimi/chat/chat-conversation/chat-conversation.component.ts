@@ -85,7 +85,7 @@ export class ChatConversationComponent
 
     let timeDifferenceInMinutes = (currentTime - previousTime) / (1000 * 60);
 
-    return timeDifferenceInMinutes < 5;
+    return timeDifferenceInMinutes < 10;
   }
 
   checkDate(timestamp: number): string {
