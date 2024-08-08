@@ -143,7 +143,6 @@ export class ChatService {
   }
 
   async eliminateUserReaction(existingEmoji: Emoji, emoji: Emoji) {
-    /*  const activeUserId = activeUser.id; */
     existingEmoji.usersIds = existingEmoji.usersIds.filter(
       (userId) => userId !== emoji.usersIds[0]
     );
@@ -195,16 +194,5 @@ export class ChatService {
     return userHasAlreadyReacted;
   }
 
-  /* sortEmojis(message:ChatMessage) {
-    if(message && message.emoticons){
-      message.emoticons.forEach((emojiID)=>{
-        this.databaseService.readDataByID('emojies', emojiID).then(
-          (emojiFromDB)=>{
-            let emoji = emojiFromDB as Emoji;
-            if()
-          }
-        )
-      })
-    }
-  } */
+  /* ========================================================== */
 }

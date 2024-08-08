@@ -55,7 +55,7 @@ export class ReactionComponent {
 
   usersReactionString(emojiReactors: string[]): string {
     if (emojiReactors.length === 1 && emojiReactors[0] === 'Du') {
-      return `<strong>${emojiReactors[0]}</strong> hast reagiert`;
+      return `<strong class="reactorNames">${emojiReactors[0]}</strong> hast reagiert`;
     } else if (emojiReactors.length === 1 && !emojiReactors.includes('du')) {
       return `<strong>${emojiReactors[0]}</strong> hat reagiert`;
     } else if (emojiReactors.length === 2) {
@@ -68,7 +68,7 @@ export class ReactionComponent {
     }
   }
 
-  /* handleClick(emoji: Emoji) {
+  handleClick(emoji: Emoji) {
     this.chatService.sendEmoji(emoji, this.message);
-  } */
+  }
 }

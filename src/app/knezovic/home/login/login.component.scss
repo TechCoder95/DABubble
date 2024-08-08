@@ -57,7 +57,7 @@ button {
     }
 }
 
-.bigAlert{
+.bigAlert {
     background-color: red;
     color: white;
     font-size: 20px;
@@ -108,7 +108,7 @@ hr {
 .googleButton {
     margin: 10px;
     padding: 20px;
-    border: 2px solid #ccc;
+    border: 1px solid #ECEEFD;
     border-radius: 5px;
     width: 90%;
     color: #5262ED;
@@ -119,7 +119,6 @@ hr {
     font-size: 16px;
     text-align: center;
     background-color: #ECEEFD;
-    border: 1px solid white;
 
     &:hover {
         border: 1px solid #444DF2;
@@ -137,6 +136,7 @@ h1 {
     color: #444DF2;
     font-size: 46px;
     font-weight: 700;
+    margin: 0;
 }
 
 p {
@@ -164,8 +164,29 @@ a {
     }
 }
 
-.message{
+.message {
     position: absolute;
     right: 20px;
     bottom: 20px;
+}
+
+@media (max-width: 650px) {
+
+    p {
+        width: 100% !important;
+    }
+}
+
+@media (max-width: 410px) {
+
+    .google-mobile {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 380px) {
+
+    .google-mobile {
+        font-size: 0.75rem !important;
+    }
 }

@@ -1,7 +1,6 @@
 import {
   Component,
   ElementRef,
-  EventEmitter,
   Input,
   OnInit,
   Output,
@@ -35,6 +34,7 @@ export class SendChatMessageComponent implements OnInit {
   @Input() user!: DABubbleUser;
   @Input() sendMessage!: ChatMessage;
   @Input() isPrivate!: boolean | undefined;
+  @Input() index!: number;
   inEditMessageMode: boolean = false;
   messageDeleted: boolean = false;
   @ViewChild('mainContainer') mainContainer!: ElementRef;
@@ -42,6 +42,8 @@ export class SendChatMessageComponent implements OnInit {
   emojiType!: string;
   /* @Output() valueChanged = new EventEmitter<string>(); */
   activeChatMessageReactionsComponent: any;
+  @Input() repeatedMessage!: boolean | undefined;
+  @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
 
   constructor(
     private userService: UserService,
