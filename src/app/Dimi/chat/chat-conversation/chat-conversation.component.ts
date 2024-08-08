@@ -76,6 +76,18 @@ export class ChatConversationComponent
     }, 1000); */
   }
 
+  repeatedMessageInUnder5Minutes(
+    currentMessage: ChatMessage,
+    previousMessage: ChatMessage
+  ): boolean {
+    let currentTime = new Date(currentMessage.timestamp).getTime();
+    let previousTime = new Date(previousMessage.timestamp).getTime();
+
+    let timeDifferenceInMinutes = (currentTime - previousTime) / (1000 * 60);
+
+    return timeDifferenceInMinutes < 5;
+  }
+
   checkDate(timestamp: number): string {
     let messageDate = new Date(timestamp);
     return messageDate.toLocaleDateString();

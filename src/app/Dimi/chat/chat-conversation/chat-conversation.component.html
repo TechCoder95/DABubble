@@ -16,6 +16,9 @@
       [isPrivate]="isPrivate"
       [index]="$index"
       [repeatedMessage]="true"
+      [repeatedMessageInUnder5Minutes]="
+        repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
+      "
     ></app-send-chat-message>
 
     }@else if($index > 0 && message.senderId === allMessages[$index -1].senderId
@@ -25,6 +28,9 @@
       [user]="activeUser"
       [isPrivate]="isPrivate"
       [repeatedMessage]="true"
+      [repeatedMessageInUnder5Minutes]="
+        repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
+      "
     ></app-receive-chat-message>
 
     } @else if (message.senderName === this.activeUser.username) {

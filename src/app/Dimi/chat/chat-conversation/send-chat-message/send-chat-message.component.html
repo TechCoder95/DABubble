@@ -19,7 +19,9 @@
     <div class="message-information">
       <div class="sender-and-time">
         <h5 *ngIf="!repeatedMessage">{{ getUserName() }}</h5>
-        <p>{{ sendMessage.timestamp | date : "HH.mm" }} Uhr</p>
+        <p *ngIf="!repeatedMessageInUnder5Minutes && !repeatedMessage">
+          {{ sendMessage.timestamp | date : "HH.mm" }} Uhr
+        </p>
       </div>
       <div class="actual-message" *ngIf="!sendMessage.deleted">
         <p>

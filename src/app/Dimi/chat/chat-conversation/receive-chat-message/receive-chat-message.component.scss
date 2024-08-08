@@ -113,20 +113,21 @@ h5 {
 
 .adjust-padding-left {
   padding-inline: 120px 50px;
+  padding-block: unset;
 }
 
-.pt-none{
+.pt-none {
   padding-top: unset;
 }
 
-.jc-end{
+.jc-end {
   justify-content: flex-end;
 }
 
-.mw-70{
+.mw-70 {
   min-width: 70px;
 }
 
-.position-component{
+.position-component {
   top: 0px !important;
 }
