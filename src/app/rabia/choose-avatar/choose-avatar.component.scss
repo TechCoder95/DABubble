@@ -8,6 +8,7 @@ mat-card-title {
     color: #444DF2;
     font-size: 46px;
     font-weight: 700;
+    text-align: center;
 }
 
 mat-card-subtitle {
@@ -97,4 +98,72 @@ mat-spinner {
     position: fixed;
     right: 40px;
     bottom: 40px;
+}
+
+@media (max-width: 650px) {
+
+    .container {
+        padding: 32px;
+    }
+
+    .cycle-avatar {
+        img {
+            width: 56px;
+            height: 56px;
+        }
+    }
+
+}
+
+@media (max-width: 550px) {
+
+    .container {
+        padding: 16px;
+    }
+
+    .cycle-avatar {
+        img {
+            width: 48px;
+            height: 48px;
+        }
+    }
+}
+
+@media (max-width: 470px) {
+
+    mat-card-title {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 450px) {
+    .container {
+        padding: 0;
+    }
+
+    .mobile-view {
+
+        display: grid !important;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
+    .cycle-avatar {
+        img {
+            width: 40px;
+            height: 40px;
+        }
+    }
+
+    .own-img {
+        p {
+            font-size: 12px;
+            text-align: center;
+        }
+    }
+}
+
+@media (max-width: 400px) {
+    mat-card-title {
+        font-size: 32px;
+    }
 }

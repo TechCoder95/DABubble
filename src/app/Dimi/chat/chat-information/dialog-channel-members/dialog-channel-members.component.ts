@@ -1,7 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  Inject,
+  Injector,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
@@ -22,6 +35,7 @@ export class DialogChannelMembersComponent implements OnInit {
   activeUser!: DABubbleUser;
   channelMembers: DABubbleUser[] = [];
   readonly dialog = inject(MatDialog);
+  @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
   constructor(
     private userService: UserService,
@@ -46,8 +60,14 @@ export class DialogChannelMembersComponent implements OnInit {
 
   addMembers() {
     this.closeDialog();
-    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent);
 
+    const rect = this.relativeElement.nativeElement.getBoundingClientRect();
+    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+      position: {
+        top: `${rect.top + window.scrollY}px`,
+        left: `${rect.left + window.scrollX - 60}px`,
+      },
+    });
   }
 
   changeAddMembersImg(hover: boolean) {
@@ -69,4 +89,15 @@ export class DialogChannelMembersComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close(false);
   }
+
+  /* dialogAddChannelMembersIsOpen: boolean = false;
+  openDialogAddChannelMembers(event: MouseEvent) {
+    this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
+    const dialogConfig = this.handleDialogConfig(event, 'addChannelMembers');
+    const dialogRef = this.dialog.open(
+      DialogAddChannelMembersComponent,
+      dialogConfig
+    );
+    this.handleDialogClose(dialogRef);
+  } */
 }

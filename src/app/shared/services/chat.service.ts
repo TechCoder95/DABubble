@@ -93,7 +93,7 @@ export class ChatService {
 
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
     if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
-      this.handleExistingEmojiOnMessage(newEmoji, message, emojisFromDB);
+      this.handleExistingEmojiOnMessage(newEmoji, emojisFromDB);
     } else {
       this.createNewEmojiOnMessage(newEmoji);
     }
@@ -112,11 +112,12 @@ export class ChatService {
 
   handleExistingEmojiOnMessage(
     emoji: Emoji,
-    message: ChatMessage,
+   /*  message: ChatMessage, */
     emojisFromDB: Emoji[]
   ) {
     const existingEmoji: any = this.getExistingEmoji(emoji, emojisFromDB);
     /* Überprüfen, ob der activeUser schon reagiert hat */
+    debugger;
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
@@ -143,6 +144,7 @@ export class ChatService {
   }
 
   async eliminateUserReaction(existingEmoji: Emoji, emoji: Emoji) {
+    debugger;
     existingEmoji.usersIds = existingEmoji.usersIds.filter(
       (userId) => userId !== emoji.usersIds[0]
     );
@@ -164,6 +166,7 @@ export class ChatService {
   }
 
   async addUserReaction(existingEmoji: Emoji, emoji: Emoji) {
+    debugger;
     existingEmoji.usersIds.push(emoji.usersIds[0]);
     await this.databaseService.updateDataInDB(
       'emojies',
@@ -193,4 +196,6 @@ export class ChatService {
     );
     return userHasAlreadyReacted;
   }
+
+  /* ========================================================== */
 }

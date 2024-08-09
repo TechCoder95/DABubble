@@ -4,14 +4,14 @@
 <div class="h-screen w-full">
     <div class="h-full w-full flex align-items-center justify-content-center">
 
-        <div class="w-9">
+        <div class="w-9 mobile-container">
             <div class="flex flex-column w-full align-items-center justify-content-center">
                 <div class="card flex flex-column align-items-center justify-content-center h-8">
                     <router-outlet></router-outlet>
 
                 </div>
                
-                <div class="flex gap-8">
+                <div class="flex gap-8 mobile-view">
                     <a (click)="routeToImprint()">Impressum</a>
                     <a (click)="routeToPrivacy()">Datenschutz</a>
                 </div>

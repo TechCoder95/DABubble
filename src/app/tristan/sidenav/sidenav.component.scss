@@ -20,13 +20,32 @@
     filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%) hue-rotate(228deg) brightness(97%) contrast(95%);
 }
 
-.blue-filter:hover {
-  filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%)
-    hue-rotate(228deg) brightness(97%) contrast(95%);
+.content {
+  background-color: #eceefe;
 }
 
-.content {
-    background-color: #ECEEFE;
+mat-drawer-container {
+  padding: 40px;
+  background: initial;
+}
+
+.extend {
+  height: 100%;
+  display: flex;
+  border-radius: 30px;
+  padding-left: 2rem;
+
+  >app-chat {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+.sidenav-style {
+  border-radius: 30px;
+  top: 40px;
+  bottom: 40px;
 }
 
 .img-container {
@@ -95,4 +114,26 @@
 
 .grey {
   background-color: #686868;
+}
+
+@media (max-width: 910px) {
+  .mobile-view-btn {
+    display: none;
+  }
+
+  .extend {
+    padding: 0;
+  }
+
+  mat-drawer-container {
+    padding: 0;
+  }
+
+  mat-drawer {
+    width: 100vw;
+    left: 0;
+    right: 0;
+    top: 0 !important;
+    border-radius: 0 !important;
+  }
 }

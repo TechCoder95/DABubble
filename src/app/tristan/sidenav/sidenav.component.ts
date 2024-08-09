@@ -115,6 +115,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
     });
 
+    // await this.initializeDefaultData();
+
     this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
       if (channel) {
         this.channels.push(channel);
@@ -123,6 +125,65 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
+  // todo
+  private async initializeDefaultData() {
+    const defaultGroupChannels: TextChannel[] = [
+      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Allgemeiner Channel', conversationId: [], owner: '' },
+      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Entwickler Channel', conversationId: [], owner: '' }
+    ];
+  
+    const defaultUsers: DABubbleUser[] = [
+      { id: '', username: 'User1', mail: 'user1@example.com', isLoggedIn: true, avatar: './img/5.svg', uid: 'uid-user1' },
+      { id: '', username: 'User2', mail: 'user2@example.com', isLoggedIn: true, avatar: './img/2.svg', uid: 'uid-user2' },
+      { id: '', username: 'User3', mail: 'user4@example.com', isLoggedIn: true, avatar: './img/4.svg', uid: 'uid-user3' }
+    ];
+  
+    const defaultDirectChannels: TextChannel[] = [
+      { id: 'directChannel1', name: 'Direktnachricht 1', assignedUser: [], isPrivate: true, description: '', conversationId: [], owner: '' },
+      { id: 'directChannel2', name: 'Direktnachricht 2', assignedUser: [], isPrivate: true, description: '', conversationId: [], owner: '' }
+    ];
+  
+    // Überprüfe, ob Standardbenutzer vorhanden sind
+    let standardUsersExist = true;
+    for (const user of defaultUsers) {
+      const existingUser = await this.userService.getDefaultUserByUid(user.uid!);
+      if (!existingUser) {
+        standardUsersExist = false;
+        break;
+      }
+    }
+  
+    // Füge Standardbenutzer hinzu, wenn sie nicht vorhanden sind
+    if (!standardUsersExist) {
+      for (const user of defaultUsers) {
+        await this.userService.addDefaultUserToDatabase(user);
+      }
+    }
+  
+    // Füge Standard-Gruppenkanäle hinzu
+    for (const groupChannel of defaultGroupChannels) {
+      const existingGroupChannel = this.channels.find(channel => channel.name === groupChannel.name && !channel.isPrivate);
+      if (!existingGroupChannel) {     
+      // todo   
+        const newChannelId = await this.dbService.addChannelDataToDB('channels', groupChannel);
+        groupChannel.id = newChannelId;
+        this.channels.push(groupChannel);
+      }
+    }
+  
+    // Füge Standard-Direktnachrichten hinzu
+    for (const directChannel of defaultDirectChannels) {
+      const existingDirectChannel = this.channels.find(channel => channel.name === directChannel.name && channel.isPrivate);
+      if (!existingDirectChannel) {  
+        // todo  
+        const newChannelId = await this.dbService.addChannelDataToDB('channels', directChannel);
+        directChannel.id = newChannelId;
+        this.channels.push(directChannel);
+      }
+    }
+  
+    await this.updateTreeData();
+  }
 
   async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
