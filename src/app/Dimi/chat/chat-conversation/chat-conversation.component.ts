@@ -76,6 +76,16 @@ export class ChatConversationComponent
     }, 1000); */
   }
 
+  isSameDay(timestamp1: number, timestamp2: number): boolean {
+    let date1 = new Date(timestamp1);
+    let date2 = new Date(timestamp2);
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
+
   repeatedMessageInUnder5Minutes(
     currentMessage: ChatMessage,
     previousMessage: ChatMessage

@@ -1,15 +1,15 @@
 <main #scrollContainer>
   <div>
-    @for(date of groupMessagesByDate() | keyvalue; track $index){
-    @if(allMessages.length > 0){
+    @if(allMessages.length > 0){ @for (message of allMessages; track $index) {
+    @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
+    1].timestamp)){
     <section class="message-day">
       <p></p>
-      <h4>{{ formatDateWithDay(date.key) }}</h4>
+      <h4>{{ formatDateWithDay(message.timestamp) }}</h4>
     </section>
-
-    @for (message of allMessages; track $index) { @if($index > 0 &&
-    message.senderId === allMessages[$index -1].senderId && message.senderName
-    === this.activeUser.username){
+    } @if($index > 0 && message.senderId === allMessages[$index - 1].senderId &&
+    allMessages[$index].senderName === this.activeUser.username &&
+    isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
     <app-send-chat-message
       [sendMessage]="message"
       [user]="activeUser"
@@ -21,8 +21,9 @@
       "
     ></app-send-chat-message>
 
-    }@else if($index > 0 && message.senderId === allMessages[$index -1].senderId
-    && message.senderName !== this.activeUser.username ){
+    } @else if($index > 0 && message.senderId === allMessages[$index -
+    1].senderId && message.senderName !== this.activeUser.username &&
+    isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
     <app-receive-chat-message
       [receiveMessage]="message"
       [user]="activeUser"
@@ -41,13 +42,13 @@
       [index]="$index"
       [repeatedMessage]="false"
     ></app-send-chat-message>
-    }@else {
+    } @else {
     <app-receive-chat-message
       [receiveMessage]="message"
       [user]="activeUser"
       [isPrivate]="isPrivate"
       [repeatedMessage]="false"
     ></app-receive-chat-message>
-    } }}}
+    } } }
   </div>
 </main>
