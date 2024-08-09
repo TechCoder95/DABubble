@@ -68,7 +68,12 @@ export class ReactionComponent {
     }
   }
 
-  handleClick(emoji: Emoji) {
-    this.chatService.sendEmoji(emoji, this.message);
+  handleClick() {
+    let currentEmoji: Emoji = {
+      messageId: this.emoji.messageId,
+      type: this.emoji.type,
+      usersIds: [this.activeUser.id!],
+    };
+    this.chatService.sendEmoji(currentEmoji, this.message);
   }
 }

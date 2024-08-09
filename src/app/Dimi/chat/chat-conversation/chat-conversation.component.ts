@@ -9,7 +9,9 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  QueryList,
   ViewChild,
+  ViewChildren,
 } from '@angular/core';
 import { ReceiveChatMessageComponent } from './receive-chat-message/receive-chat-message.component';
 import { SendChatMessageComponent } from './send-chat-message/send-chat-message.component';
@@ -34,7 +36,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked
+  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
 {
   @Output() receiveChatMessage!: string;
   @Output() sendChatMessage!: string;
@@ -49,6 +51,7 @@ export class ChatConversationComponent
   private receiveMessagesSubscription!: Subscription;
   private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
   isPrivate: boolean = this.channelService.channel.isPrivate;
 
   constructor(
@@ -74,6 +77,41 @@ export class ChatConversationComponent
     /*  setTimeout(() => {
       this.scrollToBottom();
     }, 1000); */
+  }
+
+  ngAfterViewInit() {
+    this.onScroll(); // Initial check
+  }
+
+   onScroll() {
+    const messageDaysArray = this.messageDays.toArray();
+    for (let i = 0; i < messageDaysArray.length - 1; i++) {
+      let currentDay = messageDaysArray[i].nativeElement;
+      let nextDay = messageDaysArray[i + 1].nativeElement;
+  
+      let currentDayRect = currentDay.getBoundingClientRect();
+      let nextDayRect = nextDay.getBoundingClientRect();
+  
+      if (currentDayRect.bottom >= nextDayRect.top - 5) {
+        if (currentDay.style.visibility !== 'hidden') {
+          currentDay.style.visibility = 'hidden';
+        }
+      } else {
+        if (currentDay.style.visibility !== 'visible') {
+          currentDay.style.visibility = 'visible';
+        }
+      }
+    }
+  }
+
+  isSameDay(timestamp1: number, timestamp2: number): boolean {
+    let date1 = new Date(timestamp1);
+    let date2 = new Date(timestamp2);
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
   }
 
   repeatedMessageInUnder5Minutes(
