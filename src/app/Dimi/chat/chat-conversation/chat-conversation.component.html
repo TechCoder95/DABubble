@@ -1,9 +1,9 @@
-<main #scrollContainer>
+<main #scrollContainer (scroll)="onScroll()">
   <div>
     @if(allMessages.length > 0){ @for (message of allMessages; track $index) {
     @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
     1].timestamp)){
-    <section class="message-day">
+    <section class="message-day" #messageDay>
       <p></p>
       <h4>{{ formatDateWithDay(message.timestamp) }}</h4>
     </section>
