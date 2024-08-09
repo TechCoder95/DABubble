@@ -80,7 +80,7 @@ export class ChatConversationComponent
   }
 
   ngAfterViewInit() {
-    this.onScroll(); // Initial check
+    this.onScroll();
   }
 
    onScroll() {

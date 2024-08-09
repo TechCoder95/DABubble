@@ -1,9 +1,17 @@
+.wrapper {
+  height: 50vh;
+  display: flex;
+  flex-direction: column;
+}
+
 main {
   border-radius: 30px 0 30px 30px;
   padding: 40px;
-  overflow-y: scroll;
-  max-height: 50vh;
   scroll-behavior: smooth;
+  overflow: hidden;
+ /*  flex-grow: 1; */
+  display: flex;
+  flex-direction: column;
 }
 
 .headline {
@@ -29,6 +37,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  overflow-y: auto; /* Scrollen auf channel-members anwenden */
 }
 
 ::ng-deep .mat-mdc-dialog-surface {
@@ -50,17 +59,15 @@ main {
     background-position: center;
     background-repeat: no-repeat;
     background-image: url(/img/add-members-default.svg);
-
   }
 
   &:hover {
-    color: #535AF1;
-    background-color: #ECEEFE;
+    color: #535af1;
+    background-color: #eceefe;
     border-radius: 30px;
 
     div {
       background-image: url(/img/add-members-hover.svg);
     }
-
   }
 }
