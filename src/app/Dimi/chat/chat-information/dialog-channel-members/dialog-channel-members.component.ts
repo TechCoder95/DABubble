@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  inject,
+  Inject,
+  Injector,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import {
   MAT_DIALOG_DATA,
@@ -26,6 +35,7 @@ export class DialogChannelMembersComponent implements OnInit {
   activeUser!: DABubbleUser;
   channelMembers: DABubbleUser[] = [];
   readonly dialog = inject(MatDialog);
+  @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
   constructor(
     private userService: UserService,
@@ -48,21 +58,16 @@ export class DialogChannelMembersComponent implements OnInit {
     });
   }
 
-  /*  addMembers() {
-    this.closeDialog();
-    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent);
-
-  } */
-
   addMembers() {
     this.closeDialog();
 
-    /* const dialogAdd =  */ this.dialog.open(
-      DialogAddChannelMembersComponent,
-      {
-        position: { top: '10px', right: '10px' },
-      }
-    );
+    const rect = this.relativeElement.nativeElement.getBoundingClientRect();
+    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+      position: {
+        top: `${rect.top + window.scrollY}px`,
+        left: `${rect.left + window.scrollX - 60}px`,
+      },
+    });
   }
 
   changeAddMembersImg(hover: boolean) {
