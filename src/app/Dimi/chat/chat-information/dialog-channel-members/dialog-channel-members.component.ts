@@ -47,6 +47,7 @@ export class DialogChannelMembersComponent implements OnInit {
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
     this.channelService.selectedChannel$.subscribe((channel) => {
+      // console.log('dialog-channel-members zeile 36');
       if (channel) {
         channel.assignedUser.forEach((userID) => {
           let user = this.userService.getOneUserbyId(userID);
@@ -65,7 +66,7 @@ export class DialogChannelMembersComponent implements OnInit {
     const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
       position: {
         top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX - 135}px`,
+        left: `${rect.left + window.scrollX - 60}px`,
       },
     });
   }
