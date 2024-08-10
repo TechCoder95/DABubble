@@ -23,6 +23,7 @@ describe('UserService', () => {
       // Assert
       expect(deleteDataFromDBSpy).toHaveBeenCalledWith(service.collectionName, id);
       expect(sessionStorageRemoveItemSpy).toHaveBeenCalledWith('userLoginGuest');
+      expect(service.activeUserSubject.value).toBeNull();
       expect(getUsersFromDBSpy).toHaveBeenCalled();
     });
   });
