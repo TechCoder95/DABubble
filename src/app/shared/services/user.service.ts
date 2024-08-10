@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
+import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class UserService {
+export class UserService implements OnInit, OnDestroy {
 
   users: DABubbleUser[] = [];
   activeUser!: DABubbleUser;
@@ -32,24 +33,32 @@ export class UserService {
   avatarSelected: boolean = false;
   collectionName: string = 'users';
 
-  constructor(private DatabaseService: DatabaseService, private router: Router) {
+  activeUserSub!: Subscription;
+  activeGoogleUserSub!: Subscription;
+
+  constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) { 
     this.getUsersFromDB().then(() => {
       if (sessionStorage.getItem('userLoginGuest')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLoginGuest')!)!;
         this.activeUserSubject.next(this.activeUser);
-        this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+        // this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+        this.DatabaseService.subscribeToUserData(this.activeUser.id!);
         this.DatabaseService.onDomiDataChange$.subscribe((data) => {
+            // console.log('user.service user zeile 42');
           this.activeUserSubject.next(data);
         });
       }
       else if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
         this.activeUserSubject.next(this.activeUser);
-        this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
-        this.DatabaseService.onDomiDataChange$.subscribe((data) => {
+        // this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
+        this.DatabaseService.subscribeToUserData(this.activeUser.id!);
+        this.activeUserSub = this.DatabaseService.onDomiDataChange$.subscribe((data) => {
+          // console.log('user.service userSub zeile 52');
           this.activeUserSubject.next(data);
         });
-        this.activeGoogleUserObserver$.subscribe((googleUser) => {
+        this.activeGoogleUserSub = this.activeGoogleUserObserver$.subscribe((googleUser) => {
+          // console.log('user.service GoogleuserSub zeile 55');
           if (googleUser) {
             this.googleUser = googleUser;
           }
@@ -57,7 +66,7 @@ export class UserService {
             if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
               let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
               this.googleUser = JSON.parse(user!);
-              this.activeGoogleUserSubject.next(this.googleUser);
+              this.globalSubService.publishGoogleUser(this.googleUser);
             }
           }
         });
@@ -65,6 +74,14 @@ export class UserService {
     });
   }
 
+  ngOnInit() {
+    this.getUsersFromDB();
+  }
+
+  ngOnDestroy() {
+    this.activeUserSub.unsubscribe();
+    this.activeGoogleUserSub.unsubscribe();
+  }
 
   /**
    * Checks the online status of a user.
@@ -158,7 +175,7 @@ export class UserService {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.activeGoogleUserSubject.next(googleUser);
+    this.globalSubService.publishGoogleUser(googleUser);
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.uid === googleUser.uid);
 

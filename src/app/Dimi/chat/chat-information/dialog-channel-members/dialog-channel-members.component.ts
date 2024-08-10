@@ -47,6 +47,7 @@ export class DialogChannelMembersComponent implements OnInit {
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
     this.channelService.selectedChannel$.subscribe((channel) => {
+      // console.log('dialog-channel-members zeile 36');
       if (channel) {
         channel.assignedUser.forEach((userID) => {
           let user = this.userService.getOneUserbyId(userID);

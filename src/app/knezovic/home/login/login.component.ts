@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -13,14 +13,26 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService) {
-    this.UserService.activeUserObserver$.subscribe((user) => {
+    
+  }
+
+  userSub: any;
+
+
+  ngOnInit() {
+    this.userSub = this.UserService.activeUserObserver$.subscribe((user) => {
+      // console.log('login zeile 27');
       if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
         this.router.navigate(['/home']);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.userSub.unsubscribe();
   }
 
   email: string = '';

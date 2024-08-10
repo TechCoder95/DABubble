@@ -6,11 +6,13 @@ import { TextChannel } from '../interfaces/textchannel';
 import { UserService } from './user.service';
 import { Emoji } from '../interfaces/emoji';
 import { DABubbleUser } from '../interfaces/user';
+import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatService {
+
   private sendMessages = new BehaviorSubject<ChatMessage | null>(null);
   public sendMessages$ = this.sendMessages.asObservable();
 
@@ -22,18 +24,12 @@ export class ChatService {
 
   constructor(
     private databaseService: DatabaseService,
-    private userService: UserService
+    private userService: UserService,
+    private subService : GlobalsubService
   ) {}
 
-  async sortMessages(channel: TextChannel) {
+  async sortMessages(message: ChatMessage) {
     /*  ; */
-    if (channel && channel.conversationId) {
-      channel.conversationId.forEach((messageID) => {
-        this.databaseService
-          .readDataByID('messages', messageID)
-          .then((messageFromDb) => {
-            /*   ; */
-            let message = messageFromDb as ChatMessage;
             if (message !== null) {
               if (message.senderName === this.userService.activeUser.username) {
                 this.readMessage(message);
@@ -41,9 +37,6 @@ export class ChatService {
                 this.receiveMessage(message);
               }
             }
-          });
-      });
-    }
   }
 
   async sendMessage(message: ChatMessage) {
@@ -55,7 +48,6 @@ export class ChatService {
       const messageExists = messagesFromDb.some((msg) => msg.id === message.id);
       if (!messageExists) {
         // Nachricht existiert nicht, füge sie hinzu
-        this.sendMessages.next(message);
         await this.databaseService.addDataToDB('messages', message);
       }
       // Füge die Nachricht zum Kanal hinzu
@@ -69,6 +61,7 @@ export class ChatService {
         messageId
       );
 
+      messagesFromDb = [];
       // Aktualisiere die Nachrichten aus der Datenbank
       await this.databaseService.readDatafromDB('messages', messagesFromDb);
     } catch (error) {
