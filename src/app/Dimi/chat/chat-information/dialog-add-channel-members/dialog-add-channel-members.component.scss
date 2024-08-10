@@ -80,7 +80,12 @@ input {
   background-color: aqua;
   border: 1px solid rgba(173, 176, 217, 1);
   z-index: 1000;
+  max-height: 25vh;
+  overflow: auto;
   > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     list-style-type: none;
     margin: 0;
     padding: 0;
@@ -111,5 +116,34 @@ button {
   color: white;
   font-size: 18px;
   font-weight: 800;
+  /*  cursor: pointer; */
+}
+
+.active-btn {
+  background: rgba(68, 77, 242, 1);
   cursor: pointer;
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.selected-users {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.selected-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(236, 238, 254, 1);
+  padding: 3px 20px;
+  border-radius: 35px;
+  > img {
+    width: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 }

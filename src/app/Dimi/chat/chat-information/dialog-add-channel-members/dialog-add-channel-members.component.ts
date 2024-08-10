@@ -34,6 +34,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   focusNameInput: boolean = false;
   /* searchControl = new FormControl(); */
   searchResults: DABubbleUser[] = [];
+  selectedUser: DABubbleUser[] = [];
+  removeSelectedUserImg = './img/remove-selected-user.svg';
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddChannelMembersComponent>,
@@ -76,6 +78,18 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       });
   }
 
+  putUserToInputfield(user: DABubbleUser) {
+    this.searchResults = [];
+    this.inputName.nativeElement.value = '';
+    this.inputName.nativeElement.placeholder = '';
+    this.selectedUser.push(user);
+  }
+
+  removeSelectedUser() {
+    this.selectedUser = [];
+    this.inputName.nativeElement.placeholder = 'Name eingeben';
+  }
+
   changeCloseImg(hover: boolean) {
     if (hover) {
       this.closeImg = './img/close-hover.png';
@@ -94,6 +108,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       if (!channel.assignedUser.includes(user.id!)) {
         channel.assignedUser.push(user.id!);
         await this.channelService.updateChannel(channel);
+      } else {
+        alert('Sorry, User gibt es schon hier im channel');
       }
     }
   }

@@ -24,10 +24,19 @@
       (keyup)="searchUser($event)"
       #inputName
     />
+    <span class="selected-users">
+      @for (user of selectedUser; track $index) {
+      <div class="selected-user">
+        <img [src]="user.avatar" />
+        <p>{{ user.username }}</p>
+        <img [src]="removeSelectedUserImg" (click)="removeSelectedUser()" />
+      </div>
+      }
+    </span>
     <div class="input-results" *ngIf="searchResults.length > 0">
       <ul>
         @for (result of searchResults; track $index) {
-        <li>
+        <li (click)="putUserToInputfield(result)">
           <img [src]="result.avatar" />
           <p>{{ result.username }}</p>
         </li>
@@ -36,5 +45,11 @@
     </div>
   </section>
 
-  <button>hinzufügen</button>
+  <button
+    [ngClass]="{ 'active-btn': selectedUser.length > 0 }"
+    [disabled]="selectedUser.length === 0"
+    (click)="addUserToChannel(selectedUser[0])"
+  >
+    hinzufügen
+  </button>
 </main>
