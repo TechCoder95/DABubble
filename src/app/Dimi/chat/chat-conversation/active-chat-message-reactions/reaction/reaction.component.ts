@@ -2,10 +2,8 @@ import { Component, Input } from '@angular/core';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
-import { DatabaseService } from '../../../../../shared/services/database.service';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
-import { EmojiService } from '../../../../../shared/services/emoji.service';
 
 @Component({
   selector: 'app-reaction',
@@ -21,7 +19,7 @@ export class ReactionComponent {
 
   constructor(
     private userService: UserService,
-    private emojiService: EmojiService
+    private chatService: ChatService
   ) {}
 
   getEmojiImg(emoji: Emoji) {
@@ -74,7 +72,8 @@ export class ReactionComponent {
       messageId: this.emoji.messageId,
       type: this.emoji.type,
       usersIds: [this.activeUser.id!],
+      deleted: false,
     };
-    this.emojiService.sendEmoji(currentEmoji, this.message);
+    this.chatService.sendEmoji(currentEmoji, this.message);
   }
 }

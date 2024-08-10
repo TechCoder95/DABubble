@@ -6,7 +6,6 @@ import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../../shared/services/channel.service';
 import { TicketService } from '../../../../../shared/services/ticket.service';
-import { EmojiService } from '../../../../../shared/services/emoji.service';
 
 @Component({
   selector: 'app-receive-chat-message-reaction',
@@ -27,7 +26,7 @@ export class ReceiveChatMessageReactionComponent {
   constructor(
     private channelService: ChannelService,
     private ticketService: TicketService,
-    private emojiService: EmojiService
+    private chatService: ChatService
   ) {}
 
   hoverReaction(type: string, hover: boolean) {
@@ -55,7 +54,8 @@ export class ReceiveChatMessageReactionComponent {
       messageId: this.ticket.id!,
       type: emojiType,
       usersIds: [this.user.id!],
+      deleted: false,
     };
-    this.emojiService.sendEmoji(emoji, this.ticket);
+    this.chatService.sendEmoji(emoji, this.ticket);
   }
 }

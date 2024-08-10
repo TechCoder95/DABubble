@@ -58,6 +58,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
           this.handleExistingEmoji(emoji, existingEmojiIndex);
         }
         else {
+          if (emoji.id && !emoji.deleted)
           this.chatService.allEmojis.push(emoji);
         }
         this.currentEmoji = emoji;

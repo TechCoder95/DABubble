@@ -282,7 +282,7 @@ export class DatabaseService {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateEmoji(data as Emoji);
+          this.subService.updateEmoji(data as Emoji);
       });
     });
   }

@@ -112,9 +112,14 @@ export class ChatService {
     );
 
     if (existingEmoji.usersIds.length === 0) {
-      this.allEmojis.splice(this.allEmojis.indexOf(existingEmoji), 1);
+      existingEmoji.deleted = true;
+      await this.databaseService.updateDataInDB(
+        'emojies',
+        existingEmoji.id!,
+        existingEmoji
+      );
       this.databaseService.deleteDataFromDB('emojies', existingEmoji.id!);
-      this.subService.updateEmoji(null!);
+      this.subService.updateEmoji(existingEmoji);
     } else {
       await this.databaseService.updateDataInDB(
         'emojies',
