@@ -19,7 +19,6 @@ import { TextChannel } from '../interfaces/textchannel';
 import { GlobalsubService } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
 import { User } from 'firebase/auth';
-import { ThreadMessage } from '../interfaces/threadmessage';
 
 export interface DataId {
   id: string;
@@ -30,6 +29,12 @@ export interface DataId {
 })
 export class DatabaseService {
   firestore: Firestore = inject(Firestore);
+
+  private onDataChange = new BehaviorSubject<any | null>(null);
+  public onDataChange$ = this.onDataChange.asObservable();
+
+  public onDomiDataChange = new BehaviorSubject<any | null>(null);
+  public onDomiDataChange$ = this.onDomiDataChange.asObservable();
 
   constructor(private subService:GlobalsubService) {}
 
@@ -309,7 +314,7 @@ export class DatabaseService {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveThread(data as ThreadMessage);
+        this.onDomiDataChange.next(data);
       });
     });
   }
