@@ -84,11 +84,22 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnDestroy(): void {
+    if (this.userSub)
     this.userSub.unsubscribe();
+    
+    if (this.googleUserSub)
     this.googleUserSub.unsubscribe();
+
+    if (this.activeChannelSub)
     this.activeChannelSub.unsubscribe();
+
+    if (this.allMessageSub)
     this.allMessageSub.unsubscribe();
+
+    if (this.activeThreadSub)
     this.activeThreadSub.unsubscribe();
+    
+    
     console.log('Unsubscribed');
 
   }

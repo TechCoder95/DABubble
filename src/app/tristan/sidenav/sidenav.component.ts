@@ -222,7 +222,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
 
   async ngOnDestroy() {
+    if (this.userSubscription)
     this.userSubscription.unsubscribe();
+
+    if (this.createdChannelSubscription)
     this.createdChannelSubscription.unsubscribe();
   }
 
