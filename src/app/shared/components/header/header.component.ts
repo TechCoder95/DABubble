@@ -34,6 +34,10 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   constructor(public AuthService: AuthenticationService, private userService: UserService, private router: Router) {
 
+    this.activeGoogleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
+
+
+
   }
 
 
@@ -62,10 +66,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // console.log('header userunsub&googleUser zeile 36');
-    if(this.userSub)
-    this.userSub.unsubscribe();
-    if(this.googleUserSub)
-    this.googleUserSub.unsubscribe();
+
   }
 
   openMenu() {
