@@ -34,4 +34,9 @@ export class ChatComponent implements OnInit {
   ngOnInit() {
   }
 
+  ngOnDestroy() {
+    console.log('ChatComponent destroyed');
+    
+  }
+
 }

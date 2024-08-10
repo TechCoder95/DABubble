@@ -40,17 +40,13 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
-  allMessageSub!: Subscription;
   activeChannelSub!: Subscription;
   activeThreadSub!: Subscription;
 
 
-
-
-  @Output() activeUserChange = new EventEmitter<DABubbleUser>();
-  @Output() activeGoogleUserChange = new EventEmitter<User>();
-  @Output() activeChannelChange = new EventEmitter<TextChannel>();
-  @Output() allMessagesChange = new EventEmitter<ChatMessage>();
+  activeUserChange = new EventEmitter<DABubbleUser>();
+  activeGoogleUserChange = new EventEmitter<User>();
+  activeChannelChange = new EventEmitter<TextChannel>();
 
 
   activeThread!: any; // Todo Rabia
@@ -59,21 +55,20 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.userSub = this.globalSubService.getUserObservable().subscribe(data => {
-      this.activeUserChange.emit(data);
-    });
+    if (!this.userSub)
+      this.userSub = this.globalSubService.getUserObservable().subscribe(data => {
+        this.activeUserChange.emit(data);
+      });
+    if (!this.googleUserSub)
+      this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
+        this.activeGoogleUserChange.emit(data);
+      });
+    if (!this.activeChannelSub)
+      this.activeChannelSub = this.globalSubService.getActiveChannelObservable().subscribe(data => {
+        this.activeChannelChange.emit(data);
+      });
 
-    this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
-      this.activeGoogleUserChange.emit(data);
-    });
 
-    this.activeChannelSub = this.globalSubService.getActiveChannelObservable().subscribe(data => {
-      this.activeChannelChange.emit(data);
-    });
-
-    this.allMessageSub = this.globalSubService.getAllMessageObservable().subscribe(data => {
-      this.allMessagesChange.emit(data);
-    });
 
 
     // Todo Rabia
@@ -85,21 +80,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.userSub)
-    this.userSub.unsubscribe();
-    
+      this.userSub.unsubscribe();
+
     if (this.googleUserSub)
-    this.googleUserSub.unsubscribe();
+      this.googleUserSub.unsubscribe();
 
     if (this.activeChannelSub)
-    this.activeChannelSub.unsubscribe();
-
-    if (this.allMessageSub)
-    this.allMessageSub.unsubscribe();
+      this.activeChannelSub.unsubscribe();
 
     if (this.activeThreadSub)
-    this.activeThreadSub.unsubscribe();
-    
-    
+      this.activeThreadSub.unsubscribe();
+
+
     console.log('Unsubscribed');
 
   }

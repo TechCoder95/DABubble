@@ -40,7 +40,8 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.emojiSubscription.unsubscribe();
+    if (this.databaseSubscription) 
+      this.databaseSubscription.unsubscribe(); 
   }
 
   isReactionForCurrentMessage(emoji: Emoji) {
@@ -51,6 +52,7 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
 
     this.databaseService.subscribeToEmojisofMessage(this.message.id);
 
+    if (!this.databaseSubscription)
     this.databaseSubscription = this.subService.getEmojiObservable().subscribe((emoji: Emoji) => {
       if (emoji) {
         const existingEmojiIndex = this.getExistingEmojiIndex(emoji);
