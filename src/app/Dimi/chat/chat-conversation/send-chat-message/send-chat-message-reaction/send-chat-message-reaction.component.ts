@@ -12,6 +12,7 @@ import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
+import { EmojiService } from '../../../../../shared/services/emoji.service';
 
 @Component({
   selector: 'app-send-chat-message-reaction',
@@ -40,7 +41,7 @@ export class SendChatMessageReactionComponent {
   constructor(
     private channelService: ChannelService,
     private ticketService: TicketService,
-    private chatService: ChatService
+    private emojiService: EmojiService
   ) {}
 
   hoverReaction(type: string, hover: boolean) {
@@ -92,6 +93,6 @@ export class SendChatMessageReactionComponent {
       type: emojiType,
       usersIds: [this.user.id!],
     };
-    this.chatService.sendEmoji(emoji, this.sendMessage);
+    this.emojiService.sendEmoji(emoji, this.sendMessage);
   }
 }

@@ -5,6 +5,7 @@ import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { DatabaseService } from '../../../../../shared/services/database.service';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
+import { EmojiService } from '../../../../../shared/services/emoji.service';
 
 @Component({
   selector: 'app-reaction',
@@ -20,7 +21,7 @@ export class ReactionComponent {
 
   constructor(
     private userService: UserService,
-    private chatService: ChatService
+    private emojiService: EmojiService
   ) {}
 
   getEmojiImg(emoji: Emoji) {
@@ -74,6 +75,6 @@ export class ReactionComponent {
       type: this.emoji.type,
       usersIds: [this.activeUser.id!],
     };
-    this.chatService.sendEmoji(currentEmoji, this.message);
+    this.emojiService.sendEmoji(currentEmoji, this.message);
   }
 }
