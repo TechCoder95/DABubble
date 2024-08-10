@@ -84,7 +84,6 @@ export class ChatService {
   ) {
     const existingEmoji: any = this.getExistingEmoji(emoji, emojisFromDB);
     /* Überprüfen, ob der activeUser schon reagiert hat */
-    debugger;
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
@@ -111,7 +110,6 @@ export class ChatService {
   }
 
   async eliminateUserReaction(existingEmoji: Emoji, emoji: Emoji) {
-    debugger;
     existingEmoji.usersIds = existingEmoji.usersIds.filter(
       (userId) => userId !== emoji.usersIds[0]
     );

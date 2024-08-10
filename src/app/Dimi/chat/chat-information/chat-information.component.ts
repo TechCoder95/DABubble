@@ -35,6 +35,7 @@ export class ChatInformationComponent implements OnInit {
   channelSub!: Subscription;
 
   @Input() activeUserFromChat: any; 
+  @Input() activeChannelFromChat: any;
 
   constructor(
     public dialog: MatDialog,
@@ -47,9 +48,13 @@ export class ChatInformationComponent implements OnInit {
     
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-      console.log('activeUserFromChat', user);
       
     });
+
+    this.activeChannelFromChat.subscribe((channel: any) => {
+      this.getAssignedUsers(channel);
+    });
+
   }
 
 

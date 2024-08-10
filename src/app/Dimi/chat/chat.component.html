@@ -1,5 +1,5 @@
 <mat-card>
-  <app-chat-information [activeUserFromChat]="activeUserFromSidenav"></app-chat-information>
+  <app-chat-information [activeUserFromChat]="activeUserFromSidenav" [activeChannelFromChat]="selectedChannelFromSidenav" ></app-chat-information>
   <app-chat-conversation [messagesFromChat]="allMessagesfromSideNav"
     [activeChannelFromChat]="selectedChannelFromSidenav" [activeUserFromChat]="activeUserFromSidenav" #scrollContainer>
   </app-chat-conversation>
