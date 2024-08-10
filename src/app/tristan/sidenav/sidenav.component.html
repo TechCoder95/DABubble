@@ -1,12 +1,15 @@
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
-    <div class="flex align-items-center justify-content-between">
+    
+    <div class="flex align-items-center justify-content-between hide-if-mobile">
       <div class="flex align-items-center">
         <img src="img/devspace.svg" alt="devspace-logo" />
         <h3 class="text-3xl m-2">Devspace</h3>
       </div>
       <div (click)="openNewMessage()" class="new-message"></div>
     </div>
+
+    <app-searchbar class="show-if-mobile"></app-searchbar>
 
     <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node">
@@ -58,6 +61,7 @@
                 'blue-action-name': isActionNode(node),
                 'selected-channel': isSelectedChannel(node)
               }">{{ node.name }}</span>
+              
           </div>
           <ng-container *ngIf="node.name === 'Channels'">
             <div (click)="openAddChannelDialog()" class="add-channel hover">
@@ -66,7 +70,10 @@
         </div>
       </mat-tree-node>
     </mat-tree>
+          <div (click)="openNewMessage()" class="new-msg-mobile show-if-mobile"></div>
+
   </mat-drawer>
+
 
   <div class="content extend" *ngIf="showNewChat">
     <app-new-chat class="flex justify-content-between flex-auto"></app-new-chat>

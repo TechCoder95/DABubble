@@ -54,6 +54,12 @@ img {
     display: none;
 }
 
+@media (max-width: 910px) {
+    .search {
+        display: none;
+    }
+}
+
 @media (max-width: 650px) {
     .register-desktop {
         display: none !important;

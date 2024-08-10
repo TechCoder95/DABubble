@@ -18,6 +18,7 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 import { distinctUntilChanged, filter, Subscription } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { SearchbarComponent } from "../../shared/components/header/searchbar/searchbar.component";
 
 interface Node {
   id: string;
@@ -48,8 +49,9 @@ interface FlattenedNode {
     MatButtonModule,
     ChatComponent,
     NewChatComponent,
-    ThreadComponent
-  ],
+    ThreadComponent,
+    SearchbarComponent
+],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
