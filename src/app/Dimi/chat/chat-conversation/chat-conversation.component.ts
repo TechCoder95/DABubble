@@ -37,7 +37,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, AfterViewChecked, AfterViewInit {
+  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
 
 
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
@@ -66,9 +66,6 @@ export class ChatConversationComponent
   }
 
   ngOnInit() {
-
-
-
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
@@ -80,12 +77,14 @@ export class ChatConversationComponent
     });
 
     this.messagesFromChat.subscribe((message: any) => {
-
       if (message.id) {
         this.allMessages.push(message)
         this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
       }
     });
+  }
+
+  ngOnDestroy() {
   }
 
   ngAfterViewChecked(): void {

@@ -6,6 +6,7 @@ import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { DatabaseService } from './database.service';
+import { Emoji } from '../interfaces/emoji';
 
 @Injectable({
   providedIn: 'root'
@@ -17,6 +18,7 @@ export class GlobalsubService {
   private allMessageSubject = new Subject<ChatMessage>();
   private activeChannelSubject = new Subject<TextChannel>();
   private activeThreadSubject = new Subject<ThreadMessage>();
+  private emjoiSubject = new Subject<Emoji>();
 
 
   constructor() {
@@ -50,6 +52,10 @@ export class GlobalsubService {
     return this.activeThreadSubject.asObservable();
   }
 
+  getEmojiObservable() {
+    return this.emjoiSubject.asObservable();
+  }
+
 
 
 
@@ -71,6 +77,10 @@ export class GlobalsubService {
 
   publishActiveThread(data: ThreadMessage) {
     this.activeThreadSubject.next(data);
+  }
+
+  publishEmoji(data: Emoji) {
+    this.emjoiSubject.next(data);
   }
 
 
@@ -95,6 +105,15 @@ export class GlobalsubService {
   updateActiveThread(data: ThreadMessage) {
     this.publishActiveThread(data);
   }
+
+  updateEmoji(data: Emoji) {
+    this.publishEmoji(data);
+  }
+
+  deleteEmoji() {
+    this.emjoiSubject.unsubscribe();
+  }
+
 }
 
 
