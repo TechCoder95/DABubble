@@ -48,7 +48,7 @@ export class InputfieldComponent implements OnInit {
   ) {
 
     this.activeUser = this.userService.activeUser;
-    
+
   }
 
 
@@ -113,7 +113,7 @@ export class InputfieldComponent implements OnInit {
 
   inThreads: boolean = false;
 
-  
+
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -127,8 +127,8 @@ export class InputfieldComponent implements OnInit {
         await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
         break;
       case MessageType.NewDirect:
-        await this.setSelectedChannel();
-        await this.send();
+         await this.setSelectedChannel();
+         await this.send();
         break;
       default:
         break;
@@ -166,11 +166,10 @@ export class InputfieldComponent implements OnInit {
 
       if (message.message !== '') {
         try {
-          const newMessageId = await this.databaseService.addChannelDataToDB(
+          this.databaseService.addChannelDataToDB(
             'messages',
             message
           );
-          message.id = newMessageId;
           this.textareaValue = '';
         } catch (error) {
           console.error('Fehler beim Senden der Nachricht:', error);

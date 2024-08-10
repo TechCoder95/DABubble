@@ -80,16 +80,16 @@ export class ChatConversationComponent
     });
 
     this.messagesFromChat.subscribe((message: any) => {
-     
-      this.allMessages.push(message)
-      this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
-      console.log('allMessages', this.allMessages);
 
+      if (message.id) {
+        this.allMessages.push(message)
+        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+      }
     });
   }
 
   ngAfterViewChecked(): void {
-     setTimeout(() => {
+    setTimeout(() => {
       this.scrollToBottom();
     }, 1000);
   }

@@ -236,6 +236,8 @@ export class DatabaseService {
   async addChannelDataToDB(collectionName: string, data: any): Promise<string> {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
+      const id = docRef.id;
+      await updateDoc(docRef, { id });
       return docRef.id;
     } catch (err) {
       console.error('Error adding Data', err);
@@ -260,48 +262,6 @@ export class DatabaseService {
     snapshot.forEach((doc) => channels.push(doc.data() as TextChannel));
     return channels;
   }
-
-  // /**
-  //  * Subscribes to messages in a specified channel or the currently selected channel.
-  //  * @param channel - The optional TextChannel object representing the channel to subscribe to.
-  //  */
-  // async subscribeToMessages(channel?: TextChannel) {
-  //   const q = query(
-  //     collection(this.firestore, 'channels'),
-  //     where(
-  //       'id',
-  //       '==',
-  //       channel?.id || sessionStorage.getItem('selectedChannelId')
-  //     )
-  //   );
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     snapshot.docChanges().forEach((change) => {
-  //       let data = change.doc.data();
-  //       this.onDataChange.next(data);
-  //     });
-  //   });
-  // }
-
-  // /**
-  //  * Subscribes to data changes in a specific collection and with a specific data ID.
-  //  * @param collectionName - The name of the collection to subscribe to.
-  //  * @param dataId - The ID of the data to subscribe to.
-  //  */
-  // async subscribeToData(collectionName: string, dataId: string) {
-  //   const q = query(
-  //     collection(this.firestore, collectionName),
-  //     where('id', '==', dataId)
-  //   );
-
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     snapshot.docChanges().forEach((change) => {
-  //       let data = change.doc.data();
-  //       this.onDomiDataChange.next(data);
-  //     });
-  //   });
-  // }
-
-
 
 
   async subscribeToUserData(userId: string) {

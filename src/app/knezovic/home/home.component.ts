@@ -60,22 +60,18 @@ export class HomeComponent implements OnInit, OnDestroy {
   ngOnInit() {
 
     this.userSub = this.globalSubService.getUserObservable().subscribe(data => {
-      console.log('User:', data);
       this.activeUserChange.emit(data);
     });
 
     this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
-      console.log('Google User:', data);
       this.activeGoogleUserChange.emit(data);
     });
 
     this.activeChannelSub = this.globalSubService.getActiveChannelObservable().subscribe(data => {
-      console.log('Active Channel:', data);
       this.activeChannelChange.emit(data);
     });
 
     this.allMessageSub = this.globalSubService.getAllMessageObservable().subscribe(data => {
-      console.log('Message:', data);
       this.allMessagesChange.emit(data);
     });
 

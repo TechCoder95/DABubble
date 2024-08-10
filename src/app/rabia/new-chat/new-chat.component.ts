@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -22,6 +22,10 @@ export class NewChatComponent implements OnInit {
   searchQuery: string | undefined;
   isSelectingUser: boolean = false;
   messageType = MessageType.NewDirect;
+
+
+  @Input() selectedChannelFromSidenav: any;
+  @Input() activeUserFromSidenav: any;
 
   constructor(private userService: UserService) { }
 
