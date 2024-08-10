@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Pipe } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -20,22 +20,19 @@ import { TicketService } from '../../../shared/services/ticket.service';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
-export class InputfieldComponent implements OnInit {
+export class InputfieldComponent {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
+  activeUser!: DABubbleUser;
+  selectedChannel: TextChannel | null = null;
   selectedThread: boolean = false;
   ticket: any;
-  selectedChannel: TextChannel | null = null;
-  activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
 
-
-
-  @Input() selectedChannelFromChat: any;
-  @Input() activeUserFromChat: any;
+  @Output() selectedChannelChanged = new EventEmitter<TextChannel>();
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -46,25 +43,17 @@ export class InputfieldComponent implements OnInit {
     private databaseService: DatabaseService,
     private ticketService: TicketService
   ) {
-
     this.activeUser = this.userService.activeUser;
-    
-  }
-
-
-
-  ngOnInit() {
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-    }
-    );
-    this.selectedChannelFromChat.subscribe((channel: any) => {
-      this.selectedChannel = channel;
-    });
-
+    this.subscribeToDataChanges();
     this.ticket = this.ticketService.getTicket();
   }
 
+  subscribeToDataChanges() {
+    this.databaseService.onDataChange$.subscribe(async (channel) => {
+      this.selectedChannel = channel;
+      this.selectedChannelChanged.emit(channel);
+    });
+  }
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -96,24 +85,18 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
     this.addEmojiImg = './img/add-emoji-default.svg';
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
   get placeholderText(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
       map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
     );
   }
-
-
   inThreads: boolean = false;
-
-  
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -205,6 +188,7 @@ export class InputfieldComponent implements OnInit {
         selectedUser
       );
       this.channelService.selectChannel(channel);
+      this.selectedChannel = channel;
     }
   }
 

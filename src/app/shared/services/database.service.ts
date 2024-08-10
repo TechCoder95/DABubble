@@ -14,11 +14,8 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { arrayUnion, arrayRemove, DocumentData } from 'firebase/firestore';
+import { arrayUnion, arrayRemove } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
-import { GlobalsubService } from './globalsub.service';
-import { DABubbleUser } from '../interfaces/user';
-import { User } from 'firebase/auth';
 
 export interface DataId {
   id: string;
@@ -35,8 +32,6 @@ export class DatabaseService {
 
   public onDomiDataChange = new BehaviorSubject<any | null>(null);
   public onDomiDataChange$ = this.onDomiDataChange.asObservable();
-
-  constructor(private subService:GlobalsubService) {}
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -263,94 +258,36 @@ export class DatabaseService {
     return channels;
   }
 
-  // /**
-  //  * Subscribes to messages in a specified channel or the currently selected channel.
-  //  * @param channel - The optional TextChannel object representing the channel to subscribe to.
-  //  */
-  // async subscribeToMessages(channel?: TextChannel) {
-  //   const q = query(
-  //     collection(this.firestore, 'channels'),
-  //     where(
-  //       'id',
-  //       '==',
-  //       channel?.id || sessionStorage.getItem('selectedChannelId')
-  //     )
-  //   );
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     snapshot.docChanges().forEach((change) => {
-  //       let data = change.doc.data();
-  //       this.onDataChange.next(data);
-  //     });
-  //   });
-  // }
-
-  // /**
-  //  * Subscribes to data changes in a specific collection and with a specific data ID.
-  //  * @param collectionName - The name of the collection to subscribe to.
-  //  * @param dataId - The ID of the data to subscribe to.
-  //  */
-  // async subscribeToData(collectionName: string, dataId: string) {
-  //   const q = query(
-  //     collection(this.firestore, collectionName),
-  //     where('id', '==', dataId)
-  //   );
-
-  //   const unsubscribe = onSnapshot(q, (snapshot) => {
-  //     snapshot.docChanges().forEach((change) => {
-  //       let data = change.doc.data();
-  //       this.onDomiDataChange.next(data);
-  //     });
-  //   });
-  // }
-
-
-
-
-  async subscribeToUserData(userId: string) {
-    const q = query(
-      collection(this.firestore, 'users'),
-      where('id', '==', userId)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        let data = change.doc.data();
-        this.subService.updateUser(data as DABubbleUser);
-      });
-    });
-  }
-
-  async subscribeToChannelData(channelId: string) {
+  /**
+   * Subscribes to messages in a specified channel or the currently selected channel.
+   * @param channel - The optional TextChannel object representing the channel to subscribe to.
+   */
+  async subscribeToMessages(channel?: TextChannel) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', channelId)
+      where(
+        'id',
+        '==',
+        channel?.id || sessionStorage.getItem('selectedChannelId')
+      )
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveChannel(data as TextChannel);
+        this.onDataChange.next(data);
       });
     });
   }
 
-  async subscribeToMessageDatainChannel(channelId: string) {
+  /**
+   * Subscribes to data changes in a specific collection and with a specific data ID.
+   * @param collectionName - The name of the collection to subscribe to.
+   * @param dataId - The ID of the data to subscribe to.
+   */
+  async subscribeToData(collectionName: string, dataId: string) {
     const q = query(
-      collection(this.firestore, 'messages'), where('channelId', '==', channelId)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        let data = change.doc.data();
-        this.subService.updateAllMessages(data as ChatMessage);
-      });
-    });
-  }
-
-  async subscribeToThreadData(threadId: string) {
-    const q = query(
-      collection(this.firestore, 'threads'),
-      where('id', '==', threadId)
+      collection(this.firestore, collectionName),
+      where('id', '==', dataId)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -360,7 +297,6 @@ export class DatabaseService {
       });
     });
   }
- 
 }
 
 /* async addMessageToChannel(channelDoc: string, messageDocId: string) {
