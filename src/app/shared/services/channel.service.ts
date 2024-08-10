@@ -34,7 +34,11 @@ export class ChannelService {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
     sessionStorage.setItem('selectedChannelId', channel.id);
-    this.databaseService.subscribeToChannelData(channel.id);
+    this.getActiveMessages(this.channel);
+  }
+
+  getActiveMessages(channel: TextChannel) {
+    this.databaseService.subscribeToMessages(channel)
   }
 
   /**
