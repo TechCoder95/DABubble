@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service'; // Add this line
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-login',
@@ -13,27 +14,21 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
-  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService) {
+  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) {
     
   }
 
-  userSub: any;
 
 
   ngOnInit() {
-    this.userSub = this.UserService.activeUserObserver$.subscribe((user) => {
-      // console.log('login zeile 27');
+    this.subService.getUserObservable().subscribe((user) => {
+      this.UserService.activeUser = user;
       if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
         this.router.navigate(['/home']);
       }
     });
-  }
-
-  ngOnDestroy(): void {
-    if (this.userSub)
-    this.userSub.unsubscribe();
   }
 
   email: string = '';

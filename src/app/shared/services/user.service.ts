@@ -22,54 +22,28 @@ export class UserService implements OnInit, OnDestroy {
   private selectedUserSubject = new BehaviorSubject<DABubbleUser | null>(null);
   selectedUser$ = this.selectedUserSubject.asObservable();
 
-  //Aktiver User aus der Datenbank Firestore wird in das Subject geschrieben
-  activeUserSubject = new BehaviorSubject<DABubbleUser>(this.activeUser);
-  activeUserObserver$ = this.activeUserSubject.asObservable();
-
-  //Aktiver Google User wird in das Subject geschrieben
-  activeGoogleUserSubject = new BehaviorSubject<User>(this.googleUser);
-  activeGoogleUserObserver$ = this.activeGoogleUserSubject.asObservable();
-
   avatarSelected: boolean = false;
   collectionName: string = 'users';
 
   activeUserSub!: Subscription;
   activeGoogleUserSub!: Subscription;
 
-  constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) { 
+  constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
     this.getUsersFromDB().then(() => {
       if (sessionStorage.getItem('userLoginGuest')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLoginGuest')!)!;
-        this.activeUserSubject.next(this.activeUser);
-        // this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-        this.DatabaseService.onDomiDataChange$.subscribe((data) => {
-            // console.log('user.service user zeile 42');
-          this.activeUserSubject.next(data);
-        });
+        this.globalSubService.updateUser(this.activeUser);
       }
       else if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
-        this.activeUserSubject.next(this.activeUser);
-        // this.DatabaseService.subscribeToData(this.collectionName, this.activeUser.id!);
         this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-        this.activeUserSub = this.DatabaseService.onDomiDataChange$.subscribe((data) => {
-          // console.log('user.service userSub zeile 52');
-          this.activeUserSubject.next(data);
-        });
-        this.activeGoogleUserSub = this.activeGoogleUserObserver$.subscribe((googleUser) => {
-          // console.log('user.service GoogleuserSub zeile 55');
-          if (googleUser) {
-            this.googleUser = googleUser;
-          }
-          else {
-            if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
-              let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
-              this.googleUser = JSON.parse(user!);
-              this.globalSubService.publishGoogleUser(this.googleUser);
-            }
-          }
-        });
+        this.globalSubService.updateUser(this.activeUser);
+        if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
+          let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
+          this.googleUser = JSON.parse(user!);
+          this.globalSubService.publishGoogleUser(this.googleUser);
+        }
       }
     });
   }
@@ -91,10 +65,10 @@ export class UserService implements OnInit, OnDestroy {
   checkOnlineStatus(user: DABubbleUser) {
     if (user) {
       this.activeUser = user;
-      this.activeUserSubject.next(user);
+      this.globalSubService.updateUser(this.activeUser);
     } else {
       this.activeUser = null!;
-      this.activeUserSubject.next(null!);
+      this.globalSubService.updateUser(null!);
     }
   }
 
@@ -138,7 +112,7 @@ export class UserService implements OnInit, OnDestroy {
       this.users.map(user => {
         if (user.mail === guestUser.mail && user.id) {
           this.activeUser = user;
-          this.activeUserSubject.next(this.completeUser(this.activeUser));
+          this.globalSubService.updateUser(this.completeUser(this.activeUser));
           sessionStorage.setItem('userLoginGuest', this.activeUser.id!);
           this.updateLoggedInUser();
           this.checkOnlineStatus(this.activeUser);
@@ -160,7 +134,7 @@ export class UserService implements OnInit, OnDestroy {
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
         sessionStorage.removeItem('userLoginGuest');
-        this.activeUserSubject.next(null!);
+        this.globalSubService.updateUser(null!);
         this.getUsersFromDB().then(() => {
           window.location.reload();
         });
@@ -175,7 +149,7 @@ export class UserService implements OnInit, OnDestroy {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.globalSubService.publishGoogleUser(googleUser);
+    this.globalSubService.updateGoogleUser(googleUser);
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.uid === googleUser.uid);
 
@@ -185,10 +159,9 @@ export class UserService implements OnInit, OnDestroy {
             this.users.map(user => {
               if (user.mail === googleUser.email && user.id) {
                 sessionStorage.setItem('userLogin', user.id);
-                this.activeUserSubject.next(this.completeUser(user, googleUser));
+                this.globalSubService.updateGoogleUser(googleUser);
+                this.globalSubService.updateUser(this.completeUser(user, googleUser));
                 this.updateLoggedInUser();
-                
-
                 this.router.navigate(['/user/chooseAvatar']);
               }
             });
@@ -199,7 +172,8 @@ export class UserService implements OnInit, OnDestroy {
           sessionStorage.setItem('userLogin', loginUser.id);
           this.checkOnlineStatus(loginUser);
           this.updateLoggedInUser(loginUser);
-          this.activeUserSubject.next(loginUser);
+          this.globalSubService.updateGoogleUser(googleUser);
+          this.globalSubService.updateUser(this.completeUser(loginUser, googleUser));
         }
       }
     });
@@ -257,7 +231,7 @@ export class UserService implements OnInit, OnDestroy {
           sessionStorage.removeItem('uId');
           sessionStorage.removeItem('userLogin');
           sessionStorage.removeItem('selectedChannelId');
-          this.activeUserSubject.next(null!);
+          this.globalSubService.updateUser(null!);
           this.router.navigate(['/user/login']);
         });
     }
@@ -288,7 +262,7 @@ export class UserService implements OnInit, OnDestroy {
   async updateUser(user: DABubbleUser) {
     await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
       .then(() => {
-        this.activeUserSubject.next(user);
+        this.globalSubService.updateUser(user);
         this.getUsersFromDB();
       });
   }
@@ -382,7 +356,6 @@ export class UserService implements OnInit, OnDestroy {
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
   }
-
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
@@ -411,5 +384,5 @@ export class UserService implements OnInit, OnDestroy {
       throw err;
     }
   }
-  
+
 }
