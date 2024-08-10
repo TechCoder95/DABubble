@@ -16,24 +16,25 @@
     </div>
   </section>
 
-  <section>
+  <section class="inputfield">
     <input
       type="text"
       class="inputfield-name"
       placeholder="Name eingeben"
-      [formControl]="searchControl"
+      (keyup)="searchUser($event)"
       #inputName
     />
+    <div class="input-results" *ngIf="searchResults.length > 0">
+      <ul>
+        @for (result of searchResults; track $index) {
+        <li>
+          <img [src]="result.avatar" />
+          <p>{{ result.username }}</p>
+        </li>
+        }
+      </ul>
+    </div>
   </section>
 
   <button>hinzufügen</button>
-
-  <!-- <section *ngIf="searchResults.length > 0">
-    <ul>
-      <li *ngFor="let user of searchResults">
-        {{ user.username }}
-        <button (click)="addUserToChannel(user)">Hinzufügen</button>
-      </li>
-    </ul>
-  </section> -->
 </main>
