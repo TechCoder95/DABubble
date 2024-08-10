@@ -5,6 +5,7 @@ import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service'; // Add this line
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,7 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService) {
+  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) {
     
   }
 
@@ -23,7 +24,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    this.userSub = this.UserService.activeUserObserver$.subscribe((user) => {
+    this.subService.getUserObservable().subscribe(async (user) => {
       // console.log('login zeile 27');
       if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
         this.router.navigate(['/home']);

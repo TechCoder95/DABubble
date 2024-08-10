@@ -13,16 +13,17 @@ import {
 } from "firebase/auth";
 import { UserService } from './user.service';
 import { EmailService } from './sendmail.service';
+import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private userService: UserService, private emailService: EmailService) {
+  constructor(private userService: UserService, private emailService: EmailService, private subService: GlobalsubService) {
     this.setLocalPersistent();
     if (this.auth.currentUser !== null) {
-      this.userService.activeGoogleUserSubject.next(this.auth.currentUser);
+      this.subService.updateGoogleUser(this.auth.currentUser);
     }
   }
 
