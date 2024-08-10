@@ -171,7 +171,6 @@ export class InputfieldComponent implements OnInit {
             message
           );
           message.id = newMessageId;
-          this.chatService.sendMessage(message);
           this.textareaValue = '';
         } catch (error) {
           console.error('Fehler beim Senden der Nachricht:', error);

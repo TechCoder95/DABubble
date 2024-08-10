@@ -13,12 +13,6 @@ import { GlobalsubService } from './globalsub.service';
 })
 export class ChatService {
 
-  private sendMessages = new BehaviorSubject<ChatMessage | null>(null);
-  public sendMessages$ = this.sendMessages.asObservable();
-
-  private receiveMessages = new BehaviorSubject<ChatMessage | null>(null);
-  public receiveMessages$ = this.receiveMessages.asObservable();
-
   private sendMessagesEmoji = new BehaviorSubject<Emoji | null>(null);
   public sendMessagesEmoji$ = this.sendMessagesEmoji.asObservable();
 
@@ -27,17 +21,6 @@ export class ChatService {
     private userService: UserService,
     private subService : GlobalsubService
   ) {}
-
-  async sortMessages(message: ChatMessage) {
-    /*  ; */
-            if (message !== null) {
-              if (message.senderName === this.userService.activeUser.username) {
-                this.readMessage(message);
-              } else {
-                this.receiveMessage(message);
-              }
-            }
-  }
 
   async sendMessage(message: ChatMessage) {
     try {
@@ -68,15 +51,6 @@ export class ChatService {
       console.error('Fehler beim Senden der Nachricht:', error);
     }
   }
-
-  readMessage(message: ChatMessage) {
-    this.sendMessages.next(message);
-  }
-
-  receiveMessage(message: ChatMessage) {
-    this.receiveMessages.next(message);
-  }
-
   /* ==================================================================== */
   async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
     let emojisFromDB: Emoji[] = [];

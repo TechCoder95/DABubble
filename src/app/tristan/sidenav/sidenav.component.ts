@@ -118,17 +118,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     // Das durch einen Input ersetzen
     // });
 
-   
+
     this.activeUserChange.subscribe((user: DABubbleUser) => {
       this.activeUser = user;
       this.isLoggedIn = this.activeUser?.isLoggedIn;
       if (this.activeUser) {
-        // if (this.googleUser.emailVerified) { // Hier muss das verfiedEmal vom googleUser überprüft werden
-        this.loadUserChannels(this.activeUser);
-        this.initializeDirectMessageForUser(this.activeUser);
-        this.updateTreeData();
-        this.loadLastChannelState();
-        // }
+        this.loadUserChannels(this.activeUser).then(() => {
+          this.initializeDirectMessageForUser(this.activeUser).then(() => {
+            this.updateTreeData().then(() => {
+              this.loadLastChannelState();
+            }
+            );
+          });
+        });
       }
 
       // await this.initializeDefaultData();
