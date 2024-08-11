@@ -108,7 +108,6 @@ export class ChannelService {
         assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
-        conversationId: [],
         owner: currentUser.id!
       };
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);

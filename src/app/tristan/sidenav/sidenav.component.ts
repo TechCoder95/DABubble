@@ -151,8 +151,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // todo
   private async initializeDefaultData() {
     const defaultGroupChannels: TextChannel[] = [
-      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Allgemeiner Channel', conversationId: [], owner: '' },
-      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Entwickler Channel', conversationId: [], owner: '' }
+      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Allgemeiner Channel', owner: '' },
+      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Entwickler Channel', owner: '' }
     ];
 
     const defaultUsers: DABubbleUser[] = [
@@ -162,8 +162,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     ];
 
     const defaultDirectChannels: TextChannel[] = [
-      { id: 'directChannel1', name: 'Direktnachricht 1', assignedUser: [], isPrivate: true, description: '', conversationId: [], owner: '' },
-      { id: 'directChannel2', name: 'Direktnachricht 2', assignedUser: [], isPrivate: true, description: '', conversationId: [], owner: '' }
+      { id: 'directChannel1', name: 'Direktnachricht 1', assignedUser: [], isPrivate: true, description: '', owner: '' },
+      { id: 'directChannel2', name: 'Direktnachricht 2', assignedUser: [], isPrivate: true, description: '', owner: '' }
     ];
 
     // Überprüfe, ob Standardbenutzer vorhanden sind
@@ -247,7 +247,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
         assignedUser: [currentUser.id!],
         isPrivate: true,
         description: '',
-        conversationId: [],
         owner: ''
       };
       const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);

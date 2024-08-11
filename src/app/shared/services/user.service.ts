@@ -107,7 +107,7 @@ export class UserService implements OnInit {
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
    */
   async writeGuestToDB() {
-    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg', activeChannels: [] };
+    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg' };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
     this.getUsersFromDB().then(() => {
@@ -196,7 +196,6 @@ export class UserService implements OnInit {
       username: user.username ? user.username : googleUser?.displayName || '',
       uid: user.uid || googleUser?.uid || '',
       isLoggedIn: user.isLoggedIn || true,
-      activeChannels: user.activeChannels || [],
       avatar: user.avatar || '',
     };
   }
@@ -245,7 +244,7 @@ export class UserService implements OnInit {
    * @param uid - The unique identifier of the user.
    */
   async register(email: string, username: string, uid: string) {
-    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], avatar: '/img/avatar.svg' };
+    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, avatar: '/img/avatar.svg' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
       .then(() => {
         this.getUsersFromDB();

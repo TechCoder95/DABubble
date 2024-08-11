@@ -159,7 +159,6 @@ export class InputfieldComponent implements OnInit {
         timestamp: new Date().getTime(),
         senderName: this.activeUser.username || 'guest',
         senderId: this.activeUser.id || 'senderIdDefault',
-        emoticons: [],
         edited: false,
         deleted: false,
       };
