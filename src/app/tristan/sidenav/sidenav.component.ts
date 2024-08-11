@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -16,7 +16,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { distinctUntilChanged, filter, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
@@ -110,14 +110,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    // this.subService.getGoogleUserObservable().subscribe(googleUser => {
-    //   if (googleUser) {
-    //     this.isCurrentUserActivated = googleUser.emailVerified;
-    //   }
-
-    // Das durch einen Input ersetzen
-    // });
-
 
     this.activeUserChange.subscribe((user: DABubbleUser) => {
       this.activeUser = user;
@@ -136,7 +128,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       // await this.initializeDefaultData();
 
       this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
-        // console.log('sidenav channelsub zeile 122');
         if (channel) {
           this.channels.push(channel);
           this.updateTreeData();

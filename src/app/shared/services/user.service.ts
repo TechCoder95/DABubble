@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
@@ -12,7 +12,7 @@ import { GlobalsubService } from './globalsub.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService implements OnInit {
+export class UserService {
 
   users: DABubbleUser[] = [];
   activeUser!: DABubbleUser;
@@ -36,28 +36,23 @@ export class UserService implements OnInit {
       }
       else if (sessionStorage.getItem('userLogin')) {
         this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
-        // this.globalSubService.updateUser(this.activeUser);
+        this.globalSubService.updateUser(this.activeUser);
         this.DatabaseService.subscribeToUserData(this.activeUser.id!);
+        if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
+          let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
+          this.googleUser = JSON.parse(user!);
+          this.globalSubService.publishGoogleUser(this.googleUser);
+        }
         this.globalSubService.getGoogleUserObservable().subscribe(googleUser => {
-          // console.log('user.service GoogleuserSub zeile 55');
           if (googleUser) {
             this.googleUser = googleUser;
-          }
-          else {
-            if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
-              let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
-              this.googleUser = JSON.parse(user!);
-              this.globalSubService.publishGoogleUser(this.googleUser);
-            }
+            this.globalSubService.updateGoogleUser(this.googleUser);
           }
         });
       }
     });
   }
 
-  ngOnInit() {
-   
-  }
 
 
   /**
@@ -266,6 +261,12 @@ export class UserService implements OnInit {
       });
   }
 
+
+  /**
+   * Updates the username of the active user.
+   * 
+   * @param {string} username - The new username to be set.
+   */
   updateUsername(username: string) {
     this.activeUser.username = username;
     this.updateUser(this.activeUser);
@@ -352,13 +353,16 @@ export class UserService implements OnInit {
     return users;
   }
 
+
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
   }
 
+
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
+
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
@@ -373,6 +377,7 @@ export class UserService implements OnInit {
     }
   }
 
+  
   async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
