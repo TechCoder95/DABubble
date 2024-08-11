@@ -1,12 +1,16 @@
 main {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 20px;
   padding: 40px;
+  position: relative;
+  overflow: visible;
 }
 
 p,
-h3 {
+h3,
+h2 {
   margin: 0;
 }
 
@@ -52,7 +56,7 @@ input {
   outline: none;
 
   &:hover {
-    border: 1px solid #ADB0D9
+    border: 1px solid #adb0d9;
   }
 
   &:focus {
@@ -60,7 +64,86 @@ input {
   }
 }
 
-
 ::ng-deep .mat-mdc-dialog-surface {
   border-radius: 30px 0px 30px 30px !important;
+}
+
+.inputfield {
+  position: relative;
+}
+
+.input-results {
+  position: fixed;
+  transform: translateX(32px) translateY(-16px);
+  border-radius: 0 20px 20px 20px;
+  padding: 20px 25px;
+  background-color: white;
+  border: 1px solid rgba(173, 176, 217, 1);
+  z-index: 1000;
+  max-height: 25vh;
+  overflow: auto;
+  > ul {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    > li {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+      padding: 4px 20px;
+      border-radius: 30px;
+      cursor: pointer;
+      > img {
+        width: 50px;
+        border-radius: 50%;
+      }
+      &:hover {
+        background: rgba(236, 238, 254, 1);
+      }
+    }
+  }
+}
+
+button {
+  border: none;
+  padding: 12px 25px;
+  border-radius: 25px;
+  background: rgba(104, 104, 104, 1);
+  color: white;
+  font-size: 18px;
+  font-weight: 800;
+  /*  cursor: pointer; */
+}
+
+.active-btn {
+  background: rgba(68, 77, 242, 1);
+  cursor: pointer;
+  &:hover {
+    opacity: 0.75;
+  }
+}
+
+.selected-users {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.selected-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(236, 238, 254, 1);
+  padding: 3px 20px;
+  border-radius: 35px;
+  > img {
+    width: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
 }
