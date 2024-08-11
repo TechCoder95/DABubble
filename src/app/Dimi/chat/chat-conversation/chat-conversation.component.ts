@@ -103,9 +103,9 @@ export class ChatConversationComponent
 
   ngAfterViewChecked(): void {
 
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 1000);
+    // setTimeout(() => {
+    //   this.scrollToBottom();
+    // }, 1000);
   }
 
   ngAfterViewInit() {
