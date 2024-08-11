@@ -76,11 +76,20 @@
 
 
   <div class="content extend" *ngIf="showNewChat">
-    <app-new-chat class="flex justify-content-between flex-auto"></app-new-chat>
+    <app-new-chat class="flex justify-content-between flex-auto"
+    [selectedChannelFromSidenav]="activeChannelChange"
+    [activeUserFromSidenav]="activeUserChange"></app-new-chat>
   </div>
 
   <div class="content extend" *ngIf="!showNewChat">
-    <app-chat *ngIf="selectedChannel"></app-chat>
+    
+    <app-chat *ngIf="selectedChannel" 
+    [selectedChannelFromSidenav]="activeChannelChange"
+    [allMessagesfromSideNav]="allMessagesChange"
+    [activeUserFromSidenav]="activeUserChange"
+    ></app-chat>
+    
+    
     <app-thread *ngIf="channelService.showSingleThread" class=" pl-5"></app-thread>
   </div>
 

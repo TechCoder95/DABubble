@@ -43,6 +43,7 @@ export class SendChatMessageComponent implements OnInit {
   /* @Output() valueChanged = new EventEmitter<string>(); */
   activeChatMessageReactionsComponent: any;
   @Input() repeatedMessage!: boolean | undefined;
+  @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
 
   constructor(
     private userService: UserService,

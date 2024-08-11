@@ -1,10 +1,17 @@
 <div class="h-screen w-full">
     <div class="h-full flex flex-column">
         <div>
-            <app-header></app-header>
+            <app-header 
+            [activeUserChange]="activeUserChange"
+            [activeGoogleUserChange]="activeGoogleUserChange"
+            ></app-header>
         </div>
         <div class="h-full">
-            <app-sidenav></app-sidenav>
+            <app-sidenav
+            [activeUserChange]="activeUserChange"
+            [activeGoogleUserChange]="activeGoogleUserChange"
+            [activeChannelChange]="activeChannelChange"
+            ></app-sidenav>
         </div>
     </div>
 </div>

@@ -14,11 +14,12 @@ main {
   z-index: 5;
   position: sticky;
   padding-top: 2px;
-  top: 0;
+  top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: rgb(253, 251, 255);
+  /* background: rgb(253, 251, 255); */
+  margin-top: 10px;
   > p {
     background: rgba(173, 176, 217, 1);
     height: 1px;
@@ -36,4 +37,8 @@ main {
     border: 1px solid rgba(173, 176, 217, 1);
     font-size: 18px;
   }
+}
+
+.hidden {
+  display: none;
 }

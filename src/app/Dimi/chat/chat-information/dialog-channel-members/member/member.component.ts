@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { UserService } from '../../../../../shared/services/user.service';
 import { distinctUntilChanged, Subscription } from 'rxjs';
+import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
 
 DialogChannelMembersComponent;
 
@@ -23,8 +24,8 @@ export class MemberComponent implements OnDestroy {
   isLoggedIn: boolean | undefined;
   private userSubscription: Subscription | undefined;
 
-  constructor(public dialog: MatDialog, private userService: UserService,) {
-    this.userSubscription = this.userService.activeUserObserver$
+  constructor(public dialog: MatDialog, private userService: UserService,private subService: GlobalsubService) {
+    this.subService.getUserObservable()
       .subscribe(async (user) => {
         this.activeUser = user;
         this.isLoggedIn = user?.isLoggedIn;

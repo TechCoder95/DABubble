@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, input, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
@@ -18,9 +18,9 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent {
-  activeUser!: DABubbleUser;
+export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
+  activeUser!: DABubbleUser;
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -32,30 +32,32 @@ export class ChatInformationComponent {
   privatChatAvatar!: string | undefined;
   privateChatPartnerName!:string | undefined;
   /*  private channelSubscription!: Subscription; */
+  channelSub!: Subscription;
+
+  @Input() activeUserFromChat: any; 
+  @Input() activeChannelFromChat: any;
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService
   ) {
-    this.activeUser = this.userService.activeUser;
   }
 
   ngOnInit(): void {
-    this.subscribeToChannelChanges();
+    
+    this.activeUserFromChat.subscribe((user: any) => {
+      this.activeUser = user;
+      
+    });
+
+    this.activeChannelFromChat.subscribe((channel: any) => {
+      this.getAssignedUsers(channel);
+    });
+
   }
 
-  subscribeToChannelChanges() {
-    this.channelService.selectedChannel$.subscribe((selectedChannel$: any) => {
-      if (selectedChannel$) {
-        this.assignedUsers = this.getAssignedUsers(selectedChannel$);
-        this.isPrivateChat = selectedChannel$.isPrivate;
-        if (selectedChannel$.isPrivate) {
-          this.getPrivateChatPartner(selectedChannel$);
-        }
-      }
-    });
-  }
+
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
