@@ -14,21 +14,25 @@ import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
   styleUrl: './thread-send-chat.component.scss'
 })
 export class ThreadSendChatComponent implements OnInit {
-  @Input() user!: DABubbleUser;
+  // user!: DABubbleUser;
   @Input() sendMessage!: ThreadMessage;
   originalMessage!: string;
+  user: any;
 
+  constructor(public ticketService: TicketService, public userService: UserService) {
 
-  constructor(public ticketService: TicketService, private userService: UserService) { }
-
-  ngOnInit(): void {
-    this.originalMessage = this.sendMessage.message;
+    this.user = this.userService.activeUser
   }
 
-  // getUserName() {
-  //   let user = this.userService.getOneUserbyId(this.user.id!);
-  //   return user?.username;
-  // }
+  ngOnInit(): void {
+    // this.originalMessage = this.sendMessage.message;
+
+
+
+    console.log("name", this.user, this.sendMessage, "lo");
+
+  }
+
 
   // getUserAvatar(): string | undefined {
   //   let user = this.userService.getOneUserbyId(this.user.id!);

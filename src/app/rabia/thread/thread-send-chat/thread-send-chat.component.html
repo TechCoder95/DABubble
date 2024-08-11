@@ -5,12 +5,13 @@
         <div class="flex align-items-center justify-content-end " style="gap: 20px;">
             <app-thread-my-emoji></app-thread-my-emoji>
             <span>11:11 Uhr</span>
-            <h2 class="m-0">Moi</h2>
+            <!-- <span>{{sendMessage.timestamp |  date : "HH.mm" }} Uhr</span> -->
+            <h2 class="m-0">{{user.username}}</h2>
 
         </div>
 
         <div class="text-bubble">Blumenkohl ist gut für dich</div>
     </div>
 
-    <img class="avatar" src="./img/1.svg">
+    <img class="avatar" src="{{user.avatar}}">
 </section>
