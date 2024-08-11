@@ -56,7 +56,7 @@ export class UserService implements OnInit {
   }
 
   ngOnInit() {
-    this.getUsersFromDB();
+   
   }
 
 

@@ -35,7 +35,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   constructor(public AuthService: AuthenticationService, private userService: UserService, private router: Router) {
 
     this.activeGoogleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
-
+    this.activeUser = this.userService.activeUser;
+    
 
 
   }
