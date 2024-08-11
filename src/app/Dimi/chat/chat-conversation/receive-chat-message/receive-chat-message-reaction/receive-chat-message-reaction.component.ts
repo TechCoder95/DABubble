@@ -54,6 +54,7 @@ export class ReceiveChatMessageReactionComponent {
       messageId: this.ticket.id!,
       type: emojiType,
       usersIds: [this.user.id!],
+      deleted: false,
     };
     this.chatService.sendEmoji(emoji, this.ticket);
   }

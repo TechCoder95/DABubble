@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service'; // Add this line
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-login',
@@ -13,14 +14,27 @@ import { AuthenticationService } from '../../../shared/services/authentication.s
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService) {
-    this.UserService.activeUserObserver$.subscribe((user) => {
+  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) {
+    
+  }
+
+  userSub: any;
+
+
+  ngOnInit() {
+    this.subService.getUserObservable().subscribe(async (user) => {
+      // console.log('login zeile 27');
       if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
         this.router.navigate(['/home']);
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.userSub)
+    this.userSub.unsubscribe();
   }
 
   email: string = '';

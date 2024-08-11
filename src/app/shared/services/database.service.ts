@@ -14,8 +14,13 @@ import {
 } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { arrayUnion, arrayRemove } from 'firebase/firestore';
+import { arrayUnion, arrayRemove, DocumentData } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
+import { GlobalsubService } from './globalsub.service';
+import { DABubbleUser } from '../interfaces/user';
+import { User } from 'firebase/auth';
+import { ThreadMessage } from '../interfaces/threadmessage';
+import { Emoji } from '../interfaces/emoji';
 
 export interface DataId {
   id: string;
@@ -27,11 +32,7 @@ export interface DataId {
 export class DatabaseService {
   firestore: Firestore = inject(Firestore);
 
-  private onDataChange = new BehaviorSubject<any | null>(null);
-  public onDataChange$ = this.onDataChange.asObservable();
-
-  public onDomiDataChange = new BehaviorSubject<any | null>(null);
-  public onDomiDataChange$ = this.onDomiDataChange.asObservable();
+  constructor(private subService:GlobalsubService) {}
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -112,32 +113,6 @@ export class DatabaseService {
     });
   }
 
-  /**
-   * Fügt einem Nachrichten-Dokument ein Emoji hinzu.
-   *
-   * @param {string} messageDoc - Die ID des Nachrichten-Dokuments, dem das Emoji hinzugefügt werden soll.
-   * @param {string} emojiDocId - Die ID des Emoji-Dokuments, das hinzugefügt werden soll.
-   * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn das Emoji erfolgreich hinzugefügt wurde.
-   */
-  async addEmojiToMessage(
-    messageDoc: string,
-    emojiDocId: string
-  ): Promise<void> {
-    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
-    await updateDoc(messageDocRef, {
-      emoticons: arrayUnion(emojiDocId),
-    });
-  }
-
-  async removeEmojiFromMessage(
-    messageDoc: string,
-    emojiDocId: string
-  ): Promise<void> {
-    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
-    await updateDoc(messageDocRef, {
-      emoticons: arrayRemove(emojiDocId),
-    });
-  }
 
   /**
    * Updates data in the specified database and document.
@@ -196,8 +171,7 @@ export class DatabaseService {
    */
   public async getDatabyID(collectionName:string, where: any, userId: string) {
     const dataCollectionRef = this.getDataRef(collectionName);
-    const whereis: any = where;
-    const q = query(dataCollectionRef, where(whereis, '==', userId));
+    const q = query(dataCollectionRef, where(where, '==', userId));
     const snapshot = await getDocs(q);
     const array: any[] = [];
     snapshot.forEach((doc) => array.push(doc.data()));
@@ -258,45 +232,75 @@ export class DatabaseService {
     return channels;
   }
 
-  /**
-   * Subscribes to messages in a specified channel or the currently selected channel.
-   * @param channel - The optional TextChannel object representing the channel to subscribe to.
-   */
-  async subscribeToMessages(channel?: TextChannel) {
+
+  async subscribeToUserData(userId: string) {
+    const q = query(
+      collection(this.firestore, 'users'),
+      where('id', '==', userId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+        this.subService.updateUser(data as DABubbleUser);
+      });
+    });
+  }
+
+  async subscribeToChannelData(channelId: string) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where(
-        'id',
-        '==',
-        channel?.id || sessionStorage.getItem('selectedChannelId')
-      )
+      where('id', '==', channelId)
     );
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.onDataChange.next(data);
+        this.subService.updateActiveChannel(data as TextChannel);
       });
     });
   }
 
-  /**
-   * Subscribes to data changes in a specific collection and with a specific data ID.
-   * @param collectionName - The name of the collection to subscribe to.
-   * @param dataId - The ID of the data to subscribe to.
-   */
-  async subscribeToData(collectionName: string, dataId: string) {
+  async subscribeToMessageDatainChannel(channelId: string) {
     const q = query(
-      collection(this.firestore, collectionName),
-      where('id', '==', dataId)
+      collection(this.firestore, 'messages'), where('channelId', '==', channelId)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.onDomiDataChange.next(data);
+        this.subService.updateAllMessages(data as ChatMessage);
       });
     });
   }
+
+  async subscribeToEmojisofMessage(messageId: string) {
+    const q = query(
+      collection(this.firestore, 'emojies'), where('messageId', '==', messageId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+          this.subService.updateEmoji(data as Emoji);
+      });
+    });
+  }
+
+  async subscribeToThreadData(threadId: string) {
+    const q = query(
+      collection(this.firestore, 'threads'),
+      where('id', '==', threadId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+        this.subService.updateActiveThread(data as ThreadMessage);
+      });
+    });
+  }
+
 }
 
 /* async addMessageToChannel(channelDoc: string, messageDocId: string) {
