@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
 import { ChatService } from './chat.service';
@@ -11,6 +11,8 @@ import { DABubbleUser } from '../interfaces/user';
 })
 export class ChannelService {
   showSingleThread: boolean = false;
+
+  channelSub!: Subscription;
   
   private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
   private createdChannel = new BehaviorSubject<TextChannel | null>(null);
@@ -32,11 +34,7 @@ export class ChannelService {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
     sessionStorage.setItem('selectedChannelId', channel.id);
-    this.getActiveMessages(this.channel);
-  }
-
-  getActiveMessages(channel: TextChannel) {
-    this.databaseService.subscribeToMessages(channel)
+    this.databaseService.subscribeToChannelData(channel.id);
   }
 
   /**

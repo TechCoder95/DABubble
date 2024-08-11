@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
-import { DatabaseService } from '../../../../../shared/services/database.service';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
 
@@ -73,6 +72,7 @@ export class ReactionComponent {
       messageId: this.emoji.messageId,
       type: this.emoji.type,
       usersIds: [this.activeUser.id!],
+      deleted: false,
     };
     this.chatService.sendEmoji(currentEmoji, this.message);
   }
