@@ -20,6 +20,7 @@ import { distinctUntilChanged, filter, Subscription } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
+import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
 
 interface Node {
   id: string;
