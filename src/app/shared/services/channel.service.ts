@@ -14,12 +14,9 @@ export class ChannelService {
   showSingleThread: boolean = false;
 
   channelSub!: Subscription;
-  
-  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
-  private createdChannel = new BehaviorSubject<TextChannel | null>(null);
 
+  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
   selectedChannel$ = this.selectedChannelSubject.asObservable();
-  createdChannel$ = this.createdChannel.asObservable();
 
   channel!: TextChannel;
 
@@ -113,18 +110,20 @@ export class ChannelService {
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
       newChannel.id = newChannelId;
       existingChannel = newChannel;
-       this.subService.updateCreatedChannel(existingChannel as TextChannel);
+      this.subService.updateCreatedChannel(existingChannel as TextChannel);
     }
     this.selectChannel(existingChannel);
     return existingChannel;
   }
 
-  
+
   async createGroupChannel(data: TextChannel) {
+    const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
       ...data,
       assignedUser: [this.userService.activeUser.id!],
-      isPrivate: false
+      isPrivate: false,
+      owner: currentUser.id!
     };
     try {
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);

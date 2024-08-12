@@ -16,7 +16,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { Subscription } from 'rxjs';
+import { Subscription, take } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
@@ -66,17 +66,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     avatar: node.avatar
   });
 
-  treeControl = new FlatTreeControl<FlattenedNode>(
-    (node) => node.level,
-    (node) => node.expandable
-  );
-
-  treeFlattener = new MatTreeFlattener(
-    this.transformer,
-    (node) => node.level,
-    (node) => node.expandable,
-    (node) => node.children
-  );
+  treeControl = new FlatTreeControl<FlattenedNode>((node) => node.level, (node) => node.expandable);
+  treeFlattener = new MatTreeFlattener(this.transformer, (node) => node.level, (node) => node.expandable, (node) => node.children);
 
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
@@ -87,18 +78,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
-
-  private createdChannelSubscription!: Subscription;
-  private userSubscription!: Subscription;
-
-  constructor(
-    private dbService: DatabaseService,
-    private dialog: MatDialog,
-    public channelService: ChannelService,
-    private userService: UserService,
-    private subService: GlobalsubService
-  ) { }
-
   @Input() activeUserChange!: any;
   @Input() activeGoogleUserChange!: any;
   @Input() activeChannelChange!: any;
@@ -108,49 +87,45 @@ export class SidenavComponent implements OnInit, OnDestroy {
   activeGoogleUser!: User;
   activeChannel!: TextChannel;
 
+  private createdChannelSubscription!: Subscription;
+  private userSubscription!: Subscription;
 
-  ngOnInit() {
+  constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService, private subService: GlobalsubService) {
+  }
 
-    this.activeUserChange.subscribe((user: DABubbleUser) => {
+  async ngOnDestroy() {
+    if (this.userSubscription)
+      this.userSubscription.unsubscribe();
+
+    if (this.createdChannelSubscription)
+      this.createdChannelSubscription.unsubscribe();
+  }
+
+  async ngOnInit() {
+    // await this.initializeDefaultData();
+    this.activeUserChange.pipe(take(1)).subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
       this.isLoggedIn = this.activeUser?.isLoggedIn;
       if (this.activeUser) {
-        this.loadUserChannels(this.activeUser).then(() => {
-          this.initializeDirectMessageForUser(this.activeUser).then(() => {
-            this.updateTreeData().then(() => {
-              this.loadLastChannelState();
-            }
-            );
-          });
-        });
+        await this.loadUserChannels(this.activeUser)
+        await this.initializeDirectMessageForUser(this.activeUser)
+        await this.updateTreeData()
+        await this.loadLastChannelState();
       }
 
-      // await this.initializeDefaultData();
+      // vorest eine lösung
+      console.log("wird nur noch einmal ausgeführt, durch take(1)");
 
-
-      // this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe({
-
-      //   next: (channel) => console.log('nope')
-  
-      //     if (channel) {
-      //       this.channels.push(channel);
-      //       this.updateTreeData();
-      //       console.log("abgefeuert");
-  
-  
-      // });
-
-      this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
+      this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
+        this.subService.updateCreatedChannel(channel);
         if (channel) {
           this.channels.push(channel);
           this.updateTreeData();
-          console.log("wie oft");     
         }
       });
-
-
     });
   }
+
 
 
   // todo
@@ -225,16 +200,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-
-  async ngOnDestroy() {
-    if (this.userSubscription)
-    this.userSubscription.unsubscribe();
-
-    if (this.createdChannelSubscription)
-    this.createdChannelSubscription.unsubscribe();
-  }
-
-
   private async loadUserChannels(currentUser: DABubbleUser) {
     this.channels = await this.userService.getUserChannels(currentUser.id!);
   }
@@ -263,46 +228,33 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
-
-  private isDefined(
-    channel: TextChannel
-  ): channel is TextChannel & { name: string } {
-    return channel.name !== undefined;
-  }
-
-  private async fetchChannels(): Promise<void> {
-    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
-  }
-
   createGroupChannelNodes(): Node[] {
-    const nodes = this.channels
-      .filter(channel => !channel.isPrivate && this.isDefined(channel))
-      .map(channel => ({
-        id: channel.id,
-        name: channel.name,
-        type: 'groupChannel' as const,
-      }));
-    return nodes;
+    const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
+      id: channel.id,
+      name: channel.name,
+      type: 'groupChannel' as const,
+    }));
+    return groupChannelNodes;
   }
 
   private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
-        const node: Node = {
+        const ownDirectChannelNode: Node = {
           id: channel.id,
           name: currentUser.username + " (Du)",
           type: 'directMessage' as const,
           children: [],
           avatar: currentUser.avatar
         };
-        return node;
+        return ownDirectChannelNode;
       }
     }
     return null;
   }
 
   private async createOtherDirectChannelNodes(currentUser: DABubbleUser): Promise<Node[]> {
-    const directMessageNodes: Node[] = [];
+    const directChannelNodes: Node[] = [];
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
         const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
@@ -316,12 +268,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
               children: [],
               avatar: user.avatar
             };
-            directMessageNodes.push(node);
+            directChannelNodes.push(node);
           }
         }
       }
     }
-    return directMessageNodes;
+    return directChannelNodes;
   }
 
   async createDirectMessageNodes(): Promise<Node[]> {
@@ -361,11 +313,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.treeControl.expandAll();
   }
 
-  async loadChannels() {
-    await this.fetchChannels();
-    await this.updateTreeData();
-  }
-
   async onNode(node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
@@ -388,24 +335,20 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (result: TextChannel) => {
-        if (result) {
-            const newChannel = await this.channelService.createGroupChannel(result);
-            if (newChannel) {
-                this.channels.push(newChannel);
-                await this.updateTreeData();
-            }
+      if (result) {
+        const newChannel = await this.channelService.createGroupChannel(result);
+        if (newChannel) {
+          this.channels.push(newChannel);
+          await this.updateTreeData();
         }
+      }
     });
-}
+  }
 
 
   isGroupChannel = (node: FlattenedNode): boolean => {
-    return (
-      !node.expandable &&
-      node.type === 'groupChannel' &&
-      node.name !== 'Channel hinzufügen'
-    );
-  };
+    return (!node.expandable && node.type === 'groupChannel' && node.name !== 'Channel hinzufügen');
+  }
 
   isDirectMessage(node: FlattenedNode): boolean {
     return node.type === 'directMessage';
@@ -425,5 +368,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   openNewMessage() {
     this.showNewChat = true;
+  }
+
+  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+    return channel.name !== undefined;
   }
 }

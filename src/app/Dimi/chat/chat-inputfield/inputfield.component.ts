@@ -117,11 +117,12 @@ export class InputfieldComponent implements OnInit {
         break;
       case MessageType.Directs:
         await this.send();
+
         break;
       case MessageType.Threads:
         await this.sendFromThread();
         break;
-      case MessageType.NewDirect:
+      case MessageType.NewDirect:        
         await this.setSelectedChannel();
         await this.send();
         break;
@@ -175,13 +176,14 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   async setSelectedChannel() {
     let selectedUser = this.userService.getSelectedUser();
     if (selectedUser) {
-      const channel = await this.channelService.createDirectChannel(
-        selectedUser
-      );
+      const channel = await this.channelService.createDirectChannel(selectedUser);
+      console.log("Logge mir den User: ", selectedUser);
+      console.log("Und jetzt den Channel: ", channel);
+      
+      
       this.channelService.selectChannel(channel);
     }
   }
