@@ -108,16 +108,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     // await this.initializeDefaultData();
     this.activeUser = this.userService.activeUser;
-
+    this.isLoggedIn = this.activeUser?.isLoggedIn;
+    if (this.activeUser) {
+      await this.loadUserChannels(this.activeUser)
+      await this.initializeDirectMessageForUser(this.activeUser)
+      await this.updateTreeData()
+      await this.loadLastChannelState();
+    }
     this.activeUserChange.subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
-      this.isLoggedIn = this.activeUser?.isLoggedIn;
-      if (this.activeUser) {
-        await this.loadUserChannels(this.activeUser)
-        await this.initializeDirectMessageForUser(this.activeUser)
-        await this.updateTreeData()
-        await this.loadLastChannelState();
-      }
+
 
       // vorest eine lösung
       //console.log("wird nur noch einmal ausgeführt, durch take(1)");
