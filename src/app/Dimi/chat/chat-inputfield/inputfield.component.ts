@@ -179,7 +179,7 @@ export class InputfieldComponent implements OnInit {
   async setSelectedChannel() {
     let selectedUser = this.userService.getSelectedUser();
     if (selectedUser) {
-      const channel = await this.channelService.createDirectChannelIfNotExists(
+      const channel = await this.channelService.createDirectChannel(
         selectedUser
       );
       this.channelService.selectChannel(channel);

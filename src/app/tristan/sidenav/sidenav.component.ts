@@ -140,17 +140,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
   
       // });
 
-
       this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
         if (channel) {
           this.channels.push(channel);
           this.updateTreeData();
-          console.log("wie oft");
-          
+          console.log("wie oft");     
         }
       });
-
-
 
 
     });
@@ -267,24 +263,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
-  async addChannel(data: TextChannel) {
-    const newChannel: TextChannel = {
-      ...data,
-      assignedUser: [this.userService.activeUser.id!],
-      isPrivate: false
-    };
-    try {
-      const newChannelId = await this.dbService.addChannelDataToDB(
-        'channels',
-        newChannel
-      );
-      newChannel.id = newChannelId;
-      this.channels.push(newChannel);
-      await this.updateTreeData();
-    } catch (err) {
-      console.error('Fehler beim Hinzufügen des neuen Kanals', err);
-    }
-  }
 
   private isDefined(
     channel: TextChannel
@@ -407,14 +385,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  openAddChannelDialog(): void {
+  async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
-    dialogRef.afterClosed().subscribe((result: TextChannel) => {
-      if (result) {
-        this.addChannel(result);
-      }
+    dialogRef.afterClosed().subscribe(async (result: TextChannel) => {
+        if (result) {
+            const newChannel = await this.channelService.createGroupChannel(result);
+            if (newChannel) {
+                this.channels.push(newChannel);
+                await this.updateTreeData();
+            }
+        }
     });
-  }
+}
+
 
   isGroupChannel = (node: FlattenedNode): boolean => {
     return (
