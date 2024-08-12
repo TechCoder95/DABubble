@@ -94,8 +94,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService, private subService: GlobalsubService) {
   }
 
-
-
+  hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async ngOnDestroy() {
     if (this.userSubscription)
@@ -115,7 +114,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         await this.loadUserChannels(this.activeUser)
         await this.initializeDirectMessageForUser(this.activeUser)
         await this.updateTreeData()
-        await this.loadLastChannelState();
+        await this.loadLastChannelState(); // durch routing erstetzen
       }
 
       // vorest eine lösung
@@ -124,11 +123,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
         const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
         if (!exists) {
+          console.log("updated");
           this.channels.push(channel);
           this.updateTreeData();
         }
       });
-
     });
   }
 
@@ -229,8 +228,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.updateTreeData();
     }
   }
-
-  hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   createGroupChannelNodes(): Node[] {
     const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
