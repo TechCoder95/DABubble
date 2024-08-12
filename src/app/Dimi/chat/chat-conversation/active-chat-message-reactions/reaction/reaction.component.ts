@@ -36,11 +36,17 @@ export class ReactionComponent {
     return emoji.usersIds.length;
   }
 
-  getEmojiReactionUsers(){
-    let emojiReactors: string[] = [];
+  getEmojiUsers() {
+    this.emoji.usersIds.forEach(async (id) => {
+      this.getEmojiReactionUsers(id);
+    });
+  }
 
-    this.emoji.usersIds.forEach((id) => {
-      this.userService.getOneUserbyId(id).then((user) => {
+
+
+  async getEmojiReactionUsers(id: string) {
+    let emojiReactors: string[] = [];
+      await this.userService.getOneUserbyId(id).then((user) => {
         if (user && user.username) {
           let username = user.username;
           if (user.id === this.activeUser.id) {
@@ -49,8 +55,6 @@ export class ReactionComponent {
           emojiReactors.push(username);
         }
       });
-      return this.usersReactionString(emojiReactors)
-    });
     return this.usersReactionString(emojiReactors)
   }
 

@@ -108,7 +108,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     // await this.initializeDefaultData();
 
-    this.activeUserChange.pipe(take(1)).subscribe(async (user: DABubbleUser) => {
+    this.activeUserChange.subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
       this.isLoggedIn = this.activeUser?.isLoggedIn;
       if (this.activeUser) {

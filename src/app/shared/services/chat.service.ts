@@ -85,12 +85,13 @@ export class ChatService {
       this.databaseService.deleteDataFromDB('emojies', existingEmoji.id!);
       this.subService.updateEmoji(existingEmoji);
     } else {
-      await this.databaseService.updateDataInDB(
+      this.databaseService.updateDataInDB(
         'emojies',
         existingEmoji.id!,
         existingEmoji
-      );
-      this.subService.updateEmoji(existingEmoji);
+      ).then(() => {
+        this.subService.updateEmoji(existingEmoji);
+      });
     }
 
   }

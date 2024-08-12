@@ -154,6 +154,7 @@ export class UserService {
           this.checkOnlineStatus(this.activeUser);
           this.updateLoggedInUser(this.activeUser);
           this.globalSubService.updateUser(this.activeUser);
+          this.router.navigate(['/home']);
         }
       }
     });
