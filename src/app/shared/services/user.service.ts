@@ -41,7 +41,7 @@ export class UserService {
         if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
           let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
           this.googleUser = JSON.parse(user!);
-          this.globalSubService.publishGoogleUser(this.googleUser);
+          this.globalSubService.updateGoogleUser(this.googleUser);
         }
         this.globalSubService.getGoogleUserObservable().subscribe(googleUser => {
           if (googleUser) {
@@ -145,7 +145,7 @@ export class UserService {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.globalSubService.publishGoogleUser(googleUser);
+    this.globalSubService.updateGoogleUser(googleUser);
     this.getUsersFromDB().then(() => {
       let loginUser = this.users.find(user => user.uid === googleUser.uid);
 

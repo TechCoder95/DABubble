@@ -110,10 +110,6 @@ export class InputfieldComponent implements OnInit {
     );
   }
 
-
-  inThreads: boolean = false;
-
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -123,77 +119,62 @@ export class InputfieldComponent implements OnInit {
         await this.send();
         break;
       case MessageType.Threads:
-        this.inThreads = true;
-        await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
+        await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-         await this.setSelectedChannel();
-         await this.send();
+        await this.setSelectedChannel();
+        await this.send();
         break;
       default:
         break;
     }
   }
-  /* 
-  sendThread(){
-    let thread:ThreadMessage={
-      ticketId: string;
-      message: string;
-      timestamp: number;
-      senderName: string;
-      senderId: string;
-      threadConversationId?: string[];
-      emoticons?: string[];
-      id?: string;
-      edited?: boolean;
-      deleted?: boolean;
-    }
-  } */
 
-  async send() {
-    if (!this.inThreads) {
-      let message: ChatMessage = {
-        channelId: this.selectedChannel!.id,
-        channelName: this.selectedChannel!.name,
-        message: this.textareaValue,
-        timestamp: new Date().getTime(),
-        senderName: this.activeUser.username || 'guest',
-        senderId: this.activeUser.id || 'senderIdDefault',
-        edited: false,
-        deleted: false,
-      };
-
-      if (message.message !== '') {
-        try {
-          this.databaseService.addChannelDataToDB(
-            'messages',
-            message
-          );
-          this.textareaValue = '';
-        } catch (error) {
-          console.error('Fehler beim Senden der Nachricht:', error);
-        }
-      } else {
-        alert('Du musst eine Nachricht eingeben');
+  async sendFromThread() {
+    let threadMessage: ThreadMessage = {
+      ticketId: this.ticket.id,
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      senderName: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
+      emoticons: [],
+      edited: false,
+      deleted: false,
+    };
+    if (threadMessage.message !== '') {
+      try {
+        await this.ticketService.sendThreads(threadMessage);
+        console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
+      } catch (error) {
+        console.error('Fehler beim Senden der Nachricht:', error);
       }
-    } else if (this.inThreads) {
-      let threadMessage: ThreadMessage = {
-        ticketId: this.ticket.id,
-        message: this.textareaValue,
-        timestamp: new Date().getTime(),
-        senderName: this.activeUser.username || 'guest',
-        senderId: this.activeUser.id || 'senderIdDefault',
-        emoticons: [],
-        edited: false,
-        deleted: false,
-      };
-
-      await this.ticketService.sendThreads(threadMessage);
-      console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
-    } else {
-      console.error('Kein Channel ausgewählt');
     }
   }
+
+  async send() {
+    let message: ChatMessage = {
+      channelId: this.selectedChannel!.id,
+      channelName: this.selectedChannel!.name,
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      senderName: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
+      edited: false,
+      deleted: false,
+    };
+
+    if (message.message !== '') {
+      try {
+        this.databaseService.addChannelDataToDB('messages', message);
+        this.textareaValue = '';
+      } catch (error) {
+        console.error('Fehler beim Senden der Nachricht:', error);
+      }
+    } else {
+      alert('Du musst eine Nachricht eingeben');
+    }
+  }
+
 
   async setSelectedChannel() {
     let selectedUser = this.userService.getSelectedUser();

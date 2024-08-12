@@ -5,6 +5,7 @@ import { DatabaseService } from './database.service';
 import { ChatService } from './chat.service';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
+import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,7 +23,7 @@ export class ChannelService {
 
   channel!: TextChannel;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService) { }
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
 
 
   /**
@@ -113,7 +114,7 @@ export class ChannelService {
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
       newChannel.id = newChannelId;
       existingChannel = newChannel;
-      this.createdChannel.next(existingChannel);
+       this.subService.updateCreatedChannel(existingChannel as TextChannel);
     }
     this.selectChannel(existingChannel);
     return existingChannel;

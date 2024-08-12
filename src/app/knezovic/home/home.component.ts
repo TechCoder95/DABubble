@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     if (googleUser) {
       let googleUserObj = JSON.parse(googleUser);
-      this.globalSubService.publishGoogleUser(googleUserObj);
+      this.globalSubService.updateGoogleUser(googleUserObj);
     }
   }
 

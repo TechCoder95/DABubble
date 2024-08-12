@@ -127,15 +127,33 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
       // await this.initializeDefaultData();
 
+
+      // this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe({
+
+      //   next: (channel) => console.log('nope')
+  
+      //     if (channel) {
+      //       this.channels.push(channel);
+      //       this.updateTreeData();
+      //       console.log("abgefeuert");
+  
+  
+      // });
+
+
       this.createdChannelSubscription = this.channelService.createdChannel$.subscribe((channel) => {
         if (channel) {
           this.channels.push(channel);
           this.updateTreeData();
+          console.log("wie oft");
+          
         }
       });
+
+
+
+
     });
-
-
   }
 
 
