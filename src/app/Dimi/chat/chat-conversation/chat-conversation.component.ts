@@ -73,7 +73,6 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
-
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });

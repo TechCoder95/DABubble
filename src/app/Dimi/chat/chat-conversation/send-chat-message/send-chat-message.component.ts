@@ -52,7 +52,7 @@ export class SendChatMessageComponent implements OnInit {
 
 
     
-
+    this.user = JSON.parse(localStorage.getItem('userLogin')!);
 
 
 

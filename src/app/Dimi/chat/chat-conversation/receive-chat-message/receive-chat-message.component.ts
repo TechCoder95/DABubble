@@ -24,22 +24,23 @@ export class ReceiveChatMessageComponent {
   @Input() isPrivate!: boolean | undefined;
   @Input() repeatedMessage!: boolean | undefined;
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
+  @Input() sender!: DABubbleUser;
 
-  senderUser!: DABubbleUser;
+  senderUser: DABubbleUser= {username: "dummy", avatar: "./img/avatar.svg", mail:"", isLoggedIn: false};
 
-  constructor(private databaseService:DatabaseService, private userService: UserService) {}
+  constructor(private databaseService:DatabaseService, private userService: UserService) {
+    
+  }
 
-  ngonInit(): void {
-    this.getUser().then((user) => {
-      this.senderUser = user;
-    });
-
+  ngOnInit(): void {
+    this.getUser();
   }
 
 
   async getUser() {
-    let avater = await this.userService.getOneUserbyId(this.receiveMessage.senderId);
-    return avater;
+    this.senderUser.avatar = "./img/avatar.svg";
+    let user = await this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    this.senderUser = user;
   }
 
 
