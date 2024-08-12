@@ -91,7 +91,7 @@ export class ChannelService {
 
   async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
-    let userChannels = await this.databaseService.getUserChannels(currentUser.id!);
+    let userChannels = await this.databaseService.readDataByField('channels', 'assignedUser', currentUser.id!)
     let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && channel.assignedUser.includes(user.id!));
 
     if (!existingChannel) {

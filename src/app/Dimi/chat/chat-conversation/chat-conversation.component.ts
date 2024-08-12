@@ -86,6 +86,8 @@ export class ChatConversationComponent
         }
         this.allMessages.push(message)
         this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        console.log(this.allMessages);
+        
       }
     });
 

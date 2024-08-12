@@ -51,8 +51,9 @@ export class DialogChannelMembersComponent implements OnInit {
       if (channel) {
         channel.assignedUser.forEach((userID) => {
           this.userService.getOneUserbyId(userID).then((user) => {
-          if (user && user.id !== this.activeUser.id) {
-            this.channelMembers.push(user);
+            let x = user as unknown as DABubbleUser;
+          if (x && x.id !== this.activeUser.id) {
+            this.channelMembers.push(x);
           }
         });
         });

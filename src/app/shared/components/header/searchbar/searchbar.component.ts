@@ -30,14 +30,14 @@ export class SearchbarComponent {
     this.channels = [];
     this.messages = [];
 
-    this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
-      this.channels = channels;
-      channels.forEach(channel => {
-        this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
-          this.messages = this.messages.concat(messages);
-        });
-      });
-    });
+    // this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
+    //   this.channels = channels;
+    //   channels.forEach(channel => {
+    //     this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
+    //       this.messages = this.messages.concat(messages);
+    //     });
+    //   });
+    // });
   }
 
 

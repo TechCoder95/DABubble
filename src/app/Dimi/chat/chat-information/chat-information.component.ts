@@ -30,11 +30,11 @@ export class ChatInformationComponent implements OnInit {
   isPrivateChat!: boolean;
   privateChatPartner?: DABubbleUser;
   privatChatAvatar!: string | undefined;
-  privateChatPartnerName!:string | undefined;
+  privateChatPartnerName!: string | undefined;
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
 
-  @Input() activeUserFromChat: any; 
+  @Input() activeUserFromChat: any;
   @Input() activeChannelFromChat: any;
 
   constructor(
@@ -45,10 +45,10 @@ export class ChatInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-      
+
     });
 
     this.activeChannelFromChat.subscribe((channel: any) => {
@@ -166,10 +166,9 @@ export class ChatInformationComponent implements OnInit {
   getAssignedUsers(channel: TextChannel): DABubbleUser[] {
     this.assignedUsers = [];
     channel.assignedUser.forEach((userID) => {
-      let user: any = this.userService.getOneUserbyId(userID);
-      if (user) {
-        this.assignedUsers.push(user);
-      }
+      this.userService.getOneUserbyId(userID).then((user) => {
+        this.assignedUsers.push(user as unknown as DABubbleUser);
+        });
     });
     return this.assignedUsers;
   }
@@ -184,14 +183,15 @@ export class ChatInformationComponent implements OnInit {
       (userID) => userID !== this.activeUser.id
     );
 
-    if(privateChatPartnerID){
+    if (privateChatPartnerID) {
       this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
-        this.privateChatPartnerName = privateChatPartner?.username
-        this.privateChatPartner = privateChatPartner;
+        let chatPartner = privateChatPartner as unknown as DABubbleUser;
+        this.privateChatPartnerName = chatPartner?.username
+        this.privateChatPartner = chatPartner;
       });
-      
-    }else{
-      this.privateChatPartnerName = this.activeUser.username+' (Du)';
+
+    } else {
+      this.privateChatPartnerName = this.activeUser.username + ' (Du)';
     }
     this.returnChatPartnerAvatar(selectChannel);
   }

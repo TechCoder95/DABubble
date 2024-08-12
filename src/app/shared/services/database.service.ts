@@ -145,7 +145,6 @@ export class DatabaseService {
 
   
   async readDataByField(collectionName: string, field: string, value: string) {
-  
     const q = query(
       collection(this.firestore, collectionName),
       where(field, '==', value)
@@ -174,24 +173,6 @@ export class DatabaseService {
       console.error('Error adding Data', err);
       throw err;
     }
-  }
-
-  /**
-   * Retrieves the text channels assigned to a specific user.
-   *
-   * @param userId - The ID of the user.
-   * @returns A promise that resolves to an array of TextChannel objects.
-   */
-  async getUserChannels(userId: string): Promise<TextChannel[]> {
-    const channelsCollectionRef = this.getDataRef('channels');
-    const q = query(
-      channelsCollectionRef,
-      where('assignedUser', 'array-contains', userId)
-    );
-    const snapshot = await getDocs(q);
-    const channels: TextChannel[] = [];
-    snapshot.forEach((doc) => channels.push(doc.data() as TextChannel));
-    return channels;
   }
 
 

@@ -236,9 +236,6 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    */
   async updateUser(user: DABubbleUser) {
   await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
-    .then(() => {
-      this.globalSubService.updateUser(user);
-    });
 }
 
 
@@ -268,13 +265,11 @@ updateUsername(username: string) {
  * @param id - The ID of the user to retrieve.
  * @returns The user object matching the specified ID, or undefined if no user is found.
  */
-getOneUserbyId(id: string): Promise < DABubbleUser | undefined > {
-  this.DatabaseService.readDataByID(this.collectionName, id)
-    .then((user) => {
-      let DAUser = user as DABubbleUser;
-      return Promise.resolve(DAUser);
-    });
-  return Promise.resolve(undefined);
+async getOneUserbyId(id: string): Promise <DABubbleUser> {
+
+  let DAUser = await this.DatabaseService.readDataByID(this.collectionName, id)
+
+  return DAUser as DABubbleUser;
 }
 
 
