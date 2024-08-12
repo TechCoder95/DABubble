@@ -36,7 +36,7 @@ export class ReactionComponent {
     return emoji.usersIds.length;
   }
 
-  getEmojiReactionUsers(): Promise<string> {
+  getEmojiReactionUsers(){
     let emojiReactors: string[] = [];
 
     this.emoji.usersIds.forEach((id) => {
@@ -49,9 +49,9 @@ export class ReactionComponent {
           emojiReactors.push(username);
         }
       });
-      return Promise.resolve(this.usersReactionString(emojiReactors));
+      return this.usersReactionString(emojiReactors)
     });
-    return Promise.resolve(this.usersReactionString(emojiReactors));
+    return this.usersReactionString(emojiReactors)
   }
 
   usersReactionString(emojiReactors: string[]): string {
