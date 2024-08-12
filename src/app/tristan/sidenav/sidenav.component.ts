@@ -257,25 +257,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  private async createOtherDirectChannelNodes(currentUser: DABubbleUser): Promise<Node[]> {
+  private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
     const directChannelNodes: Node[] = [];
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
         const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
-        if (otherUserId) {
-          const user = this.userService.getOneUserbyId(otherUserId).then((user) => {
-            if (user) {
-              const node: Node = {
-                id: channel.id,
-                name: user.username + "",
-                type: 'directMessage' as const,
-                children: [],
-                avatar: user.avatar
-              };
-              directChannelNodes.push(node);
-            }
-          });
-        }
+        const user = await this.userService.getOneUserbyId(otherUserId!).then((userNew) => {
+          if (userNew) {
+            const node: Node = {
+              id: channel.id,
+              name: userNew.username + "",
+              type: 'directMessage' as const,
+              children: [],
+              avatar: userNew.avatar
+            };
+            directChannelNodes.push(node);
+          }
+        });
       }
     }
     return directChannelNodes;
@@ -287,8 +285,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
     if (ownNode)
       directMessageNodes.push(ownNode);
-    const otherNodes = await this.createOtherDirectChannelNodes(currentUser);
-    directMessageNodes.push(...otherNodes);
+    const otherNodes = await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
+      directMessageNodes.push(...otherNodes);
+    });
     return directMessageNodes;
   }
 
