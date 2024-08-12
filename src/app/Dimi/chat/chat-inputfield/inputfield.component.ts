@@ -163,6 +163,8 @@ export class InputfieldComponent implements OnInit {
     };
 
     console.log(message.message);
+    console.log(this.selectedChannel);
+    
 
     if (message.message !== '') {
       try {
@@ -179,11 +181,12 @@ export class InputfieldComponent implements OnInit {
 
   async setSelectedChannel() {
     try {
-
       let selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
         const channel = await this.channelService.createDirectChannel(selectedUser);
-        this.channelService.selectChannel(channel);
+        this.selectedChannel = channel;
+        // todo navigiere zu dem channel
+    //    this.channelService.selectChannel(channel);
       }
     } catch (error) {
       console.log("Fehler beim Senden: ", error);
