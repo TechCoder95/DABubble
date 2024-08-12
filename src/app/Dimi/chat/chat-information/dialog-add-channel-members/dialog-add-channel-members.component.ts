@@ -98,6 +98,14 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     }
   }
 
+  changeRemoveSelectedUserImg(hover: boolean) {
+    if (hover) {
+      this.removeSelectedUserImg = './img/remove-selected-user-hover.svg';
+    } else {
+      this.removeSelectedUserImg = './img/remove-selected-user.svg';
+    }
+  }
+
   closeDialog() {
     this.dialogRef.close(false);
   }

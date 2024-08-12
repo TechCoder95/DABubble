@@ -141,9 +141,13 @@ button {
   background: rgba(236, 238, 254, 1);
   padding: 3px 20px;
   border-radius: 35px;
-  > img {
-    width: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-  }
+}
+
+.user-avatar-img {
+  width: 35px;
+  border-radius: 50%;
+}
+
+.remove-selected-user-img {
+  cursor: pointer;
 }
