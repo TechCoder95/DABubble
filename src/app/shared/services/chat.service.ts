@@ -24,48 +24,37 @@ export class ChatService {
   ) {}
 
   async sendMessage(message: ChatMessage) {
-    try {
-      let messagesFromDb: ChatMessage[] = [];
-      // Lese die vorhandenen Nachrichten aus der Datenbank
-      await this.databaseService.readDatafromDB('messages', messagesFromDb);
-      // Überprüfe, ob eine Nachricht mit der gleichen ID bereits existiert
-      const messageExists = messagesFromDb.some((msg) => msg.id === message.id);
-      if (!messageExists) {
-        // Nachricht existiert nicht, füge sie hinzu
         await this.databaseService.addDataToDB('messages', message);
-      }
-      // Füge die Nachricht zum Kanal hinzu
-      const selectedChannelId = sessionStorage.getItem('selectedChannelId')!;
-
-      const messageId = messageExists
-        ? message.id!
-        : messagesFromDb.find((msg) => msg.id === message.id)!.id!;
-      await this.databaseService.addMessageToChannel(
-        selectedChannelId,
-        messageId
-      );
-
-      messagesFromDb = [];
-      // Aktualisiere die Nachrichten aus der Datenbank
-      await this.databaseService.readDatafromDB('messages', messagesFromDb);
-    } catch (error) {
-      console.error('Fehler beim Senden der Nachricht:', error);
-    }
   }
+
+
+
+
   /* ==================================================================== */
   async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
-    let emojisFromDB: Emoji[] = [];
 
-    /* Lese die vorhandenen Emojies aus der Datenbank */
-    await this.databaseService.readDatafromDB('emojies', emojisFromDB);
 
-    /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
-    if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
-      this.handleExistingEmojiOnMessage(newEmoji, emojisFromDB);
-    } else {
-      this.createNewEmojiOnMessage(newEmoji);
-    }
-    await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+    //Todo Dome: 
+
+
+
+    // let emojisFromDB: Emoji[] = [];
+
+    // /* Lese die vorhandenen Emojies aus der Datenbank */
+    // await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+
+    // /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
+    // if (this.emojiExistsOnMessage(newEmoji, emojisFromDB)) {
+    //   this.handleExistingEmojiOnMessage(newEmoji, emojisFromDB);
+    // } else {
+    //   this.createNewEmojiOnMessage(newEmoji);
+    // }
+    // await this.databaseService.readDatafromDB('emojies', emojisFromDB);
+
+
+
+
+
   }
 
   async createNewEmojiOnMessage(newEmoji: Emoji) {

@@ -6,7 +6,6 @@ export interface ChatMessage {
   senderName: string;
   senderId: string;
   threadConversationId?: string[];
-  emoticons?: string[];
   id?: string;
   edited?: boolean;
   deleted?: boolean;

@@ -10,7 +10,7 @@
     } @if($index > 0 && message.senderId === allMessages[$index - 1].senderId &&
     allMessages[$index].senderName === this.activeUser.username &&
     isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
-    <app-send-chat-message
+    <!-- <app-send-chat-message
       [sendMessage]="message"
       [user]="activeUser"
       [isPrivate]="isPrivate"
@@ -19,7 +19,7 @@
       [repeatedMessageInUnder5Minutes]="
         repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
       "
-    ></app-send-chat-message>
+    ></app-send-chat-message> -->
 
     } @else if($index > 0 && message.senderId === allMessages[$index -
     1].senderId && message.senderName !== this.activeUser.username &&
@@ -35,13 +35,13 @@
     ></app-receive-chat-message>
 
     } @else if (message.senderName === this.activeUser.username) {
-    <app-send-chat-message
+    <!-- <app-send-chat-message
       [sendMessage]="message"
       [user]="activeUser"
       [isPrivate]="isPrivate"
       [index]="$index"
       [repeatedMessage]="false"
-    ></app-send-chat-message>
+    ></app-send-chat-message> -->
     } @else {
     <app-receive-chat-message
       [receiveMessage]="message"

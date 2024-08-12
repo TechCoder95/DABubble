@@ -1,6 +1,5 @@
-import { Component, HostListener, inject, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
-import { UserService } from '../../services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenProfileInfoComponent } from '../../../rabia/open-profile-info/open-profile-info.component';
 import { CommonModule } from '@angular/common';
@@ -19,7 +18,7 @@ import { Subscription } from 'rxjs';
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
 
   public dialog = inject(MatDialog);
 
@@ -32,14 +31,7 @@ export class HeaderComponent implements OnInit, OnDestroy {
   userSub!: Subscription;
   googleUserSub!: Subscription;
 
-  constructor(public AuthService: AuthenticationService, private userService: UserService, private router: Router) {
-
-    this.activeGoogleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
-
-
-
-  }
-
+  constructor(public AuthService: AuthenticationService, private router: Router) { }
 
   activeUser!: DABubbleUser;
   activeGoogleUser!: User;
@@ -62,21 +54,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
-  ngOnDestroy(): void {
-    // console.log('header userunsub&googleUser zeile 36');
-
-  }
-
   openMenu() {
     this.dialog.open(OpenProfileInfoComponent)
   }
+
 
   goToRegister() {
     this.AuthService.registerProcess = true;
     this.router.navigate(['/user/register']);
   }
+
 
   checkGuest() {
     if (sessionStorage.getItem('userLoginGuest')) {
