@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,6 +20,7 @@ import { Subscription, take } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
+import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
 
 interface Node {
   id: string;
@@ -93,6 +94,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService, private subService: GlobalsubService) {
   }
 
+
+
+
   async ngOnDestroy() {
     if (this.userSubscription)
       this.userSubscription.unsubscribe();
@@ -103,6 +107,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     // await this.initializeDefaultData();
+
     this.activeUserChange.pipe(take(1)).subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
       this.isLoggedIn = this.activeUser?.isLoggedIn;
@@ -114,19 +119,18 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
 
       // vorest eine lösung
-      console.log("wird nur noch einmal ausgeführt, durch take(1)");
+      //console.log("wird nur noch einmal ausgeführt, durch take(1)");
 
       this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
-        this.subService.updateCreatedChannel(channel);
-        if (channel) {
+        const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
+        if (!exists) {
           this.channels.push(channel);
           this.updateTreeData();
         }
       });
+
     });
   }
-
-
 
   // todo
   private async initializeDefaultData() {

@@ -12,6 +12,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -31,9 +32,6 @@ export class InputfieldComponent implements OnInit {
   activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
-
-
-
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
 
@@ -44,7 +42,8 @@ export class InputfieldComponent implements OnInit {
     private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private subService: GlobalsubService
   ) {
 
     this.activeUser = this.userService.activeUser;
@@ -117,12 +116,11 @@ export class InputfieldComponent implements OnInit {
         break;
       case MessageType.Directs:
         await this.send();
-
         break;
       case MessageType.Threads:
         await this.sendFromThread();
         break;
-      case MessageType.NewDirect:        
+      case MessageType.NewDirect:
         await this.setSelectedChannel();
         await this.send();
         break;
@@ -164,6 +162,8 @@ export class InputfieldComponent implements OnInit {
       deleted: false,
     };
 
+    console.log(message.message);
+
     if (message.message !== '') {
       try {
         this.databaseService.addChannelDataToDB('messages', message);
@@ -176,15 +176,17 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   async setSelectedChannel() {
-    let selectedUser = this.userService.getSelectedUser();
-    if (selectedUser) {
-      const channel = await this.channelService.createDirectChannel(selectedUser);
-      console.log("Logge mir den User: ", selectedUser);
-      console.log("Und jetzt den Channel: ", channel);
-      
-      
-      this.channelService.selectChannel(channel);
+    try {
+
+      let selectedUser = this.userService.getSelectedUser();
+      if (selectedUser) {
+        const channel = await this.channelService.createDirectChannel(selectedUser);
+        this.channelService.selectChannel(channel);
+      }
+    } catch (error) {
+      console.log("Fehler beim Senden: ", error);
     }
   }
 

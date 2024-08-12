@@ -11,17 +11,15 @@ import { GlobalsubService } from './globalsub.service';
   providedIn: 'root',
 })
 export class ChannelService {
-  showSingleThread: boolean = false;
 
   channelSub!: Subscription;
-
   private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
   selectedChannel$ = this.selectedChannelSubject.asObservable();
 
   channel!: TextChannel;
+  showSingleThread: boolean = false;
 
   constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
-
 
   /**
    * Selects a channel.
@@ -94,9 +92,7 @@ export class ChannelService {
   async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
     let userChannels = await this.databaseService.getUserChannels(currentUser.id!);
-    let existingChannel = userChannels.find(channel => channel.isPrivate &&
-      channel.assignedUser.includes(currentUser.id!) &&
-      channel.assignedUser.includes(user.id!));
+    let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && channel.assignedUser.includes(user.id!));
 
     if (!existingChannel) {
       let newChannel: TextChannel = {
@@ -110,7 +106,7 @@ export class ChannelService {
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
       newChannel.id = newChannelId;
       existingChannel = newChannel;
-      this.subService.updateCreatedChannel(existingChannel as TextChannel);
+      this.subService.updateCreatedChannel(existingChannel);
     }
     this.selectChannel(existingChannel);
     return existingChannel;
