@@ -1,5 +1,5 @@
 export interface ThreadMessage {
-  ticketId: string;
+  ticketId?: string;
   /* messageId: string; */
   message: string;
   timestamp: number;

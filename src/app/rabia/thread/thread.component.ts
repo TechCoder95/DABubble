@@ -34,6 +34,8 @@ export class ThreadComponent {
   messageType = MessageType.Threads;
   selectedTicket: boolean = false;
 
+  @Input() activeUserFromThread: any;
+
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,

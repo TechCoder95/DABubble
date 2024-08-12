@@ -4,7 +4,7 @@
     <div class="flex flex-column gap-2">
         <div class="flex align-items-center justify-content-end " style="gap: 20px;">
             <app-thread-my-emoji></app-thread-my-emoji>
-            <span>11:11 Uhr</span>
+            <span>11:11 {{user.timestamp | date}} Uhr</span>
             <!-- <span>{{sendMessage.timestamp |  date : "HH.mm" }} Uhr</span> -->
             <h2 class="m-0">{{user.username}}</h2>
 

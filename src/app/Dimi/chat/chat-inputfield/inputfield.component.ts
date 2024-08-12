@@ -179,7 +179,7 @@ export class InputfieldComponent implements OnInit {
       }
     } else if (this.inThreads) {
       let threadMessage: ThreadMessage = {
-        ticketId: this.ticket.id,
+        // ticketId: this.ticket.id,
         message: this.textareaValue,
         timestamp: new Date().getTime(),
         senderName: this.activeUser.username || 'guest',

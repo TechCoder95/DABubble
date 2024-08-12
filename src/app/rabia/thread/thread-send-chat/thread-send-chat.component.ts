@@ -5,19 +5,23 @@ import { TicketService } from '../../../shared/services/ticket.service';
 import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
+import { MessageType } from '../../../shared/components/enums/messagetype';
+import { InputfieldComponent } from '../../../Dimi/chat/chat-inputfield/inputfield.component';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-thread-send-chat',
   standalone: true,
-  imports: [ThreadMyEmojiComponent, CommonModule],
+  imports: [ThreadMyEmojiComponent, CommonModule, MatInputModule, InputfieldComponent],
   templateUrl: './thread-send-chat.component.html',
   styleUrl: './thread-send-chat.component.scss'
 })
 export class ThreadSendChatComponent implements OnInit {
-  // user!: DABubbleUser;
+
   @Input() sendMessage!: ThreadMessage;
   originalMessage!: string;
   user: any;
+  messageType = MessageType.Threads;
 
   constructor(public ticketService: TicketService, public userService: UserService) {
 
@@ -29,7 +33,7 @@ export class ThreadSendChatComponent implements OnInit {
 
 
 
-    console.log("name", this.user, this.sendMessage, "lo");
+    console.log("name", this.user, this.messageType, "lo");
 
   }
 
