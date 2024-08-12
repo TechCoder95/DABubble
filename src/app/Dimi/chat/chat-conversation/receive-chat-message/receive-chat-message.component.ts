@@ -47,12 +47,16 @@ export class ReceiveChatMessageComponent {
   }
 
   getSenderName() {
-    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    this.userService.getOneUserbyId(this.receiveMessage.senderId).then((user) => {
     return user?.username;
+    });
+    return undefined;
   }
 
   getSenderAvatar() {
-    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId).then((user) => {
     return user?.avatar;
+    });
+    return undefined
   }
 }

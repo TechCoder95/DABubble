@@ -50,10 +50,11 @@ export class DialogChannelMembersComponent implements OnInit {
       // console.log('dialog-channel-members zeile 36');
       if (channel) {
         channel.assignedUser.forEach((userID) => {
-          let user = this.userService.getOneUserbyId(userID);
+          this.userService.getOneUserbyId(userID).then((user) => {
           if (user && user.id !== this.activeUser.id) {
             this.channelMembers.push(user);
           }
+        });
         });
       }
     });

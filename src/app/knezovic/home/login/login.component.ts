@@ -73,15 +73,6 @@ export class LoginComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Gets all the users.
-   * @returns An array of users.
-   */
-  get allUsers() {
-    return this.UserService.users;
-  }
-
-
-  /**
    * Navigates to the registration page.
    */
   goToRegister() {

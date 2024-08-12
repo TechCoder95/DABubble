@@ -185,8 +185,11 @@ export class ChatInformationComponent implements OnInit {
     );
 
     if(privateChatPartnerID){
-      this.privateChatPartner = this.userService.getOneUserbyId(privateChatPartnerID!);
-      this.privateChatPartnerName = this.privateChatPartner?.username
+      this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
+        this.privateChatPartnerName = privateChatPartner?.username
+        this.privateChatPartner = privateChatPartner;
+      });
+      
     }else{
       this.privateChatPartnerName = this.activeUser.username+' (Du)';
     }

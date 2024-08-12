@@ -24,8 +24,10 @@ export class ThreadReceiveChatComponent {
     this.getSenderAvatar();
   }
 
-  getSenderAvatar() {
-    let user = this.userService.getOneUserbyId(this.ticket.senderId);
-    return user?.avatar;
+  getSenderAvatar(): Promise<string | undefined> {
+    this.userService.getOneUserbyId(this.ticket.senderId).then((user) => {
+    return Promise.resolve(user?.avatar);
+    });
+    return Promise.resolve(undefined);
   }
 }

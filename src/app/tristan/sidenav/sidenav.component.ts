@@ -263,17 +263,18 @@ export class SidenavComponent implements OnInit, OnDestroy {
       if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
         const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
         if (otherUserId) {
-          const user = await this.userService.getOneUserbyId(otherUserId);
-          if (user) {
-            const node: Node = {
-              id: channel.id,
-              name: user?.username + "",
-              type: 'directMessage' as const,
-              children: [],
-              avatar: user.avatar
-            };
-            directChannelNodes.push(node);
-          }
+          const user = this.userService.getOneUserbyId(otherUserId).then((user) => {
+            if (user) {
+              const node: Node = {
+                id: channel.id,
+                name: user.username + "",
+                type: 'directMessage' as const,
+                children: [],
+                avatar: user.avatar
+              };
+              directChannelNodes.push(node);
+            }
+          });
         }
       }
     }

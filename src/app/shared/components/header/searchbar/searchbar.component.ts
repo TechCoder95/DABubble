@@ -43,24 +43,24 @@ export class SearchbarComponent {
 
   search() {
     this.searchResults = [];
-    this.pushUsers();
+    // this.pushUsers();
     this.pushMessages();
     this.pushChannels();
   }
 
 
-  pushUsers() {
-    this.userService.users.forEach(user => {
-      if (user.username?.includes(this.searchInput)) {
-        let searchItem = {
-          title: 'User: ',
-          description: user.username,
-          photo: user.avatar
-        }
-        this.searchResults.push(searchItem);
-      }
-    });
-  }
+  // pushUsers() {
+  //   this.userService.users.forEach(user => {
+  //     if (user.username?.includes(this.searchInput)) {
+  //       let searchItem = {
+  //         title: 'User: ',
+  //         description: user.username,
+  //         photo: user.avatar
+  //       }
+  //       this.searchResults.push(searchItem);
+  //     }
+  //   });
+  // }
 
 
   pushChannels() {
@@ -92,12 +92,12 @@ export class SearchbarComponent {
 
 
   openProfile(profileUsername: string) {
-    this.userService.users.forEach(user => {
-      if (user.username === profileUsername) {
-        this.openInfo(user);
-      }
-    }
-    );
+    // this.users.forEach(user => {
+    //   if (user.username === profileUsername) {
+    //     this.openInfo(user);
+    //   }
+    // }
+    // );
   }
 
 
