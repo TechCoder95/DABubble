@@ -21,6 +21,7 @@ import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
+import { initializeApp } from 'firebase/app';
 
 interface Node {
   id: string;
@@ -105,28 +106,39 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    // await this.initializeDefaultData();
+
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
+
     if (this.activeUser) {
-      await this.loadUserChannels(this.activeUser);
-      await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
-      await this.updateTreeData();
-      await this.loadLastChannelState();
+      await this.initializeChannels();
+
+      this.activeUserChange.subscribe(async (user: DABubbleUser) => {
+        this.activeUser = user;
+      });
+
+      this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
+        const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
+        if (!exists) {
+          this.channels.push(channel);
+          this.updateTreeData();
+        }
+      });
     }
-
-    this.activeUserChange.subscribe(async (user: DABubbleUser) => {
-      this.activeUser = user;
-    });
-
-    this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
-      const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
-      if (!exists) {
-        this.channels.push(channel);
-        this.updateTreeData();
-      }
-    });
   }
+
+  async initializeChannels() {
+    // await this.initializeDefaultData();
+    await this.loadUserChannels(this.activeUser);
+    const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
+    if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
+      this.channels.push(ownDirectChannel);
+    }
+    await this.updateTreeData();
+    await this.loadLastChannelState();
+  }
+
+
 
   // todo
   private async initializeDefaultData() {
@@ -219,7 +231,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
         const ownDirectChannelNode: Node = {
           id: channel.id,
-          name: currentUser.username + " (Du)",
+          name: `${currentUser.username} (Du)`,
           type: 'directMessage' as const,
           children: [],
           avatar: currentUser.avatar
@@ -239,7 +251,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           if (userNew) {
             const node: Node = {
               id: channel.id,
-              name: userNew.username + "",
+              name: `${userNew.username} (Du)`,
               type: 'directMessage' as const,
               children: [],
               avatar: userNew.avatar
