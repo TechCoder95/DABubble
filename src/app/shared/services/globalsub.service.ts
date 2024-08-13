@@ -17,21 +17,15 @@ export class GlobalsubService {
   private googleUserSubject = new Subject<User>();
   private allMessageSubject = new Subject<ChatMessage>();
   private activeChannelSubject = new Subject<TextChannel>();
+  private createChannelSubject = new Subject<TextChannel>();
   private activeThreadSubject = new Subject<ThreadMessage>();
   private emjoiSubject = new Subject<Emoji>();
 
 
   constructor() {
-    
-   }
 
+  }
 
-
-
-
-
-
-  
   getUserObservable() {
     return this.userSubject.asObservable();
   }
@@ -56,63 +50,46 @@ export class GlobalsubService {
     return this.emjoiSubject.asObservable();
   }
 
-
-
-
-  publishUser(data: DABubbleUser) {
-    this.userSubject.next(data);
-  }
-
-  publishGoogleUser(data: User) {
-    this.googleUserSubject.next(data);
-  }
-
-  publishAllMessage(data: ChatMessage) {
-    this.allMessageSubject.next(data);
-  }
-
-  publishActiveChannel(data: TextChannel) {
-    this.activeChannelSubject.next(data);
-  }
-
-  publishActiveThread(data: ThreadMessage) {
-    this.activeThreadSubject.next(data);
-  }
-
-  publishEmoji(data: Emoji) {
-    this.emjoiSubject.next(data);
+  getChannelCreatedObservable() {
+    return this.createChannelSubject.asObservable();
   }
 
 
 
 
   updateUser(data: DABubbleUser) {
-    this.publishUser(data);
+    this.userSubject.next(data);
+    sessionStorage.setItem('userLogin', JSON.stringify(data));
   }
 
   updateGoogleUser(data: User) {
-    this.publishGoogleUser(data);
+    this.googleUserSubject.next(data);
   }
 
   updateAllMessages(data: ChatMessage) {
-    this.publishAllMessage(data);
+    this.allMessageSubject.next(data);
   }
 
   updateActiveChannel(data: TextChannel) {
-    this.publishActiveChannel(data);
+    this.activeChannelSubject.next(data);
   }
 
   updateActiveThread(data: ThreadMessage) {
-    this.publishActiveThread(data);
+    this.activeThreadSubject.next(data);
   }
 
   updateEmoji(data: Emoji) {
-    this.publishEmoji(data);
+    this.emjoiSubject.next(data);
   }
 
   deleteEmoji() {
     this.emjoiSubject.unsubscribe();
   }
+
+  updateCreatedChannel(data: TextChannel) {
+    this.createChannelSubject.next(data);
+  }
+
 
 }
 

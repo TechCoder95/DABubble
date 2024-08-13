@@ -12,6 +12,7 @@ import { FormControl } from '@angular/forms';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { TicketService } from '../../shared/services/ticket.service';
 import { ThreadMessage } from '../../shared/interfaces/threadmessage';
+import { TextChannel } from '../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-thread',
@@ -34,13 +35,31 @@ export class ThreadComponent {
   messageType = MessageType.Threads;
   selectedTicket: boolean = false;
 
-  @Input() activeUserFromThread: any;
+  activeUser!: DABubbleUser;
+
+  threadChannel: TextChannel = {
+    id: '',
+    name: '',
+    description: '',
+    owner: '',
+    assignedUser: [],
+    isPrivate: false,
+  };
+
+  @Input() activeUserFromSidenav : any;
 
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
     private userService: UserService
-  ) { }
+  ) {}
+
+  ngOnInit() {
+  
+    this.activeUserFromSidenav.subscribe((user: any) => {
+      this.userService.activeUser = user;
+    });
+  }
 
   // ngOnInit() {
   //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
