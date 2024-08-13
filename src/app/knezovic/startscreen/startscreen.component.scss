@@ -1,16 +1,22 @@
-.background {
+div{
     background-color: royalblue;
-    animation: visibility 1.5s reverse 4s;
+
+}
+section{
+    background-image: url('/img/bg.jpg');
+    background-size: cover;
+    background-position: center;
+
 }
 
-.logo {
+.logo{
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
 }
 
-.schrift {
+.schrift{
     position: absolute;
     top: 50%;
     left: 60%;
@@ -23,7 +29,6 @@
     from {
         left: 50%;
     }
-
     to {
         left: 38%;
     }
@@ -33,7 +38,6 @@
     from {
         left: 50%;
     }
-
     to {
         opacity: 1;
     }
@@ -43,16 +47,15 @@
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
-
+    
 }
 
 .logo {
     animation: moveLeft 2s forwards 1s, moveToTopLogo 1s forwards 3s;
-
+    
 
 }
 
@@ -62,14 +65,12 @@
 }
 
 
-
 @keyframes moveToTopLogo {
     from {
         top: 50%;
         height: 35%;
         width: 35%;
     }
-
     to {
         height: 13%;
         width: 13%;
@@ -79,12 +80,10 @@
 }
 
 @keyframes moveToTopSchrift {
-    from {
-        height: 35%;
+    from {height: 35%;
         width: 35%;
         top: 50%;
     }
-
     to {
         height: 8%;
         width: 8%;
@@ -93,50 +92,7 @@
     }
 }
 
-
-.card {
-    margin: 20px;
-    margin-top: 0;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
-    opacity: 0;
-    animation: visibility 1s forwards 4s;
+div{
+    animation: visibility 2.5s reverse 2s;
 }
 
-a {
-    font-family: 'Figtree' !important;
-    font-size: 18px;
-    color: #797EF3;
-    font-weight: 400;
-    border: 1px solid transparent;
-    border-radius: 30px;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 30px;
-    padding: 10px 15px;
-    text-decoration: none;
-    opacity: 0;
-    animation: visibility 1s forwards 4s;
-
-}
-
-@media (max-width: 650px) {
-    .mobile-container {
-        width: 100% !important;
-    }
-
-    .mobile-view {
-        display: none !important;
-    }
-}
-
-.logincard{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-
-}

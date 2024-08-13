@@ -1,25 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
 import { ChatService } from './chat.service';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
-import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChannelService {
-
-  channelSub!: Subscription;
+  showSingleThread: boolean = false;
+  
   private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
+  private createdChannel = new BehaviorSubject<TextChannel | null>(null);
+
   selectedChannel$ = this.selectedChannelSubject.asObservable();
+  createdChannel$ = this.createdChannel.asObservable();
 
   channel!: TextChannel;
-  showSingleThread: boolean = false;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService) { }
+
 
   /**
    * Selects a channel.
@@ -93,15 +95,14 @@ export class ChannelService {
     return updates;
   }
 
-  async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
+  async createDirectChannelIfNotExists(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
-    let userIDs = await this.databaseService.readDataByField('channels', 'assignedUser', currentUser.id!)
-    let userChannels: TextChannel[] = [];
-    for (let i = 0; i < userIDs.length; i++) {
-      let channel = await this.databaseService.readDataByID('channels', userIDs[i]);
-      userChannels.push(channel as TextChannel);
-    }
-    let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && channel.assignedUser.includes(user.id!));
+
+    let userChannels = await this.databaseService.getUserChannels(currentUser.id!);
+    let existingChannel = userChannels.find(channel => channel.isPrivate &&
+      channel.assignedUser.includes(currentUser.id!) &&
+      channel.assignedUser.includes(user.id!));
+
     if (!existingChannel) {
       let newChannel: TextChannel = {
         id: '',
@@ -109,33 +110,15 @@ export class ChannelService {
         assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
+        conversationId: [],
         owner: currentUser.id!
       };
       const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
       newChannel.id = newChannelId;
       existingChannel = newChannel;
-      this.subService.updateCreatedChannel(existingChannel);
+      this.createdChannel.next(existingChannel);
     }
     this.selectChannel(existingChannel);
     return existingChannel;
-  }
-
-
-  async createGroupChannel(data: TextChannel) {
-    const currentUser = this.userService.activeUser;
-    const newChannel: TextChannel = {
-      ...data,
-      assignedUser: [this.userService.activeUser.id!],
-      isPrivate: false,
-      owner: currentUser.id!
-    };
-    try {
-      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
-      newChannel.id = newChannelId;
-      return newChannel;
-    } catch (err) {
-      console.error('Fehler beim Hinzufügen des neuen Kanals', err);
-      return null;
-    }
   }
 }

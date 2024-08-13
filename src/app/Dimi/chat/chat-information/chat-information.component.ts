@@ -30,12 +30,8 @@ export class ChatInformationComponent {
   isPrivateChat!: boolean;
   privateChatPartner?: DABubbleUser;
   privatChatAvatar!: string | undefined;
-  privateChatPartnerName!: string | undefined;
+  privateChatPartnerName!:string | undefined;
   /*  private channelSubscription!: Subscription; */
-  channelSub!: Subscription;
-
-  @Input() activeUserFromChat: any;
-  @Input() activeChannelFromChat: any;
 
   constructor(
     public dialog: MatDialog,
@@ -46,16 +42,19 @@ export class ChatInformationComponent {
   }
 
   ngOnInit(): void {
+    this.subscribeToChannelChanges();
+  }
 
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-
+  subscribeToChannelChanges() {
+    this.channelService.selectedChannel$.subscribe((selectedChannel$: any) => {
+      if (selectedChannel$) {
+        this.assignedUsers = this.getAssignedUsers(selectedChannel$);
+        this.isPrivateChat = selectedChannel$.isPrivate;
+        if (selectedChannel$.isPrivate) {
+          this.getPrivateChatPartner(selectedChannel$);
+        }
+      }
     });
-
-    this.activeChannelFromChat.subscribe((channel: any) => {
-      this.getAssignedUsers(channel);
-    });
-
   }
 
   changeTagImg(hover: boolean) {
@@ -165,9 +164,10 @@ export class ChatInformationComponent {
   getAssignedUsers(channel: TextChannel): DABubbleUser[] {
     this.assignedUsers = [];
     channel.assignedUser.forEach((userID) => {
-      this.userService.getOneUserbyId(userID).then((user) => {
-        this.assignedUsers.push(user as unknown as DABubbleUser);
-        });
+      let user: any = this.userService.getOneUserbyId(userID);
+      if (user) {
+        this.assignedUsers.push(user);
+      }
     });
     return this.assignedUsers;
   }
@@ -182,15 +182,11 @@ export class ChatInformationComponent {
       (userID) => userID !== this.activeUser.id
     );
 
-    if (privateChatPartnerID) {
-      this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
-        let chatPartner = privateChatPartner as unknown as DABubbleUser;
-        this.privateChatPartnerName = chatPartner?.username
-        this.privateChatPartner = chatPartner;
-      });
-
-    } else {
-      this.privateChatPartnerName = this.activeUser.username + ' (Du)';
+    if(privateChatPartnerID){
+      this.privateChatPartner = this.userService.getOneUserbyId(privateChatPartnerID!);
+      this.privateChatPartnerName = this.privateChatPartner?.username
+    }else{
+      this.privateChatPartnerName = this.activeUser.username+' (Du)';
     }
     this.returnChatPartnerAvatar(selectChannel);
   }

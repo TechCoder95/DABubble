@@ -44,10 +44,22 @@ export class AddUserComponent {
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid && this.acceptPolicy) {
       this.register(this.user.mail, this.user.password, this.user.username);
+      this.getUsers();
     }
     else {
       console.info('Form is not valid');
       ngForm.resetForm();
+    }
+  }
+
+
+  getUsers() {
+    this.UserService.getUsersFromDB();
+
+    if (this.UserService.users.length > 0) {
+      const lastUser = this.UserService.users[this.UserService.users.length - 1];
+    } else {
+      console.error("Das Array ist leer.");
     }
   }
 

@@ -20,6 +20,11 @@ export class TicketService {
   }
 
   async sendThreads(thread: ThreadMessage) {
+    let threadsFromDb: ThreadMessage[] = [];
+
+    // Lese die vorhandenen Nachrichten aus der Datenbank
+    await this.databaseService.readDatafromDB('threads', threadsFromDb);
+
     await this.databaseService.addDataToDB('threads', thread);
   }
 }

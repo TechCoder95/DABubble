@@ -4,10 +4,10 @@
     id="{{ receiveMessage.id }}"
     [ngClass]="{ 'adjust-padding-left': repeatedMessage }"
   >
-    <img [src]="senderUser.avatar" *ngIf="!repeatedMessage" />
+    <img [src]="getSenderAvatar()" *ngIf="!repeatedMessage" />
     <div class="message-information">
       <div class="sender-and-time" [ngClass]="{ 'jc-end': repeatedMessage }">
-        <h5 *ngIf="!repeatedMessage">{{ senderUser.username }}</h5>
+        <h5 *ngIf="!repeatedMessage">{{ receiveMessage.senderName }}</h5>
         <p
           *ngIf="
             !repeatedMessage ||

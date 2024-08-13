@@ -5,7 +5,6 @@ import { UserService } from '../../../../shared/services/user.service';
 import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reaction/receive-chat-message-reaction.component';
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
-import { DatabaseService } from '../../../../shared/services/database.service';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -24,26 +23,13 @@ export class ReceiveChatMessageComponent {
   @Input() isPrivate!: boolean | undefined;
   @Input() repeatedMessage!: boolean | undefined;
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
-  @Input() sender!: DABubbleUser;
 
-  senderUser: DABubbleUser= {username: "dummy", avatar: "./img/avatar.svg", mail:"", isLoggedIn: false};
-
-  constructor(private databaseService:DatabaseService, private userService: UserService) {
-    
-  }
+  constructor(private userService: UserService) {}
 
   ngOnInit(): void {
-    this.getUser();
+    this.getSenderName();
+    this.getSenderAvatar();
   }
-
-
-  async getUser() {
-    this.senderUser.avatar = "./img/avatar.svg";
-    let user = await this.userService.getOneUserbyId(this.receiveMessage.senderId);
-    this.senderUser = user;
-  }
-
-
 
   checkDate(date: number): string {
     const today = new Date();
@@ -60,4 +46,13 @@ export class ReceiveChatMessageComponent {
     }
   }
 
+  getSenderName() {
+    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    return user?.username;
+  }
+
+  getSenderAvatar() {
+    let user = this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    return user?.avatar;
+  }
 }

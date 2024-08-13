@@ -12,7 +12,6 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
-import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -32,8 +31,8 @@ export class InputfieldComponent {
   ticket: any;
 
   @Input() messageType: MessageType = MessageType.Directs;
-  @Input() selectedChannelFromChat: any;
-  @Input() activeUserFromChat: any;
+
+  @Output() selectedChannelChanged = new EventEmitter<TextChannel>();
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -42,21 +41,15 @@ export class InputfieldComponent {
     private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private ticketService: TicketService,
-    private subService: GlobalsubService
+    private ticketService: TicketService
   ) {
     this.activeUser = this.userService.activeUser;
-
+    this.subscribeToDataChanges();
+    this.ticket = this.ticketService.getTicket();
   }
 
-
-
-  ngOnInit() {
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-    }
-    );
-    this.selectedChannelFromChat.subscribe((channel: any) => {
+  subscribeToDataChanges() {
+    this.databaseService.onDataChange$.subscribe(async (channel) => {
       this.selectedChannel = channel;
       this.selectedChannelChanged.emit(channel);
     });
@@ -103,7 +96,7 @@ export class InputfieldComponent {
       map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
     );
   }
-
+  inThreads: boolean = false;
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -113,7 +106,8 @@ export class InputfieldComponent {
         await this.send();
         break;
       case MessageType.Threads:
-        await this.sendFromThread();
+        this.inThreads = true;
+        await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
         break;
       case MessageType.NewDirect:
         await this.setSelectedChannel();
@@ -123,65 +117,78 @@ export class InputfieldComponent {
         break;
     }
   }
-
-  async sendFromThread() {
-    let threadMessage: ThreadMessage = {
-      ticketId: this.ticket.id,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      emoticons: [],
-      edited: false,
-      deleted: false,
-    };
-    if (threadMessage.message !== '') {
-      try {
-        await this.ticketService.sendThreads(threadMessage);
-        console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
-      }
+  /* 
+  sendThread(){
+    let thread:ThreadMessage={
+      ticketId: string;
+      message: string;
+      timestamp: number;
+      senderName: string;
+      senderId: string;
+      threadConversationId?: string[];
+      emoticons?: string[];
+      id?: string;
+      edited?: boolean;
+      deleted?: boolean;
     }
-  }
+  } */
 
   async send() {
-    let message: ChatMessage = {
-      channelId: this.selectedChannel!.id,
-      channelName: this.selectedChannel!.name,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      edited: false,
-      deleted: false,
-    };
-    
+    if (!this.inThreads) {
+      let message: ChatMessage = {
+        channelId: this.selectedChannel!.id,
+        channelName: this.selectedChannel!.name,
+        message: this.textareaValue,
+        timestamp: new Date().getTime(),
+        senderName: this.activeUser.username || 'guest',
+        senderId: this.activeUser.id || 'senderIdDefault',
+        emoticons: [],
+        edited: false,
+        deleted: false,
+      };
 
-    if (message.message !== '') {
-      try {
-        this.databaseService.addChannelDataToDB('messages', message);
-        this.textareaValue = '';
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
+      if (message.message !== '') {
+        try {
+          const newMessageId = await this.databaseService.addChannelDataToDB(
+            'messages',
+            message
+          );
+          message.id = newMessageId;
+          this.chatService.sendMessage(message);
+          this.textareaValue = '';
+        } catch (error) {
+          console.error('Fehler beim Senden der Nachricht:', error);
+        }
+      } else {
+        alert('Du musst eine Nachricht eingeben');
       }
+    } else if (this.inThreads) {
+      let threadMessage: ThreadMessage = {
+        ticketId: this.ticket.id,
+        message: this.textareaValue,
+        timestamp: new Date().getTime(),
+        senderName: this.activeUser.username || 'guest',
+        senderId: this.activeUser.id || 'senderIdDefault',
+        emoticons: [],
+        edited: false,
+        deleted: false,
+      };
+
+      await this.ticketService.sendThreads(threadMessage);
+      console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
     } else {
-      alert('Du musst eine Nachricht eingeben');
+      console.error('Kein Channel ausgewählt');
     }
   }
 
-
   async setSelectedChannel() {
-    try {
-      let selectedUser = this.userService.getSelectedUser();
-      if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(selectedUser);
-        this.selectedChannel = channel;
-        // todo navigiere zu dem channel
-    //    this.channelService.selectChannel(channel);
-      }
-    } catch (error) {
-      console.log("Fehler beim Senden: ", error);
+    let selectedUser = this.userService.getSelectedUser();
+    if (selectedUser) {
+      const channel = await this.channelService.createDirectChannelIfNotExists(
+        selectedUser
+      );
+      this.channelService.selectChannel(channel);
+      this.selectedChannel = channel;
     }
   }
 

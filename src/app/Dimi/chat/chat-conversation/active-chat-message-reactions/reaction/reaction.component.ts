@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
+import { DatabaseService } from '../../../../../shared/services/database.service';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
 
@@ -20,7 +21,7 @@ export class ReactionComponent {
   constructor(
     private userService: UserService,
     private chatService: ChatService
-  ) { }
+  ) {}
 
   getEmojiImg(emoji: Emoji) {
     if (emoji.type === 'checkMark') {
@@ -36,26 +37,20 @@ export class ReactionComponent {
     return emoji.usersIds.length;
   }
 
-  getEmojiUsers() {
-    this.emoji.usersIds.forEach(async (id) => {
-      this.getEmojiReactionUsers(id);
-    });
-  }
-
-
-
-  async getEmojiReactionUsers(id: string) {
+  getEmojiReactionUsers(): string {
     let emojiReactors: string[] = [];
-      await this.userService.getOneUserbyId(id).then((user) => {
-        if (user && user.username) {
-          let username = user.username;
-          if (user.id === this.activeUser.id) {
-            username = 'Du';
-          }
-          emojiReactors.push(username);
+
+    this.emoji.usersIds.forEach((id) => {
+      let user = this.userService.getOneUserbyId(id);
+      if (user && user.username) {
+        let username = user.username;
+        if (user.id === this.activeUser.id) {
+          username = 'Du';
         }
-      });
-    return this.usersReactionString(emojiReactors)
+        emojiReactors.push(username);
+      }
+    });
+    return this.usersReactionString(emojiReactors);
   }
 
   usersReactionString(emojiReactors: string[]): string {
@@ -78,7 +73,6 @@ export class ReactionComponent {
       messageId: this.emoji.messageId,
       type: this.emoji.type,
       usersIds: [this.activeUser.id!],
-      deleted: false,
     };
     this.chatService.sendEmoji(currentEmoji, this.message);
   }

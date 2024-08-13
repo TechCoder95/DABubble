@@ -30,37 +30,37 @@ export class SearchbarComponent {
     this.channels = [];
     this.messages = [];
 
-    // this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
-    //   this.channels = channels;
-    //   channels.forEach(channel => {
-    //     this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
-    //       this.messages = this.messages.concat(messages);
-    //     });
-    //   });
-    // });
+    this.databaseService.getUserChannels(sessionStorage.getItem('userLogin')!).then((channels) => {
+      this.channels = channels;
+      channels.forEach(channel => {
+        this.databaseService.getMessagesByChannel(channel.id).then((messages) => {
+          this.messages = this.messages.concat(messages);
+        });
+      });
+    });
   }
 
 
   search() {
     this.searchResults = [];
-    // this.pushUsers();
+    this.pushUsers();
     this.pushMessages();
     this.pushChannels();
   }
 
 
-  // pushUsers() {
-  //   this.userService.users.forEach(user => {
-  //     if (user.username?.includes(this.searchInput)) {
-  //       let searchItem = {
-  //         title: 'User: ',
-  //         description: user.username,
-  //         photo: user.avatar
-  //       }
-  //       this.searchResults.push(searchItem);
-  //     }
-  //   });
-  // }
+  pushUsers() {
+    this.userService.users.forEach(user => {
+      if (user.username?.includes(this.searchInput)) {
+        let searchItem = {
+          title: 'User: ',
+          description: user.username,
+          photo: user.avatar
+        }
+        this.searchResults.push(searchItem);
+      }
+    });
+  }
 
 
   pushChannels() {
@@ -92,12 +92,12 @@ export class SearchbarComponent {
 
 
   openProfile(profileUsername: string) {
-    // this.users.forEach(user => {
-    //   if (user.username === profileUsername) {
-    //     this.openInfo(user);
-    //   }
-    // }
-    // );
+    this.userService.users.forEach(user => {
+      if (user.username === profileUsername) {
+        this.openInfo(user);
+      }
+    }
+    );
   }
 
 

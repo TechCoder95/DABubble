@@ -16,11 +16,6 @@ import { BehaviorSubject } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { arrayUnion, arrayRemove } from 'firebase/firestore';
 import { TextChannel } from '../interfaces/textchannel';
-import { GlobalsubService } from './globalsub.service';
-import { DABubbleUser } from '../interfaces/user';
-import { User } from 'firebase/auth';
-import { ThreadMessage } from '../interfaces/threadmessage';
-import { Emoji } from '../interfaces/emoji';
 
 export interface DataId {
   id: string;
@@ -32,7 +27,11 @@ export interface DataId {
 export class DatabaseService {
   firestore: Firestore = inject(Firestore);
 
-  constructor(private subService:GlobalsubService) {}
+  private onDataChange = new BehaviorSubject<any | null>(null);
+  public onDataChange$ = this.onDataChange.asObservable();
+
+  public onDomiDataChange = new BehaviorSubject<any | null>(null);
+  public onDomiDataChange$ = this.onDomiDataChange.asObservable();
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -55,6 +54,32 @@ export class DatabaseService {
   }
 
   /**
+   * Reads data from the specified database and populates the provided array with the retrieved data.
+   * @param {string} collectionName - The name of the database to read data from.
+   * @param {any[]} array - The array to populate with the retrieved data.
+   * @returns A promise that resolves when the initial data is retrieved and whenever the data changes in the database.
+   */
+  async readDatafromDB(collectionName: string, array: any[]): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      onSnapshot(
+        this.getDataRef(collectionName),
+        (list) => {
+          const results = list.docs.map((data) => ({
+            id: data.id,
+            ...data.data(),
+          }));
+          array.length = 0;
+          array.push(...results);
+          resolve();
+        },
+        reject
+      );
+    }).catch((err) => {
+      console.error('Error reading Data', err);
+    });
+  }
+
+  /**
    * Adds data to the specified database.
    *
    * @param {string} collectionName - The name of the database.
@@ -65,18 +90,54 @@ export class DatabaseService {
   //   await addDoc(this.setRef(collectionName), data)
   //     .catch((err) => { console.error('Error adding Data', err) })
   // }
-  async addDataToDB(collectionName: string, data: any) {
+  async addDataToDB(collectionName: string, data: any): Promise<void> {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
-      const id = docRef.id;
-      await updateDoc(docRef, { id });
-      return docRef.id;
     } catch (err) {
       console.error('Error adding Data', err);
       throw err;
     }
   }
 
+  /**
+   * Adds a message to a channel.
+   * @param {string} channelDoc - The document ID of the channel.
+   * @param {string} messageDocId - The document ID of the message.
+   * @returns {Promise<void>} - A promise that resolves when the message is added to the channel.
+   */
+  async addMessageToChannel(channelDoc: string, messageDocId: string) {
+    const channelDocRef = doc(this.firestore, 'channels', channelDoc);
+    await updateDoc(channelDocRef, {
+      conversationId: arrayUnion(messageDocId),
+    });
+  }
+
+  /**
+   * Fügt einem Nachrichten-Dokument ein Emoji hinzu.
+   *
+   * @param {string} messageDoc - Die ID des Nachrichten-Dokuments, dem das Emoji hinzugefügt werden soll.
+   * @param {string} emojiDocId - Die ID des Emoji-Dokuments, das hinzugefügt werden soll.
+   * @returns {Promise<void>} - Ein Promise, das aufgelöst wird, wenn das Emoji erfolgreich hinzugefügt wurde.
+   */
+  async addEmojiToMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayUnion(emojiDocId),
+    });
+  }
+
+  async removeEmojiFromMessage(
+    messageDoc: string,
+    emojiDocId: string
+  ): Promise<void> {
+    const messageDocRef = doc(this.firestore, 'messages', messageDoc);
+    await updateDoc(messageDocRef, {
+      emoticons: arrayRemove(emojiDocId),
+    });
+  }
 
   /**
    * Updates data in the specified database and document.
@@ -127,6 +188,22 @@ export class DatabaseService {
     return messages;
   }
 
+  /**
+   * Retrieves data from a Firestore collection by ID.
+   * @param collectionName - The name of the Firestore collection.
+   * @param id - The ID of the document to retrieve.
+   * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
+   */
+  public async getDatabyID(collectionName:string, where: any, userId: string) {
+    const dataCollectionRef = this.getDataRef(collectionName);
+    const whereis: any = where;
+    const q = query(dataCollectionRef, where(whereis, '==', userId));
+    const snapshot = await getDocs(q);
+    const array: any[] = [];
+    snapshot.forEach((doc) => array.push(doc.data()));
+    return array;
+  }
+
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -141,18 +218,6 @@ export class DatabaseService {
     } else {
       return null;
     }
-  }
-
-  
-  async readDataByField(collectionName: string, field: string, value: string) {
-    const q = query(
-      collection(this.firestore, collectionName),
-      where(field, '==', value)
-    );
-    const snapshot = await getDocs(q);
-    const data: any[] = [];
-    snapshot.forEach((doc) => data.push(doc.data()));
-    return data;
   }
 
   /**
@@ -175,22 +240,29 @@ export class DatabaseService {
     }
   }
 
-
-  async subscribeToUserData(userId: string) {
+  /**
+   * Retrieves the text channels assigned to a specific user.
+   *
+   * @param userId - The ID of the user.
+   * @returns A promise that resolves to an array of TextChannel objects.
+   */
+  async getUserChannels(userId: string): Promise<TextChannel[]> {
+    const channelsCollectionRef = this.getDataRef('channels');
     const q = query(
-      collection(this.firestore, 'users'),
-      where('id', '==', userId)
+      channelsCollectionRef,
+      where('assignedUser', 'array-contains', userId)
     );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        let data = change.doc.data();
-        this.subService.updateUser(data as DABubbleUser);
-      });
-    });
+    const snapshot = await getDocs(q);
+    const channels: TextChannel[] = [];
+    snapshot.forEach((doc) => channels.push(doc.data() as TextChannel));
+    return channels;
   }
 
-  async subscribeToChannelData(channelId: string) {
+  /**
+   * Subscribes to messages in a specified channel or the currently selected channel.
+   * @param channel - The optional TextChannel object representing the channel to subscribe to.
+   */
+  async subscribeToMessages(channel?: TextChannel) {
     const q = query(
       collection(this.firestore, 'channels'),
       where(
@@ -214,44 +286,17 @@ export class DatabaseService {
    */
   async subscribeToData(collectionName: string, dataId: string) {
     const q = query(
-      collection(this.firestore, 'messages'), where('channelId', '==', channelId)
+      collection(this.firestore, collectionName),
+      where('id', '==', dataId)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateAllMessages(data as ChatMessage);
+        this.onDomiDataChange.next(data);
       });
     });
   }
-
-  async subscribeToEmojisofMessage(messageId: string) {
-    const q = query(
-      collection(this.firestore, 'emojies'), where('messageId', '==', messageId)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        let data = change.doc.data();
-          this.subService.updateEmoji(data as Emoji);
-      });
-    });
-  }
-
-  async subscribeToThreadData(threadId: string) {
-    const q = query(
-      collection(this.firestore, 'threads'),
-      where('id', '==', threadId)
-    );
-
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        let data = change.doc.data();
-        this.subService.updateActiveThread(data as ThreadMessage);
-      });
-    });
-  }
-
 }
 
 /* async addMessageToChannel(channelDoc: string, messageDocId: string) {

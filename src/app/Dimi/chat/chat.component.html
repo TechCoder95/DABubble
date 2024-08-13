@@ -1,9 +1,5 @@
 <mat-card>
-  <app-chat-information [activeUserFromChat]="activeUserFromSidenav" [activeChannelFromChat]="selectedChannelFromSidenav" ></app-chat-information>
-  <app-chat-conversation [messagesFromChat]="allMessagesfromSideNav"
-    [activeChannelFromChat]="selectedChannelFromSidenav" [activeUserFromChat]="activeUserFromSidenav" #scrollContainer>
-  </app-chat-conversation>
-  <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromSidenav"
-    [activeUserFromChat]="activeUserFromSidenav" [messageType]="messageType">
-  </app-chat-inputfield>
+  <app-chat-information></app-chat-information>
+  <app-chat-conversation [selectedChannel]="selectedChannelChanged.asObservable()" #scrollContainer></app-chat-conversation>
+  <app-chat-inputfield [messageType]="messageType" (selectedChannelChanged)="selectedChannel($event)"></app-chat-inputfield>
 </mat-card>

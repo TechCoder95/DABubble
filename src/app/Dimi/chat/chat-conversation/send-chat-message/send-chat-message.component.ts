@@ -48,19 +48,15 @@ export class SendChatMessageComponent implements OnInit {
   constructor(
     private userService: UserService,
     private databaseService: DatabaseService
-  ) {
-    this.user = JSON.parse(localStorage.getItem('userLogin')!);
-  }
-
-
-  userFromSession: DABubbleUser = JSON.parse(localStorage.getItem('userLogin')!);
+  ) {}
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
   }
 
-  async getUserName() {
-    return this.userFromSession.username;
+  getUserName() {
+    let user = this.userService.getOneUserbyId(this.user.id!);
+    return user?.username;
   }
 
   checkDate(date: number): string {
@@ -78,8 +74,9 @@ export class SendChatMessageComponent implements OnInit {
     }
   }
 
-  async getUserAvatar() {
-    return this.userFromSession.avatar;
+  getUserAvatar(): string | undefined {
+    let user = this.userService.getOneUserbyId(this.user.id!);
+    return user?.avatar;
   }
 
   onEditModeChange(event: boolean) {

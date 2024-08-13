@@ -18,7 +18,7 @@
     ></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
-        <h5 *ngIf="!repeatedMessage">{{ user.username }}</h5>
+        <h5 *ngIf="!repeatedMessage">{{ getUserName() }}</h5>
         <p *ngIf="!repeatedMessageInUnder5Minutes && !repeatedMessage">
           {{ sendMessage.timestamp | date : "HH.mm" }} Uhr
         </p>
@@ -39,7 +39,7 @@
         ></app-active-chat-message-reactions>
       </div>
     </div>
-    <img [src]="user.avatar" *ngIf="!repeatedMessage" />
+    <img [src]="getUserAvatar()" *ngIf="!repeatedMessage" />
   </section>
 
   <section *ngIf="inEditMessageMode" class="in-edit-mode-section">
@@ -50,6 +50,6 @@
         <button class="save-message-btn" (click)="save()">Speichern</button>
       </span>
     </div>
-    <img [src]="user.avatar" />
+    <img [src]="getUserAvatar()" />
   </section>
 </main>

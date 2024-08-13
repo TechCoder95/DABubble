@@ -9,7 +9,6 @@ import { Subscription } from 'rxjs';
 import { ReactionComponent } from './reaction/reaction.component';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { tick } from '@angular/core/testing';
-import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-active-chat-message-reactions',
@@ -24,24 +23,26 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   activeUser!: DABubbleUser;
   private emojiSubscription!: Subscription;
   private databaseSubscription!: Subscription;
+  allEmojis: Emoji[] = [];
   currentEmoji!: Emoji;
 
   constructor(
     private userService: UserService,
     private databaseService: DatabaseService,
-    public chatService: ChatService,
-    private subService: GlobalsubService
+    private chatService: ChatService
   ) {
     this.activeUser = this.user;
   }
 
   ngOnInit(): void {
     this.loadEmojis();
+    this.subscribeToEmoji();
   }
 
   ngOnDestroy(): void {
-    if (this.databaseSubscription) 
-      this.databaseSubscription.unsubscribe(); 
+    if (this.emojiSubscription) {
+      this.emojiSubscription.unsubscribe();
+    }
   }
 
   isReactionForCurrentMessage(emoji: Emoji) {
@@ -49,44 +50,53 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   }
 
   loadEmojis() {
+    let emojisOnMessage = this.message.emoticons;
 
-    this.databaseService.subscribeToEmojisofMessage(this.message.id);
+    emojisOnMessage.forEach(async (emojiID: string) => {
+      const emoji: any = await this.databaseService.readDataByID(
+        'emojies',
+        emojiID
+      );
 
-    if (!this.databaseSubscription)
-    this.databaseSubscription = this.subService.getEmojiObservable().subscribe((emoji: Emoji) => {
-      if (emoji) {
-        const existingEmojiIndex = this.getExistingEmojiIndex(emoji);
-        if (this.emojiAlreadyExists(existingEmojiIndex)) {
-          this.handleExistingEmoji(emoji, existingEmojiIndex);
-        }
-        else {
-          if (emoji.id && !emoji.deleted)
-          this.chatService.allEmojis.push(emoji);
-        }
-        this.currentEmoji = emoji;
-      }
+      this.allEmojis.push(emoji);
     });
   }
 
+  subscribeToEmoji() {
+    this.emojiSubscription = this.chatService.sendMessagesEmoji$.subscribe(
+      (emoji) => {
+        if (emoji) {
+          const existingEmojiIndex = this.getExistingEmojiIndex(emoji);
+          if (this.emojiAlreadyExists(existingEmojiIndex)) {
+            this.handleExistingEmoji(emoji, existingEmojiIndex);
+          } else {
+            this.allEmojis.push(emoji);
+          }
+          this.currentEmoji = emoji;
+        }
+      }
+    );
+  }
+  
   emojiAlreadyExists(existingEmojiIndex: number) {
     return existingEmojiIndex !== -1;
   }
-
+  
   getExistingEmojiIndex(emoji: Emoji) {
-    return this.chatService.allEmojis.findIndex((e) => e.type === emoji.type && e.messageId === emoji.messageId);
+    return this.allEmojis.findIndex((e) => e.type === emoji.type && e.messageId === emoji.messageId);
   }
-
+  
   handleExistingEmoji(newEmoji: Emoji, existingEmojiIndex: number) {
-    const existingEmoji = this.chatService.allEmojis[existingEmojiIndex];
+    const existingEmoji = this.allEmojis[existingEmojiIndex];
     if (newEmoji.usersIds.length === 0) {
       // Entferne den Emoji, wenn die neue Emoji-Liste leer ist
-      this.chatService.allEmojis.splice(existingEmojiIndex, 1);
+      this.allEmojis.splice(existingEmojiIndex, 1);
     } else if (!this.areUserIdsEqual(existingEmoji.usersIds, newEmoji.usersIds)) {
       // Aktualisiere den Emoji, wenn die Benutzer-IDs unterschiedlich sind
-      this.chatService.allEmojis[existingEmojiIndex] = newEmoji;
+      this.allEmojis[existingEmojiIndex] = newEmoji;
     }
   }
-
+  
   areUserIdsEqual(usersIds1: string[], usersIds2: string[]) {
     if (usersIds1.length !== usersIds2.length) {
       return false;
@@ -95,8 +105,8 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
     const sortedIds2 = [...usersIds2].sort();
     return sortedIds1.every((id, index) => id === sortedIds2[index]);
   }
-
+  
   emojiExists(emoji: Emoji) {
-    return this.chatService.allEmojis.some((e) => e.type === emoji.type && e.messageId === emoji.messageId);
+    return this.allEmojis.some((e) => e.type === emoji.type && e.messageId === emoji.messageId);
   }
 }
