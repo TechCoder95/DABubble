@@ -159,9 +159,9 @@ export class DialogChannelInformationComponent {
   }
 
   channelCreatedBy() {
-    let createrId = this.channelService.channel.assignedUser[0];
-    let creater = this.userService.getOneUserbyId(createrId);
-    let name = creater?.username;
-    return name;
+    // let createrId = this.channelService.channel.assignedUser[0];
+    // let creater = this.userService.getOneUserbyId(createrId);
+    // let name = creater?.username;
+    // return name;
   }
 }
