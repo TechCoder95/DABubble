@@ -109,26 +109,22 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
     if (this.activeUser) {
-      await this.loadUserChannels(this.activeUser)
-      await this.initializeDirectMessageForUser(this.activeUser)
-      await this.updateTreeData()
+      await this.loadUserChannels(this.activeUser);
+      await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
+      await this.updateTreeData();
       await this.loadLastChannelState();
     }
+
     this.activeUserChange.subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
+    });
 
-
-      // vorest eine lösung
-      //console.log("wird nur noch einmal ausgeführt, durch take(1)");
-
-      this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
-        const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
-        if (!exists) {
-          console.log("updated");
-          this.channels.push(channel);
-          this.updateTreeData();
-        }
-      });
+    this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
+      const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
+      if (!exists) {
+        this.channels.push(channel);
+        this.updateTreeData();
+      }
     });
   }
 
@@ -209,27 +205,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
 
-  private async initializeDirectMessageForUser(currentUser: DABubbleUser) {
-    const directMessageExists = this.channels.some(
-      (channel) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!)
-    );
-
-    if (!directMessageExists) {
-      const directMessage: TextChannel = {
-        id: '',
-        name: `${currentUser.username} (Du)`,
-        assignedUser: [currentUser.id!],
-        isPrivate: true,
-        description: '',
-        owner: ''
-      };
-      const newChannelId = await this.dbService.addChannelDataToDB('channels', directMessage);
-      directMessage.id = newChannelId;
-      this.channels.push(directMessage);
-      await this.updateTreeData();
-    }
-  }
-
   createGroupChannelNodes(): Node[] {
     const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
       id: channel.id,
@@ -277,7 +252,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return directChannelNodes;
   }
 
-  async createDirectMessageNodes(): Promise<Node[]> {
+  async createDirectChannelNodes(): Promise<Node[]> {
     const directMessageNodes: Node[] = [];
     const currentUser = this.userService.activeUser;
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
@@ -291,7 +266,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async updateTreeData(): Promise<void> {
     const groupChannelNodes = await this.createGroupChannelNodes();
-    const directMessageNodes = await this.createDirectMessageNodes();
+    const directMessageNodes = await this.createDirectChannelNodes();
 
     const channelsStructure: Node = {
       id: 'channels',
