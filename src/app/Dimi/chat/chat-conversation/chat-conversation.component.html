@@ -22,7 +22,7 @@
     ></app-send-chat-message>
 
     } @else if($index > 0 && message.senderId === allMessages[$index -
-    1].senderId && message.senderName !== this.activeUser.username &&
+    1].senderId && message.senderId !== this.activeUser.id &&
     isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
     <app-receive-chat-message
       [receiveMessage]="message"
@@ -34,7 +34,7 @@
       "
     ></app-receive-chat-message>
 
-    } @else if (message.senderName === this.activeUser.username) {
+    } @else if (message.senderId === this.activeUser.id) {
     <app-send-chat-message
       [sendMessage]="message"
       [user]="activeUser"
