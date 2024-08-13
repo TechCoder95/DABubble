@@ -55,32 +55,6 @@ export class DatabaseService {
   }
 
   /**
-   * Reads data from the specified database and populates the provided array with the retrieved data.
-   * @param {string} collectionName - The name of the database to read data from.
-   * @param {any[]} array - The array to populate with the retrieved data.
-   * @returns A promise that resolves when the initial data is retrieved and whenever the data changes in the database.
-   */
-  async readDatafromDB(collectionName: string, array: any[]): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
-      onSnapshot(
-        this.getDataRef(collectionName),
-        (list) => {
-          const results = list.docs.map((data) => ({
-            id: data.id,
-            ...data.data(),
-          }));
-          array.length = 0;
-          array.push(...results);
-          resolve();
-        },
-        reject
-      );
-    }).catch((err) => {
-      console.error('Error reading Data', err);
-    });
-  }
-
-  /**
    * Adds data to the specified database.
    *
    * @param {string} collectionName - The name of the database.
@@ -91,26 +65,16 @@ export class DatabaseService {
   //   await addDoc(this.setRef(collectionName), data)
   //     .catch((err) => { console.error('Error adding Data', err) })
   // }
-  async addDataToDB(collectionName: string, data: any): Promise<void> {
+  async addDataToDB(collectionName: string, data: any) {
     try {
       const docRef = await addDoc(this.setRef(collectionName), data);
+      const id = docRef.id;
+      await updateDoc(docRef, { id });
+      return docRef.id;
     } catch (err) {
       console.error('Error adding Data', err);
       throw err;
     }
-  }
-
-  /**
-   * Adds a message to a channel.
-   * @param {string} channelDoc - The document ID of the channel.
-   * @param {string} messageDocId - The document ID of the message.
-   * @returns {Promise<void>} - A promise that resolves when the message is added to the channel.
-   */
-  async addMessageToChannel(channelDoc: string, messageDocId: string) {
-    const channelDocRef = doc(this.firestore, 'channels', channelDoc);
-    await updateDoc(channelDocRef, {
-      conversationId: arrayUnion(messageDocId),
-    });
   }
 
 
@@ -163,21 +127,6 @@ export class DatabaseService {
     return messages;
   }
 
-  /**
-   * Retrieves data from a Firestore collection by ID.
-   * @param collectionName - The name of the Firestore collection.
-   * @param id - The ID of the document to retrieve.
-   * @returns A Promise that resolves to the data of the document if it exists, or undefined if it doesn't.
-   */
-  public async getDatabyID(collectionName:string, where: any, userId: string) {
-    const dataCollectionRef = this.getDataRef(collectionName);
-    const q = query(dataCollectionRef, where(where, '==', userId));
-    const snapshot = await getDocs(q);
-    const array: any[] = [];
-    snapshot.forEach((doc) => array.push(doc.data()));
-    return array;
-  }
-
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -192,6 +141,27 @@ export class DatabaseService {
     } else {
       return null;
     }
+  }
+
+  
+  async readDataByField(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, '==', value)
+    );
+    const snapshot = await getDocs(q);
+    const data: any[] = [];
+    snapshot.forEach((doc) => data.push(doc.data()));
+    return data;
+  }
+
+  async deleteDatabyField(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, '==', value)
+    );
+    const snapshot = await getDocs(q);
+    snapshot.forEach((doc) => deleteDoc(doc.ref));
   }
 
   /**
@@ -212,24 +182,6 @@ export class DatabaseService {
       console.error('Error adding Data', err);
       throw err;
     }
-  }
-
-  /**
-   * Retrieves the text channels assigned to a specific user.
-   *
-   * @param userId - The ID of the user.
-   * @returns A promise that resolves to an array of TextChannel objects.
-   */
-  async getUserChannels(userId: string): Promise<TextChannel[]> {
-    const channelsCollectionRef = this.getDataRef('channels');
-    const q = query(
-      channelsCollectionRef,
-      where('assignedUser', 'array-contains', userId)
-    );
-    const snapshot = await getDocs(q);
-    const channels: TextChannel[] = [];
-    snapshot.forEach((doc) => channels.push(doc.data() as TextChannel));
-    return channels;
   }
 
 

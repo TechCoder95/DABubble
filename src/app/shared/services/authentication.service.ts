@@ -9,7 +9,8 @@ import {
   getRedirectResult,
   setPersistence,
   browserLocalPersistence,
-  browserSessionPersistence
+  browserSessionPersistence,
+  signInAnonymously
 } from "firebase/auth";
 import { UserService } from './user.service';
 import { EmailService } from './sendmail.service';
@@ -34,7 +35,7 @@ export class AuthenticationService {
   loginSuccess: boolean = false;
   showMessage: boolean = false;
 
-  registerProcess:boolean = false;
+  registerProcess: boolean = false;
 
   //#region [Mail Authentication]
 
@@ -76,12 +77,12 @@ export class AuthenticationService {
         this.showMessage = true;
         this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
-      
+
         setTimeout(() => {
-        this.userService.login(userCredential.user)
-        this.setLocalPersistent();
+          this.userService.login(userCredential.user)
+          this.setLocalPersistent();
         }, 1000);
-      
+
       })
       .catch((error) => {
         this.showMessage = false;
@@ -121,10 +122,10 @@ export class AuthenticationService {
         const token = credential?.accessToken;
         // The signed-in user info.
         this.userService.googleUser = result.user;
-        
+
         setTimeout(() => {
-        this.userService.login(result.user)
-        this.setLocalPersistent();
+          this.userService.login(result.user)
+          this.setLocalPersistent();
         }, 1000);
       }).catch((error) => {
         // Handle Errors here.
@@ -180,15 +181,33 @@ export class AuthenticationService {
   }
 
 
+
+
+
+
   /**
    * Signs in the user as a guest.
    */
   signInAsGuest() {
-    this.showMessage = true;
-    this.loginSuccess = true;
-    setTimeout(() => {
-    this.userService.guestLogin();
-    }, 1000);
+    signInAnonymously(this.auth)
+      .then((userCredential) => {
+        this.showMessage = true;
+        this.loginSuccess = true;
+        this.userService.googleUser = userCredential.user;
+
+        this.userService.register("Gast", "Gast", this.userService.googleUser.uid);
+
+        setTimeout(() => {
+          this.userService.login(userCredential.user)
+          this.setLocalPersistent();
+        }, 1000);
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+      });
+
   }
 
 
@@ -204,7 +223,7 @@ export class AuthenticationService {
       .then(() => {
         this.showMessage = false;
         this.loginSuccess = false;
-       })
+      })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;

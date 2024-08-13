@@ -106,16 +106,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     // await this.initializeDefaultData();
-
-    this.activeUserChange.pipe(take(1)).subscribe(async (user: DABubbleUser) => {
+    this.activeUser = this.userService.activeUser;
+    this.isLoggedIn = this.activeUser?.isLoggedIn;
+    if (this.activeUser) {
+      await this.loadUserChannels(this.activeUser)
+      await this.initializeDirectMessageForUser(this.activeUser)
+      await this.updateTreeData()
+      await this.loadLastChannelState();
+    }
+    this.activeUserChange.subscribe(async (user: DABubbleUser) => {
       this.activeUser = user;
-      this.isLoggedIn = this.activeUser?.isLoggedIn;
-      if (this.activeUser) {
-        await this.loadUserChannels(this.activeUser)
-        await this.initializeDirectMessageForUser(this.activeUser)
-        await this.updateTreeData()
-        await this.loadLastChannelState(); // durch routing erstetzen
-      }
+
 
       // vorest eine lösung
       //console.log("wird nur noch einmal ausgeführt, durch take(1)");
@@ -254,24 +255,23 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  private async createOtherDirectChannelNodes(currentUser: DABubbleUser): Promise<Node[]> {
+  private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
     const directChannelNodes: Node[] = [];
     for (const channel of this.channels) {
       if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
         const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
-        if (otherUserId) {
-          const user = await this.userService.getOneUserbyId(otherUserId);
-          if (user) {
+        const user = await this.userService.getOneUserbyId(otherUserId!).then((userNew) => {
+          if (userNew) {
             const node: Node = {
               id: channel.id,
-              name: user?.username + "",
+              name: userNew.username + "",
               type: 'directMessage' as const,
               children: [],
-              avatar: user.avatar
+              avatar: userNew.avatar
             };
             directChannelNodes.push(node);
           }
-        }
+        });
       }
     }
     return directChannelNodes;
@@ -283,8 +283,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
     if (ownNode)
       directMessageNodes.push(ownNode);
-    const otherNodes = await this.createOtherDirectChannelNodes(currentUser);
-    directMessageNodes.push(...otherNodes);
+    const otherNodes = await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
+      directMessageNodes.push(...otherNodes);
+    });
     return directMessageNodes;
   }
 

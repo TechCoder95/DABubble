@@ -1,5 +1,5 @@
 <main>
-  <section>
+  <section [ngStyle]="{ width: '100%' }">
     <div class="headline">
       <h3 class="text-2xl">Leute hinzufügen</h3>
       <img
@@ -16,22 +16,46 @@
     </div>
   </section>
 
-  <section>
+  <section class="inputfield">
     <input
       type="text"
       class="inputfield-name"
       placeholder="Name eingeben"
-      [formControl]="searchControl"
+      (keyup)="searchUser($event)"
       #inputName
     />
+    <span class="selected-users">
+      @for (user of selectedUser; track $index) {
+      <div class="selected-user">
+        <img [src]="user.avatar" class="user-avatar-img"/>
+        <p>{{ user.username }}</p>
+        <img
+          (mouseenter)="changeRemoveSelectedUserImg(true)"
+          (mouseleave)="changeRemoveSelectedUserImg(false)"
+          [src]="removeSelectedUserImg"
+          (click)="removeSelectedUser()"
+          class="remove-selected-user-img"
+        />
+      </div>
+      }
+    </span>
+    <div class="input-results" *ngIf="searchResults.length > 0">
+      <ul>
+        @for (result of searchResults; track $index) {
+        <li (click)="putUserToInputfield(result)">
+          <img [src]="result.avatar" />
+          <p>{{ result.username }}</p>
+        </li>
+        }
+      </ul>
+    </div>
   </section>
 
-  <section *ngIf="searchResults.length > 0">
-    <ul>
-      <li *ngFor="let user of searchResults">
-        {{ user.username }}
-        <button (click)="addUserToChannel(user)">Hinzufügen</button>
-      </li>
-    </ul>
-  </section>
+  <button
+    [ngClass]="{ 'active-btn': selectedUser.length > 0 }"
+    [disabled]="selectedUser.length === 0"
+    (click)="addUserToChannel(selectedUser[0])"
+  >
+    hinzufügen
+  </button>
 </main>

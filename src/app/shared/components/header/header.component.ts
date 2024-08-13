@@ -9,6 +9,7 @@ import { DABubbleUser } from '../../interfaces/user';
 import { User } from 'firebase/auth';
 import { SearchbarComponent } from "./searchbar/searchbar.component";
 import { Subscription } from 'rxjs';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-header',
@@ -31,7 +32,7 @@ export class HeaderComponent implements OnInit {
   userSub!: Subscription;
   googleUserSub!: Subscription;
 
-  constructor(public AuthService: AuthenticationService, private router: Router) { }
+  constructor(public AuthService: AuthenticationService, private router: Router, private userService:UserService) { }
 
   activeUser!: DABubbleUser;
   activeGoogleUser!: User;
@@ -43,10 +44,12 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
 
     if (window.location.pathname != '/user/login') {
+      this.activeUser = this.userService.activeUser;
       this.activeUserChange.subscribe((user: DABubbleUser) => {
         this.activeUser = user;
       });
 
+      this.activeGoogleUser = this.userService.googleUser;
       this.activeGoogleUserChange.subscribe((user: User) => {
         this.activeGoogleUser = user;
       });

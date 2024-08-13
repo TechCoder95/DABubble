@@ -161,9 +161,6 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
     };
-
-    console.log(message.message);
-    console.log(this.selectedChannel);
     
 
     if (message.message !== '') {

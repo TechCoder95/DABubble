@@ -20,7 +20,7 @@ export class ReactionComponent {
   constructor(
     private userService: UserService,
     private chatService: ChatService
-  ) {}
+  ) { }
 
   getEmojiImg(emoji: Emoji) {
     if (emoji.type === 'checkMark') {
@@ -36,20 +36,26 @@ export class ReactionComponent {
     return emoji.usersIds.length;
   }
 
-  getEmojiReactionUsers(): string {
-    let emojiReactors: string[] = [];
-
-    this.emoji.usersIds.forEach((id) => {
-      let user = this.userService.getOneUserbyId(id);
-      if (user && user.username) {
-        let username = user.username;
-        if (user.id === this.activeUser.id) {
-          username = 'Du';
-        }
-        emojiReactors.push(username);
-      }
+  getEmojiUsers() {
+    this.emoji.usersIds.forEach(async (id) => {
+      this.getEmojiReactionUsers(id);
     });
-    return this.usersReactionString(emojiReactors);
+  }
+
+
+
+  async getEmojiReactionUsers(id: string) {
+    let emojiReactors: string[] = [];
+      await this.userService.getOneUserbyId(id).then((user) => {
+        if (user && user.username) {
+          let username = user.username;
+          if (user.id === this.activeUser.id) {
+            username = 'Du';
+          }
+          emojiReactors.push(username);
+        }
+      });
+    return this.usersReactionString(emojiReactors)
   }
 
   usersReactionString(emojiReactors: string[]): string {

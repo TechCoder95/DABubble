@@ -1,5 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { ChannelService } from '../../../../shared/services/channel.service';
@@ -12,7 +18,13 @@ import { firstValueFrom } from 'rxjs';
 @Component({
   selector: 'app-dialog-add-channel-members',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatCardModule, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    MatDialogModule,
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './dialog-add-channel-members.component.html',
   styleUrls: ['./dialog-add-channel-members.component.scss'],
 })
@@ -20,8 +32,10 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   closeImg = './img/close-default.png';
   @ViewChild('inputName') inputName!: ElementRef;
   focusNameInput: boolean = false;
-  searchControl = new FormControl();
+  /* searchControl = new FormControl(); */
   searchResults: DABubbleUser[] = [];
+  selectedUser: DABubbleUser[] = [];
+  removeSelectedUserImg = './img/remove-selected-user.svg';
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddChannelMembersComponent>,
@@ -30,17 +44,50 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   ) {}
 
   ngOnInit() {
-    this.searchControl.valueChanges.pipe(
+    /*  this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(value => this.userService.searchUsersByNameOrEmail(value))
     ).subscribe(results => {
       this.searchResults = results;
-    });
+    }); */
   }
 
   ngAfterViewInit(): void {
     setTimeout(() => this.inputName.nativeElement.blur(), 200);
+  }
+
+  searchUser(event: KeyboardEvent) {
+    let inputElement = event.target as HTMLInputElement;
+    let inputValue = inputElement.value.toLowerCase();
+
+    if (inputValue.trim() === '') {
+      this.searchResults = [];
+      return;
+    }
+
+    this.searchResults = [];
+
+    this.userService
+      .searchUsersByNameOrEmail(inputValue)
+      .then((results: DABubbleUser[]) => {
+        this.searchResults.push(...results);
+      })
+      .catch((error) => {
+        console.error('Error fetching search results:', error);
+      });
+  }
+
+  putUserToInputfield(user: DABubbleUser) {
+    this.searchResults = [];
+    this.inputName.nativeElement.value = '';
+    this.inputName.nativeElement.placeholder = '';
+    this.selectedUser.push(user);
+  }
+
+  removeSelectedUser() {
+    this.selectedUser = [];
+    this.inputName.nativeElement.placeholder = 'Name eingeben';
   }
 
   changeCloseImg(hover: boolean) {
@@ -48,6 +95,14 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       this.closeImg = './img/close-hover.png';
     } else {
       this.closeImg = './img/close-default.png';
+    }
+  }
+
+  changeRemoveSelectedUserImg(hover: boolean) {
+    if (hover) {
+      this.removeSelectedUserImg = './img/remove-selected-user-hover.svg';
+    } else {
+      this.removeSelectedUserImg = './img/remove-selected-user.svg';
     }
   }
 
@@ -61,6 +116,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       if (!channel.assignedUser.includes(user.id!)) {
         channel.assignedUser.push(user.id!);
         await this.channelService.updateChannel(channel);
+      } else {
+        alert('Sorry, User gibt es schon hier im channel');
       }
     }
   }
