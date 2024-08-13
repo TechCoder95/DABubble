@@ -71,33 +71,6 @@ export class UserService {
 
 
   /**
-   * Performs a guest login by generating a unique guest name and writing it to the database.
-   */
-  guestLogin() {
-    let name = this.guestName;
-    let i = 1;
-    while (this.findGuestsinDB()) {
-      name = this.guestName + '_' + i;
-      i++;
-    }
-    this.guestName = name;
-    this.writeGuestToDB();
-  }
-
-
-  findGuestsinDB() {
-    this.DatabaseService.readDataByField(this.collectionName, 'username', this.guestName).then((user) => {
-      if (user.length > 0) {
-        return true;
-      }
-      return false;
-    });
-    return false;
-    //Todo Dome: Hier die Datenbank nach dem Namen "Guest" durchsuchen
-  }
-
-
-  /**
    * Writes a guest user to the database.
    * 
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
@@ -120,11 +93,13 @@ export class UserService {
    * Removes the user login from the session storage, updates the active user subject,
    * deletes the user data from the database, and reloads the page.
    */
-  guestLogout() {
+  async guestLogout() {
     let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
-    this.activeUser = null!;
+    await this.DatabaseService.deleteDatabyField('channels', 'owner', id);
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
+        // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
+        this.googleUser.delete();
         sessionStorage.removeItem('userLogin');
         this.router.navigate(['/user/login']);
       });

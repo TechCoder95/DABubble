@@ -155,6 +155,15 @@ export class DatabaseService {
     return data;
   }
 
+  async deleteDatabyField(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, '==', value)
+    );
+    const snapshot = await getDocs(q);
+    snapshot.forEach((doc) => deleteDoc(doc.ref));
+  }
+
   /**
    * Adds channel data to the database.
    *
