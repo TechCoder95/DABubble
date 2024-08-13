@@ -134,7 +134,6 @@ export class ChannelService {
     return existingChannel;
   }
 
-
   async createGroupChannel(data: TextChannel): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {

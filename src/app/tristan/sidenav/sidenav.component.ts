@@ -106,7 +106,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
 
@@ -135,10 +134,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.channels.push(ownDirectChannel);
     }
     await this.updateTreeData();
+
+    // wird vermutlich durch id in url hinfällig
     await this.loadLastChannelState();
   }
-
-
 
   // todo
   private async initializeDefaultData() {
@@ -200,7 +199,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.updateTreeData();
   }
 
-
   async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
     if (savedChannelId) {
@@ -251,7 +249,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           if (userNew) {
             const node: Node = {
               id: channel.id,
-              name: `${userNew.username} (Du)`,
+              name: userNew.username,
               type: 'directMessage' as const,
               children: [],
               avatar: userNew.avatar
