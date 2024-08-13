@@ -65,9 +65,7 @@
       <hr class="divider" />
 
       <h4>Erstellt von</h4>
-      <p #channelCreator class="channel-creator">
-        {{ channelCreatedBy() }}
-      </p>
+      <p #channelCreator class="channel-creator">{{(channelService.selectedChannel$ | async)?.owner}}</p>
     </section>
   </div>
 

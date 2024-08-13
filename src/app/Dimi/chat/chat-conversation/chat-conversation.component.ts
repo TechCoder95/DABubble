@@ -73,7 +73,6 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
-
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
@@ -98,7 +97,8 @@ export class ChatConversationComponent
 
   ngOnDestroy() {
     console.log('Chat Conversation Destroyed');
-
+    if(this.channelService.channelSub)
+    this.channelService.channelSub.unsubscribe();
   }
 
   ngAfterViewChecked(): void {

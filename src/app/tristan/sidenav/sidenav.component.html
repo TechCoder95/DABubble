@@ -83,7 +83,10 @@
     ></app-chat>
     
     
-    <app-thread *ngIf="channelService.showSingleThread" class=" pl-5"></app-thread>
+    <app-thread *ngIf="channelService.showSingleThread" class=" pl-5"
+    [activeUserFromSidenav]="activeUserChange"
+    
+    ></app-thread>
   </div>
 
 
