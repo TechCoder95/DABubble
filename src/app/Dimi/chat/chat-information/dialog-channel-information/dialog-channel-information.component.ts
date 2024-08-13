@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { map, Observable } from 'rxjs';
+import { UserService } from '../../../../shared/services/user.service';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -45,7 +46,8 @@ export class DialogChannelInformationComponent {
 
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
-    public channelService: ChannelService
+    public channelService: ChannelService,
+    private userService: UserService
   ) {}
 
   changeCloseImg(hover: boolean) {
@@ -139,7 +141,7 @@ export class DialogChannelInformationComponent {
     this.editDescriptionButton.nativeElement.classList.remove('edit-mode');
     this.title2.nativeElement.classList.remove('edit-mode-title');
     this.channelDescriptionDiv.nativeElement.style.marginTop = '0';
-   /*  this.channelDescriptionDiv.nativeElement.style.width = 'unset'; */
+    /*  this.channelDescriptionDiv.nativeElement.style.width = 'unset'; */
     this.channelDescriptionDiv.nativeElement.classList.remove(
       'edit-mode-channel-name'
     );
@@ -154,5 +156,12 @@ export class DialogChannelInformationComponent {
     return this.channelService.selectedChannel$.pipe(
       map((channel: any) => `${channel?.name || 'Channel'}`)
     );
+  }
+
+  channelCreatedBy() {
+    let createrId = this.channelService.channel.assignedUser[0];
+    let creater = this.userService.getOneUserbyId(createrId);
+    let name = creater?.username;
+    return name;
   }
 }

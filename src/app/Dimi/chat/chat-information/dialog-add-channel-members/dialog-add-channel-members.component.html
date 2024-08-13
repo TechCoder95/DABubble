@@ -27,9 +27,15 @@
     <span class="selected-users">
       @for (user of selectedUser; track $index) {
       <div class="selected-user">
-        <img [src]="user.avatar" />
+        <img [src]="user.avatar" class="user-avatar-img"/>
         <p>{{ user.username }}</p>
-        <img [src]="removeSelectedUserImg" (click)="removeSelectedUser()" />
+        <img
+          (mouseenter)="changeRemoveSelectedUserImg(true)"
+          (mouseleave)="changeRemoveSelectedUserImg(false)"
+          [src]="removeSelectedUserImg"
+          (click)="removeSelectedUser()"
+          class="remove-selected-user-img"
+        />
       </div>
       }
     </span>
