@@ -31,4 +31,10 @@ export class ChatComponent {
   selectedChannel(channel : TextChannel) {
     this.selectedChannelChanged.emit(channel);
   }
+
+  ngOnDestroy() {
+    console.log('ChatComponent destroyed');
+    
+  }
+
 }

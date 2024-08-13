@@ -40,8 +40,7 @@ export class SendChatMessageReactionComponent {
   constructor(
     private channelService: ChannelService,
     private ticketService: TicketService,
-    private chatService: ChatService
-  ) {}
+  private chatService: ChatService ) {}
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -91,6 +90,7 @@ export class SendChatMessageReactionComponent {
       messageId: this.sendMessage.id!,
       type: emojiType,
       usersIds: [this.user.id!],
+      deleted: false,
     };
     this.chatService.sendEmoji(emoji, this.sendMessage);
   }
