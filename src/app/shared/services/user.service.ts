@@ -86,6 +86,12 @@ export class UserService {
 
 
   findGuestsinDB() {
+    this.DatabaseService.readDataByField(this.collectionName, 'username', this.guestName).then((user) => {
+      if (user.length > 0) {
+        return true;
+      }
+      return false;
+    });
     return false;
     //Todo Dome: Hier die Datenbank nach dem Namen "Guest" durchsuchen
   }
@@ -100,10 +106,11 @@ export class UserService {
     let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg' };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
-    this.globalSubService.updateUser(this.completeUser(this.activeUser));
-    sessionStorage.setItem('userLoginGuest', JSON.stringify(this.activeUser));
+    this.globalSubService.updateUser(this.completeUser(guestUser));
+    sessionStorage.setItem('userLoginGuest', JSON.stringify(guestUser));
     this.updateLoggedInUser();
-    this.checkOnlineStatus(this.activeUser);
+    this.checkOnlineStatus(guestUser);
+    this.activeUser = guestUser;
     this.router.navigate(['/home']);
   }
 
@@ -114,11 +121,12 @@ export class UserService {
    * deletes the user data from the database, and reloads the page.
    */
   guestLogout() {
-    let id = sessionStorage.getItem('userLoginGuest')!;
+    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
     this.activeUser = null!;
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
-        sessionStorage.removeItem('userLoginGuest');
+        sessionStorage.removeItem('userLogin');
+        this.router.navigate(['/user/login']);
       });
   }
 
@@ -201,7 +209,9 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    * and navigates to the login page.
    */
   async logout() {
-  if (sessionStorage.getItem('userLoginGuest')) {
+
+    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
+  if (gast) {
     this.guestLogout();
   } else {
     let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
