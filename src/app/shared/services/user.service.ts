@@ -134,7 +134,7 @@ export class UserService {
     this.DatabaseService.readDataByField(this.collectionName, 'uid', googleUser.uid).then((user) => {
       this.activeUser = user[0] as unknown as DABubbleUser;
       if (this.activeUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
           this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
             let x = user as DABubbleUser;
             this.activeUser = x;
