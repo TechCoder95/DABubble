@@ -99,6 +99,9 @@ export class UserService {
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
         // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
+
+        //ToDo Dome: Hier sollte dringend noch nach dem Neuladen, auch der GoogleUser gelöscht werden
+
         if (this.googleUser)
           this.googleUser.delete();
         else {
