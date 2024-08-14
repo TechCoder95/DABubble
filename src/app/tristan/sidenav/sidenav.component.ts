@@ -22,6 +22,8 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
 import { initializeApp } from 'firebase/app';
+import { Router, ActivatedRoute } from '@angular/router';
+
 
 interface Node {
   id: string;
@@ -92,8 +94,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private createdChannelSubscription!: Subscription;
   private userSubscription!: Subscription;
 
-  constructor(private dbService: DatabaseService, private dialog: MatDialog, public channelService: ChannelService, private userService: UserService, private subService: GlobalsubService) {
-  }
+  constructor(
+    private dbService: DatabaseService,
+    private dialog: MatDialog,
+    public channelService: ChannelService,
+    private userService: UserService,
+    private subService: GlobalsubService,
+    private router: Router,
+    private route: ActivatedRoute 
+  ) {}
+  
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
@@ -108,14 +118,25 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
-
+  
     if (this.activeUser) {
       await this.initializeChannels();
-
+  
+      this.route.queryParams.subscribe(params => {
+        const channelId = params['channelId'];
+        if (channelId) {
+          const selectedChannel = this.channels.find(channel => channel.id === channelId);
+          if (selectedChannel) {
+            this.selectedChannel = selectedChannel;
+            this.channelService.selectChannel(selectedChannel);
+          }
+        }
+      });
+  
       this.activeUserChange.subscribe(async (user: DABubbleUser) => {
         this.activeUser = user;
       });
-
+  
       this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
         const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
         if (!exists) {
@@ -125,6 +146,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       });
     }
   }
+  
 
   private async initializeChannels() {
     // await this.initializeDefaultData();
@@ -134,9 +156,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.channels.push(ownDirectChannel);
     }
     await this.updateTreeData();
-
-    // wird vermutlich durch id in url hinfällig
-    await this.loadLastChannelState();
   }
 
   // todo
@@ -197,17 +216,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
 
     await this.updateTreeData();
-  }
-
-  private async loadLastChannelState() {
-    const savedChannelId = sessionStorage.getItem('selectedChannelId');
-    if (savedChannelId) {
-      const selectedChannel = this.channels.find(channel => channel.id === savedChannelId);
-      if (selectedChannel) {
-        this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel);
-      }
-    }
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
@@ -313,11 +321,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.channelService.selectChannel(selectedChannel);
         sessionStorage.setItem('selectedChannelId', selectedChannel.id);
         this.showNewChat = false;
+  
+        // Update the URL with the channel ID
+        this.router.navigate([], {
+          relativeTo: this.route,
+          queryParams: { channelId: selectedChannel.id },
+          queryParamsHandling: 'merge', // keep existing query params
+        });
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();
     }
   }
+  
 
   async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
