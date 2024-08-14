@@ -38,7 +38,7 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
+  implements OnInit, AfterViewChecked, AfterViewInit {
 
 
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
@@ -77,12 +77,8 @@ export class ChatConversationComponent
       this.activeUser = user;
     });
 
-    if (!this.channelService.channelSub)
-    this.channelService.channelSub = this.subService.getAllMessageObservable().subscribe(message => {
+    this.subService.getAllMessageObservable().subscribe(message => {
       if (message.id) {
-        if (this.allMessages.some((msg) => msg.id === message.id)) {
-          return;
-        }
         this.allMessages.push(message)
         this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
       }
@@ -93,12 +89,6 @@ export class ChatConversationComponent
       this.databaseService.subscribeToMessageDatainChannel(channel.id);
     });
 
-  }
-
-  ngOnDestroy() {
-    console.log('Chat Conversation Destroyed');
-    if(this.channelService.channelSub)
-    this.channelService.channelSub.unsubscribe();
   }
 
   ngAfterViewChecked(): void {

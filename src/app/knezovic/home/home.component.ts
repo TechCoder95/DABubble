@@ -31,12 +31,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
-  activeChannelSub!: Subscription;
   activeThreadSub!: Subscription;
 
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
-  activeChannelChange = new EventEmitter<TextChannel>();
 
   activeThread!: any; // Todo Rabia
 
@@ -52,10 +50,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
-    if (!this.activeChannelSub)
-      this.activeChannelSub = this.globalSubService.getActiveChannelObservable().subscribe(data => {
-        this.activeChannelChange.emit(data);
-      });
+   
 
 
 
@@ -74,8 +69,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.googleUserSub)
       this.googleUserSub.unsubscribe();
 
-    if (this.activeChannelSub)
-      this.activeChannelSub.unsubscribe();
 
     if (this.activeThreadSub)
       this.activeThreadSub.unsubscribe();

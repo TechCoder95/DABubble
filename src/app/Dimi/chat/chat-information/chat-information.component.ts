@@ -57,6 +57,14 @@ export class ChatInformationComponent implements OnInit {
 
   }
 
+  ngOnDestroy(): void {
+    //Called once, before the instance is destroyed.
+    //Add 'implements OnDestroy' to the class.
+    console.log('ChatInformationComponent destroyed');
+    
+    this.channelSub.unsubscribe();
+  }
+
 
 
   changeTagImg(hover: boolean) {
