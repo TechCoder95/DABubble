@@ -17,16 +17,20 @@
         class="tag-img"
         *ngIf="!channelService.channel.isPrivate"
       />
-      <img
-        [src]="privatChatAvatar"
-        class="privat-chat-avatar"
-        *ngIf="channelService.channel.isPrivate"
-      />
+      <span
+        *ngIf="channelService.channel.isPrivate" class="private-chat-avatar"
+      >
+        <img [src]="privatChatAvatar" class="privat-chat-avatar"/>
+        <p
+          [ngClass]="privateChatPartner?.isLoggedIn ? 'green' : 'grey'"
+          class="online-status"
+        ></p>
+      </span>
 
-      <h2 *ngIf="!isPrivateChat">
+      <h2 *ngIf="!channelService.channel.isPrivate">
         {{ (channelService.selectedChannel$ | async)?.name }}
       </h2>
-      <h2 *ngIf="!channelService.channel.isPrivate">
+      <h2 *ngIf="channelService.channel.isPrivate">
         {{ privateChatPartnerName }}
       </h2>
       <img
