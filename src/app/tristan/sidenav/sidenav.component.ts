@@ -22,6 +22,7 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
 import { initializeApp } from 'firebase/app';
+import { ActivatedRoute, Router } from '@angular/router';
 
 interface Node {
   id: string;
@@ -92,6 +93,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private createdChannelSubscription!: Subscription;
   private activeUserChangeSubscription!: Subscription;
   private routeSubscription!: Subscription;
+  userSubscription!: Subscription;
   activeChannelSub!: Subscription;
 
 
