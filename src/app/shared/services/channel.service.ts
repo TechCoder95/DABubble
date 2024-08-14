@@ -89,6 +89,24 @@ export class ChannelService {
     return updates;
   }
 
+  async createOwnDirectChannel(currentUser: DABubbleUser, channels: any): Promise<TextChannel> {
+    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string | string[]; }) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!));
+    if (!directChannelExists) {
+      const ownDirectChannel: TextChannel = {
+        id: '',
+        name: `${currentUser.username} (Du)`,
+        assignedUser: [currentUser.id!],
+        isPrivate: true,
+        description: '',
+        owner: currentUser.id!
+      };
+      const newChannelId = await this.databaseService.addChannelDataToDB('channels', ownDirectChannel);
+      ownDirectChannel.id = newChannelId;
+      directChannelExists = ownDirectChannel;
+    }
+    return directChannelExists;
+  }
+
   async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
     let userIDs = await this.databaseService.readDataByField('channels', 'assignedUser', currentUser.id!)
@@ -116,8 +134,7 @@ export class ChannelService {
     return existingChannel;
   }
 
-
-  async createGroupChannel(data: TextChannel) {
+  async createGroupChannel(data: TextChannel): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
       ...data,
@@ -125,13 +142,8 @@ export class ChannelService {
       isPrivate: false,
       owner: currentUser.id!
     };
-    try {
-      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
-      newChannel.id = newChannelId;
-      return newChannel;
-    } catch (err) {
-      console.error('Fehler beim Hinzufügen des neuen Kanals', err);
-      return null;
-    }
+    const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+    newChannel.id = newChannelId;
+    return newChannel;
   }
 }

@@ -132,7 +132,7 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       };
     } else if (position === 'allUsers') {
-      const dialogWidth = 432;
+      const dialogWidth = 394;
       return {
         position: {
           top: `${rect.bottom}px`,

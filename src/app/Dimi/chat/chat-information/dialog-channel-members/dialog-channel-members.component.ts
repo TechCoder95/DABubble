@@ -68,7 +68,7 @@ export class DialogChannelMembersComponent implements OnInit {
     const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
       position: {
         top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX - 60}px`,
+        left: `${rect.left + window.scrollX - 135}px`,
       },
     });
   }

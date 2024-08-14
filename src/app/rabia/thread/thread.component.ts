@@ -32,7 +32,7 @@ export class ThreadComponent {
   searchResults: DABubbleUser[] = [];
   searchQuery: string | undefined;
   showSingleThread!: boolean;
-  messageType = MessageType.Threads;
+  messageType: MessageType = MessageType.Threads;
   selectedTicket: boolean = false;
 
   activeUser!: DABubbleUser;

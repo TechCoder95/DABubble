@@ -71,27 +71,6 @@ export class UserService {
 
 
   /**
-   * Performs a guest login by generating a unique guest name and writing it to the database.
-   */
-  guestLogin() {
-    let name = this.guestName;
-    let i = 1;
-    while (this.findGuestsinDB()) {
-      name = this.guestName + '_' + i;
-      i++;
-    }
-    this.guestName = name;
-    this.writeGuestToDB();
-  }
-
-
-  findGuestsinDB() {
-    return false;
-    //Todo Dome: Hier die Datenbank nach dem Namen "Guest" durchsuchen
-  }
-
-
-  /**
    * Writes a guest user to the database.
    * 
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
@@ -100,10 +79,11 @@ export class UserService {
     let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg' };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
-    this.globalSubService.updateUser(this.completeUser(this.activeUser));
-    sessionStorage.setItem('userLoginGuest', JSON.stringify(this.activeUser));
+    this.globalSubService.updateUser(this.completeUser(guestUser));
+    sessionStorage.setItem('userLoginGuest', JSON.stringify(guestUser));
     this.updateLoggedInUser();
-    this.checkOnlineStatus(this.activeUser);
+    this.checkOnlineStatus(guestUser);
+    this.activeUser = guestUser;
     this.router.navigate(['/home']);
   }
 
@@ -113,12 +93,15 @@ export class UserService {
    * Removes the user login from the session storage, updates the active user subject,
    * deletes the user data from the database, and reloads the page.
    */
-  guestLogout() {
-    let id = sessionStorage.getItem('userLoginGuest')!;
-    this.activeUser = null!;
+  async guestLogout() {
+    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+    await this.DatabaseService.deleteDatabyField('channels', 'owner', id);
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
-        sessionStorage.removeItem('userLoginGuest');
+        // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
+        this.googleUser.delete();
+        sessionStorage.removeItem('userLogin');
+        this.router.navigate(['/user/login']);
       });
   }
 
@@ -134,7 +117,7 @@ export class UserService {
     this.DatabaseService.readDataByField(this.collectionName, 'uid', googleUser.uid).then((user) => {
       this.activeUser = user[0] as unknown as DABubbleUser;
       if (this.activeUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
           this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
             let x = user as DABubbleUser;
             this.activeUser = x;
@@ -201,7 +184,9 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    * and navigates to the login page.
    */
   async logout() {
-  if (sessionStorage.getItem('userLoginGuest')) {
+
+    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
+  if (gast) {
     this.guestLogout();
   } else {
     let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
