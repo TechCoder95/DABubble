@@ -24,6 +24,10 @@
   background-color: #eceefe;
 }
 
+mat-tree-node{
+  margin-top: 8px;
+}
+
 mat-drawer-container {
   padding: 40px;
   background: initial;
@@ -58,7 +62,7 @@ mat-drawer-container {
   }
 }
 
-.new-message {
+.new-channel {
   width: 40px;
   height: 40px;
   background-repeat: no-repeat;

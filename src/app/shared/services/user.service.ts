@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
@@ -12,9 +12,8 @@ import { GlobalsubService } from './globalsub.service';
 @Injectable({
   providedIn: 'root'
 })
-export class UserService implements OnInit {
+export class UserService {
 
-  users: DABubbleUser[] = [];
   activeUser!: DABubbleUser;
   googleUser!: User;
   guestName: string = 'Guest';
@@ -27,37 +26,33 @@ export class UserService implements OnInit {
   collectionName: string = 'users';
 
 
-  constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) { 
-    this.getUsersFromDB().then(() => {
-      if (sessionStorage.getItem('userLoginGuest')) {
-        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLoginGuest')!)!;
-        this.globalSubService.updateUser(this.activeUser);
-        this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-      }
-      else if (sessionStorage.getItem('userLogin')) {
-        this.activeUser = this.users.find(user => user.id === sessionStorage.getItem('userLogin')!)!;
-        // this.globalSubService.updateUser(this.activeUser);
-        this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-        this.globalSubService.getGoogleUserObservable().subscribe(googleUser => {
-          // console.log('user.service GoogleuserSub zeile 55');
-          if (googleUser) {
-            this.googleUser = googleUser;
-          }
-          else {
-            if (sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')) {
-              let user = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]');
-              this.googleUser = JSON.parse(user!);
-              this.globalSubService.publishGoogleUser(this.googleUser);
-            }
-          }
-        });
-      }
-    });
+  constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
+    if (sessionStorage.getItem('userLoginGuest')) {
+      this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
+      this.globalSubService.updateUser(this.activeUser);
+      this.DatabaseService.subscribeToUserData(this.activeUser.id!);
+    }
+    else if (sessionStorage.getItem('userLogin')) {
+
+      //Hier wird der User aus dem SessionStorage geladen
+      this.activeUser = JSON.parse(sessionStorage.getItem('userLogin')!);
+      this.googleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
+
+      //Hier werden die Observables aktualisiert
+      this.globalSubService.updateUser(this.activeUser);
+      this.globalSubService.updateGoogleUser(this.googleUser);
+
+      //Hier sind die User abonniert
+      this.DatabaseService.subscribeToUserData(this.activeUser.id!);
+      this.globalSubService.getGoogleUserObservable().subscribe(googleUser => {
+        if (googleUser) {
+          this.googleUser = googleUser;
+          this.globalSubService.updateGoogleUser(this.googleUser);
+        }
+      });
+    }
   }
 
-  ngOnInit() {
-    this.getUsersFromDB();
-  }
 
 
   /**
@@ -76,52 +71,20 @@ export class UserService implements OnInit {
 
 
   /**
-   * Retrieves users from the database.
-   * @returns {Promise<void>} A promise that resolves when the users are retrieved.
-   */
-  async getUsersFromDB() {
-    await this.DatabaseService.readDatafromDB(this.collectionName, this.users);
-  }
-
-
-  /**
-   * Performs a guest login by generating a unique guest name and writing it to the database.
-   */
-  guestLogin() {
-    this.getUsersFromDB().then(() => {
-      let name = this.guestName;
-      let i = 1;
-      while (this.users.find(user => user.username === name)) {
-        name = this.guestName + '_' + i;
-        i++;
-      }
-      this.guestName = name;
-      this.writeGuestToDB();
-    });
-  }
-
-
-  /**
    * Writes a guest user to the database.
    * 
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
    */
   async writeGuestToDB() {
-    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg', activeChannels: [] };
+    let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg' };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
-    this.getUsersFromDB().then(() => {
-      this.users.map(user => {
-        if (user.mail === guestUser.mail && user.id) {
-          this.activeUser = user;
-          this.globalSubService.updateUser(this.completeUser(this.activeUser));
-          sessionStorage.setItem('userLoginGuest', this.activeUser.id!);
-          this.updateLoggedInUser();
-          this.checkOnlineStatus(this.activeUser);
-          this.router.navigate(['/home']);
-        }
-      });
-    });
+    this.globalSubService.updateUser(this.completeUser(guestUser));
+    sessionStorage.setItem('userLoginGuest', JSON.stringify(guestUser));
+    this.updateLoggedInUser();
+    this.checkOnlineStatus(guestUser);
+    this.activeUser = guestUser;
+    this.router.navigate(['/home']);
   }
 
 
@@ -130,15 +93,23 @@ export class UserService implements OnInit {
    * Removes the user login from the session storage, updates the active user subject,
    * deletes the user data from the database, and reloads the page.
    */
-  guestLogout() {
-    let id = sessionStorage.getItem('userLoginGuest')!;
-    this.activeUser = null!;
+  async guestLogout() {
+    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+    await this.DatabaseService.deleteDatabyField('channels', 'owner', id);
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
-        sessionStorage.removeItem('userLoginGuest');
-        this.getUsersFromDB().then(() => {
-          window.location.reload();
-        });
+        // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
+
+        //ToDo Dome: Hier sollte dringend noch nach dem Neuladen, auch der GoogleUser gelöscht werden
+
+        if (this.googleUser)
+          this.googleUser.delete();
+        else {
+          this.googleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
+          this.googleUser.delete();
+        }
+        sessionStorage.removeItem('userLogin');
+        this.router.navigate(['/user/login']);
       });
   }
 
@@ -150,31 +121,31 @@ export class UserService implements OnInit {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.globalSubService.publishGoogleUser(googleUser);
-    this.getUsersFromDB().then(() => {
-      let loginUser = this.users.find(user => user.uid === googleUser.uid);
-
-      if (loginUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then(() => {
-          this.getUsersFromDB().then(() => {
-            this.users.map(user => {
-              if (user.mail === googleUser.email && user.id) {
-                sessionStorage.setItem('userLogin', user.id);
-                this.globalSubService.updateUser(this.completeUser(user, googleUser));
-                this.updateLoggedInUser();
-                
-
-                this.router.navigate(['/user/chooseAvatar']);
-              }
-            });
+    this.globalSubService.updateGoogleUser(googleUser);
+    this.DatabaseService.readDataByField(this.collectionName, 'uid', googleUser.uid).then((user) => {
+      this.activeUser = user[0] as unknown as DABubbleUser;
+      if (this.activeUser === undefined) {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
+          this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
+            let x = user as DABubbleUser;
+            this.activeUser = x;
+            if (this.activeUser.mail === googleUser.email && this.activeUser.id) {
+              sessionStorage.setItem('userLogin', JSON.stringify(this.activeUser));
+              this.globalSubService.updateUser(this.completeUser(this.activeUser, this.googleUser));
+              this.updateLoggedInUser();
+              this.router.navigate(['/user/chooseAvatar']);
+            }
           });
-        });
-      } else {
-        if (loginUser.uid === googleUser.uid && loginUser.id) {
-          sessionStorage.setItem('userLogin', loginUser.id);
-          this.checkOnlineStatus(loginUser);
-          this.updateLoggedInUser(loginUser);
-          this.globalSubService.updateUser(loginUser);
+        }
+        );
+      }
+      else {
+        if (this.activeUser.uid === googleUser.uid && this.activeUser.id) {
+          sessionStorage.setItem('userLogin', JSON.stringify(this.activeUser));
+          this.checkOnlineStatus(this.activeUser);
+          this.updateLoggedInUser(this.activeUser);
+          this.globalSubService.updateUser(this.activeUser);
+          this.router.navigate(['/home']);
         }
       }
     });
@@ -196,7 +167,6 @@ export class UserService implements OnInit {
       username: user.username ? user.username : googleUser?.displayName || '',
       uid: user.uid || googleUser?.uid || '',
       isLoggedIn: user.isLoggedIn || true,
-      activeChannels: user.activeChannels || [],
       avatar: user.avatar || '',
     };
   }
@@ -222,10 +192,12 @@ export class UserService implements OnInit {
    * and navigates to the login page.
    */
   async logout() {
-    if (sessionStorage.getItem('userLoginGuest')) {
+
+    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
+    if (gast) {
       this.guestLogout();
     } else {
-      let id = sessionStorage.getItem('userLogin')!;
+      let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
       this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
         .then(() => {
           sessionStorage.removeItem('userLogin');
@@ -245,11 +217,8 @@ export class UserService implements OnInit {
    * @param uid - The unique identifier of the user.
    */
   async register(email: string, username: string, uid: string) {
-    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, activeChannels: [], avatar: '/img/avatar.svg' };
+    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, avatar: '/img/avatar.svg' };
     await this.DatabaseService.addDataToDB(this.collectionName, data)
-      .then(() => {
-        this.getUsersFromDB();
-      });
   }
 
 
@@ -261,12 +230,14 @@ export class UserService implements OnInit {
    */
   async updateUser(user: DABubbleUser) {
     await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
-      .then(() => {
-        this.globalSubService.updateUser(user);
-        this.getUsersFromDB();
-      });
   }
 
+
+  /**
+   * Updates the username of the active user.
+   * 
+   * @param {string} username - The new username to be set.
+   */
   updateUsername(username: string) {
     this.activeUser.username = username;
     this.updateUser(this.activeUser);
@@ -280,7 +251,6 @@ export class UserService implements OnInit {
    */
   async deleteUser(userID: string) {
     await this.DatabaseService.deleteDataFromDB(this.collectionName, userID)
-      .then(() => { this.getUsersFromDB(); });
   }
 
 
@@ -289,8 +259,11 @@ export class UserService implements OnInit {
    * @param id - The ID of the user to retrieve.
    * @returns The user object matching the specified ID, or undefined if no user is found.
    */
-  getOneUserbyId(id: string) {
-    return this.users.find(user => user.id === id);
+  async getOneUserbyId(id: string): Promise<DABubbleUser> {
+
+    let DAUser = await this.DatabaseService.readDataByID(this.collectionName, id)
+
+    return DAUser as DABubbleUser;
   }
 
 
@@ -353,13 +326,16 @@ export class UserService implements OnInit {
     return users;
   }
 
+
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
   }
 
+
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
+
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
@@ -374,6 +350,7 @@ export class UserService implements OnInit {
     }
   }
 
+
   async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
@@ -385,5 +362,5 @@ export class UserService implements OnInit {
       throw err;
     }
   }
-  
+
 }

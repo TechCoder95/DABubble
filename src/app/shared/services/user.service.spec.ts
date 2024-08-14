@@ -15,7 +15,6 @@ describe('UserService', () => {
       const id = 'guestUserId';
       const deleteDataFromDBSpy = spyOn(TestBed.inject(DatabaseService), 'deleteDataFromDB').and.returnValue(Promise.resolve());
       const sessionStorageRemoveItemSpy = spyOn(sessionStorage, 'removeItem');
-      const getUsersFromDBSpy = spyOn(service, 'getUsersFromDB').and.returnValue(Promise.resolve());
 
       // Act
       service.guestLogout();
@@ -23,8 +22,6 @@ describe('UserService', () => {
       // Assert
       expect(deleteDataFromDBSpy).toHaveBeenCalledWith(service.collectionName, id);
       expect(sessionStorageRemoveItemSpy).toHaveBeenCalledWith('userLoginGuest');
-      expect(service.activeUserSubject.value).toBeNull();
-      expect(getUsersFromDBSpy).toHaveBeenCalled();
     });
   });
 

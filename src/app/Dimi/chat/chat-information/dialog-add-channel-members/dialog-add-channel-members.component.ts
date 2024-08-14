@@ -12,8 +12,13 @@ import { ChannelService } from '../../../../shared/services/channel.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  switchMap,
+  takeUntil,
+} from 'rxjs/operators';
+import { firstValueFrom, fromEvent, Subject } from 'rxjs';
 
 @Component({
   selector: 'app-dialog-add-channel-members',
@@ -32,7 +37,6 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   closeImg = './img/close-default.png';
   @ViewChild('inputName') inputName!: ElementRef;
   focusNameInput: boolean = false;
-  /* searchControl = new FormControl(); */
   searchResults: DABubbleUser[] = [];
   selectedUser: DABubbleUser[] = [];
   removeSelectedUserImg = './img/remove-selected-user.svg';
@@ -43,18 +47,17 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     public userService: UserService
   ) {}
 
-  ngOnInit() {
-    /*  this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(value => this.userService.searchUsersByNameOrEmail(value))
-    ).subscribe(results => {
-      this.searchResults = results;
-    }); */
-  }
-
+  
   ngAfterViewInit(): void {
     setTimeout(() => this.inputName.nativeElement.blur(), 200);
+    const keyup$ = fromEvent<KeyboardEvent>(
+      this.inputName.nativeElement,
+      'keyup'
+    ).pipe(
+      debounceTime(500)
+    );
+
+    keyup$.subscribe((event: KeyboardEvent) => this.searchUser(event));
   }
 
   searchUser(event: KeyboardEvent) {
@@ -95,6 +98,14 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       this.closeImg = './img/close-hover.png';
     } else {
       this.closeImg = './img/close-default.png';
+    }
+  }
+
+  changeRemoveSelectedUserImg(hover: boolean) {
+    if (hover) {
+      this.removeSelectedUserImg = './img/remove-selected-user-hover.svg';
+    } else {
+      this.removeSelectedUserImg = './img/remove-selected-user.svg';
     }
   }
 

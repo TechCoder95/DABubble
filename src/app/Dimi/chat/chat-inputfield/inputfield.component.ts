@@ -12,6 +12,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -31,11 +32,9 @@ export class InputfieldComponent implements OnInit {
   activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
-
-
-
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
+fileInput: any;
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -44,7 +43,8 @@ export class InputfieldComponent implements OnInit {
     private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private ticketService: TicketService
+    private ticketService: TicketService,
+    private subService: GlobalsubService
   ) {
 
     this.activeUser = this.userService.activeUser;
@@ -110,10 +110,6 @@ export class InputfieldComponent implements OnInit {
     );
   }
 
-
-  inThreads: boolean = false;
-
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -123,86 +119,75 @@ export class InputfieldComponent implements OnInit {
         await this.send();
         break;
       case MessageType.Threads:
-        this.inThreads = true;
-        await this.send(); // todo für Rabia. Eventuell brauchst du auch die die send() methode oder eine modifizierte Version davon ;)
+        await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-         await this.setSelectedChannel();
-         await this.send();
+        await this.setSelectedChannel();
+        await this.send();
         break;
       default:
         break;
     }
   }
-  /* 
-  sendThread(){
-    let thread:ThreadMessage={
-      ticketId: string;
-      message: string;
-      timestamp: number;
-      senderName: string;
-      senderId: string;
-      threadConversationId?: string[];
-      emoticons?: string[];
-      id?: string;
-      edited?: boolean;
-      deleted?: boolean;
-    }
-  } */
 
-  async send() {
-    if (!this.inThreads) {
-      let message: ChatMessage = {
-        channelId: this.selectedChannel!.id,
-        channelName: this.selectedChannel!.name,
-        message: this.textareaValue,
-        timestamp: new Date().getTime(),
-        senderName: this.activeUser.username || 'guest',
-        senderId: this.activeUser.id || 'senderIdDefault',
-        emoticons: [],
-        edited: false,
-        deleted: false,
-      };
-
-      if (message.message !== '') {
-        try {
-          this.databaseService.addChannelDataToDB(
-            'messages',
-            message
-          );
-          this.textareaValue = '';
-        } catch (error) {
-          console.error('Fehler beim Senden der Nachricht:', error);
-        }
-      } else {
-        alert('Du musst eine Nachricht eingeben');
+  async sendFromThread() {
+    let threadMessage: ThreadMessage = {
+      ticketId: this.ticket.id,
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      senderName: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
+      emoticons: [],
+      edited: false,
+      deleted: false,
+    };
+    if (threadMessage.message !== '') {
+      try {
+        await this.ticketService.sendThreads(threadMessage);
+        console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
+      } catch (error) {
+        console.error('Fehler beim Senden der Nachricht:', error);
       }
-    } else if (this.inThreads) {
-      let threadMessage: ThreadMessage = {
-        ticketId: this.ticket.id,
-        message: this.textareaValue,
-        timestamp: new Date().getTime(),
-        senderName: this.activeUser.username || 'guest',
-        senderId: this.activeUser.id || 'senderIdDefault',
-        emoticons: [],
-        edited: false,
-        deleted: false,
-      };
-
-      await this.ticketService.sendThreads(threadMessage);
-      console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
-    } else {
-      console.error('Kein Channel ausgewählt');
     }
   }
 
+  async send() {
+    let message: ChatMessage = {
+      channelId: this.selectedChannel!.id,
+      channelName: this.selectedChannel!.name,
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      senderName: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
+      edited: false,
+      deleted: false,
+    };
+    
+
+    if (message.message !== '') {
+      try {
+        this.databaseService.addChannelDataToDB('messages', message);
+        this.textareaValue = '';
+      } catch (error) {
+        console.error('Fehler beim Senden der Nachricht:', error);
+      }
+    } else {
+      alert('Du musst eine Nachricht eingeben');
+    }
+  }
+
+
   async setSelectedChannel() {
-    let selectedUser = this.userService.getSelectedUser();
-    if (selectedUser) {
-      const channel = await this.channelService.createDirectChannelIfNotExists(
-        selectedUser
-      );
-      this.channelService.selectChannel(channel);
+    try {
+      let selectedUser = this.userService.getSelectedUser();
+      if (selectedUser) {
+        const channel = await this.channelService.createDirectChannel(selectedUser);
+        this.selectedChannel = channel;
+        // todo navigiere zu dem channel
+    //    this.channelService.selectChannel(channel);
+      }
+    } catch (error) {
+      console.log("Fehler beim Senden: ", error);
     }
   }
 
@@ -210,6 +195,21 @@ export class InputfieldComponent implements OnInit {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.sendMessage(this.messageType);
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          /* this.UserService.activeUser.avatar = e.target.result as string;
+          this.upload(file); */
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

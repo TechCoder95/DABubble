@@ -33,17 +33,13 @@ export class ChooseAvatarComponent {
 
 
   constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService, private authService: AuthenticationService) {
-    this.UserService.getUsersFromDB().then(() => {
-      this.UserService.users.map(user => user.uid === this.UserService.googleUser.uid ? this.UserService.activeUser = user : null);
 
-      if (this.UserService.activeUser) {
-      }
-      else {
-        this.authService.registerProcess = false;
-        this.router.navigate(['/user/login']);
-      }
+    if (this.UserService.activeUser) {
     }
-    );
+    else {
+      this.authService.registerProcess = false;
+      this.router.navigate(['/user/login']);
+    }
   }
 
 

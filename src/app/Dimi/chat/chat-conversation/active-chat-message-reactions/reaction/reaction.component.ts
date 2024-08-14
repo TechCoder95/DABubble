@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
@@ -12,21 +12,30 @@ import { ChatService } from '../../../../../shared/services/chat.service';
   templateUrl: './reaction.component.html',
   styleUrl: './reaction.component.scss',
 })
-export class ReactionComponent {
+export class ReactionComponent implements OnInit {
   @Input() emoji!: Emoji;
   @Input() activeUser!: DABubbleUser;
   @Input() message!: any;
+  emojiUsersText: string = '';
 
   constructor(
     private userService: UserService,
     private chatService: ChatService
   ) {}
 
+  ngOnInit() {
+    this.loadEmojiUsers();
+  }
+
   getEmojiImg(emoji: Emoji) {
     if (emoji.type === 'checkMark') {
       return './img/checkMarkEmoji.svg';
     } else if (emoji.type === 'handsUp') {
       return './img/reaction-handsUp.svg';
+    } else if (emoji.type === 'nerdFace') {
+      return './img/message-reaction-nerd-face.svg';
+    } else if (emoji.type === 'rocket') {
+      return './img/message-reaction-rocket.svg';
     } else {
       return;
     }
@@ -36,11 +45,11 @@ export class ReactionComponent {
     return emoji.usersIds.length;
   }
 
-  getEmojiReactionUsers(): string {
+  async loadEmojiUsers() {
     let emojiReactors: string[] = [];
 
-    this.emoji.usersIds.forEach((id) => {
-      let user = this.userService.getOneUserbyId(id);
+    for (let id of this.emoji.usersIds) {
+      let user = await this.userService.getOneUserbyId(id);
       if (user && user.username) {
         let username = user.username;
         if (user.id === this.activeUser.id) {
@@ -48,8 +57,9 @@ export class ReactionComponent {
         }
         emojiReactors.push(username);
       }
-    });
-    return this.usersReactionString(emojiReactors);
+    }
+
+    this.emojiUsersText = this.usersReactionString(emojiReactors);
   }
 
   usersReactionString(emojiReactors: string[]): string {

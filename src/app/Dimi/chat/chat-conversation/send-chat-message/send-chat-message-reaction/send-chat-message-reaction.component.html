@@ -1,27 +1,37 @@
 <main>
-  <div class="bg">
+  <section class="bg">
     <img
       [src]="checkMarkImg"
       (mouseenter)="hoverReaction('checkMark', true)"
       (mouseleave)="hoverReaction('checkMark', false)"
       (click)="handleEmojis('checkMark')"
     />
-  </div>
-  <div class="bg">
+  </section>
+  <section class="bg">
     <img
       [src]="handsUpImg"
       (mouseenter)="hoverReaction('handsUp', true)"
       (mouseleave)="hoverReaction('handsUp', false)"
       (click)="handleEmojis('handsUp')"
     />
-  </div>
-  <div
+  </section>
+  <section
     class="bg"
+    [ngStyle]="{ position: 'relative' }"
     (mouseenter)="hoverReaction('addReaction', true)"
     (mouseleave)="hoverReaction('addReaction', false)"
+    (click)="openAddReactions()"
   >
     <img [src]="addReactionImg" />
-  </div>
+    <div *ngIf="addReactionDiv" class="add-reactions-div">
+      <div class="bg" (click)="handleEmojis('nerdFace')">
+        <img src="./img/message-reaction-nerd-face.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('rocket')">
+        <img src="./img/message-reaction-rocket.svg" />
+      </div>
+    </div>
+  </section>
   <section class="edit-message-section">
     <div
       class="bg"
