@@ -33,8 +33,6 @@ export class ChatService {
   /* ==================================================================== */
   async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
 
-    //Todo Dome: 
-
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
     if (this.emojiExistsOnMessage(newEmoji, message)) {
       this.handleExistingEmojiOnMessage(newEmoji, message);

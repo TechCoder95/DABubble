@@ -1,9 +1,7 @@
 <main (click)="handleClick()">
   <section>
     <img [src]="getEmojiImg(emoji)" />
-    <!-- <p>{{ getEmojiReactionUsers() }}</p> -->
-    <p [innerHTML]=""></p>
-    <!-- Todo Dome oder Dimi: Hier muss wieder der Text der reaktuionen rein. dann läuft es bugfrei -->
+    <p [innerHTML]="emojiUsersText"></p>
   </section>
   <img [src]="getEmojiImg(emoji)" />
   <p>{{ getEmojiReactionsAmount(emoji) }}</p>

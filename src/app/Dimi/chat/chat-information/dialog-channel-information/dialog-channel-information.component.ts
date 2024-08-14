@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { map, Observable } from 'rxjs';
 import { UserService } from '../../../../shared/services/user.service';
+import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -43,12 +44,16 @@ export class DialogChannelInformationComponent {
   @ViewChild('channelCreator') channelCreator!: ElementRef;
   @ViewChild('updatedChannelDescription')
   updatedChannelDescription!: ElementRef;
+  channelCreatorObject!: DABubbleUser;
+  channelCreatorName!: string;
 
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
     public channelService: ChannelService,
     private userService: UserService
-  ) {}
+  ) {
+    this.getChannelCreator();
+  }
 
   changeCloseImg(hover: boolean) {
     if (hover) {
@@ -158,10 +163,15 @@ export class DialogChannelInformationComponent {
     );
   }
 
-  channelCreatedBy() {
+  async getChannelCreator() {
     // let createrId = this.channelService.channel.assignedUser[0];
     // let creater = this.userService.getOneUserbyId(createrId);
     // let name = creater?.username;
     // return name;
+    let createrId = this.channelService.channel.owner;
+    this.channelCreatorObject = await this.userService.getOneUserbyId(
+      createrId
+    );
+    this.channelCreatorName = this.channelCreatorObject.username;
   }
 }

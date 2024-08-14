@@ -26,3 +26,15 @@ main {
     border-radius: 100%;
   }
 }
+
+.add-reactions-div {
+  position: absolute;
+  bottom: -110%;
+  background-color: white;
+  border-radius: 30px;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid rgb(173, 176, 217);
+}

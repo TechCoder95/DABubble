@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
@@ -10,6 +18,7 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-chat-information',
@@ -18,7 +27,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent implements OnInit {
+export class ChatInformationComponent implements OnInit{
   isChannel: boolean = true;
   activeUser!: DABubbleUser;
   tagImg = './img/tag.svg';
@@ -41,23 +50,33 @@ export class ChatInformationComponent implements OnInit {
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
-
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-
     });
 
     this.activeChannelFromChat.subscribe((channel: any) => {
       this.getAssignedUsers(channel);
     });
-
   }
 
+  /* ngAfterViewInit(): void {
+    debugger;
+    console.log(this.channelService.channel.assignedUser);
+    if (this.channelService.channel.isPrivate) {
+      if (this.channelService.channel.assignedUser.length === 1) {
+        this.userService
+          .getOneUserbyId(this.channelService.channel.assignedUser[0])
+          .then((result) => {
+            this.privatChatAvatar = result.avatar;
+            });
+      } else {
 
+      }
+    }
+  } */
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
@@ -168,7 +187,7 @@ export class ChatInformationComponent implements OnInit {
     channel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
         this.assignedUsers.push(user as unknown as DABubbleUser);
-        });
+      });
     });
     return this.assignedUsers;
   }
@@ -184,12 +203,13 @@ export class ChatInformationComponent implements OnInit {
     );
 
     if (privateChatPartnerID) {
-      this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
-        let chatPartner = privateChatPartner as unknown as DABubbleUser;
-        this.privateChatPartnerName = chatPartner?.username
-        this.privateChatPartner = chatPartner;
-      });
-
+      this.userService
+        .getOneUserbyId(privateChatPartnerID!)
+        .then((privateChatPartner) => {
+          let chatPartner = privateChatPartner as unknown as DABubbleUser;
+          this.privateChatPartnerName = chatPartner?.username;
+          this.privateChatPartner = chatPartner;
+        });
     } else {
       this.privateChatPartnerName = this.activeUser.username + ' (Du)';
     }
