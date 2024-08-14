@@ -92,7 +92,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   activeChannel!: TextChannel;
 
   private createdChannelSubscription!: Subscription;
-  private userSubscription!: Subscription;
+  private activeUserChangeSubscription!: Subscription;
+  private routeSubscription!: Subscription;
+
 
   constructor(
     private dbService: DatabaseService,
@@ -101,28 +103,34 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private subService: GlobalsubService,
     private router: Router,
-    private route: ActivatedRoute 
-  ) {}
-  
+    private route: ActivatedRoute
+  ) { }
+
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
   async ngOnDestroy() {
-    if (this.userSubscription)
-      this.userSubscription.unsubscribe();
-
-    if (this.createdChannelSubscription)
+    if (this.createdChannelSubscription) {
       this.createdChannelSubscription.unsubscribe();
+    }
+
+    if (this.activeUserChangeSubscription) {
+      this.activeUserChangeSubscription.unsubscribe();
+    }
+
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
-  
+
     if (this.activeUser) {
       await this.initializeChannels();
-  
-      this.route.queryParams.subscribe(params => {
+
+      this.routeSubscription = this.route.queryParams.subscribe(params => {
         const channelId = params['channelId'];
         if (channelId) {
           const selectedChannel = this.channels.find(channel => channel.id === channelId);
@@ -132,11 +140,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
           }
         }
       });
-  
-      this.activeUserChange.subscribe(async (user: DABubbleUser) => {
+
+      this.activeUserChangeSubscription = this.activeUserChange.subscribe(async (user: DABubbleUser) => {
         this.activeUser = user;
       });
-  
+
       this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
         const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
         if (!exists) {
@@ -146,7 +154,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       });
     }
   }
-  
+
 
   private async initializeChannels() {
     // await this.initializeDefaultData();
@@ -161,8 +169,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   // todo
   private async initializeDefaultData() {
     const defaultGroupChannels: TextChannel[] = [
-      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Allgemeiner Channel', owner: '' },
-      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Entwickler Channel', owner: '' }
+      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: '' },
+      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: '' }
     ];
 
     const defaultUsers: DABubbleUser[] = [
@@ -321,7 +329,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.channelService.selectChannel(selectedChannel);
         sessionStorage.setItem('selectedChannelId', selectedChannel.id);
         this.showNewChat = false;
-  
+
         // Update the URL with the channel ID
         this.router.navigate([], {
           relativeTo: this.route,
@@ -333,7 +341,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.openAddChannelDialog();
     }
   }
-  
+
 
   async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
