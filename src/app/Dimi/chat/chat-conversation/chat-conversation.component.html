@@ -1,4 +1,10 @@
-<main #scrollContainer (scroll)="onScroll()">
+<main
+  #scrollContainer
+  (scroll)="onScroll()"
+  [ngStyle]="{
+    'justify-content': allMessages.length === 0 ? 'flex-end' : 'center'
+  }"
+>
   <div>
     @if(allMessages.length > 0){ @for (message of allMessages; track $index) {
     @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
@@ -51,4 +57,7 @@
     ></app-receive-chat-message>
     } } }
   </div>
+  @if (allMessages.length === 0) {
+  <app-pre-chat-message></app-pre-chat-message>
+  }
 </main>

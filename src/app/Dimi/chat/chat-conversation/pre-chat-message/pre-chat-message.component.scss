@@ -1,0 +1,23 @@
+h4 {
+  margin: 0;
+}
+
+p {
+  color: rgba(104, 104, 104, 1);
+}
+
+main {
+  padding-inline: 32px;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.user-data {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}

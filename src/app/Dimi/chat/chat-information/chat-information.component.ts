@@ -27,9 +27,9 @@ import { user } from '@angular/fire/auth';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent implements OnInit{
+export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
-  activeUser!: DABubbleUser;
+ /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -50,33 +50,19 @@ export class ChatInformationComponent implements OnInit{
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService
-  ) {}
+  ) {
+    this.getPrivateChatPartner();
+  }
 
   ngOnInit(): void {
-    this.activeUserFromChat.subscribe((user: any) => {
+   /*  this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-    });
+    }); */
 
     this.activeChannelFromChat.subscribe((channel: any) => {
       this.getAssignedUsers(channel);
     });
   }
-
-  /* ngAfterViewInit(): void {
-    debugger;
-    console.log(this.channelService.channel.assignedUser);
-    if (this.channelService.channel.isPrivate) {
-      if (this.channelService.channel.assignedUser.length === 1) {
-        this.userService
-          .getOneUserbyId(this.channelService.channel.assignedUser[0])
-          .then((result) => {
-            this.privatChatAvatar = result.avatar;
-            });
-      } else {
-
-      }
-    }
-  } */
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
@@ -197,9 +183,9 @@ export class ChatInformationComponent implements OnInit{
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
   }
 
-  getPrivateChatPartner(selectChannel: TextChannel) {
-    const privateChatPartnerID = selectChannel.assignedUser.find(
-      (userID) => userID !== this.activeUser.id
+  getPrivateChatPartner() {
+    const privateChatPartnerID = this.channelService.channel.assignedUser.find(
+      (userID) => userID !== this.userService.activeUser.id
     );
 
     if (privateChatPartnerID) {
@@ -211,16 +197,16 @@ export class ChatInformationComponent implements OnInit{
           this.privateChatPartner = chatPartner;
         });
     } else {
-      this.privateChatPartnerName = this.activeUser.username + ' (Du)';
+      this.privateChatPartnerName = this.userService.activeUser.username + ' (Du)';
     }
-    this.returnChatPartnerAvatar(selectChannel);
+    this.returnChatPartnerAvatar(this.channelService.channel);
   }
 
   returnChatPartnerAvatar(selectChannel: TextChannel) {
     if (selectChannel.assignedUser.length > 1) {
       this.privatChatAvatar = this.privateChatPartner?.avatar;
     } else {
-      this.privatChatAvatar = this.activeUser.avatar;
+      this.privatChatAvatar = this.userService.activeUser.avatar;
     }
   }
 }
