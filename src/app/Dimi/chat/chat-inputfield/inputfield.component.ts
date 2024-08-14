@@ -34,6 +34,7 @@ export class InputfieldComponent implements OnInit {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
+fileInput: any;
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -194,6 +195,21 @@ export class InputfieldComponent implements OnInit {
     if (event.key === 'Enter') {
       event.preventDefault();
       this.sendMessage(this.messageType);
+    }
+  }
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          /* this.UserService.activeUser.avatar = e.target.result as string;
+          this.upload(file); */
+        }
+      };
+      reader.readAsDataURL(file);
     }
   }
 }

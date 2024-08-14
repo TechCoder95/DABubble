@@ -2,7 +2,6 @@
   <textarea
     name=""
     id=""
-    
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="placeholderText | async"
@@ -14,7 +13,9 @@
         class="emoji"
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
+        (click)="fileInput.click()"
       >
+      <input type="file" #fileInput (change)="onFileSelected($event)" hidden>
         <img [src]="addFilesImg" />
       </div>
       <div>
