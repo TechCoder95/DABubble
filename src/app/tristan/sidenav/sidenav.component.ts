@@ -126,7 +126,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  async initializeChannels() {
+  private async initializeChannels() {
     // await this.initializeDefaultData();
     await this.loadUserChannels(this.activeUser);
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
@@ -199,7 +199,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.updateTreeData();
   }
 
-  async loadLastChannelState() {
+  private async loadLastChannelState() {
     const savedChannelId = sessionStorage.getItem('selectedChannelId');
     if (savedChannelId) {
       const selectedChannel = this.channels.find(channel => channel.id === savedChannelId);
@@ -215,7 +215,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
 
-  createGroupChannelNodes(): Node[] {
+  private createGroupChannelNodes(): Node[] {
     const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
       id: channel.id,
       name: channel.name,
@@ -262,7 +262,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return directChannelNodes;
   }
 
-  async createDirectChannelNodes(): Promise<Node[]> {
+  private async createDirectChannelNodes(): Promise<Node[]> {
     const directChannelNodes: Node[] = [];
     const currentUser = this.userService.activeUser;
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
@@ -274,11 +274,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return directChannelNodes;
   }
 
-  async updateTreeData(): Promise<void> {
+  private async updateTreeData(): Promise<void> {
     const groupChannelNodes = await this.createGroupChannelNodes();
     const directChannelNodes = await this.createDirectChannelNodes();
 
-    const channelsStructure: Node = {
+    const groupChannelsStructure: Node = {
       id: 'channels',
       name: 'Channels',
       type: 'groupChannel',
@@ -295,7 +295,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       children: directChannelNodes,
     };
 
-    this.TREE_DATA = [channelsStructure, directChannelStructure];
+    this.TREE_DATA = [groupChannelsStructure, directChannelStructure];
     this.dataSource.data = this.TREE_DATA;
     this.treeControl.expandAll();
   }
