@@ -1,0 +1,31 @@
+@if(isPrivateChat){
+<main>
+  <section class="user-data">
+    <img *ngIf="isChatWithMyself" [src]="activeUser.avatar" class="avatar" />
+    <img *ngIf="!isChatWithMyself" src="" class="avatar" />
+    <h4 *ngIf="isChatWithMyself">{{ activeUser.username }}</h4>
+    <h4 *ngIf="!isChatWithMyself">{{ privateChatPartner?.username }}</h4>
+  </section>
+
+  <section>
+    <p *ngIf="isChatWithMyself">
+      <strong>Dieser Raum ist nur für dich da.</strong> Mache dir Notizen, liste
+      deine To-dos auf oder bewahre Links und Dateien griffbereit auf. Du kannst
+      hier auch gerne Dinge mit dir selbst besprechen.
+    </p>
+    <p *ngIf="!isChatWithMyself"></p>
+    <p *ngIf="!isChatWithMyself">
+      Diese Unterhaltung findet nur zwischen
+      {{ privateChatPartner?.username }} und dir statt.
+    </p>
+  </section>
+</main>
+}@else{
+<main>
+  <section># {{ channelName }}</section>
+
+  <section>
+    <p>Das ist der Anfang des Channels # {{ channelName }}</p>
+  </section>
+</main>
+}
