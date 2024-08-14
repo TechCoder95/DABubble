@@ -5,10 +5,18 @@
       class="chat-details-channel"
       (mouseenter)="changeTagImg(true)"
       (mouseleave)="changeTagImg(false)"
-      (click)="openDialogChannelInformation($event)"
+      (click)="
+        channelService.channel.isPrivate
+          ? null
+          : openDialogChannelInformation($event)
+      "
       [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
-      <img [src]="tagImg" class="tag-img" *ngIf="!channelService.channel.isPrivate" />
+      <img
+        [src]="tagImg"
+        class="tag-img"
+        *ngIf="!channelService.channel.isPrivate"
+      />
       <img
         [src]="privatChatAvatar"
         class="privat-chat-avatar"
@@ -18,8 +26,14 @@
       <h2 *ngIf="!isPrivateChat">
         {{ (channelService.selectedChannel$ | async)?.name }}
       </h2>
-      <h2 *ngIf="!channelService.channel.isPrivate">{{ privateChatPartnerName }}</h2>
-      <img class="arrow-down" [src]="arrowImg" *ngIf="!channelService.channel.isPrivate" />
+      <h2 *ngIf="!channelService.channel.isPrivate">
+        {{ privateChatPartnerName }}
+      </h2>
+      <img
+        class="arrow-down"
+        [src]="arrowImg"
+        *ngIf="!channelService.channel.isPrivate"
+      />
     </div>
 
     <div class="channel-members" *ngIf="!channelService.channel.isPrivate">

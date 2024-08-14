@@ -27,7 +27,7 @@ import { user } from '@angular/fire/auth';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent implements OnInit, AfterViewInit {
+export class ChatInformationComponent implements OnInit{
   isChannel: boolean = true;
   activeUser!: DABubbleUser;
   tagImg = './img/tag.svg';
@@ -62,7 +62,7 @@ export class ChatInformationComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
+  /* ngAfterViewInit(): void {
     debugger;
     console.log(this.channelService.channel.assignedUser);
     if (this.channelService.channel.isPrivate) {
@@ -73,10 +73,10 @@ export class ChatInformationComponent implements OnInit, AfterViewInit {
             this.privatChatAvatar = result.avatar;
             });
       } else {
-        
+
       }
     }
-  }
+  } */
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
