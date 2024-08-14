@@ -58,29 +58,9 @@ export class ThreadComponent {
   
     this.activeUserFromSidenav.subscribe((user: any) => {
       this.userService.activeUser = user;
-    });
+    });    
   }
 
-  // ngOnInit() {
-  //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
-  //     if (this.selectedTicket) {
-  //       this.selectedTicket = false;
-  //       return [];
-  //     }
-  //     return this.userService.searchUsersByNameOrEmail(value);
-  //   })
-  //   ).subscribe(results => {
-  //     this.searchResults = results;
-  //   });
-  // }
-
-  // selectUser(user: DABubbleUser) {
-  //   this.selectedTicket = true;
-  //   this.searchQuery = user.username;
-  //   this.searchControl.setValue(user.username);
-  //   this.searchResults = [];
-  //   this.userService.setSelectedUser(user);
-  // }
 
   get getTitle(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
