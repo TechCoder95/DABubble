@@ -49,12 +49,10 @@ export class SendChatMessageComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService
   ) {
-    this.user = JSON.parse(localStorage.getItem('userLogin')!);
+    this.user = JSON.parse(sessionStorage.getItem('userLogin')!);
   }
 
-  userFromSession: DABubbleUser = JSON.parse(
-    localStorage.getItem('userLogin')!
-  );
+  userFromSession: DABubbleUser = JSON.parse(sessionStorage.getItem('userLogin')!);
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
