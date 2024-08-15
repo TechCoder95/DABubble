@@ -64,7 +64,7 @@ export class InputfieldComponent implements OnInit {
       });
     } else {
 
-      this.ticket = this.ticketService.getTicket();      
+      this.ticket = this.ticketService.getTicket();
     }
 
 
@@ -142,16 +142,16 @@ export class InputfieldComponent implements OnInit {
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
+      messageId: '',
       emoticons: [],
       edited: false,
       deleted: false,
     };
     if (threadMessage.message !== '') {
       try {
-        this.databaseService.addDataToDB('threads', threadMessage);
+        this.ticketService.addConversationToThread(threadMessage);
         this.textareaValue = '';
-        console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
-
+        
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -166,6 +166,7 @@ export class InputfieldComponent implements OnInit {
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
+      allConversations: [],
       edited: false,
       deleted: false,
     };

@@ -1,3 +1,5 @@
+import { ThreadMessage } from "./threadmessage";
+
 export interface ChatMessage {
   channelId: string;
   channelName?: string;
@@ -5,7 +7,7 @@ export interface ChatMessage {
   timestamp: number;
   senderName: string;
   senderId: string;
-  threadConversationId?: string[];
+  allConversations?: ThreadMessage[];
   id?: string;
   edited?: boolean;
   deleted?: boolean;

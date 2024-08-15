@@ -18,12 +18,15 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 })
 export class ThreadReceiveChatComponent {
   @Input() receiveMessage!: ThreadMessage;
-  ticket: any;
+  @Input() ticket: any;
 
   senderUser: DABubbleUser = {username: "dummy", avatar: "./img/avatar.svg", mail:"", isLoggedIn: false};
 
   constructor(public ticketService: TicketService, private userService: UserService) {
+
+
     this.ticket = this.ticketService.getTicket();
+
     
   }
 

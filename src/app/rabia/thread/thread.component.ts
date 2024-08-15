@@ -13,6 +13,7 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { TicketService } from '../../shared/services/ticket.service';
 import { ThreadMessage } from '../../shared/interfaces/threadmessage';
 import { TextChannel } from '../../shared/interfaces/textchannel';
+import { ChatMessage } from '../../shared/interfaces/chatmessage';
 
 @Component({
   selector: 'app-thread',
@@ -28,45 +29,51 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
   styleUrl: './thread.component.scss',
 })
 export class ThreadComponent {
-  @Input() activeUserFromSidenav : any;
+  @Input() activeUserFromSidenav: any;
+  ticket = this.ticketService.getTicket();
+  threadMessages: ThreadMessage[] = [];
 
-  
   searchControl = new FormControl();
   searchResults: DABubbleUser[] = [];
-  searchQuery: string | undefined;
   showSingleThread!: boolean;
   messageType: MessageType = MessageType.Threads;
-  selectedTicket: boolean = false;
+
 
   activeUser!: DABubbleUser;
-  allMessagesinThread: ThreadMessage[] = [];
 
-  threadChannel: TextChannel = {
-    id: '',
-    name: '',
-    description: '',
-    owner: '',
-    assignedUser: [],
-    isPrivate: false,
+  threadChannel: ChatMessage = {
+    channelId: this.ticket.channelId,
+    channelName: this.ticket.channelName,
+    message: this.ticket.message,
+    timestamp: this.ticket.timestamp,
+    senderName: this.ticket.senderName,
+    senderId: this.ticket.senderId,
+    allConversations: this.threadMessages,
+    id: this.ticket.id,
+    edited: this.ticket.edited,
+    deleted: this.ticket.deleted,
   };
 
- 
+
+
 
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
     private userService: UserService
-  ) {}
+  ) {
+
+    console.log("das sollte der offene Thread sein", this.ticket, this.threadChannel);
+
+  }
 
   ngOnInit() {
-  
+
     this.activeUserFromSidenav.subscribe((user: any) => {
       this.userService.activeUser = user;
-    });    
+      console.log("activeUser", this.userService.activeUser);
 
-    console.log(this.allMessagesinThread, "das wars");
-
-    
+    });
   }
 
 
