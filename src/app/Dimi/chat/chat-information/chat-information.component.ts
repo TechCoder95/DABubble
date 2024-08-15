@@ -127,7 +127,6 @@ export class ChatInformationComponent implements OnInit {
 
   dialogChannelMembersIsOpen: boolean = false;
   openDialogChannelMembers(event: MouseEvent) {
-    this.subService.updateActiveChannel(this.selectedChannel);
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
     const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(

@@ -48,6 +48,7 @@ export class ChatConversationComponent
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
+  selectedChannel!: TextChannel;
 
   @Input({ required: true }) activeChannelFromChat: any;
   @Input({ required: true }) activeUserFromChat: any;
@@ -65,6 +66,7 @@ export class ChatConversationComponent
     private subService: GlobalsubService
   ) {
     this.activeUser = this.userService.activeUser;
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
   messagesub!: Subscription;
@@ -74,6 +76,10 @@ export class ChatConversationComponent
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
+
+
+    this.allMessages = [];
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {

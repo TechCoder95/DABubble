@@ -341,13 +341,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
 
-        this.subService.updateActiveChannel(selectedChannel);
         sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
         this.showNewChat = false;
         this.router.navigate(['/home']);
         setTimeout(() => {
           this.router.navigate(['/home', selectedChannel.id]);
         }, 0.1);
+
+        this.subService.updateActiveChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();

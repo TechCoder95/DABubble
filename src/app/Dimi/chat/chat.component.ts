@@ -37,12 +37,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
 
 
-  ngOnInit() {
+  async ngOnInit() {
     this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));
+    
     this.selectedChannelFromChat.emit(JSON.parse(sessionStorage.getItem('selectedChannel')!));
-
-    this.subService.updateActiveChannel(JSON.parse(sessionStorage.getItem('selectedChannel')!));
-    this.subService.updateUser(JSON.parse(sessionStorage.getItem('userLogin')!));
 
     this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannelFromChat.emit(channel);

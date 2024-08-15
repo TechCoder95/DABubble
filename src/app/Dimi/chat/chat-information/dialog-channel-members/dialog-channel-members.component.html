@@ -1,13 +1,13 @@
 <div class="wrapper" #relativeElement>
   <main>
-    <!-- <section class="headline">
+    <section class="headline">
       <h3>Mitglieder</h3>
       <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
         (click)="closeDialog()" />
     </section>
 
     <section class="channel-members">
-      <app-member [member]="activeUser"></app-member> -->
+      <app-member [member]="activeUser"></app-member>
     @for (member of this.channelMembers; track $index) {
     <app-member [member]="member"></app-member>
     }
@@ -15,10 +15,10 @@
     <p>Keine Mitglieder</p>
     }
 
-    <!-- <div (click)="addMembers()" class="add-member">
+    <div (click)="addMembers()" class="add-member">
         <div></div>
         <p>Mitglied Hinzufügen</p>
       </div>
-    </section> -->
+    </section>
   </main>
 </div>
