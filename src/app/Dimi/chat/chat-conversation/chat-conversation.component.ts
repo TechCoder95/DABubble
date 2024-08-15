@@ -48,7 +48,6 @@ export class ChatConversationComponent
   allMessages: ChatMessage[] = [];
 
   @Input({ required: true }) activeChannelFromChat: any;
-  @Input() messagesFromChat: any;
   @Input({ required: true }) activeUserFromChat: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;

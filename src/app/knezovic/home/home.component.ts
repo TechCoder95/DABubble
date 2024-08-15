@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
@@ -7,7 +7,6 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
-import { TextChannel } from '../../shared/interfaces/textchannel';
 
 
 @Component({

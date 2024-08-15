@@ -22,7 +22,6 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 export class ChatComponent implements OnInit {
 
   @Input({required: true}) selectedChannelFromSidenav: any;
-  @Input() allMessagesfromSideNav: any;
   @Input({required: true}) activeUserFromSidenav: any;
 
   messageType: MessageType = MessageType.Groups; // eventuell todo: kein Unterschied zwischen Direct und Group Messages

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, EventEmitter } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,8 +20,6 @@ import { Subscription, take } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
-import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
-import { initializeApp } from 'firebase/app';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 
@@ -84,10 +82,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
-  @Input() activeUserChange!: any;
-  @Input() activeGoogleUserChange!: any;
+  @Input({required:true}) activeUserChange!: any;
+  @Input({required:true}) activeGoogleUserChange!: any;
   activeChannelChange = new EventEmitter<TextChannel>();
-  @Input() allMessagesChange!: any;
 
   activeUser!: DABubbleUser;
   activeGoogleUser!: User;
@@ -109,9 +106,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   ) { }
 
 
-
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
-
 
 
   unsubscribeFromChannel() {
@@ -135,13 +130,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+
+    if (this.channelService.channelSub)
+      this.unsubscribeFromChannel();
+
   }
 
   async ngOnInit() {
-
-    if (this.channelService.channelSub)
-      await this.unsubscribeFromChannel();
-
 
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
