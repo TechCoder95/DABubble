@@ -27,6 +27,10 @@ export const routes: Routes = [
       { path: 'privacy', component: PrivacyComponent },
     ]
   },
-  { path: 'home', component: HomeComponent, canActivate: [isLoggedIn] },
+  { path: 'home', canActivate: [isLoggedIn], 
+    children: [
+      {path: 'selectedChannelId', component: ChatComponent}
+    ]
+   },
   { path: 'verfiyEmail', component: VariableContentComponent },
 ];

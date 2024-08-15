@@ -7,12 +7,14 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
+import { TextChannel } from '../../shared/interfaces/textchannel';
+import { RouterOutlet } from '@angular/router';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent],
+  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
