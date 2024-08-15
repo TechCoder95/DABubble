@@ -326,7 +326,6 @@ export class UserService {
     return users;
   }
 
-
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
   }
@@ -335,7 +334,6 @@ export class UserService {
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
-
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
@@ -350,17 +348,18 @@ export class UserService {
     }
   }
 
-
-  async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
+  async addDefaultUserToDatabase(user: DABubbleUser): Promise<string> {
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
       user.id = userRef.id;
-
+  
       await setDoc(userRef, user);
+      return userRef.id;  // Rückgabe der erstellten Benutzer-ID
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
     }
   }
+  
 
 }
