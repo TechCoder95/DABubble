@@ -5,24 +5,42 @@
       class="chat-details-channel"
       (mouseenter)="changeTagImg(true)"
       (mouseleave)="changeTagImg(false)"
-      (click)="openDialogChannelInformation($event)"
+      (click)="
+        channelService.channel.isPrivate
+          ? null
+          : openDialogChannelInformation($event)
+      "
       [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }"
     >
-      <img [src]="tagImg" class="tag-img" *ngIf="!isPrivateChat" />
       <img
-        [src]="privatChatAvatar"
-        class="privat-chat-avatar"
-        *ngIf="isPrivateChat"
+        [src]="tagImg"
+        class="tag-img"
+        *ngIf="!channelService.channel.isPrivate"
       />
+      <span
+        *ngIf="channelService.channel.isPrivate" class="private-chat-avatar"
+      >
+        <img [src]="privatChatAvatar" class="privat-chat-avatar"/>
+        <p
+          [ngClass]="privateChatPartner?.isLoggedIn ? 'green' : 'grey'"
+          class="online-status"
+        ></p>
+      </span>
 
-      <h2 *ngIf="!isPrivateChat">
+      <h2 *ngIf="!channelService.channel.isPrivate">
         {{ (channelService.selectedChannel$ | async)?.name }}
       </h2>
-      <h2 *ngIf="isPrivateChat">{{ privateChatPartnerName }}</h2>
-      <img class="arrow-down" [src]="arrowImg" *ngIf="!isPrivateChat" />
+      <h2 *ngIf="channelService.channel.isPrivate">
+        {{ privateChatPartnerName }}
+      </h2>
+      <img
+        class="arrow-down"
+        [src]="arrowImg"
+        *ngIf="!channelService.channel.isPrivate"
+      />
     </div>
 
-    <div class="channel-members" *ngIf="!isPrivateChat">
+    <div class="channel-members" *ngIf="!channelService.channel.isPrivate">
       <div
         class="channel-member-amount"
         (click)="openDialogChannelMembers($event)"
@@ -45,12 +63,5 @@
         (click)="openDialogAddChannelMembers($event)"
       />
     </div>
-  </section>
-
-  <section *ngIf="!isChannel">
-    <img src="./img/keyboard_arrow_down.png" />
-    <!-- IMG OF PERSON -->
-    <h2>Sofia Müller</h2>
-    <!-- NAME OF PERSON -->
   </section>
 </main>

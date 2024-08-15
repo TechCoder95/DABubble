@@ -58,4 +58,8 @@ export class ReceiveChatMessageReactionComponent {
     };
     this.chatService.sendEmoji(emoji, this.ticket);
   }
+  addReactionDiv: boolean = false;
+  openAddReactions() {
+    this.addReactionDiv = !this.addReactionDiv;
+  }
 }

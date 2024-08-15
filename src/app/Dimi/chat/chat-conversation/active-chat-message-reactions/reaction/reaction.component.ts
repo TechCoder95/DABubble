@@ -32,6 +32,10 @@ export class ReactionComponent implements OnInit {
       return './img/checkMarkEmoji.svg';
     } else if (emoji.type === 'handsUp') {
       return './img/reaction-handsUp.svg';
+    } else if (emoji.type === 'nerdFace') {
+      return './img/message-reaction-nerd-face.svg';
+    } else if (emoji.type === 'rocket') {
+      return './img/message-reaction-rocket.svg';
     } else {
       return;
     }

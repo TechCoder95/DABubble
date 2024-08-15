@@ -94,4 +94,9 @@ export class SendChatMessageReactionComponent {
     };
     this.chatService.sendEmoji(emoji, this.sendMessage);
   }
+
+  addReactionDiv: boolean = false;
+  openAddReactions() {
+    this.addReactionDiv = !this.addReactionDiv;
+  }
 }

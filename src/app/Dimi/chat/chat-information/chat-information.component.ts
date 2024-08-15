@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, input, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  input,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
@@ -10,6 +18,7 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-chat-information',
@@ -20,7 +29,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 })
 export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
-  activeUser!: DABubbleUser;
+ /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -42,30 +51,18 @@ export class ChatInformationComponent implements OnInit {
     public channelService: ChannelService,
     private userService: UserService
   ) {
+    this.getPrivateChatPartner();
   }
 
   ngOnInit(): void {
-
-    this.activeUserFromChat.subscribe((user: any) => {
+   /*  this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-
-    });
+    }); */
 
     this.activeChannelFromChat.subscribe((channel: any) => {
       this.getAssignedUsers(channel);
     });
-
   }
-
-  ngOnDestroy(): void {
-    //Called once, before the instance is destroyed.
-    //Add 'implements OnDestroy' to the class.
-    console.log('ChatInformationComponent destroyed');
-    
-    this.channelSub.unsubscribe();
-  }
-
-
 
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
@@ -176,7 +173,7 @@ export class ChatInformationComponent implements OnInit {
     channel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
         this.assignedUsers.push(user as unknown as DABubbleUser);
-        });
+      });
     });
     return this.assignedUsers;
   }
@@ -186,29 +183,30 @@ export class ChatInformationComponent implements OnInit {
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
   }
 
-  getPrivateChatPartner(selectChannel: TextChannel) {
-    const privateChatPartnerID = selectChannel.assignedUser.find(
-      (userID) => userID !== this.activeUser.id
+  getPrivateChatPartner() {
+    const privateChatPartnerID = this.channelService.channel.assignedUser.find(
+      (userID) => userID !== this.userService.activeUser.id
     );
 
     if (privateChatPartnerID) {
-      this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
-        let chatPartner = privateChatPartner as unknown as DABubbleUser;
-        this.privateChatPartnerName = chatPartner?.username
-        this.privateChatPartner = chatPartner;
-      });
-
+      this.userService
+        .getOneUserbyId(privateChatPartnerID!)
+        .then((privateChatPartner) => {
+          let chatPartner = privateChatPartner as unknown as DABubbleUser;
+          this.privateChatPartnerName = chatPartner?.username;
+          this.privateChatPartner = chatPartner;
+        });
     } else {
-      this.privateChatPartnerName = this.activeUser.username + ' (Du)';
+      this.privateChatPartnerName = this.userService.activeUser.username + ' (Du)';
     }
-    this.returnChatPartnerAvatar(selectChannel);
+    this.returnChatPartnerAvatar(this.channelService.channel);
   }
 
   returnChatPartnerAvatar(selectChannel: TextChannel) {
     if (selectChannel.assignedUser.length > 1) {
       this.privatChatAvatar = this.privateChatPartner?.avatar;
     } else {
-      this.privatChatAvatar = this.activeUser.avatar;
+      this.privatChatAvatar = this.userService.activeUser.avatar;
     }
   }
 }

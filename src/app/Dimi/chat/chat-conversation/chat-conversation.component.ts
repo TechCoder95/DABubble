@@ -25,6 +25,7 @@ import { ChannelService } from '../../../shared/services/channel.service';
 import { Subscription } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -33,18 +34,16 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
     ReceiveChatMessageComponent,
     SendChatMessageComponent,
     CommonModule,
+    PreChatMessageComponent,
   ],
   templateUrl: './chat-conversation.component.html',
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, AfterViewChecked, AfterViewInit {
-
-
+  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
+{
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
-
-
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
@@ -57,8 +56,7 @@ export class ChatConversationComponent
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
   isPrivate: boolean = this.channelService.channel.isPrivate;
 
-  private allMessageSub!: Subscription
-
+  private allMessageSub!: Subscription;
 
   constructor(
     private chatService: ChatService,
@@ -77,22 +75,32 @@ export class ChatConversationComponent
       this.activeUser = user;
     });
 
-    this.subService.getAllMessageObservable().subscribe(message => {
-      if (message.id) {
-        this.allMessages.push(message)
-        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
-      }
-    });
+    if (!this.channelService.channelSub)
+      this.channelService.channelSub = this.subService
+        .getAllMessageObservable()
+        .subscribe((message) => {
+          if (message.id) {
+            if (this.allMessages.some((msg) => msg.id === message.id)) {
+              return;
+            }
+            this.allMessages.push(message);
+            this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+          }
+        });
 
     this.activeChannelFromChat.subscribe((channel: any) => {
       this.allMessages = [];
       this.databaseService.subscribeToMessageDatainChannel(channel.id);
     });
+  }
 
+  ngOnDestroy() {
+    console.log('Chat Conversation Destroyed');
+    if (this.channelService.channelSub)
+      this.channelService.channelSub.unsubscribe();
   }
 
   ngAfterViewChecked(): void {
-
     // setTimeout(() => {
     //   this.scrollToBottom();
     // }, 1000);
@@ -178,5 +186,4 @@ export class ChatConversationComponent
     this.scrollContainer.nativeElement.scrollTop =
       this.scrollContainer.nativeElement.scrollHeight;
   }
-
 }
