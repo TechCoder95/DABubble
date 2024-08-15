@@ -40,17 +40,16 @@ import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.com
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
 
-  @Input() activeChannelFromChat: any;
+  @Input({ required: true }) activeChannelFromChat: any;
   @Input() messagesFromChat: any;
-  @Input() activeUserFromChat: any;
+  @Input({ required: true }) activeUserFromChat: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
@@ -75,22 +74,22 @@ export class ChatConversationComponent
       this.activeUser = user;
     });
 
-    if (!this.channelService.channelSub)
-      this.channelService.channelSub = this.subService
-        .getAllMessageObservable()
-        .subscribe((message) => {
-          if (message.id) {
-            if (this.allMessages.some((msg) => msg.id === message.id)) {
-              return;
-            }
-            this.allMessages.push(message);
-            this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
-          }
-        });
 
     this.activeChannelFromChat.subscribe((channel: any) => {
       this.allMessages = [];
       this.databaseService.subscribeToMessageDatainChannel(channel.id);
+    });
+
+
+
+    this.subService.getAllMessageObservable().subscribe((message) => {
+      if (message.id) {
+        if (this.allMessages.some((msg) => msg.id === message.id)) {
+          return;
+        }
+        this.allMessages.push(message);
+        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+      }
     });
   }
 

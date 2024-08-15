@@ -43,8 +43,8 @@ export class ChatInformationComponent implements OnInit {
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
 
-  @Input() activeUserFromChat: any;
-  @Input() activeChannelFromChat: any;
+  @Input({required: true}) activeUserFromChat: any;
+  @Input({required: true}) activeChannelFromChat: any;
 
   constructor(
     public dialog: MatDialog,

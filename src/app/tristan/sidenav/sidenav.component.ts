@@ -23,6 +23,7 @@ import { User } from 'firebase/auth';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
 import { initializeApp } from 'firebase/app';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 
 interface Node {
@@ -54,7 +55,8 @@ interface FlattenedNode {
     MatButtonModule,
     ChatComponent,
     NewChatComponent,
-    ThreadComponent
+    ThreadComponent,
+    RouterModule
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],

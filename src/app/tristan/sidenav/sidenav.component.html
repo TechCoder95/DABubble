@@ -82,7 +82,6 @@
     <app-chat *ngIf="selectedChannel" [selectedChannelFromSidenav]="activeChannelChange"
       [allMessagesfromSideNav]="allMessagesChange" [activeUserFromSidenav]="activeUserChange"></app-chat>
 
-
     <app-thread *ngIf="channelService.showSingleThread" class=" pl-5"
       [activeUserFromSidenav]="activeUserChange"></app-thread>
   </div>
