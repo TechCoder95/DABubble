@@ -82,8 +82,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
-  @Input({required:true}) activeUserChange!: any;
-  @Input({required:true}) activeGoogleUserChange!: any;
+  @Input({ required: true }) activeUserChange!: any;
+  @Input({ required: true }) activeGoogleUserChange!: any;
   activeChannelChange = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
@@ -144,8 +144,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.activeUser) {
       await this.initializeChannels();
 
-      this.routeSubscription = this.route.queryParams.subscribe(params => {
-        const channelId = params['channelId'];
+      this.routeSubscription = this.route.paramMap.subscribe(params => {
+        const channelId = params.get('id');
         if (channelId) {
           const selectedChannel = this.channels.find(channel => channel.id === channelId);
           if (selectedChannel) {
@@ -340,23 +340,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel);
-        await this.unsubscribeFromChannel();
-        this.channelService.channelSub = this.subService.getActiveChannelObservable().subscribe(data => {
-          this.activeChannelChange.emit(data);
-          this.selectedChannel = data;
-          console.log('Active Channel:', data);
-        });
-        this.subService.updateActiveChannel(selectedChannel);
-        sessionStorage.setItem('selectedChannelId', selectedChannel.id);
-        this.showNewChat = false;
 
-        // Update the URL with the channel ID
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { channelId: selectedChannel.id },
-          queryParamsHandling: 'merge', // keep existing query params
-        });
+        this.subService.updateActiveChannel(selectedChannel);
+        sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
+        this.showNewChat = false;
+        this.router.navigate(['/home']);
+        setTimeout(() => {
+          this.router.navigate(['/home', selectedChannel.id]);
+        }, 0.1);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();

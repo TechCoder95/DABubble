@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -34,7 +34,7 @@ export class InputfieldComponent implements OnInit {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
-fileInput: any;
+  fileInput: any;
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -48,12 +48,13 @@ fileInput: any;
   ) {
 
     this.activeUser = this.userService.activeUser;
-
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
 
 
-  ngOnInit() {
+  ngOnInit(): void {
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     }
@@ -63,6 +64,7 @@ fileInput: any;
     });
 
     this.ticket = this.ticketService.getTicket();
+
   }
 
 
@@ -103,12 +105,6 @@ fileInput: any;
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
-  get placeholderText(): Observable<string> {
-    return this.channelService.selectedChannel$.pipe(
-      map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
-    );
-  }
 
   async sendMessage(type: MessageType) {
     switch (type) {
@@ -162,7 +158,7 @@ fileInput: any;
       edited: false,
       deleted: false,
     };
-    
+
 
     if (message.message !== '') {
       try {
@@ -184,7 +180,7 @@ fileInput: any;
         const channel = await this.channelService.createDirectChannel(selectedUser);
         this.selectedChannel = channel;
         // todo navigiere zu dem channel
-    //    this.channelService.selectChannel(channel);
+        //    this.channelService.selectChannel(channel);
       }
     } catch (error) {
       console.log("Fehler beim Senden: ", error);

@@ -19,7 +19,19 @@ export class ChannelService {
   channel!: TextChannel;
   showSingleThread: boolean = false;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
+
+    this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.subService.updateActiveChannel(this.channel);
+  }
+
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+  }
+
 
   /**
    * Selects a channel.
@@ -29,7 +41,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    sessionStorage.setItem('selectedChannelId', channel.id);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
   }
 
   /**

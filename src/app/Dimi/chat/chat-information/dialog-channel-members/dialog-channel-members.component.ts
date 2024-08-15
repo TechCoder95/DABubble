@@ -6,6 +6,7 @@ import {
   inject,
   Inject,
   Injector,
+  Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -21,6 +22,7 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { user } from '@angular/fire/auth';
 import { DialogAddChannelMembersComponent } from '../dialog-add-channel-members/dialog-add-channel-members.component';
+import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-dialog-channel-members',
@@ -37,29 +39,65 @@ export class DialogChannelMembersComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
+
   constructor(
     private userService: UserService,
     public channelService: ChannelService,
     public dialogRef: MatDialogRef<DialogChannelMembersComponent>,
+    private subService: GlobalsubService,
     @Inject(MAT_DIALOG_DATA) public data: any
-  ) {}
+  ) { 
+    
+    this.addChannelMembers();
+  }
 
-  ngOnInit(): void {
+  async ngOnInit() {
+
+
+    this.channelMembers = [
+      {
+        avatar: "/img/avatar.svg",
+        id: "JS6YsbGjsnXfxjRdy0ay",
+        isLoggedIn: true,
+        mail: "dominik.knezovic@knezovic-it.com",
+        uid: "q1eCGUQXlwZSzoOjVkDAXjtieSp2",
+        username: "Knezovic-IT"
+      }
+    ];
+
     this.activeUser = this.userService.activeUser;
-    this.channelService.selectedChannel$.subscribe((channel) => {
+
+    console.table(this.channelMembers);
+  }
+
+
+
+
+  async addChannelMembers() {
+    this.subService.getActiveChannelObservable().subscribe((channel) => {
       // console.log('dialog-channel-members zeile 36');
       if (channel) {
+        this.channelMembers = [];
         channel.assignedUser.forEach((userID) => {
-          this.userService.getOneUserbyId(userID).then((user) => {
-            let x = user as unknown as DABubbleUser;
-          if (x && x.id !== this.activeUser.id) {
-            this.channelMembers.push(x);
+          console.log(userID);
+          try {
+            this.userService.getOneUserbyId(userID).then((user) => {
+              let x = user as DABubbleUser;
+              if (x && x.id !== this.activeUser.id) {
+                this.channelMembers.push(x);
+              }
+            });
+          } catch (error) {
+            console.error(error);
           }
-        });
-        });
+        }
+        );
       }
     });
   }
+
+
+
 
   addMembers() {
     this.closeDialog();
@@ -71,6 +109,7 @@ export class DialogChannelMembersComponent implements OnInit {
         left: `${rect.left + window.scrollX - 135}px`,
       },
     });
+    console.table(this.channelMembers);
   }
 
   changeAddMembersImg(hover: boolean) {
@@ -79,6 +118,7 @@ export class DialogChannelMembersComponent implements OnInit {
     } else {
       this.addMemberImg = './img/add-members-default.png';
     }
+    console.table(this.channelMembers);
   }
 
   changeCloseImg(hover: boolean) {
@@ -87,10 +127,12 @@ export class DialogChannelMembersComponent implements OnInit {
     } else {
       this.closeImg = './img/close-default.png';
     }
+    console.table(this.channelMembers);
   }
 
   closeDialog() {
     this.dialogRef.close(false);
+    console.table(this.channelMembers);
   }
 
   /* dialogAddChannelMembersIsOpen: boolean = false;

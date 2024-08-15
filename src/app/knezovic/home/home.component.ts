@@ -8,7 +8,8 @@ import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
 import { TextChannel } from '../../shared/interfaces/textchannel';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
+import { ChannelService } from '../../shared/services/channel.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { RouterOutlet } from '@angular/router';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private globalSubService: GlobalsubService) {
+  constructor(private globalSubService: GlobalsubService, private router : Router) {
     let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
 
     if (googleUser) {
@@ -34,6 +35,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   googleUserSub!: Subscription;
   activeThreadSub!: Subscription;
 
+
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
 
@@ -42,6 +44,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+
+    
 
     if (!this.userSub)
       this.userSub = this.globalSubService.getUserObservable().subscribe(data => {

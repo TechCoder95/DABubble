@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, input, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -6,6 +6,9 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { MessageType } from '../../shared/components/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
+import { DatabaseService } from '../../shared/services/database.service';
+import { Subscription } from 'rxjs';
+import { DABubbleUser } from '../../shared/interfaces/user';
 
 @Component({
   selector: 'app-chat',
@@ -19,23 +22,41 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
 
-  @Input({required: true}) selectedChannelFromSidenav: any;
-  @Input({required: true}) activeUserFromSidenav: any;
+
+  @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
+  @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
+
+  channelsub!: Subscription;
 
   messageType: MessageType = MessageType.Groups; // eventuell todo: kein Unterschied zwischen Direct und Group Messages
   // dimi fragen
-  constructor() {
-    
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService) {
   }
 
+
+
   ngOnInit() {
+    this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));
+    this.selectedChannelFromChat.emit(JSON.parse(sessionStorage.getItem('selectedChannel')!));
+
+    this.subService.updateActiveChannel(JSON.parse(sessionStorage.getItem('selectedChannel')!));
+    this.subService.updateUser(JSON.parse(sessionStorage.getItem('userLogin')!));
+
+    this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
+      this.selectedChannelFromChat.emit(channel);
+    });
+
+
   }
+
+
 
   ngOnDestroy() {
     console.log('ChatComponent destroyed');
-    
+    if (this.channelsub)
+      this.channelsub.unsubscribe();
   }
 
 }

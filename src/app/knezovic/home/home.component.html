@@ -4,10 +4,12 @@
             <app-header [activeUserChange]="activeUserChange"
                 [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
         </div>
-        <div class="h-full">
-            <app-sidenav [activeUserChange]="activeUserChange" [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
-
-            <router-outlet />
+        <div class="h-full flex">
+            <app-sidenav [activeUserChange]="activeUserChange"
+                [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
+            <div class="flex mt-6">
+                <router-outlet />
+            </div>
         </div>
     </div>
 </div>

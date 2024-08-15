@@ -1,12 +1,11 @@
-<!-- <mat-card>
-  <app-chat-information [activeUserFromChat]="activeUserFromSidenav" [activeChannelFromChat]="selectedChannelFromSidenav" ></app-chat-information>
-  <app-chat-conversation
-    [activeChannelFromChat]="selectedChannelFromSidenav" [activeUserFromChat]="activeUserFromSidenav" #scrollContainer>
+
+<mat-card>
+  <app-chat-information [activeUserFromChat]="selectedUserFromChat"
+    [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
+  <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
+    #scrollContainer>
   </app-chat-conversation>
-  <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromSidenav"
-    [activeUserFromChat]="activeUserFromSidenav" [messageType]="messageType">
+  <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
+    [messageType]="messageType">
   </app-chat-inputfield>
-</mat-card> -->
-
-
-Hier bin ich
+</mat-card>

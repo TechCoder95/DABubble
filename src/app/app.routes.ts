@@ -29,7 +29,7 @@ export const routes: Routes = [
   },
   { path: 'home', canActivate: [isLoggedIn], 
     children: [
-      {path: 'selectedChannelId', component: ChatComponent}
+      {path: ':id', component: ChatComponent}
     ]
    },
   { path: 'verfiyEmail', component: VariableContentComponent },

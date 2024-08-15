@@ -9,6 +9,7 @@ import { ChannelService } from '../../../../shared/services/channel.service';
 import { map, Observable } from 'rxjs';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { TextChannel } from '../../../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -47,11 +48,15 @@ export class DialogChannelInformationComponent {
   channelCreatorObject!: DABubbleUser;
   channelCreatorName!: string;
 
+  selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
     public channelService: ChannelService,
     private userService: UserService
   ) {
+
+
     this.getChannelCreator();
   }
 
