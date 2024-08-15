@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-reaction',
@@ -17,14 +18,30 @@ export class ReactionComponent implements OnInit {
   @Input() activeUser!: DABubbleUser;
   @Input() message!: any;
   emojiUsersText: string = '';
+  private reactionSubscription!: Subscription;
 
   constructor(
     private userService: UserService,
     private chatService: ChatService
   ) {}
 
-  ngOnInit() {
-    this.loadEmojiUsers();
+  async ngOnInit() {
+    this.reactionSubscription = this.chatService.reactionsUpdated.subscribe(
+      (reactionString: string) => {
+        this.emojiUsersText = reactionString;
+      }
+    );
+    this.emojiUsersText = await this.chatService.loadEmojiReactions(
+      this.emoji,
+      this.activeUser
+    );
+
+  }
+
+  ngOnDestroy() {
+    if (this.reactionSubscription) {
+      this.reactionSubscription.unsubscribe();
+    }
   }
 
   getEmojiImg(emoji: Emoji) {
@@ -45,45 +62,21 @@ export class ReactionComponent implements OnInit {
     return emoji.usersIds.length;
   }
 
-  async loadEmojiUsers() {
-    let emojiReactors: string[] = [];
+  /* async updateEmojiText() {
+    this.emojiUsersText = await this.chatService.loadEmojiReactions(
+      this.emoji,
+      this.activeUser
+    );
+  } */
 
-    for (let id of this.emoji.usersIds) {
-      let user = await this.userService.getOneUserbyId(id);
-      if (user && user.username) {
-        let username = user.username;
-        if (user.id === this.activeUser.id) {
-          username = 'Du';
-        }
-        emojiReactors.push(username);
-      }
-    }
-
-    this.emojiUsersText = this.usersReactionString(emojiReactors);
-  }
-
-  usersReactionString(emojiReactors: string[]): string {
-    if (emojiReactors.length === 1 && emojiReactors[0] === 'Du') {
-      return `<strong class="reactorNames">${emojiReactors[0]}</strong> hast reagiert`;
-    } else if (emojiReactors.length === 1 && !emojiReactors.includes('du')) {
-      return `<strong>${emojiReactors[0]}</strong> hat reagiert`;
-    } else if (emojiReactors.length === 2) {
-      return `<strong>${emojiReactors[0]}</strong> und <strong>${emojiReactors[1]}</strong> haben reagiert`;
-    } else if (emojiReactors.length > 2) {
-      const lastUser = emojiReactors.pop();
-      return `${emojiReactors.join(', ')} und ${lastUser} haben reagiert`;
-    } else {
-      return emojiReactors.join('');
-    }
-  }
-
-  handleClick() {
+  async handleClick() {
     let currentEmoji: Emoji = {
       messageId: this.emoji.messageId,
       type: this.emoji.type,
       usersIds: [this.activeUser.id!],
       deleted: false,
     };
-    this.chatService.sendEmoji(currentEmoji, this.message);
+    await this.chatService.sendEmoji(currentEmoji, this.message, this.activeUser);
+    /* await this.updateEmojiText(); */
   }
 }
