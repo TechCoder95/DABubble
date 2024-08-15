@@ -71,7 +71,7 @@ export class ChatInformationComponent implements OnInit {
        this.activeUser = user;
      }); */
     this.getPrivateChatPartner();
-    
+
     this.selectedChannel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
         this.assignedUsers.push(user as unknown as DABubbleUser);
@@ -81,8 +81,13 @@ export class ChatInformationComponent implements OnInit {
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
-      console.log('selectedChannel', this.selectedChannel);
-      
+      this.assignedUsers = [];
+      channel.assignedUser.forEach((userID: string) => {
+        this.userService.getOneUserbyId(userID).then((user) => {
+          this.assignedUsers.push(user as unknown as DABubbleUser);
+        });
+      });
+
     });
 
   }
