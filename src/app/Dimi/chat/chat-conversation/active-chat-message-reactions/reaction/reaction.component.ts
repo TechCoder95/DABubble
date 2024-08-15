@@ -62,13 +62,6 @@ export class ReactionComponent implements OnInit {
     return emoji.usersIds.length;
   }
 
-  /* async updateEmojiText() {
-    this.emojiUsersText = await this.chatService.loadEmojiReactions(
-      this.emoji,
-      this.activeUser
-    );
-  } */
-
   async handleClick() {
     let currentEmoji: Emoji = {
       messageId: this.emoji.messageId,
@@ -77,6 +70,5 @@ export class ReactionComponent implements OnInit {
       deleted: false,
     };
     await this.chatService.sendEmoji(currentEmoji, this.message, this.activeUser);
-    /* await this.updateEmojiText(); */
   }
 }
