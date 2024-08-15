@@ -30,6 +30,7 @@ export class PreChatMessageComponent {
     private userService: UserService,
     private channelService: ChannelService
   ) {
+    this.isPrivateChat = this.selectedChannel.isPrivate;
     this.getChannelName();
     this.getPrivateChatPartner();
   }
