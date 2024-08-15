@@ -26,7 +26,7 @@ export class InputfieldComponent implements OnInit {
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
-  selectedThread: boolean = false;
+  threadAlreadyOpen: boolean = false;
   ticket: any;
   selectedChannel: TextChannel | null = null;
   activeUser!: DABubbleUser;
@@ -53,15 +53,21 @@ export class InputfieldComponent implements OnInit {
 
 
   ngOnInit() {
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-    }
-    );
-    this.selectedChannelFromChat.subscribe((channel: any) => {
-      this.selectedChannel = channel;
-    });
 
-    this.ticket = this.ticketService.getTicket();
+    if (this.threadAlreadyOpen) {
+      this.activeUserFromChat.subscribe((user: any) => {
+        this.activeUser = user;
+      }
+      );
+      this.selectedChannelFromChat.subscribe((channel: any) => {
+        this.selectedChannel = channel;
+      });
+    } else {
+
+      this.ticket = this.ticketService.getTicket();      
+    }
+
+
   }
 
 
@@ -142,8 +148,10 @@ export class InputfieldComponent implements OnInit {
     };
     if (threadMessage.message !== '') {
       try {
-        await this.ticketService.sendThreads(threadMessage);
+        this.databaseService.addDataToDB('threads', threadMessage);
+        this.textareaValue = '';
         console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
+
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -161,7 +169,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
     };
-    
+
 
     if (message.message !== '') {
       try {
@@ -183,7 +191,7 @@ export class InputfieldComponent implements OnInit {
         const channel = await this.channelService.createDirectChannel(selectedUser);
         this.selectedChannel = channel;
         // todo navigiere zu dem channel
-    //    this.channelService.selectChannel(channel);
+        //    this.channelService.selectChannel(channel);
       }
     } catch (error) {
       console.log("Fehler beim Senden: ", error);

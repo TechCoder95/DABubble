@@ -50,10 +50,10 @@
               </mat-icon>
             </button>
             <ng-container *ngIf="channelNode">
-              <img *ngIf="isCategoryNode(channelNode) && channelNode.name === 'Channels'" class="mr-3" src="img/channels.svg"
-                alt="channels" />
+              <img *ngIf="isCategoryNode(channelNode) && channelNode.name === 'Channels'" class="mr-3"
+                src="img/channels.svg" alt="channels" />
               <img *ngIf="isCategoryNode(channelNode) && channelNode.name === 'Direktnachrichten'" class="mr-3"
-                src="img/account_circle.svg"/>
+                src="img/account_circle.svg" />
             </ng-container>
             <span matTreeNodeToggle [ngClass]="{
                 'cursor-pointer': true,
@@ -98,3 +98,4 @@
   (click)="drawer.toggle()" mat-button>
   Workspace-Menü
 </button>
+}

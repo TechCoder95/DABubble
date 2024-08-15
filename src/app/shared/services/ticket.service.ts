@@ -19,9 +19,4 @@ export class TicketService {
     return this._ticket;
   }
 
-  async sendThreads(thread: ThreadMessage) {
-    await this.databaseService.addDataToDB('threads', thread);
-    console.log("finde ich hier etwas? ",this.databaseService.addDataToDB('threads', thread));
-    
-  }
 }

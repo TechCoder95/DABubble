@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ThreadReceiveChatComponent } from './thread-receive-chat/thread-receive-chat.component';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
@@ -28,6 +28,9 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
   styleUrl: './thread.component.scss',
 })
 export class ThreadComponent {
+  @Input() activeUserFromSidenav : any;
+
+  
   searchControl = new FormControl();
   searchResults: DABubbleUser[] = [];
   searchQuery: string | undefined;
@@ -36,6 +39,7 @@ export class ThreadComponent {
   selectedTicket: boolean = false;
 
   activeUser!: DABubbleUser;
+  allMessagesinThread: ThreadMessage[] = [];
 
   threadChannel: TextChannel = {
     id: '',
@@ -46,7 +50,7 @@ export class ThreadComponent {
     isPrivate: false,
   };
 
-  @Input() activeUserFromSidenav : any;
+ 
 
   constructor(
     public ticketService: TicketService,
@@ -59,6 +63,10 @@ export class ThreadComponent {
     this.activeUserFromSidenav.subscribe((user: any) => {
       this.userService.activeUser = user;
     });    
+
+    console.log(this.allMessagesinThread, "das wars");
+
+    
   }
 
 

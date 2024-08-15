@@ -19,6 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 export class ThreadSendChatComponent implements OnInit {
 
   @Input() sendMessage!: ThreadMessage;
+  
   originalMessage!: string;
   user: any;
   messageType = MessageType.Threads;
@@ -29,17 +30,9 @@ export class ThreadSendChatComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.originalMessage = this.sendMessage.message;
 
-
-
-    console.log("name", this.user, this.messageType, "lo");
-
+    console.log("name", this.user, this.messageType, "lo", this.sendMessage);
+  
   }
 
-
-  // getUserAvatar(): string | undefined {
-  //   let user = this.userService.getOneUserbyId(this.user.id!);
-  //   return user?.avatar;
-  // }
 }
