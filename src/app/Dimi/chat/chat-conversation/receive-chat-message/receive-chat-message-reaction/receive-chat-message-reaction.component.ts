@@ -68,6 +68,13 @@ export class ReceiveChatMessageReactionComponent {
     this.ticketService.setTicket(this.ticket);
   }
 
+  /* async updateEmojiText() {
+    this.emojiUsersText = await this.chatService.loadEmojiUsers(
+      this.emoji,
+      this.activeUser
+    );
+  } */
+
   handleEmojis(emojiType: string) {
     let emoji: Emoji = {
       messageId: this.ticket.id!,
@@ -75,8 +82,9 @@ export class ReceiveChatMessageReactionComponent {
       usersIds: [this.user.id!],
       deleted: false,
     };
-    this.chatService.sendEmoji(emoji, this.ticket);
+    this.chatService.sendEmoji(emoji, this.ticket, this.user);
   }
+
   addReactionDiv: boolean = false;
   openAddReactions() {
     this.addReactionDiv = !this.addReactionDiv;

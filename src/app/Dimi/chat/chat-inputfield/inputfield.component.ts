@@ -46,7 +46,6 @@ export class InputfieldComponent implements OnInit {
     private ticketService: TicketService,
     private subService: GlobalsubService
   ) {
-
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
@@ -57,8 +56,7 @@ export class InputfieldComponent implements OnInit {
 
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-    }
-    );
+    });
     this.selectedChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
     });
@@ -66,7 +64,6 @@ export class InputfieldComponent implements OnInit {
     this.ticket = this.ticketService.getTicket();
 
   }
-
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -97,7 +94,6 @@ export class InputfieldComponent implements OnInit {
       this.setDefaultImages();
     }
   }
-
 
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
@@ -159,7 +155,6 @@ export class InputfieldComponent implements OnInit {
       deleted: false,
     };
 
-
     if (message.message !== '') {
       try {
         this.databaseService.addChannelDataToDB('messages', message);
@@ -172,18 +167,19 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   async setSelectedChannel() {
     try {
       let selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(selectedUser);
+        const channel = await this.channelService.createDirectChannel(
+          selectedUser
+        );
         this.selectedChannel = channel;
         // todo navigiere zu dem channel
         //    this.channelService.selectChannel(channel);
       }
     } catch (error) {
-      console.log("Fehler beim Senden: ", error);
+      console.log('Fehler beim Senden: ', error);
     }
   }
 
@@ -194,18 +190,26 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+  filePreview: string | ArrayBuffer | null = null;
+  /* fileName: string = ''; */
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
+      /* this.fileName = file.name; */
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          /* this.UserService.activeUser.avatar = e.target.result as string;
-          this.upload(file); */
+          this.filePreview = e.target.result;
         }
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  sendFile(): void {
+    // Implementieren Sie die Logik zum Senden der Datei
+    console.log('Datei gesendet:');
   }
 }

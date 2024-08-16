@@ -229,7 +229,8 @@ export class ChatInformationComponent implements OnInit {
           this.privateChatPartner = chatPartner;
         });
     } else {
-      this.privateChatPartnerName = this.userService.activeUser.username + ' (Du)';
+      this.privateChatPartnerName =
+        this.userService.activeUser.username + ' (Du)';
     }
     this.returnChatPartnerAvatar(this.channelService.channel);
   }

@@ -1,6 +1,10 @@
-@if (activeChannelFromChat) {
-<main #scrollContainer (scroll)="onScroll()"
-  [ngStyle]="{'justify-content': allMessages.length === 0 ? 'flex-end' : 'center'}">
+<main
+  #scrollContainer
+  (scroll)="onScroll()"
+  [ngStyle]="{
+    'justify-content': allMessages.length === 0 ? 'flex-end' : 'flex-start'
+  }"
+>
   <div>
     @for (message of allMessages; track $index) {
 
@@ -53,4 +57,3 @@
 
   </div>
 </main>
-}
