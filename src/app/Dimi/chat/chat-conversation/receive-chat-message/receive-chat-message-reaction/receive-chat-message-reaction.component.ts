@@ -8,14 +8,7 @@ import { ChannelService } from '../../../../../shared/services/channel.service';
 import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../../../../../shared/services/database.service';
-
-interface Thread {
-  messageID: string;
-  threadID?: string;
-  channelID: string;
-  userID: string;
-
-}
+import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
 
 
 @Component({
@@ -59,12 +52,11 @@ export class ReceiveChatMessageReactionComponent {
 
   openMessage() {
 
-    let thread: Thread = {
+    let thread: ThreadChannel = {
       messageID: this.ticket.id!,
       channelID: this.ticket.channelId,
       userID: this.user.id!
     }
-
 
     this.dataService.addDataToDB('threads', thread).then((res) => {
       thread.threadID = res;
