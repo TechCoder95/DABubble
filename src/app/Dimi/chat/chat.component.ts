@@ -9,6 +9,7 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
+import { ThreadComponent } from "../../rabia/thread/thread.component";
 
 @Component({
   selector: 'app-chat',
@@ -18,7 +19,8 @@ import { DABubbleUser } from '../../shared/interfaces/user';
     ChatConversationComponent,
     ChatInformationComponent,
     InputfieldComponent,
-  ],
+    ThreadComponent
+],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
@@ -45,8 +47,6 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannelFromChat.emit(channel);
     });
-
-
   }
 
 
@@ -55,6 +55,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('ChatComponent destroyed');
     if (this.channelsub)
       this.channelsub.unsubscribe();
+  }
+
+
+
+  getsessionStorage(key: string) {
+    return JSON.parse(sessionStorage.getItem(key)!);
   }
 
 }

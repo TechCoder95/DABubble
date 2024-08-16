@@ -1,4 +1,5 @@
 
+<div class="flex">
 <mat-card>
   <app-chat-information [activeUserFromChat]="selectedUserFromChat"
     [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
@@ -9,3 +10,9 @@
     [messageType]="messageType">
   </app-chat-inputfield>
 </mat-card>
+
+@if (getsessionStorage('selectedThread')) {
+  <app-thread></app-thread>
+}
+
+</div>
