@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
 import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
@@ -8,18 +8,20 @@ import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
 import { TextChannel } from '../../shared/interfaces/textchannel';
+import { Router, RouterOutlet } from '@angular/router';
+import { ChannelService } from '../../shared/services/channel.service';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent],
+  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private globalSubService: GlobalsubService) {
+  constructor(private globalSubService: GlobalsubService, private router : Router) {
     let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
 
     if (googleUser) {
@@ -28,21 +30,18 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-
   userSub!: Subscription;
   googleUserSub!: Subscription;
-  activeChannelSub!: Subscription;
   activeThreadSub!: Subscription;
+
 
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
-  activeChannelChange = new EventEmitter<TextChannel>();
-
-  activeThread!: any; // Todo Rabia
-
 
 
   ngOnInit() {
+
+    
 
     if (!this.userSub)
       this.userSub = this.globalSubService.getUserObservable().subscribe(data => {
@@ -52,10 +51,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
-    if (!this.activeChannelSub)
-      this.activeChannelSub = this.globalSubService.getActiveChannelObservable().subscribe(data => {
-        this.activeChannelChange.emit(data);
-      });
+   
 
 
 
@@ -74,11 +70,19 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.googleUserSub)
       this.googleUserSub.unsubscribe();
 
-    if (this.activeChannelSub)
-      this.activeChannelSub.unsubscribe();
 
     if (this.activeThreadSub)
       this.activeThreadSub.unsubscribe();
   }
+
+
+  getStorage() {
+    if (sessionStorage.getItem('userLogin')) {
+      return true;
+    }
+    return false;
+  }
+
+
 
 }

@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { applyActionCode, confirmPasswordReset, getAuth, verifyBeforeUpdateEmail, verifyPasswordResetCode } from 'firebase/auth';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
-import { AuthenticationService } from './authentication.service';
 
 @Injectable({
   providedIn: 'root'

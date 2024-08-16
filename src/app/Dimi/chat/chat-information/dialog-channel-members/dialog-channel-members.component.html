@@ -8,11 +8,14 @@
 
     <section class="channel-members">
       <app-member [member]="activeUser"></app-member>
+    @for (member of this.channelMembers; track $index) {
+    <app-member [member]="member"></app-member>
+    }
+    @empty {
+    <p>Keine Mitglieder</p>
+    }
 
-      @for (member of channelMembers; track $index) {
-      <app-member [member]="member"></app-member>
-      }
-      <div (click)="addMembers()" class="add-member">
+    <div (click)="addMembers()" class="add-member">
         <div></div>
         <p>Mitglied Hinzufügen</p>
       </div>

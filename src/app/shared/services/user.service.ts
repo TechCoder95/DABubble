@@ -203,7 +203,7 @@ export class UserService {
           sessionStorage.removeItem('userLogin');
           sessionStorage.removeItem('uId');
           sessionStorage.removeItem('userLogin');
-          sessionStorage.removeItem('selectedChannelId');
+          sessionStorage.removeItem('selectedChannel');
           this.router.navigate(['/user/login']);
         });
     }

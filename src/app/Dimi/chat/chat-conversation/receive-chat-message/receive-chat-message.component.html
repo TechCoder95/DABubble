@@ -36,7 +36,6 @@
     <app-receive-chat-message-reaction
       [user]="user"
       [ticket]="receiveMessage"
-      [isPrivate]="isPrivate"
       *ngIf="!receiveMessage.deleted"
       class="slide-in"
       [ngClass]="{ 'position-component': repeatedMessage }"

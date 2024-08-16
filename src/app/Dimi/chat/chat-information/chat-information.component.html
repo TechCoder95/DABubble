@@ -1,3 +1,4 @@
+@if (selectedChannel) {
 <main>
   <section class="channel-information">
     <div
@@ -6,7 +7,7 @@
       (mouseenter)="changeTagImg(true)"
       (mouseleave)="changeTagImg(false)"
       (click)="
-        channelService.channel.isPrivate
+        selectedChannel.isPrivate
           ? null
           : openDialogChannelInformation($event)
       "
@@ -15,10 +16,10 @@
       <img
         [src]="tagImg"
         class="tag-img"
-        *ngIf="!channelService.channel.isPrivate"
+        *ngIf="! selectedChannel.isPrivate"
       />
       <span
-        *ngIf="channelService.channel.isPrivate" class="private-chat-avatar"
+        *ngIf=" selectedChannel.isPrivate" class="private-chat-avatar"
       >
         <img [src]="privatChatAvatar" class="privat-chat-avatar"/>
         <p
@@ -27,20 +28,20 @@
         ></p>
       </span>
 
-      <h2 *ngIf="!channelService.channel.isPrivate">
-        {{ (channelService.selectedChannel$ | async)?.name }}
+      <h2 *ngIf="! selectedChannel.isPrivate">
+        {{  selectedChannel.name }}
       </h2>
-      <h2 *ngIf="channelService.channel.isPrivate">
+      <h2 *ngIf=" selectedChannel.isPrivate">
         {{ privateChatPartnerName }}
       </h2>
       <img
         class="arrow-down"
         [src]="arrowImg"
-        *ngIf="!channelService.channel.isPrivate"
+        *ngIf="!selectedChannel.isPrivate"
       />
     </div>
 
-    <div class="channel-members" *ngIf="!channelService.channel.isPrivate">
+    <div class="channel-members" *ngIf="! selectedChannel.isPrivate">
       <div
         class="channel-member-amount"
         (click)="openDialogChannelMembers($event)"
@@ -53,7 +54,7 @@
           +{{ getExtraUserCount() }}
         </p>
         <p *ngIf="getExtraUserCount() < 6">
-          {{ channelService.channel.assignedUser.length }}
+          {{  selectedChannel.assignedUser.length }}
         </p>
       </div>
       <img
@@ -65,3 +66,4 @@
     </div>
   </section>
 </main>
+}
