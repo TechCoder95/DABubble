@@ -29,8 +29,9 @@ mat-tree-node{
 }
 
 mat-drawer-container {
-  padding: 40px;
-  background: initial;
+ /*  padding: 40px;
+  background: initial; */
+  border-radius: 30px;
 }
 
 .extend {
@@ -46,11 +47,11 @@ mat-drawer-container {
   }
 }
 
-.sidenav-style {
+/* .sidenav-style {
   border-radius: 30px;
   top: 40px;
   bottom: 40px;
-}
+} */
 
 .img-container {
   width: 50px;

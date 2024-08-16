@@ -8,6 +8,7 @@
   width: -webkit-fill-available;
   margin: 20px;
   border: 1px solid rgba(173, 176, 217, 1);
+  position: relative;
 
   > textarea {
     resize: none;
@@ -25,15 +26,15 @@
 .arrange-input-options {
   display: flex;
   justify-content: space-between;
+}
 
-  > .send-message-btn {
-    cursor: pointer;
-    width: 24px;
-    height: 56px;
+.send-message-btn {
+  cursor: pointer;
+  width: 24px;
+  height: 56px;
 
-    &:hover {
-      opacity: 0.6;
-    }
+  &:hover {
+    opacity: 0.6;
   }
 }
 
@@ -62,4 +63,39 @@
       width: 20px;
     }
   }
+}
+
+file-preview-container {
+  margin-top: 20px;
+}
+
+.file-preview {
+  display: flex;
+  justify-content: space-evenly;
+  position: absolute;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+  top: 0;
+  background: azure;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  border-radius: 20px;
+}
+
+.file-preview button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.file-preview button:hover {
+  background-color: #0056b3;
 }

@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { UserService } from '../../../../../shared/services/user.service';
 import { ChatService } from '../../../../../shared/services/chat.service';
+import { Subscription } from 'rxjs';
+import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-reaction',
@@ -16,15 +18,30 @@ export class ReactionComponent implements OnInit {
   @Input() emoji!: Emoji;
   @Input() activeUser!: DABubbleUser;
   @Input() message!: any;
+  @Input() messageType!:string;
   emojiUsersText: string = '';
+  private emojiSubscription!: Subscription;
 
   constructor(
     private userService: UserService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private subService: GlobalsubService
   ) {}
 
   ngOnInit() {
-    this.loadEmojiUsers();
+    this.emojiSubscription = this.subService
+      .getEmojiObservable()
+      .subscribe((emoji: Emoji) => {
+        this.loadEmojiReactions(emoji);
+      });
+
+    this.loadEmojiReactions(this.emoji);
+  }
+
+  ngOnDestroy() {
+    if (this.emojiSubscription) {
+      this.emojiSubscription.unsubscribe();
+    }
   }
 
   getEmojiImg(emoji: Emoji) {
@@ -45,10 +62,24 @@ export class ReactionComponent implements OnInit {
     return emoji.usersIds.length;
   }
 
-  async loadEmojiUsers() {
+  async handleClick() {
+    let currentEmoji: Emoji = {
+      messageId: this.emoji.messageId,
+      type: this.emoji.type,
+      usersIds: [this.activeUser.id!],
+      deleted: false,
+    };
+    await this.chatService.sendEmoji(
+      currentEmoji,
+      this.message,
+      this.activeUser
+    );
+  }
+
+  async loadEmojiReactions(emoji: Emoji) {
     let emojiReactors: string[] = [];
 
-    for (let id of this.emoji.usersIds) {
+    for (let id of emoji.usersIds) {
       let user = await this.userService.getOneUserbyId(id);
       if (user && user.username) {
         let username = user.username;
@@ -58,7 +89,6 @@ export class ReactionComponent implements OnInit {
         emojiReactors.push(username);
       }
     }
-
     this.emojiUsersText = this.usersReactionString(emojiReactors);
   }
 
@@ -71,19 +101,11 @@ export class ReactionComponent implements OnInit {
       return `<strong>${emojiReactors[0]}</strong> und <strong>${emojiReactors[1]}</strong> haben reagiert`;
     } else if (emojiReactors.length > 2) {
       const lastUser = emojiReactors.pop();
-      return `${emojiReactors.join(', ')} und ${lastUser} haben reagiert`;
+      return `<strong>${emojiReactors.join(
+        ', '
+      )}</strong> und <strong>${lastUser}</strong> haben reagiert`;
     } else {
       return emojiReactors.join('');
     }
-  }
-
-  handleClick() {
-    let currentEmoji: Emoji = {
-      messageId: this.emoji.messageId,
-      type: this.emoji.type,
-      usersIds: [this.activeUser.id!],
-      deleted: false,
-    };
-    this.chatService.sendEmoji(currentEmoji, this.message);
   }
 }

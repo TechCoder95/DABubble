@@ -18,6 +18,17 @@ main {
 
 .user-data {
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.color-black {
+  color: black;
+}
+
+.private-channel{
+  display: flex;
   align-items: flex-end;
   gap: 16px;
 }

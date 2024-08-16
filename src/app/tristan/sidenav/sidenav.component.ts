@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, EventEmitter } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -20,9 +20,8 @@ import { Subscription, take } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
-import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
-import { initializeApp } from 'firebase/app';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 
 interface Node {
@@ -54,7 +53,8 @@ interface FlattenedNode {
     MatButtonModule,
     ChatComponent,
     NewChatComponent,
-    ThreadComponent
+    ThreadComponent,
+    RouterModule
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -76,16 +76,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
   channels: TextChannel[] = [];
   private TREE_DATA: Node[] = [];
-  selectedChannel: TextChannel | null = null;
+  selectedChannel!: TextChannel;
   messages: ChatMessage[] = [];
   showNewChat: boolean = false;
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
-  @Input() activeUserChange!: any;
-  @Input() activeGoogleUserChange!: any;
-  @Input() activeChannelChange!: any;
-  @Input() allMessagesChange!: any;
+  @Input({ required: true }) activeUserChange!: any;
+  @Input({ required: true }) activeGoogleUserChange!: any;
+  activeChannelChange = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   activeGoogleUser!: User;
@@ -109,6 +108,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
+
+  unsubscribeFromChannel() {
+    if (this.channelService.channelSub)
+      this.channelService.channelSub.unsubscribe();
+    console.log('Unsubscribed from channel');
+
+  }
+
+
+
   async ngOnDestroy() {
     if (this.createdChannelSubscription) {
       this.createdChannelSubscription.unsubscribe();
@@ -121,17 +130,22 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.routeSubscription) {
       this.routeSubscription.unsubscribe();
     }
+
+    if (this.channelService.channelSub)
+      this.unsubscribeFromChannel();
+
   }
 
   async ngOnInit() {
+
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
 
     if (this.activeUser) {
       await this.initializeChannels();
 
-      this.routeSubscription = this.route.queryParams.subscribe(params => {
-        const channelId = params['channelId'];
+      this.routeSubscription = this.route.paramMap.subscribe(params => {
+        const channelId = params.get('channelId');
         if (channelId) {
           const selectedChannel = this.channels.find(channel => channel.id === channelId);
           if (selectedChannel) {
@@ -349,15 +363,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        this.channelService.selectChannel(selectedChannel);
-        sessionStorage.setItem('selectedChannelId', selectedChannel.id);
-        this.showNewChat = false;
 
-        this.router.navigate([], {
-          relativeTo: this.route,
-          queryParams: { channelId: selectedChannel.id },
-          queryParamsHandling: 'merge',
-        });
+        sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
+        this.showNewChat = false;
+        this.router.navigate(['/home']);
+        setTimeout(() => {
+          this.router.navigate(['/home', selectedChannel.id]);
+        }, 0.1);
+        this.subService.updateActiveChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();

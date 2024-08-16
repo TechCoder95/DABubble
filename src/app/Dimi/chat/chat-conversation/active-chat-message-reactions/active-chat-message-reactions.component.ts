@@ -21,6 +21,7 @@ import { GlobalsubService } from '../../../../shared/services/globalsub.service'
 export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   @Input() message!: any;
   @Input() user!: DABubbleUser;
+  @Input() messageType!:string;
   activeUser!: DABubbleUser;
   private emojiSubscription!: Subscription;
   private databaseSubscription!: Subscription;

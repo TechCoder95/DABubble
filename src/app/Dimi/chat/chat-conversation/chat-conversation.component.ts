@@ -26,6 +26,7 @@ import { Subscription } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
+import { TextChannel } from '../../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -40,21 +41,20 @@ import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.com
   styleUrl: './chat-conversation.component.scss',
 })
 export class ChatConversationComponent
-  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit
-{
+  implements OnInit, OnDestroy, AfterViewChecked, AfterViewInit {
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
+  @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
+  selectedChannel!: TextChannel;
 
-  @Input() activeChannelFromChat: any;
-  @Input() messagesFromChat: any;
-  @Input() activeUserFromChat: any;
+  @Input({ required: true }) activeChannelFromChat: any;
+  @Input({ required: true }) activeUserFromChat: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
-  isPrivate: boolean = this.channelService.channel.isPrivate;
 
   private allMessageSub!: Subscription;
 
@@ -66,31 +66,38 @@ export class ChatConversationComponent
     private subService: GlobalsubService
   ) {
     this.activeUser = this.userService.activeUser;
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
   messagesub!: Subscription;
 
   ngOnInit() {
+    
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
 
-    if (!this.channelService.channelSub)
-      this.channelService.channelSub = this.subService
-        .getAllMessageObservable()
-        .subscribe((message) => {
-          if (message.id) {
-            if (this.allMessages.some((msg) => msg.id === message.id)) {
-              return;
-            }
-            this.allMessages.push(message);
-            this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
-          }
-        });
 
-    this.activeChannelFromChat.subscribe((channel: any) => {
+    this.allMessages = [];
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+
+
+    this.activeChannelFromChat.subscribe((channel: TextChannel) => {
       this.allMessages = [];
       this.databaseService.subscribeToMessageDatainChannel(channel.id);
+      this.selectedChannelFromChat.emit(channel);
+    });
+
+
+
+    this.subService.getAllMessageObservable().subscribe((message) => {
+      if (message.id) {
+        if (this.allMessages.some((msg) => msg.id === message.id)) {
+          return;
+        }
+        this.allMessages.push(message);
+        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+      }
     });
   }
 

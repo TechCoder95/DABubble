@@ -2,62 +2,58 @@
   #scrollContainer
   (scroll)="onScroll()"
   [ngStyle]="{
-    'justify-content': allMessages.length === 0 ? 'flex-end' : 'center'
+    'justify-content': allMessages.length === 0 ? 'flex-end' : 'flex-start'
   }"
 >
   <div>
-    @if(allMessages.length > 0){ @for (message of allMessages; track $index) {
+    @for (message of allMessages; track $index) {
+
+
     @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
     1].timestamp)){
     <section class="message-day" #messageDay>
       <p></p>
       <h4>{{ formatDateWithDay(message.timestamp) }}</h4>
     </section>
-    } @if($index > 0 && message.senderId === allMessages[$index - 1].senderId &&
+    }
+
+
+    @if($index > 0 && message.senderId === allMessages[$index - 1].senderId &&
     allMessages[$index].senderName === this.activeUser.username &&
     isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
-    <app-send-chat-message
-      [sendMessage]="message"
-      [user]="activeUser"
-      [isPrivate]="isPrivate"
-      [index]="$index"
-      [repeatedMessage]="true"
+    <app-send-chat-message [sendMessage]="message" [user]="activeUser" [index]="$index" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
         repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
-      "
-    ></app-send-chat-message>
+      "></app-send-chat-message>
 
-    } @else if($index > 0 && message.senderId === allMessages[$index -
+    }
+
+
+    @else if($index > 0 && message.senderId === allMessages[$index -
     1].senderId && message.senderId !== this.activeUser.id &&
     isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
-    <app-receive-chat-message
-      [receiveMessage]="message"
-      [user]="activeUser"
-      [isPrivate]="isPrivate"
-      [repeatedMessage]="true"
+    <app-receive-chat-message [receiveMessage]="message" [user]="activeUser" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
         repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
-      "
-    ></app-receive-chat-message>
+      "></app-receive-chat-message>
 
-    } @else if (message.senderId === this.activeUser.id) {
-    <app-send-chat-message
-      [sendMessage]="message"
-      [user]="activeUser"
-      [isPrivate]="isPrivate"
-      [index]="$index"
-      [repeatedMessage]="false"
-    ></app-send-chat-message>
-    } @else {
-    <app-receive-chat-message
-      [receiveMessage]="message"
-      [user]="activeUser"
-      [isPrivate]="isPrivate"
-      [repeatedMessage]="false"
-    ></app-receive-chat-message>
-    } } }
+    }
+
+    @else if (message.senderId === this.activeUser.id) {
+    <app-send-chat-message [sendMessage]="message" [user]="activeUser" [index]="$index"
+      [repeatedMessage]="false"></app-send-chat-message>
+    }
+
+
+    @else {
+    <app-receive-chat-message [receiveMessage]="message" [user]="activeUser"
+      [repeatedMessage]="false"></app-receive-chat-message>
+    }
+    }
+    @empty {
+      <app-pre-chat-message [activeChannelFromChatconv]="activeChannelFromChat"></app-pre-chat-message>
+    }
+
+
   </div>
-  @if (allMessages.length === 0) {
-  <app-pre-chat-message></app-pre-chat-message>
-  }
 </main>

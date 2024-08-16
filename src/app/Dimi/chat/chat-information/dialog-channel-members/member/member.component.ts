@@ -20,16 +20,16 @@ DialogChannelMembersComponent;
 })
 export class MemberComponent implements OnDestroy {
   activeUser!: DABubbleUser;
-  @Input() member: any;
+  @Input({required:true}) member!: DABubbleUser;
   isLoggedIn: boolean | undefined;
   private userSubscription: Subscription | undefined;
 
   constructor(public dialog: MatDialog, private userService: UserService,private subService: GlobalsubService) {
-    this.subService.getUserObservable()
-      .subscribe(async (user) => {
-        this.activeUser = user;
-        this.isLoggedIn = user?.isLoggedIn;
-      });
+   
+  }
+
+  ngOnInit(): void {
+    this.activeUser = this.userService.activeUser;
   }
 
   ngOnDestroy() {

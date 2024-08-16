@@ -19,7 +19,19 @@ export class ChannelService {
   channel!: TextChannel;
   showSingleThread: boolean = false;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
+
+    this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.subService.updateActiveChannel(this.channel);
+  }
+
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+  }
+
 
   /**
    * Selects a channel.
@@ -29,8 +41,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    sessionStorage.setItem('selectedChannelId', channel.id);
-    this.databaseService.subscribeToChannelData(channel.id);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
   }
 
   /**
@@ -52,22 +63,11 @@ export class ChannelService {
   }
 
   async updateChannel(channel: TextChannel) {
-    const cleanChannel = this.cleanData(channel);
-    if (cleanChannel.id) {
-      await this.databaseService.updateDataInDB('channels', cleanChannel.id, cleanChannel);
-    }
+      await this.databaseService.updateDataInDB('channels', channel.id, channel);
+      sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
+      this.subService.updateActiveChannel(channel);
   }
 
-  private cleanData(channel: TextChannel): Partial<TextChannel> {
-    const cleanChannel: Partial<TextChannel> = {};
-    Object.keys(channel).forEach(key => {
-      const value = (channel as any)[key];
-      if (value !== undefined) {
-        (cleanChannel as any)[key] = value;
-      }
-    });
-    return cleanChannel;
-  }
 
   async updateChannelDescription(updatedDescription: any) {
     const currentChannel = this.selectedChannelSubject.value;
