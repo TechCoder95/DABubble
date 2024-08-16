@@ -61,15 +61,11 @@ export class ChatInformationComponent implements OnInit {
     private subService: GlobalsubService
   ) {
 
-
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
 
   }
 
   ngOnInit(): void {
-    /*  this.activeUserFromChat.subscribe((user: any) => {
-       this.activeUser = user;
-     }); */
     this.getPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
@@ -216,6 +212,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   getPrivateChatPartner() {
+    debugger;
     const privateChatPartnerID = this.channelService.channel.assignedUser.find(
       (userID) => userID !== this.userService.activeUser.id
     );
@@ -229,6 +226,7 @@ export class ChatInformationComponent implements OnInit {
           this.privateChatPartner = chatPartner;
         });
     } else {
+      debugger;
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
     }
@@ -236,6 +234,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   returnChatPartnerAvatar(selectChannel: TextChannel) {
+    debugger;
     if (selectChannel.assignedUser.length > 1) {
       this.privatChatAvatar = this.privateChatPartner?.avatar;
     } else {

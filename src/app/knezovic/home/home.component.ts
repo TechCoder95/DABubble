@@ -10,12 +10,13 @@ import { User } from 'firebase/auth';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { Router, RouterOutlet } from '@angular/router';
 import { ChannelService } from '../../shared/services/channel.service';
+import { CommonModule } from '@angular/common';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet],
+  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet, CommonModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

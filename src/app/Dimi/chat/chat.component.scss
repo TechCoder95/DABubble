@@ -9,6 +9,14 @@ mat-card {
   
 }
 
+:host{
+  width: 100%;
+}
+
+.height{
+  height: 100%;
+}
+
 :host ::ng-deep mat-card {
   border: none !important;
   box-shadow: none !important;
@@ -22,6 +30,10 @@ mat-card {
 app-chat-conversation {
   flex-grow: 1;
   overflow-y: auto;
+}
+
+app-chat{
+  width: 100% !important;
 }
 
 // app-chat-inputfield {

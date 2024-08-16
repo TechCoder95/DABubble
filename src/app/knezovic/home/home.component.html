@@ -5,10 +5,10 @@
                 <app-header [activeUserChange]="activeUserChange"
                     [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
             </div>
-            <div class="h-full flex w-full">
+            <div class="h-full flex w-full" class="adjustments">
                 <app-sidenav [activeUserChange]="activeUserChange"
                     [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
-                <div class="flex mt-5 w-full">
+                <div class="flex w-full">
                     <router-outlet />
                 </div>
             </div>
