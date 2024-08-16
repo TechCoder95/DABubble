@@ -5,7 +5,7 @@
     id=""
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
-    [placeholder]="'Nachricht an #' + selectedChannel?.name"
+    [placeholder]="getPlaceholderText()"
   ></textarea>
   
   <div class="arrange-input-options">

@@ -53,16 +53,16 @@ export class InputfieldComponent implements OnInit {
         this.activeUser = user;
       });
     }
-  
+
     if (this.selectedChannelFromChat) {
       this.selectedChannelFromChat.subscribe((channel: TextChannel) => {
         this.selectedChannel = channel;
       });
     }
-  
+
     this.ticket = this.ticketService.getTicket();
   }
-  
+
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -211,4 +211,14 @@ export class InputfieldComponent implements OnInit {
     // Implementieren Sie die Logik zum Senden der Datei
     console.log('Datei gesendet:');
   }
+
+  getPlaceholderText(): string {
+    if (this.messageType === MessageType.NewDirect) {
+      const selectedUser = this.userService.getSelectedUser();
+      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Nachricht an...';
+    }
+    return `Nachricht an #${this.selectedChannel?.name}`;
+  }
+
+
 }
