@@ -30,7 +30,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
-
   userSub!: Subscription;
   googleUserSub!: Subscription;
   activeThreadSub!: Subscription;
@@ -38,9 +37,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
-
-  activeThread!: any; // Todo Rabia
-
 
 
   ngOnInit() {
