@@ -12,6 +12,8 @@ import { ImprintComponent } from './rabia/imprint/imprint.component';
 import { PrivacyComponent } from './rabia/privacy/privacy.component';
 import { ChatComponent } from './Dimi/chat/chat.component';
 import { ThreadComponent } from './rabia/thread/thread.component';
+import { Component } from '@angular/core';
+import { NewChatComponent } from './rabia/new-chat/new-chat.component';
 
 
 export const routes: Routes = [
@@ -32,13 +34,15 @@ export const routes: Routes = [
     path: 'home', canActivate: [isLoggedIn],
     children: [
       {
-        path: ':channelId', component: ChatComponent, 
+        path: ':channelId', component: ChatComponent,
         children: [
-          { 
+          {
             //Todo Rabia: Add a route for the thread component
-            path: ':threadId', component: ThreadComponent, 
+            path: ':threadId', component: ThreadComponent,
           },
         ]
+      }, {
+        path: 'ncc', component: NewChatComponent,
       }
     ]
   },

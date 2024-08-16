@@ -78,7 +78,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private TREE_DATA: Node[] = [];
   selectedChannel!: TextChannel;
   messages: ChatMessage[] = [];
-  showNewChat: boolean = false;
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
@@ -363,9 +362,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-
         sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-        this.showNewChat = false;
         this.router.navigate(['/home']);
         setTimeout(() => {
           this.router.navigate(['/home', selectedChannel.id]);
@@ -411,7 +408,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   openNewChannel() {
-    this.showNewChat = true;
+    this.router.navigate(['/home/ncc']);
   }
 
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
