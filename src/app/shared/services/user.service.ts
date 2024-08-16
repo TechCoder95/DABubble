@@ -40,7 +40,6 @@ export class UserService {
 
       //Hier werden die Observables aktualisiert
       this.globalSubService.updateUser(this.activeUser);
-      this.globalSubService.updateGoogleUser(this.googleUser);
 
       //Hier sind die User abonniert
       this.DatabaseService.subscribeToUserData(this.activeUser.id!);
@@ -121,7 +120,6 @@ export class UserService {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.globalSubService.updateGoogleUser(googleUser);
     this.DatabaseService.readDataByField(this.collectionName, 'uid', googleUser.uid).then((user) => {
       this.activeUser = user[0] as unknown as DABubbleUser;
       if (this.activeUser === undefined) {

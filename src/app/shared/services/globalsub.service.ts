@@ -72,10 +72,12 @@ export class GlobalsubService {
 
   updateActiveChannel(data: TextChannel) {
     this.activeChannelSubject.next(data);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(data));
   }
 
   updateActiveThread(data: ThreadMessage) {
     this.activeThreadSubject.next(data);
+    sessionStorage.setItem('selectedThread', JSON.stringify(data));
   }
 
   updateEmoji(data: Emoji) {
