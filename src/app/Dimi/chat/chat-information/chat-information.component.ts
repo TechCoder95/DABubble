@@ -225,7 +225,6 @@ export class ChatInformationComponent implements OnInit {
           this.privateChatPartner = chatPartner;
         });
     } else {
-      debugger;
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
     }
@@ -233,7 +232,6 @@ export class ChatInformationComponent implements OnInit {
   }
 
   returnChatPartnerAvatar(selectChannel: TextChannel) {
-    debugger;
     if (selectChannel.assignedUser.length > 1) {
       this.privatChatAvatar = this.privateChatPartner?.avatar;
     } else {
