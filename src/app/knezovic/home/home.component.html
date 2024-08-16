@@ -1,15 +1,30 @@
-<div class="h-screen w-full">
-    <div class="h-full flex flex-column w-full">
-        <div>
-            <app-header [activeUserChange]="activeUserChange"
-                [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
-        </div>
-        <div class="h-full flex w-full">
-            <app-sidenav [activeUserChange]="activeUserChange"
-                [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
-            <div class="flex mt-5 w-full">
-                <router-outlet />
+@if (getStorage()){
+    <div class="h-screen w-full">
+        <div class="h-full flex flex-column w-full">
+            <div>
+                <app-header [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+            </div>
+            <div class="h-full flex w-full">
+                <app-sidenav [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
+                <div class="flex mt-5 w-full">
+                    <router-outlet />
+                </div>
             </div>
         </div>
     </div>
-</div>
+}
+@else {
+    <div class="h-screen w-full">
+        <div class="flex flex-column w-full">
+            <div>
+                <app-header [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+            </div>
+            <div class="absolute flex w-full align-items-center justify-content-center">
+                    <router-outlet />
+            </div>
+        </div>
+    </div>
+}

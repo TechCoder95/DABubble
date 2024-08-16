@@ -11,6 +11,7 @@ import { PasswordChangeComponent } from './rabia/password-change/password-change
 import { ImprintComponent } from './rabia/imprint/imprint.component';
 import { PrivacyComponent } from './rabia/privacy/privacy.component';
 import { ChatComponent } from './Dimi/chat/chat.component';
+import { ThreadComponent } from './rabia/thread/thread.component';
 
 
 export const routes: Routes = [
@@ -27,10 +28,19 @@ export const routes: Routes = [
       { path: 'privacy', component: PrivacyComponent },
     ]
   },
-  { path: 'home', canActivate: [isLoggedIn], 
+  {
+    path: 'home', canActivate: [isLoggedIn],
     children: [
-      {path: ':id', component: ChatComponent}
+      {
+        path: ':channelId', component: ChatComponent, 
+        children: [
+          { 
+            //Todo Rabia: Add a route for the thread component
+            path: ':threadId', component: ThreadComponent, 
+          },
+        ]
+      }
     ]
-   },
+  },
   { path: 'verfiyEmail', component: VariableContentComponent },
 ];

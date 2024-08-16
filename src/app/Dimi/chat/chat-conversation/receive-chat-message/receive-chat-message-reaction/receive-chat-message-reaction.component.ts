@@ -6,6 +6,17 @@ import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../../shared/services/channel.service';
 import { TicketService } from '../../../../../shared/services/ticket.service';
+import { Router } from '@angular/router';
+import { DatabaseService } from '../../../../../shared/services/database.service';
+
+interface Thread {
+  messageID: string;
+  threadID?: string;
+  channelID: string;
+  userID: string;
+
+}
+
 
 @Component({
   selector: 'app-receive-chat-message-reaction',
@@ -15,7 +26,7 @@ import { TicketService } from '../../../../../shared/services/ticket.service';
   styleUrl: './receive-chat-message-reaction.component.scss',
 })
 export class ReceiveChatMessageReactionComponent {
-  @Input() ticket: any;
+  @Input({ required: true }) ticket: any;
   @Input() user!: DABubbleUser;
   @Input() isPrivate!: boolean | undefined;
   checkMarkImg = './img/message-reaction-check-mark.svg';
@@ -26,8 +37,10 @@ export class ReceiveChatMessageReactionComponent {
   constructor(
     private channelService: ChannelService,
     private ticketService: TicketService,
-    private chatService: ChatService
-  ) {}
+    private chatService: ChatService,
+    private router: Router,
+    private dataService: DatabaseService
+  ) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -45,7 +58,21 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   openMessage() {
-    this.channelService.showSingleThread = true;
+
+    let thread: Thread = {
+      messageID: this.ticket.id!,
+      channelID: this.ticket.channelId,
+      userID: this.user.id!
+    }
+
+
+    this.dataService.addDataToDB('threads', thread).then((res) => {
+      thread.threadID = res;
+      this.router.navigate(['home', this.ticket.channelId, thread.threadID]);
+      sessionStorage.setItem('selectedThread', JSON.stringify(thread));
+      console.log('Thread created', thread);
+    });
+    
     this.ticketService.setTicket(this.ticket);
   }
 

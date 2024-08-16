@@ -79,4 +79,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.activeThreadSub.unsubscribe();
   }
 
+
+  getStorage() {
+    if (sessionStorage.getItem('userLogin')) {
+      return true;
+    }
+    return false;
+  }
+
+
+
 }

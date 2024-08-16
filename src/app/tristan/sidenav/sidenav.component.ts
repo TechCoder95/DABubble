@@ -145,7 +145,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.initializeChannels();
 
       this.routeSubscription = this.route.paramMap.subscribe(params => {
-        const channelId = params.get('id');
+        const channelId = params.get('channelId');
         if (channelId) {
           const selectedChannel = this.channels.find(channel => channel.id === channelId);
           if (selectedChannel) {
@@ -347,7 +347,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
         setTimeout(() => {
           this.router.navigate(['/home', selectedChannel.id]);
         }, 0.1);
-
         this.subService.updateActiveChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
