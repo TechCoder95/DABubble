@@ -18,6 +18,7 @@ export class ReactionComponent implements OnInit {
   @Input() emoji!: Emoji;
   @Input() activeUser!: DABubbleUser;
   @Input() message!: any;
+  @Input() messageType!:string;
   emojiUsersText: string = '';
   private emojiSubscription!: Subscription;
 
