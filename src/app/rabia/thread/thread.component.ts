@@ -52,8 +52,6 @@ export class ThreadComponent {
     isPrivate: false,
   };
 
-  @Input() activeUserFromSidenav : any;
-
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
@@ -61,10 +59,8 @@ export class ThreadComponent {
   ) {}
 
   ngOnInit() {
-  
-    this.activeUserFromSidenav.subscribe((user: any) => {
-      this.userService.activeUser = user;
-    });
+    console.log('ThreadComponent initialized');
+    
   }
 
   // ngOnInit() {

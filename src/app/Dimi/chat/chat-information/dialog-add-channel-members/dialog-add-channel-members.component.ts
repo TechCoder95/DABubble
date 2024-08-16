@@ -19,6 +19,7 @@ import {
   takeUntil,
 } from 'rxjs/operators';
 import { firstValueFrom, fromEvent, Subject } from 'rxjs';
+import { TextChannel } from '../../../../shared/interfaces/textchannel';
 
 @Component({
   selector: 'app-dialog-add-channel-members',
@@ -40,12 +41,15 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   searchResults: DABubbleUser[] = [];
   selectedUser: DABubbleUser[] = [];
   removeSelectedUserImg = './img/remove-selected-user.svg';
+  selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddChannelMembersComponent>,
     public channelService: ChannelService,
     public userService: UserService
-  ) {}
+  ) {
+
+  }
 
   
   ngAfterViewInit(): void {
@@ -114,11 +118,11 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   }
 
   async addUserToChannel(user: DABubbleUser) {
-    const channel = await firstValueFrom(this.channelService.selectedChannel$);
-    if (channel) {
-      if (!channel.assignedUser.includes(user.id!)) {
-        channel.assignedUser.push(user.id!);
-        await this.channelService.updateChannel(channel);
+    if (this.selectedChannel) {
+      if (!this.selectedChannel.assignedUser.includes(user.id!)) {
+        this.selectedChannel.assignedUser.push(user.id!);
+        await this.channelService.updateChannel(this.selectedChannel);
+        this.dialogRef.close(true);
       } else {
         alert('Sorry, User gibt es schon hier im channel');
       }

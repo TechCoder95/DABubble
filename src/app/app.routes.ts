@@ -10,6 +10,8 @@ import { PasswordResetComponent } from './rabia/password-reset/password-reset.co
 import { PasswordChangeComponent } from './rabia/password-change/password-change.component';
 import { ImprintComponent } from './rabia/imprint/imprint.component';
 import { PrivacyComponent } from './rabia/privacy/privacy.component';
+import { ChatComponent } from './Dimi/chat/chat.component';
+import { ThreadComponent } from './rabia/thread/thread.component';
 
 
 export const routes: Routes = [
@@ -21,13 +23,24 @@ export const routes: Routes = [
       { path: 'chooseAvatar', component: ChooseAvatarComponent },
       { path: 'login', component: LoginComponent },
       { path: 'password-reset', component: PasswordResetComponent },
-      { path: 'password-change', component: PasswordChangeComponent},
+      { path: 'password-change', component: PasswordChangeComponent },
       { path: 'imprint', component: ImprintComponent },
       { path: 'privacy', component: PrivacyComponent },
     ]
   },
-  { path: 'home', component: HomeComponent, canActivate: [isLoggedIn] },
+  {
+    path: 'home', canActivate: [isLoggedIn],
+    children: [
+      {
+        path: ':channelId', component: ChatComponent, 
+        children: [
+          { 
+            //Todo Rabia: Add a route for the thread component
+            path: ':threadId', component: ThreadComponent, 
+          },
+        ]
+      }
+    ]
+  },
   { path: 'verfiyEmail', component: VariableContentComponent },
-
-  
 ];

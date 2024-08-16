@@ -6,7 +6,15 @@ mat-card {
   flex-grow: 1;
   justify-content: space-between;
   overflow: hidden;
-  height: 40vh;
+  
+}
+
+:host{
+  width: 100%;
+}
+
+.height{
+  height: 100%;
 }
 
 :host ::ng-deep mat-card {
@@ -22,6 +30,10 @@ mat-card {
 app-chat-conversation {
   flex-grow: 1;
   overflow-y: auto;
+}
+
+app-chat{
+  width: 100% !important;
 }
 
 // app-chat-inputfield {
