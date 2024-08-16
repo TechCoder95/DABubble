@@ -8,6 +8,7 @@ import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
 import { GlobalsubService } from './globalsub.service';
+import { user } from '@angular/fire/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -289,41 +290,24 @@ export class UserService {
    */
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
-    const q = query(
-      usersRef,
-      where('username', '>=', searchText),
-      where('username', '<=', searchText + '\uf8ff')
-    );
-
-    const emailQuery = query(
-      usersRef,
-      where('mail', '>=', searchText),
-      where('mail', '<=', searchText + '\uf8ff')
-    );
-
-    const [nameSnapshot, emailSnapshot] = await Promise.all([
-      getDocs(q),
-      getDocs(emailQuery)
-    ]);
-
+    const lowerCaseSearchText = searchText.toLowerCase();
+  
+    const querySnapshot = await getDocs(usersRef);
     const users: DABubbleUser[] = [];
-
-    nameSnapshot.forEach(doc => {
+  
+        querySnapshot.forEach(doc => {
       const data = doc.data() as DABubbleUser;
       data.id = doc.id;
-      users.push(data);
-    });
-
-    emailSnapshot.forEach(doc => {
-      const data = doc.data() as DABubbleUser;
-      data.id = doc.id;
-      if (!users.some(user => user.id === data.id)) {
+      if (this.usernameOrEmailMatchText(data,lowerCaseSearchText)) {
         users.push(data);
       }
     });
     return users;
   }
 
+  usernameOrEmailMatchText(data:any, lowerCaseSearchText:string){
+    return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
+  }
 
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
