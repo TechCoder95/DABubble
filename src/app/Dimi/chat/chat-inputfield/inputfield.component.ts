@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnInit,
-  OnDestroy,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -54,9 +47,13 @@ export class InputfieldComponent implements OnInit {
     private subService: GlobalsubService
   ) {
     this.activeUser = this.userService.activeUser;
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
-  ngOnInit() {
+
+
+  ngOnInit(): void {
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
@@ -65,6 +62,7 @@ export class InputfieldComponent implements OnInit {
     });
 
     this.ticket = this.ticketService.getTicket();
+
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -103,11 +101,6 @@ export class InputfieldComponent implements OnInit {
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-  get placeholderText(): Observable<string> {
-    return this.channelService.selectedChannel$.pipe(
-      map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
-    );
-  }
 
   async sendMessage(type: MessageType) {
     switch (type) {

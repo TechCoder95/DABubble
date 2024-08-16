@@ -7,6 +7,7 @@ import {
   input,
   OnDestroy,
   OnInit,
+  AfterViewChecked
 } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
@@ -19,6 +20,8 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { user } from '@angular/fire/auth';
+import { DatabaseService } from '../../../shared/services/database.service';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-information',
@@ -43,25 +46,54 @@ export class ChatInformationComponent implements OnInit {
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
 
-  @Input() activeUserFromChat: any;
-  @Input() activeChannelFromChat: any;
+
+
+  selectedChannel!: TextChannel
+
+  @Input({ required: true }) activeUserFromChat: any;
+  @Input({ required: true }) activeChannelFromChat: any;
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    private databaseService: DatabaseService,
+    private subService: GlobalsubService
   ) {
-    this.getPrivateChatPartner();
+
+
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+
   }
 
   ngOnInit(): void {
     /*  this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-    }); */
+       this.activeUser = user;
+     }); */
+    this.getPrivateChatPartner();
 
-    this.activeChannelFromChat.subscribe((channel: any) => {
-      this.getAssignedUsers(channel);
+    this.selectedChannel.assignedUser.forEach((userID) => {
+      this.userService.getOneUserbyId(userID).then((user) => {
+        this.assignedUsers.push(user as unknown as DABubbleUser);
+      });
     });
+
+
+    this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
+      this.selectedChannel = channel;
+      this.assignedUsers = [];
+      channel.assignedUser.forEach((userID: string) => {
+        this.userService.getOneUserbyId(userID).then((user) => {
+          this.assignedUsers.push(user as unknown as DABubbleUser);
+        });
+      });
+
+    });
+
+  }
+
+  ngOnDestroy() {
+    this.channelSub.unsubscribe();
   }
 
   changeTagImg(hover: boolean) {

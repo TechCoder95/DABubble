@@ -41,21 +41,14 @@ export class ThreadComponent {
 
   activeUser!: DABubbleUser;
 
-  threadChannel: ChatMessage = {
-    channelId: this.ticket.channelId,
-    channelName: this.ticket.channelName,
-    message: this.ticket.message,
-    timestamp: this.ticket.timestamp,
-    senderName: this.ticket.senderName,
-    senderId: this.ticket.senderId,
-    allConversations: this.threadMessages,
-    id: this.ticket.id,
-    edited: this.ticket.edited,
-    deleted: this.ticket.deleted,
+  threadChannel: TextChannel = {
+    id: '',
+    name: '',
+    description: '',
+    owner: '',
+    assignedUser: [],
+    isPrivate: false,
   };
-
-
-
 
   constructor(
     public ticketService: TicketService,
@@ -68,14 +61,30 @@ export class ThreadComponent {
   }
 
   ngOnInit() {
-
-    this.activeUserFromSidenav.subscribe((user: any) => {
-      this.userService.activeUser = user;
-      console.log("activeUser", this.userService.activeUser);
-
-    });
+    console.log('ThreadComponent initialized');
+    
   }
 
+  // ngOnInit() {
+  //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
+  //     if (this.selectedTicket) {
+  //       this.selectedTicket = false;
+  //       return [];
+  //     }
+  //     return this.userService.searchUsersByNameOrEmail(value);
+  //   })
+  //   ).subscribe(results => {
+  //     this.searchResults = results;
+  //   });
+  // }
+
+  // selectUser(user: DABubbleUser) {
+  //   this.selectedTicket = true;
+  //   this.searchQuery = user.username;
+  //   this.searchControl.setValue(user.username);
+  //   this.searchResults = [];
+  //   this.userService.setSelectedUser(user);
+  // }
 
   get getTitle(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(

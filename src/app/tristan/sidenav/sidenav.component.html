@@ -62,7 +62,9 @@
                 'font-bold': isCategoryNode(channelNode),
                 'blue-action-name': isActionNode(channelNode),
                 'selected-channel': isSelectedChannel(channelNode)
-              }">{{ channelNode.name }}</span>
+              }">
+              
+              {{ channelNode.name }}</span>
           </div>
           <ng-container *ngIf="channelNode.name === 'Channels'">
             <div (click)="openAddChannelDialog()" class="add-channel hover">
@@ -74,24 +76,6 @@
     <div (click)="openNewChannel()" class="new-msg-mobile show-if-mobile"></div>
 
   </mat-drawer>
-
-
-  <div class="content extend" *ngIf="showNewChat">
-    <app-new-chat class="flex justify-content-between flex-auto" [selectedChannelFromSidenav]="activeChannelChange"
-      [activeUserFromSidenav]="activeUserChange"></app-new-chat>
-  </div>
-
-  <div class="content extend" *ngIf="!showNewChat">
-
-    <app-chat *ngIf="selectedChannel" [selectedChannelFromSidenav]="activeChannelChange"
-      [allMessagesfromSideNav]="allMessagesChange" [activeUserFromSidenav]="activeUserChange"></app-chat>
-
-
-    <app-thread *ngIf="channelService.showSingleThread" class=" pl-5"
-      [activeUserFromSidenav]="activeUserChange"></app-thread>
-  </div>
-
-
 </mat-drawer-container>
 
 <button class="absolute top-50 z-5 -rotate-90 mobile-view-btn" [ngStyle]="{ 'margin-left': '-50px' }"
