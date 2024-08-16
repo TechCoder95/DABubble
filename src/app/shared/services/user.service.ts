@@ -305,6 +305,26 @@ export class UserService {
     return users;
   }
 
+
+async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const lowerCaseSearchText = searchText.toLowerCase();
+    
+    const q = query(usersRef, where('nameLowerCase', '>=', lowerCaseSearchText), where('nameLowerCase', '<=', lowerCaseSearchText + '\uf8ff'));
+
+    const querySnapshot = await getDocs(q);
+    const users: DABubbleUser[] = [];
+  
+    querySnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      users.push(data);
+    });
+
+    return users;
+}
+
+
   usernameOrEmailMatchText(data:any, lowerCaseSearchText:string){
     return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
   }

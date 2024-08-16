@@ -49,6 +49,4 @@ export class NewChatComponent implements OnInit {
     this.searchResults = [];
     this.userService.setSelectedUser(user);
   }
-
-  
 }
