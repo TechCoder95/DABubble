@@ -56,7 +56,6 @@ export class ChatService {
       debugger;
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
-      debugger;
       this.addUserReaction(existingEmoji, emoji);
     }
   }
