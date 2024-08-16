@@ -31,6 +31,12 @@ main {
       text-align: center;
       font-size: 16px;
     }
+
+    &.send-message {
+      left: auto;
+      right: 50%;
+      border-radius: 30px 30px 0 30px;
+    }
   }
 
   &:hover > section {

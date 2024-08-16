@@ -1,5 +1,5 @@
 <main (click)="handleClick()">
-  <section>
+  <section [ngClass]="{'send-message': messageType === 'send'}">
     <img [src]="getEmojiImg(emoji)" />
     <p [innerHTML]="emojiUsersText"></p>
   </section>

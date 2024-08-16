@@ -212,8 +212,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   getPrivateChatPartner() {
-    debugger;
-    const privateChatPartnerID = this.channelService.channel.assignedUser.find(
+    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
       (userID) => userID !== this.userService.activeUser.id
     );
 
@@ -226,15 +225,13 @@ export class ChatInformationComponent implements OnInit {
           this.privateChatPartner = chatPartner;
         });
     } else {
-      debugger;
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
     }
-    this.returnChatPartnerAvatar(this.channelService.channel);
+    this.returnChatPartnerAvatar(this.selectedChannel);
   }
 
   returnChatPartnerAvatar(selectChannel: TextChannel) {
-    debugger;
     if (selectChannel.assignedUser.length > 1) {
       this.privatChatAvatar = this.privateChatPartner?.avatar;
     } else {
