@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -34,7 +41,7 @@ export class InputfieldComponent implements OnInit {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
-fileInput: any;
+  fileInput: any;
 
   //hier swillich den aktiven Channel an das parent component weitergeben
 
@@ -46,31 +53,19 @@ fileInput: any;
     private ticketService: TicketService,
     private subService: GlobalsubService
   ) {
-
     this.activeUser = this.userService.activeUser;
-
   }
-
-
 
   ngOnInit() {
+    this.activeUserFromChat.subscribe((user: any) => {
+      this.activeUser = user;
+    });
+    this.selectedChannelFromChat.subscribe((channel: any) => {
+      this.selectedChannel = channel;
+    });
 
-    if (this.threadAlreadyOpen) {
-      this.activeUserFromChat.subscribe((user: any) => {
-        this.activeUser = user;
-      }
-      );
-      this.selectedChannelFromChat.subscribe((channel: any) => {
-        this.selectedChannel = channel;
-      });
-    } else {
-
-      this.ticket = this.ticketService.getTicket();
-    }
-
-
+    this.ticket = this.ticketService.getTicket();
   }
-
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -102,13 +97,11 @@ fileInput: any;
     }
   }
 
-
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
     this.addEmojiImg = './img/add-emoji-default.svg';
     this.addLinkImg = './img/add-link-default.svg';
   }
-
 
   get placeholderText(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
@@ -172,7 +165,6 @@ fileInput: any;
       deleted: false,
     };
 
-
     if (message.message !== '') {
       try {
         this.databaseService.addChannelDataToDB('messages', message);
@@ -185,18 +177,19 @@ fileInput: any;
     }
   }
 
-
   async setSelectedChannel() {
     try {
       let selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(selectedUser);
+        const channel = await this.channelService.createDirectChannel(
+          selectedUser
+        );
         this.selectedChannel = channel;
         // todo navigiere zu dem channel
         //    this.channelService.selectChannel(channel);
       }
     } catch (error) {
-      console.log("Fehler beim Senden: ", error);
+      console.log('Fehler beim Senden: ', error);
     }
   }
 
@@ -207,18 +200,26 @@ fileInput: any;
     }
   }
 
+  filePreview: string | ArrayBuffer | null = null;
+  /* fileName: string = ''; */
+
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       const file = input.files[0];
+      /* this.fileName = file.name; */
       const reader = new FileReader();
       reader.onload = (e: ProgressEvent<FileReader>) => {
         if (e.target?.result) {
-          /* this.UserService.activeUser.avatar = e.target.result as string;
-          this.upload(file); */
+          this.filePreview = e.target.result;
         }
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  sendFile(): void {
+    // Implementieren Sie die Logik zum Senden der Datei
+    console.log('Datei gesendet:');
   }
 }

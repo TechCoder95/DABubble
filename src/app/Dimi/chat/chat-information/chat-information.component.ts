@@ -29,7 +29,7 @@ import { user } from '@angular/fire/auth';
 })
 export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
- /*  activeUser!: DABubbleUser; */
+  /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -55,7 +55,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-   /*  this.activeUserFromChat.subscribe((user: any) => {
+    /*  this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     }); */
 
@@ -197,7 +197,8 @@ export class ChatInformationComponent implements OnInit {
           this.privateChatPartner = chatPartner;
         });
     } else {
-      this.privateChatPartnerName = this.userService.activeUser.username + ' (Du)';
+      this.privateChatPartnerName =
+        this.userService.activeUser.username + ' (Du)';
     }
     this.returnChatPartnerAvatar(this.channelService.channel);
   }
