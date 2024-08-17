@@ -128,6 +128,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     if (this.channelService.channelSub)
       this.channelService.channelSub.unsubscribe();
+
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
@@ -161,7 +165,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       });
 
       this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
-        this.updateTreeData();  
+        this.updateTreeData();
       });
     }
   }

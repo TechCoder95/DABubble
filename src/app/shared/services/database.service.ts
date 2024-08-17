@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
@@ -6,38 +6,44 @@ import { GlobalsubService } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
+import { Subscription } from 'rxjs';
 
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class DatabaseService {
+export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
+  private unsubscribe!: (() => void);
 
-  constructor(private subService: GlobalsubService) { 
+  constructor(private subService: GlobalsubService) {
     this.listenToEntityChanges('users');
   }
 
-   listenToEntityChanges(entity: string) {
-    const collectionRef = collection(this.firestore, entity);  
-    onSnapshot(collectionRef, (snapshot) => {
+  listenToEntityChanges(entity: string) {
+    const collectionRef = collection(this.firestore, entity);
+    this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-        //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
+          //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
         }
         if (change.type === 'modified') {
           this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
-        //  console.log('Dokument geändert:', change.doc.data());
+          //  console.log('Dokument geändert:', change.doc.data());
         }
         if (change.type === 'removed') {
-        //  console.log('Dokument entfernt:', change.doc.data());
+          //  console.log('Dokument entfernt:', change.doc.data());
         }
       });
     });
   }
 
-
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -46,8 +52,8 @@ export class DatabaseService {
    * @returns A reference to the specified database collection.
    */
   getDataRef(collectionName: string) {
-    
-    
+
+
     return collection(this.firestore, collectionName);
   }
 
@@ -226,7 +232,7 @@ export class DatabaseService {
     });
   }
 
-  
+
   /**
    * Subscribes to channel data based on the provided channelId.
    * 
