@@ -43,7 +43,10 @@
         @for (result of searchResults; track $index) {
         <li (click)="putUserToInputfield(result)">
           <img [src]="result.avatar" />
-          <p>{{ result.username }}</p>
+          <span>
+            <h4>{{ result.username }}</h4>
+            <p>{{result.mail}}</p>
+          </span>
         </li>
         }
       </ul>

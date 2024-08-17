@@ -122,7 +122,7 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
       if (!this.selectedChannel.assignedUser.includes(user.id!)) {
         this.selectedChannel.assignedUser.push(user.id!);
         await this.channelService.updateChannel(this.selectedChannel);
-        this.dialogRef.close(true);
+       this.closeDialog();
       } else {
         alert('Sorry, User gibt es schon hier im channel');
       }
