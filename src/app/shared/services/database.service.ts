@@ -8,13 +8,36 @@ import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
 
 
+
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService {
   firestore: Firestore = inject(Firestore);
 
-  constructor(private subService: GlobalsubService) { }
+  constructor(private subService: GlobalsubService) { 
+    this.listenToEntityChanges('users');
+  }
+
+   listenToEntityChanges(entity: string) {
+    const collectionRef = collection(this.firestore, entity);  
+    onSnapshot(collectionRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          console.log('Neues Dokument hinzugefügt:', change.doc.data());
+        }
+        if (change.type === 'modified') {
+          this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
+          console.log('Dokument geändert:', change.doc.data());
+        }
+        if (change.type === 'removed') {
+          console.log('Dokument entfernt:', change.doc.data());
+        }
+      });
+    });
+  }
+
+
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -23,6 +46,8 @@ export class DatabaseService {
    * @returns A reference to the specified database collection.
    */
   getDataRef(collectionName: string) {
+    
+    
     return collection(this.firestore, collectionName);
   }
 

@@ -84,6 +84,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
   assignedUserMap: { [channelId: string]: DABubbleUser } = {};
+  userIsLoggedIn!: boolean;
 
   @Input({ required: true }) activeUserChange!: any;
   @Input({ required: true }) activeGoogleUserChange!: any;
@@ -96,14 +97,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private createdChannelSubscription!: Subscription;
   private activeUserChangeSubscription!: Subscription;
   private routeSubscription!: Subscription;
-
+  private userStatusSubscription!: Subscription;
 
   constructor(
     private dbService: DatabaseService,
     private dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
-    private subService: GlobalsubService,
+    private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute
   ) { }
@@ -111,13 +112,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
-
-  unsubscribeFromChannel() {
-    if (this.channelService.channelSub)
-      this.channelService.channelSub.unsubscribe();
-    console.log('Unsubscribed from channel');
-
-  }
 
   async ngOnDestroy() {
     if (this.createdChannelSubscription) {
@@ -133,12 +127,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
 
     if (this.channelService.channelSub)
-      this.unsubscribeFromChannel();
-
+      this.channelService.channelSub.unsubscribe();
   }
 
   async ngOnInit() {
-
     this.activeUser = this.userService.activeUser;
     this.isLoggedIn = this.activeUser?.isLoggedIn;
 
@@ -160,16 +152,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.activeUser = user;
       });
 
-      this.createdChannelSubscription = this.subService.getChannelCreatedObservable().subscribe((channel) => {
+      this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe((channel) => {
         const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
         if (!exists) {
           this.channels.push(channel);
           this.updateTreeData();
         }
       });
+
+      this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
+        this.updateTreeData();  
+      });
     }
   }
-
 
   private async initializeChannels() {
     // await this.initializeDefaultData();
@@ -180,8 +175,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
     await this.updateTreeData();
   }
-
-
 
   private async loadUserChannels(currentUser: DABubbleUser) {
     this.channels = await this.userService.getUserChannels(currentUser.id!);
@@ -208,9 +201,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
           avatar: currentUser.avatar,
           isLoggedIn: true  // Setze den Status auf true
         };
-        console.log("Current User:", this.activeUser);
-        console.log("Own Direct Channel Node:", ownDirectChannelNode);
-
         return ownDirectChannelNode;
       }
     }
@@ -232,7 +222,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
                 type: 'directChannel' as const,
                 children: [],
                 avatar: newUser.avatar,
-                isLoggedIn: newUser.isLoggedIn // Direkt hier den Status setzen
+                isLoggedIn: newUser.isLoggedIn
               };
               directChannelNodes.push(node);
               this.assignedUserMap[channel.id] = newUser;
@@ -299,7 +289,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           this.router.navigate(['/home', selectedChannel.id]);
           this.navToChannel(selectedChannel.id);
         }, 0.1);
-        this.subService.updateActiveChannel(selectedChannel);
+        this.subscriptionService.updateActiveChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();
