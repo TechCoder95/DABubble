@@ -65,7 +65,7 @@ export class ReceiveChatMessageReactionComponent {
       console.log('Thread created', thread);
     });
     
-    this.ticketService.setTicket(this.ticket);
+    this.chatService.setThread(thread);
   }
 
   /* async updateEmojiText() {
