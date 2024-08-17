@@ -52,6 +52,8 @@ export class ChatInformationComponent implements OnInit {
 
   @Input({ required: true }) activeUserFromChat: any;
   @Input({ required: true }) activeChannelFromChat: any;
+  @Input() activeUserFromThread: any;
+  @Input() activeChannelFromThread: any;  
 
   constructor(
     public dialog: MatDialog,

@@ -13,7 +13,6 @@ import { GlobalsubService } from './globalsub.service';
 })
 export class ChatService {
   allEmojis: Emoji[] = [];
-  private thread: any;
 
 
   constructor(
@@ -26,15 +25,7 @@ export class ChatService {
     await this.databaseService.addDataToDB('messages', message);
   }
 
-  setThread(thread: any) {
-    this.thread = thread;
-    console.log("Teste ob das die richtige Thread ist", this.thread);
-  }
 
-  
-  getThread() {
-    return this.thread;
-  }
 
   /* ==================================================================== */
   async sendEmoji(

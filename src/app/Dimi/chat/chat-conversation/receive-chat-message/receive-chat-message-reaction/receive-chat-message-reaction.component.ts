@@ -5,10 +5,10 @@ import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../../shared/services/channel.service';
-import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../../../../../shared/services/database.service';
 import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
+import { ThreadService } from '../../../../../shared/services/thread.service';
 
 
 @Component({
@@ -29,7 +29,7 @@ export class ReceiveChatMessageReactionComponent {
 
   constructor(
     private channelService: ChannelService,
-    private ticketService: TicketService,
+    private threadService: ThreadService,
     private chatService: ChatService,
     private router: Router,
     private dataService: DatabaseService
@@ -65,7 +65,7 @@ export class ReceiveChatMessageReactionComponent {
       console.log('Thread created', thread);
     });
     
-    this.chatService.setThread(thread);
+    this.threadService.setThread(thread);
   }
 
   /* async updateEmojiText() {
