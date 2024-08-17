@@ -44,7 +44,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     
 
     if (!this.userSub)
-      this.userSub = this.globalSubService.getUserObservable().subscribe(data => {
+      this.userSub = this.globalSubService.getUserObservable()
+    .pipe()
+    .subscribe(data => {
         this.activeUserChange.emit(data);
       });
     if (!this.googleUserSub)

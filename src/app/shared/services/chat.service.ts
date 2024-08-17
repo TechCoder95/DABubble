@@ -25,6 +25,8 @@ export class ChatService {
     await this.databaseService.addDataToDB('messages', message);
   }
 
+
+
   /* ==================================================================== */
   async sendEmoji(
     newEmoji: Emoji,
@@ -56,7 +58,6 @@ export class ChatService {
       debugger;
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
-      debugger;
       this.addUserReaction(existingEmoji, emoji);
     }
   }

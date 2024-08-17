@@ -289,6 +289,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.selectedChannel = selectedChannel;
         sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
         this.router.navigate(['/home']);
+        
         setTimeout(() => {
           this.router.navigate(['/home', selectedChannel.id]);
           this.navToChannel(selectedChannel.id);
