@@ -1,0 +1,17 @@
+.wrapper{
+    height: calc(100vh - 60px); //weil wegen 60px padding oben unten
+    padding: 30px;
+}
+
+main{
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: 100%
+}
+
+.adjustments{
+    display: flex;
+    height: 100%;
+    gap: 30px;
+}

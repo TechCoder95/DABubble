@@ -36,34 +36,33 @@ export class InputfieldComponent implements OnInit {
   @Input() activeUserFromChat: any;
   fileInput: any;
 
-  //hier swillich den aktiven Channel an das parent component weitergeben
 
   constructor(
     public channelService: ChannelService,
-    private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
-    private subService: GlobalsubService
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
-
-
   ngOnInit(): void {
+    if (this.activeUserFromChat) {
+      this.activeUserFromChat.subscribe((user: DABubbleUser) => {
+        this.activeUser = user;
+      });
+    }
 
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
-    });
-    this.selectedChannelFromChat.subscribe((channel: any) => {
-      this.selectedChannel = channel;
-    });
+    if (this.selectedChannelFromChat) {
+      this.selectedChannelFromChat.subscribe((channel: TextChannel) => {
+        this.selectedChannel = channel;
+      });
+    }
 
     this.ticket = this.ticketService.getTicket();
-
   }
+
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -215,4 +214,14 @@ export class InputfieldComponent implements OnInit {
     // Implementieren Sie die Logik zum Senden der Datei
     console.log('Datei gesendet:');
   }
+
+  getPlaceholderText(): string {
+    if (this.messageType === MessageType.NewDirect) {
+      const selectedUser = this.userService.getSelectedUser();
+      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Nachricht an...';
+    }
+    return `Nachricht an #${this.selectedChannel?.name}`;
+  }
+
+
 }

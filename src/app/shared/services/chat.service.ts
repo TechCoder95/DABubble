@@ -53,8 +53,10 @@ export class ChatService {
     const existingEmoji: any = this.getExistingEmoji(emoji);
     /* Überprüfen, ob der activeUser schon reagiert hat */
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
+      debugger;
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
+      debugger;
       this.addUserReaction(existingEmoji, emoji);
     }
   }

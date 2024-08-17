@@ -2,8 +2,10 @@
 <main>
   @if (selectedChannel.isPrivate && selectedChannel.assignedUser.length == 1) {
   <section class="user-data">
-    <img [src]="activeUser.avatar" class="avatar" />
-    <h4>{{ activeUser.username }}</h4>
+    <div class="private-channel">
+      <img [src]="activeUser.avatar" class="avatar" />
+      <h4>{{ activeUser.username }}</h4>
+    </div>
     <p>
       <strong>Dieser Raum ist nur für dich da.</strong> Mache dir Notizen, liste
       deine To-dos auf oder bewahre Links und Dateien griffbereit auf. Du kannst
