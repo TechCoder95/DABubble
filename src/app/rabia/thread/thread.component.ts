@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ThreadReceiveChatComponent } from './thread-receive-chat/thread-receive-chat.component';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
@@ -51,6 +51,9 @@ export class ThreadComponent {
     assignedUser: [],
     isPrivate: false,
   };
+
+  @Input() selectedChannelFromChat: any;
+  @Output() message
 
   constructor(
     public ticketService: TicketService,
