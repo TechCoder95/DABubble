@@ -53,7 +53,7 @@ export class ThreadComponent {
   };
 
   @Input() selectedChannelFromChat: any;
-  @Output() message
+  // @Output() message
 
   constructor(
     public ticketService: TicketService,
