@@ -78,7 +78,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private TREE_DATA: Node[] = [];
   selectedChannel!: TextChannel;
   messages: ChatMessage[] = [];
-  showNewChat: boolean = false;
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
 
@@ -145,7 +144,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.initializeChannels();
 
       this.routeSubscription = this.route.paramMap.subscribe(params => {
-        const channelId = params.get('channelId');
+        const channelId = params.get('channel/channelId');
         if (channelId) {
           const selectedChannel = this.channels.find(channel => channel.id === channelId);
           if (selectedChannel) {
@@ -181,64 +180,87 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   // todo
+
+
   private async initializeDefaultData() {
-    const defaultGroupChannels: TextChannel[] = [
-      { id: 'groupChannel1', name: 'Allgemein', assignedUser: [], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: '' },
-      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: [], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: '' }
-    ];
+    const userIdMap: { [key: string]: string } = {};
 
     const defaultUsers: DABubbleUser[] = [
-      { id: '', username: 'User1', mail: 'user1@example.com', isLoggedIn: true, avatar: './img/5.svg', uid: 'uid-user1' },
-      { id: '', username: 'User2', mail: 'user2@example.com', isLoggedIn: true, avatar: './img/2.svg', uid: 'uid-user2' },
-      { id: '', username: 'User3', mail: 'user4@example.com', isLoggedIn: true, avatar: './img/4.svg', uid: 'uid-user3' }
+      { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Felix-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Mia-uid' }
     ];
 
-    const defaultDirectChannels: TextChannel[] = [
-      { id: 'directChannel1', name: 'Direktnachricht 1', assignedUser: [], isPrivate: true, description: '', owner: '' },
-      { id: 'directChannel2', name: 'Direktnachricht 2', assignedUser: [], isPrivate: true, description: '', owner: '' }
-    ];
-
-    // Überprüfe, ob Standardbenutzer vorhanden sind
-    let standardUsersExist = true;
+    // Überprüfe und füge Standardbenutzer hinzu
     for (const user of defaultUsers) {
       const existingUser = await this.userService.getDefaultUserByUid(user.uid!);
       if (!existingUser) {
-        standardUsersExist = false;
-        break;
+        const userId = await this.userService.addDefaultUserToDatabase(user);
+        userIdMap[user.username] = userId;
+      } else {
+        userIdMap[user.username] = existingUser.id!;
+        console.log(`User ${user.username} already exists.`);
       }
     }
 
-    // Füge Standardbenutzer hinzu, wenn sie nicht vorhanden sind
-    if (!standardUsersExist) {
-      for (const user of defaultUsers) {
-        await this.userService.addDefaultUserToDatabase(user);
-      }
-    }
+    // Prüfe das Mapping
+    console.log("User ID Mapping:", userIdMap);
 
-    // Füge Standard-Gruppenkanäle hinzu
+    // Jetzt kannst du die IDs der erstellten Benutzer verwenden, um die Kanäle zu erstellen
+    const defaultGroupChannels: TextChannel[] = [
+      { id: 'groupChannel1', name: 'Allgemein', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: '' },
+      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: '' }
+    ];
+
+    const defaultDirectChannels: TextChannel[] = [
+      { id: 'directChannel1', name: 'Felix', assignedUser: [this.activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: '' },
+      { id: 'directChannel2', name: 'Jimmy', assignedUser: [this.activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: '' },
+      { id: 'directChannel3', name: 'Mia', assignedUser: [this.activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: '' }
+    ];
+
+    // Überprüfe und füge Standard-Gruppenkanäle hinzu
     for (const groupChannel of defaultGroupChannels) {
-      const existingGroupChannel = this.channels.find(channel => channel.name === groupChannel.name && !channel.isPrivate);
+      const existingGroupChannel = this.channels.find(channel =>
+        channel.name === groupChannel.name &&
+        channel.isPrivate === groupChannel.isPrivate &&
+        this.arrayEquals(channel.assignedUser, groupChannel.assignedUser)
+      );
+
       if (!existingGroupChannel) {
-        // todo   
         const newChannelId = await this.dbService.addChannelDataToDB('channels', groupChannel);
-        groupChannel.id = newChannelId;
-        this.channels.push(groupChannel);
+        this.channels.push({ ...groupChannel, id: newChannelId });
+      } else {
+        console.log(`Group channel ${groupChannel.name} already exists.`);
       }
     }
 
-    // Füge Standard-Direktnachrichten hinzu
+    // Überprüfe und füge Standard-Direktnachrichten hinzu
     for (const directChannel of defaultDirectChannels) {
-      const existingDirectChannel = this.channels.find(channel => channel.name === directChannel.name && channel.isPrivate);
+      const existingDirectChannel = this.channels.find(channel =>
+        channel.isPrivate &&
+        this.arrayEquals(channel.assignedUser, directChannel.assignedUser)
+      );
+
       if (!existingDirectChannel) {
-        // todo  
         const newChannelId = await this.dbService.addChannelDataToDB('channels', directChannel);
-        directChannel.id = newChannelId;
-        this.channels.push(directChannel);
+        this.channels.push({ ...directChannel, id: newChannelId });
+      } else {
+        console.log(`Direct channel ${directChannel.name} already exists.`);
       }
     }
-
-    await this.updateTreeData();
   }
+
+  // Hilfsfunktion zum Vergleich von Arrays (unabhängig von der Reihenfolge)
+  arrayEquals(a: any[], b: any[]): boolean {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((value, index) => value === sortedB[index]);
+  }
+
+
+
+
 
   private async loadUserChannels(currentUser: DABubbleUser) {
     this.channels = await this.userService.getUserChannels(currentUser.id!);
@@ -340,12 +362,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-
         sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-        this.showNewChat = false;
         this.router.navigate(['/home']);
         setTimeout(() => {
           this.router.navigate(['/home', selectedChannel.id]);
+          this.navToChannel(selectedChannel.id);
         }, 0.1);
         this.subService.updateActiveChannel(selectedChannel);
       }
@@ -353,7 +374,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.openAddChannelDialog();
     }
   }
-
 
   async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
@@ -366,6 +386,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
         }
       }
     });
+  }
+
+  navToChannel(channelId: string) {
+    this.router.navigate(['/home/channel', channelId]);
+  }
+
+  navToCreateNewChat() {
+    this.router.navigate(['/home/new-chat']);
   }
 
   isGroupChannel = (channel: FlattenedNode): boolean => {
@@ -386,10 +414,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   isSelectedChannel(node: FlattenedNode): boolean {
     return this.selectedChannel?.id === node.id;
-  }
-
-  openNewChannel() {
-    this.showNewChat = true;
   }
 
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {

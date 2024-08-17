@@ -54,9 +54,6 @@ export class GlobalsubService {
     return this.createChannelSubject.asObservable();
   }
 
-
-
-
   updateUser(data: DABubbleUser) {
     this.userSubject.next(data);
     sessionStorage.setItem('userLogin', JSON.stringify(data));

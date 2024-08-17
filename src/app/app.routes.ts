@@ -2,7 +2,6 @@ import { LoginComponent } from './knezovic/home/login/login.component';
 import { Routes } from '@angular/router';
 import { ChooseAvatarComponent } from './rabia/choose-avatar/choose-avatar.component';
 import { AddUserComponent } from './rabia/add-user/add-user.component';
-import { HomeComponent } from './knezovic/home/home.component';
 import { StartscreenComponent } from './knezovic/startscreen/startscreen.component';
 import { VariableContentComponent } from './knezovic/home/variable-content/variable-content.component';
 import { isLoggedIn } from './shared/guards/authguard.guard';
@@ -12,6 +11,7 @@ import { ImprintComponent } from './rabia/imprint/imprint.component';
 import { PrivacyComponent } from './rabia/privacy/privacy.component';
 import { ChatComponent } from './Dimi/chat/chat.component';
 import { ThreadComponent } from './rabia/thread/thread.component';
+import { NewChatComponent } from './rabia/new-chat/new-chat.component';
 
 
 export const routes: Routes = [
@@ -32,15 +32,19 @@ export const routes: Routes = [
     path: 'home', canActivate: [isLoggedIn],
     children: [
       {
-        path: ':channelId', component: ChatComponent, 
+        path: 'channel/:channelId', component: ChatComponent,
         children: [
-          { 
+          {
             //Todo Rabia: Add a route for the thread component
-            path: ':threadId', component: ThreadComponent, 
+            path: 'thread/:threadId', component: ThreadComponent,
           },
         ]
+      },
+      {
+        path: 'new-chat', component: NewChatComponent,
       }
     ]
   },
-  { path: 'verfiyEmail', component: VariableContentComponent },
+  { path: 'verifyEmail', component: VariableContentComponent },
 ];
+

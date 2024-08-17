@@ -305,6 +305,26 @@ export class UserService {
     return users;
   }
 
+
+async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const lowerCaseSearchText = searchText.toLowerCase();
+    
+    const q = query(usersRef, where('nameLowerCase', '>=', lowerCaseSearchText), where('nameLowerCase', '<=', lowerCaseSearchText + '\uf8ff'));
+
+    const querySnapshot = await getDocs(q);
+    const users: DABubbleUser[] = [];
+  
+    querySnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      users.push(data);
+    });
+
+    return users;
+}
+
+
   usernameOrEmailMatchText(data:any, lowerCaseSearchText:string){
     return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
   }
@@ -317,7 +337,6 @@ export class UserService {
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
-
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
@@ -332,17 +351,18 @@ export class UserService {
     }
   }
 
-
-  async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
+  async addDefaultUserToDatabase(user: DABubbleUser): Promise<string> {
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
       user.id = userRef.id;
-
+  
       await setDoc(userRef, user);
+      return userRef.id;  // Rückgabe der erstellten Benutzer-ID
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
     }
   }
+  
 
 }

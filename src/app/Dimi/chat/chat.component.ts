@@ -20,7 +20,7 @@ import { ThreadComponent } from "../../rabia/thread/thread.component";
     ChatInformationComponent,
     InputfieldComponent,
     ThreadComponent
-],
+  ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
@@ -32,16 +32,15 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   channelsub!: Subscription;
 
-  messageType: MessageType = MessageType.Groups; // eventuell todo: kein Unterschied zwischen Direct und Group Messages
-  // dimi fragen
+  messageTypeDirects: MessageType = MessageType.Directs;
+  messageType: MessageType = MessageType.Groups;
+
   constructor(private databaseService: DatabaseService, private subService: GlobalsubService) {
   }
 
-
-
   async ngOnInit() {
     this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));
-    
+
     this.selectedChannelFromChat.emit(JSON.parse(sessionStorage.getItem('selectedChannel')!));
 
     this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
@@ -49,18 +48,13 @@ export class ChatComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   ngOnDestroy() {
     console.log('ChatComponent destroyed');
     if (this.channelsub)
       this.channelsub.unsubscribe();
   }
 
-
-
   getsessionStorage(key: string) {
     return JSON.parse(sessionStorage.getItem(key)!);
   }
-
 }
