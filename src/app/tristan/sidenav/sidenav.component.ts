@@ -288,11 +288,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
         sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-        this.router.navigate(['/home']);
-        
-        setTimeout(() => {
+        await this.router.navigate(['/home']);
+        setTimeout(async () => {
           this.router.navigate(['/home', selectedChannel.id]);
-          this.navToChannel(selectedChannel.id);
+          await this.navToChannel(selectedChannel.id);
         }, 0.1);
         this.subscriptionService.updateActiveChannel(selectedChannel);
       }
@@ -314,12 +313,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-  navToChannel(channelId: string) {
-    this.router.navigate(['/home/channel', channelId]);
+  async navToChannel(channelId: string) {
+    await this.router.navigate(['/home/channel', channelId]);
   }
 
-  navToCreateNewChat() {
-    this.router.navigate(['/home/new-chat']);
+  async navToCreateNewChat() {
+    await this.router.navigate(['/home/new-chat']);
   }
 
   isGroupChannel = (channel: FlattenedNode): boolean => {

@@ -7,6 +7,7 @@ import { DABubbleUser } from '../interfaces/user';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
 import { Subscription } from 'rxjs';
+import { ThreadChannel } from '../interfaces/thread-channel';
 
 
 
@@ -52,8 +53,6 @@ export class DatabaseService implements OnDestroy {
    * @returns A reference to the specified database collection.
    */
   getDataRef(collectionName: string) {
-
-
     return collection(this.firestore, collectionName);
   }
 
@@ -135,6 +134,33 @@ export class DatabaseService implements OnDestroy {
     snapshot.forEach((doc) => messages.push(doc.data() as ChatMessage));
     return messages;
   }
+
+  public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
+    const threadsCollectionRef = this.getDataRef('threads');
+    console.log(threadsCollectionRef);
+    
+    const q = query(
+      threadsCollectionRef,
+      where('messageID', '==', messageId)
+    );
+    console.log(messageId);
+    console.log(q);
+    
+    const snapshot = await getDocs(q);
+    console.log(snapshot);
+    
+    if (snapshot.size === 1) {
+        const doc = snapshot.docs[0];
+        const threadData = doc.data() as ThreadChannel;
+        console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+        return threadData;
+    } else {
+        // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
+        return null;
+    }
+}
+
+
 
 
   /**

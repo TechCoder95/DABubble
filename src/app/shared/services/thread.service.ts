@@ -21,7 +21,7 @@ export class ThreadService {
 
   setThread(thread: ThreadChannel) {
     this.thread = thread;
-    console.log("Teste ob das die richtige Thread ist", this.thread, thread.threadID, this.thread.threadID);
+    // console.log("Teste ob das die richtige Thread ist", this.thread, thread.threadID, this.thread.threadID);
 
     // this.userService.getOneUserbyId(thread.userID).then((user) => {
     //   console.log("User", user);
@@ -31,7 +31,7 @@ export class ThreadService {
 
     this.dataService.readDataByID('threads', thread.channelID).then((thread) => {
       // this.threadID = thread.threadID;
-      console.log("Thread", thread);
+      // console.log("Thread", thread);
 
     });
 

@@ -62,6 +62,10 @@ export class ChannelService {
     }
   }
 
+  async getChannelById(channelId: string){
+  return await this.databaseService.readDataByID('channels', channelId);
+  }
+
   async updateChannel(channel: TextChannel) {
       await this.databaseService.updateDataInDB('channels', channel.id, channel);
       sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
