@@ -24,14 +24,14 @@ export class DatabaseService {
     onSnapshot(collectionRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          console.log('Neues Dokument hinzugefügt:', change.doc.data());
+        //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
         }
         if (change.type === 'modified') {
           this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
-          console.log('Dokument geändert:', change.doc.data());
+        //  console.log('Dokument geändert:', change.doc.data());
         }
         if (change.type === 'removed') {
-          console.log('Dokument entfernt:', change.doc.data());
+        //  console.log('Dokument entfernt:', change.doc.data());
         }
       });
     });
