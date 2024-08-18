@@ -7,6 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
+import { GlobalsubService } from './globalsub.service';
+import { user } from '@angular/fire/auth';
+
 
 @Injectable({
   providedIn: 'root'
@@ -24,8 +27,8 @@ export class UserService {
   avatarSelected: boolean = false;
   collectionName: string = 'users';
 
-
   constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
+     
     if (sessionStorage.getItem('userLoginGuest')) {
       this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
       this.globalSubService.updateUser(this.activeUser);
@@ -39,7 +42,6 @@ export class UserService {
 
       //Hier werden die Observables aktualisiert
       this.globalSubService.updateUser(this.activeUser);
-      this.globalSubService.updateGoogleUser(this.googleUser);
 
       //Hier sind die User abonniert
       this.DatabaseService.subscribeToUserData(this.activeUser.id!);
@@ -51,7 +53,6 @@ export class UserService {
       });
     }
   }
-
 
 
   /**
@@ -70,27 +71,6 @@ export class UserService {
 
 
   /**
-   * Performs a guest login by generating a unique guest name and writing it to the database.
-   */
-  guestLogin() {
-    let name = this.guestName;
-    let i = 1;
-    while (this.findGuestsinDB()) {
-      name = this.guestName + '_' + i;
-      i++;
-    }
-    this.guestName = name;
-    this.writeGuestToDB();
-  }
-
-
-  findGuestsinDB() {
-    return false;
-    //Todo Dome: Hier die Datenbank nach dem Namen "Guest" durchsuchen
-  }
-
-
-  /**
    * Writes a guest user to the database.
    * 
    * @returns {Promise<void>} A promise that resolves when the guest user is successfully written to the database.
@@ -99,10 +79,11 @@ export class UserService {
     let guestUser: DABubbleUser = { mail: this.guestName + '@' + this.guestName + '.de', username: this.guestName, uid: '', isLoggedIn: true, avatar: '/img/4.svg' };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
-    this.globalSubService.updateUser(this.completeUser(this.activeUser));
-    sessionStorage.setItem('userLoginGuest', JSON.stringify(this.activeUser));
+    this.globalSubService.updateUser(this.completeUser(guestUser));
+    sessionStorage.setItem('userLoginGuest', JSON.stringify(guestUser));
     this.updateLoggedInUser();
-    this.checkOnlineStatus(this.activeUser);
+    this.checkOnlineStatus(guestUser);
+    this.activeUser = guestUser;
     this.router.navigate(['/home']);
   }
 
@@ -112,12 +93,23 @@ export class UserService {
    * Removes the user login from the session storage, updates the active user subject,
    * deletes the user data from the database, and reloads the page.
    */
-  guestLogout() {
-    let id = sessionStorage.getItem('userLoginGuest')!;
-    this.activeUser = null!;
+  async guestLogout() {
+    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+    await this.DatabaseService.deleteDatabyField('channels', 'owner', id);
     this.DatabaseService.deleteDataFromDB(this.collectionName, id)
       .then(() => {
-        sessionStorage.removeItem('userLoginGuest');
+        // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
+
+        //ToDo Dome: Hier sollte dringend noch nach dem Neuladen, auch der GoogleUser gelöscht werden
+
+        if (this.googleUser)
+          this.googleUser.delete();
+        else {
+          this.googleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
+          this.googleUser.delete();
+        }
+        sessionStorage.removeItem('userLogin');
+        this.router.navigate(['/user/login']);
       });
   }
 
@@ -129,11 +121,10 @@ export class UserService {
    * @param googleUser - The Google user object containing the user's information.
    */
   async login(googleUser: User) {
-    this.globalSubService.updateGoogleUser(googleUser);
     this.DatabaseService.readDataByField(this.collectionName, 'uid', googleUser.uid).then((user) => {
       this.activeUser = user[0] as unknown as DABubbleUser;
       if (this.activeUser === undefined) {
-        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, activeChannels: [], uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
+        this.DatabaseService.addDataToDB(this.collectionName, { mail: googleUser.email, isLoggedIn: true, uid: googleUser.uid, username: googleUser.displayName, avatar: "" }).then((id) => {
           this.DatabaseService.readDataByID(this.collectionName, id).then((user) => {
             let x = user as DABubbleUser;
             this.activeUser = x;
@@ -160,36 +151,36 @@ export class UserService {
   }
 
 
-/**
- * Completes the user object by filling in missing properties with values from the Google user object.
- * If a property is already present in the user object, it will not be overwritten.
- * 
- * @param user - The user object to be completed.
- * @param googleUser - The Google user object containing additional information.
- * @returns The completed user object.
- */
-completeUser(user: DABubbleUser, googleUser ?: User) {
-  return user = {
-    id: user.id,
-    mail: user.mail || googleUser?.email || '',
-    username: user.username ? user.username : googleUser?.displayName || '',
-    uid: user.uid || googleUser?.uid || '',
-    isLoggedIn: user.isLoggedIn || true,
-    avatar: user.avatar || '',
-  };
-}
+  /**
+   * Completes the user object by filling in missing properties with values from the Google user object.
+   * If a property is already present in the user object, it will not be overwritten.
+   * 
+   * @param user - The user object to be completed.
+   * @param googleUser - The Google user object containing additional information.
+   * @returns The completed user object.
+   */
+  completeUser(user: DABubbleUser, googleUser?: User) {
+    return user = {
+      id: user.id,
+      mail: user.mail || googleUser?.email || '',
+      username: user.username ? user.username : googleUser?.displayName || '',
+      uid: user.uid || googleUser?.uid || '',
+      isLoggedIn: user.isLoggedIn || true,
+      avatar: user.avatar || '',
+    };
+  }
 
 
   /**
    * Updates the logged-in user's status and calls the updateUser method.
    */
-  async updateLoggedInUser(loginUser ?: DABubbleUser) {
-  if (loginUser) {
-    this.activeUser.mail = loginUser!.mail;
+  async updateLoggedInUser(loginUser?: DABubbleUser) {
+    if (loginUser) {
+      this.activeUser.mail = loginUser!.mail;
+    }
+    this.activeUser.isLoggedIn = true;
+    this.updateUser(this.activeUser);
   }
-  this.activeUser.isLoggedIn = true;
-  this.updateUser(this.activeUser);
-}
 
 
   /**
@@ -200,20 +191,22 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    * and navigates to the login page.
    */
   async logout() {
-  if (sessionStorage.getItem('userLoginGuest')) {
-    this.guestLogout();
-  } else {
-    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
-    this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
-      .then(() => {
-        sessionStorage.removeItem('userLogin');
-        sessionStorage.removeItem('uId');
-        sessionStorage.removeItem('userLogin');
-        sessionStorage.removeItem('selectedChannelId');
-        this.router.navigate(['/user/login']);
-      });
+
+    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
+    if (gast) {
+      this.guestLogout();
+    } else {
+      let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+      this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
+        .then(() => {
+          sessionStorage.removeItem('userLogin');
+          sessionStorage.removeItem('uId');
+          sessionStorage.removeItem('userLogin');
+          sessionStorage.removeItem('selectedChannel');
+          this.router.navigate(['/user/login']);
+        });
+    }
   }
-}
 
 
   /**
@@ -223,9 +216,9 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    * @param uid - The unique identifier of the user.
    */
   async register(email: string, username: string, uid: string) {
-  let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, avatar: '/img/avatar.svg' };
-  await this.DatabaseService.addDataToDB(this.collectionName, data)
-}
+    let data: DABubbleUser = { mail: email, username: username, uid: uid, isLoggedIn: false, avatar: '/img/avatar.svg' };
+    await this.DatabaseService.addDataToDB(this.collectionName, data)
+  }
 
 
   /**
@@ -235,19 +228,19 @@ completeUser(user: DABubbleUser, googleUser ?: User) {
    * @returns A Promise that resolves when the user is updated.
    */
   async updateUser(user: DABubbleUser) {
-  await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
-}
+    await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user)
+  }
 
 
-/**
- * Updates the username of the active user.
- * 
- * @param {string} username - The new username to be set.
- */
-updateUsername(username: string) {
-  this.activeUser.username = username;
-  this.updateUser(this.activeUser);
-}
+  /**
+   * Updates the username of the active user.
+   * 
+   * @param {string} username - The new username to be set.
+   */
+  updateUsername(username: string) {
+    this.activeUser.username = username;
+    this.updateUser(this.activeUser);
+  }
 
 
   /**
@@ -256,21 +249,21 @@ updateUsername(username: string) {
    * @returns {Promise<void>} - A promise that resolves when the user is deleted.
    */
   async deleteUser(userID: string) {
-  await this.DatabaseService.deleteDataFromDB(this.collectionName, userID)
-}
+    await this.DatabaseService.deleteDataFromDB(this.collectionName, userID)
+  }
 
 
-/**
- * Retrieves a user by their ID.
- * @param id - The ID of the user to retrieve.
- * @returns The user object matching the specified ID, or undefined if no user is found.
- */
-async getOneUserbyId(id: string): Promise <DABubbleUser> {
+  /**
+   * Retrieves a user by their ID.
+   * @param id - The ID of the user to retrieve.
+   * @returns The user object matching the specified ID, or undefined if no user is found.
+   */
+  async getOneUserbyId(id: string): Promise<DABubbleUser> {
 
-  let DAUser = await this.DatabaseService.readDataByID(this.collectionName, id)
+    let DAUser = await this.DatabaseService.readDataByID(this.collectionName, id)
 
-  return DAUser as DABubbleUser;
-}
+    return DAUser as DABubbleUser;
+  }
 
 
   /**
@@ -279,14 +272,14 @@ async getOneUserbyId(id: string): Promise <DABubbleUser> {
    * @param userId - The ID of the user.
    * @returns A promise that resolves to an array of TextChannel objects.
    */
-  async getUserChannels(userId: string): Promise < TextChannel[] > {
-  const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
-  const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
-  const snapshot = await getDocs(q);
-  const channels: TextChannel[] = [];
-  snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
-  return channels;
-}
+  async getUserChannels(userId: string): Promise<TextChannel[]> {
+    const channelsCollectionRef = await this.DatabaseService.getDataRef('channels');
+    const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
+    const snapshot = await getDocs(q);
+    const channels: TextChannel[] = [];
+    snapshot.forEach(doc => channels.push(doc.data() as TextChannel));
+    return channels;
+  }
 
 
   /**
@@ -295,78 +288,99 @@ async getOneUserbyId(id: string): Promise <DABubbleUser> {
    * @param searchText - The text to search for in the username or email.
    * @returns A promise that resolves to an array of DABubbleUser objects matching the search criteria.
    */
-  async searchUsersByNameOrEmail(searchText: string): Promise < DABubbleUser[] > {
-  const usersRef = collection(this.DatabaseService.firestore, 'users');
-  const q = query(
-    usersRef,
-    where('username', '>=', searchText),
-    where('username', '<=', searchText + '\uf8ff')
-  );
+  async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const lowerCaseSearchText = searchText.toLowerCase();
 
-  const emailQuery = query(
-    usersRef,
-    where('mail', '>=', searchText),
-    where('mail', '<=', searchText + '\uf8ff')
-  );
+    const querySnapshot = await getDocs(usersRef);
+    const users: DABubbleUser[] = [];
 
-  const [nameSnapshot, emailSnapshot] = await Promise.all([
-    getDocs(q),
-    getDocs(emailQuery)
-  ]);
+    querySnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      if (this.usernameOrEmailMatchText(data, lowerCaseSearchText)) {
+        users.push(data);
+      }
+    });
+    return users;
+  }
 
-  const users: DABubbleUser[] = [];
 
-  nameSnapshot.forEach(doc => {
-    const data = doc.data() as DABubbleUser;
-    data.id = doc.id;
-    users.push(data);
-  });
+  async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const lowerCaseSearchText = searchText.toLowerCase();
 
-  emailSnapshot.forEach(doc => {
-    const data = doc.data() as DABubbleUser;
-    data.id = doc.id;
-    if (!users.some(user => user.id === data.id)) {
+    const q = query(usersRef, where('nameLowerCase', '>=', lowerCaseSearchText), where('nameLowerCase', '<=', lowerCaseSearchText + '\uf8ff'));
+
+    const querySnapshot = await getDocs(q);
+    const users: DABubbleUser[] = [];
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
       users.push(data);
+    });
+
+    return users;
+  }
+
+
+  usernameOrEmailMatchText(data: any, lowerCaseSearchText: string) {
+    return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
+  }
+
+  setSelectedUser(user: DABubbleUser | null) {
+    this.selectedUserSubject.next(user);
+  }
+
+  getSelectedUser(): DABubbleUser | null {
+    return this.selectedUserSubject.value;
+  }
+
+  async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
+    const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
+    const q = query(usersRef, where('uid', '==', uid));
+    const snapshot = await getDocs(q);
+
+    if (snapshot.empty) {
+      return undefined;
+    } else {
+      const doc = snapshot.docs[0];
+      return { id: doc.id, ...doc.data() } as DABubbleUser;
     }
-  });
-  return users;
-}
-
-
-setSelectedUser(user: DABubbleUser | null) {
-  this.selectedUserSubject.next(user);
-}
-
-
-getSelectedUser(): DABubbleUser | null {
-  return this.selectedUserSubject.value;
-}
-
-
-  async getDefaultUserByUid(uid: string): Promise < DABubbleUser | undefined > {
-  const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
-  const q = query(usersRef, where('uid', '==', uid));
-  const snapshot = await getDocs(q);
-
-  if(snapshot.empty) {
-  return undefined;
-} else {
-  const doc = snapshot.docs[0];
-  return { id: doc.id, ...doc.data() } as DABubbleUser;
-}
   }
 
+  async addDefaultUserToDatabase(user: DABubbleUser): Promise<string> {
+    try {
+      const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
+      user.id = userRef.id;
 
-  async addDefaultUserToDatabase(user: DABubbleUser): Promise < void> {
-  try {
-    const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
-    user.id = userRef.id;
-
-    await setDoc(userRef, user);
-  } catch(err) {
-    console.error('Error adding user to DB', err);
-    throw err;
+      await setDoc(userRef, user);
+      return userRef.id;  
+    } catch (err) {
+      console.error('Error adding user to DB', err);
+      throw err;
+    }
   }
-}
+
+  async createDefaultUsers(): Promise<{ [key: string]: string }> {
+    const userIdMap: { [key: string]: string } = {};
+    const defaultUsers: DABubbleUser[] = [
+      { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/1.svg', uid: 'Felix-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: false, avatar: '/img/2.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/3.svg', uid: 'Mia-uid' }
+    ];
+
+    for (const user of defaultUsers) {
+      const existingUser = await this.getDefaultUserByUid(user.uid!);
+      if (!existingUser) {
+        const userId = await this.addDefaultUserToDatabase(user);
+        userIdMap[user.username] = userId;
+      } else {
+        userIdMap[user.username] = existingUser.id!;
+      }
+    }
+    return userIdMap;
+  }
 
 }

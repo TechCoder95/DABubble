@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, Pipe } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -13,11 +13,12 @@ import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -34,32 +35,34 @@ export class InputfieldComponent {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
+  fileInput: any;
 
-  //hier swillich den aktiven Channel an das parent component weitergeben
 
   constructor(
     public channelService: ChannelService,
-    private chatService: ChatService,
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
-    private subService: GlobalsubService
+    private router: Router
   ) {
     this.activeUser = this.userService.activeUser;
-
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
-
-
-  ngOnInit() {
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
+  ngOnInit(): void {
+    if (this.activeUserFromChat) {
+      this.activeUserFromChat.subscribe((user: DABubbleUser) => {
+        this.activeUser = user;
+      });
     }
-    );
-    this.selectedChannelFromChat.subscribe((channel: any) => {
-      this.selectedChannel = channel;
-      this.selectedChannelChanged.emit(channel);
-    });
+
+    if (this.selectedChannelFromChat) {
+      this.selectedChannelFromChat.subscribe((channel: TextChannel) => {
+        this.selectedChannel = channel;
+      });
+    }
+
+    this.ticket = this.ticketService.getTicket();
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -98,17 +101,9 @@ export class InputfieldComponent {
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-  get placeholderText(): Observable<string> {
-    return this.channelService.selectedChannel$.pipe(
-      map((channel: any) => `Nachricht an #${channel?.name || 'Channel'}`)
-    );
-  }
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
-        await this.send();
-        break;
       case MessageType.Directs:
         await this.send();
         break;
@@ -116,8 +111,13 @@ export class InputfieldComponent {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        await this.setSelectedChannel();
-        await this.send();
+        const channel = await this.channelService.findOrCreateChannelByUserID();
+        if (channel) {
+          this.selectedChannel = channel; 
+          this.channelService.selectChannel(channel);
+          await this.router.navigate(['/home/channel/' + channel.id]);         
+          await this.send();
+        }
         break;
       default:
         break;
@@ -156,7 +156,6 @@ export class InputfieldComponent {
       edited: false,
       deleted: false,
     };
-    
 
     if (message.message !== '') {
       try {
@@ -171,19 +170,9 @@ export class InputfieldComponent {
   }
 
 
-  async setSelectedChannel() {
-    try {
-      let selectedUser = this.userService.getSelectedUser();
-      if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(selectedUser);
-        this.selectedChannel = channel;
-        // todo navigiere zu dem channel
-    //    this.channelService.selectChannel(channel);
-      }
-    } catch (error) {
-      console.log("Fehler beim Senden: ", error);
-    }
-  }
+
+
+
 
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -191,4 +180,37 @@ export class InputfieldComponent {
       this.sendMessage(this.messageType);
     }
   }
+
+  filePreview: string | ArrayBuffer | null = null;
+  /* fileName: string = ''; */
+
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const file = input.files[0];
+      /* this.fileName = file.name; */
+      const reader = new FileReader();
+      reader.onload = (e: ProgressEvent<FileReader>) => {
+        if (e.target?.result) {
+          this.filePreview = e.target.result;
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  sendFile(): void {
+    // Implementieren Sie die Logik zum Senden der Datei
+    console.log('Datei gesendet:');
+  }
+
+  getPlaceholderText(): string {
+    if (this.messageType === MessageType.NewDirect) {
+      const selectedUser = this.userService.getSelectedUser();
+      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
+    }
+    return `Nachricht an #${this.selectedChannel?.name}`;
+  }
+
+
 }

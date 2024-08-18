@@ -1,5 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  Input,
+  input,
+  OnDestroy,
+  OnInit,
+  AfterViewChecked
+} from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { ComponentType } from '@angular/cdk/portal';
@@ -10,6 +19,9 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { user } from '@angular/fire/auth';
+import { DatabaseService } from '../../../shared/services/database.service';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-information',
@@ -21,6 +33,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 export class ChatInformationComponent {
   activeUser!: DABubbleUser;
   isChannel: boolean = true;
+  /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -34,28 +47,51 @@ export class ChatInformationComponent {
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
 
-  @Input() activeUserFromChat: any;
-  @Input() activeChannelFromChat: any;
+
+
+  selectedChannel!: TextChannel
+
+  @Input({ required: true }) activeUserFromChat: any;
+  @Input({ required: true }) activeChannelFromChat: any;
+  @Input() activeUserFromThread: any;
+  @Input() activeChannelFromThread: any;  
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    private databaseService: DatabaseService,
+    private subService: GlobalsubService
   ) {
-    this.activeUser = this.userService.activeUser;
+
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
   }
 
   ngOnInit(): void {
+    this.getPrivateChatPartner();
 
-    this.activeUserFromChat.subscribe((user: any) => {
-      this.activeUser = user;
+    this.selectedChannel.assignedUser.forEach((userID) => {
+      this.userService.getOneUserbyId(userID).then((user) => {
+        this.assignedUsers.push(user as unknown as DABubbleUser);
+      });
+    });
+
+
+    this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
+      this.selectedChannel = channel;
+      this.assignedUsers = [];
+      channel.assignedUser.forEach((userID: string) => {
+        this.userService.getOneUserbyId(userID).then((user) => {
+          this.assignedUsers.push(user as unknown as DABubbleUser);
+        });
+      });
 
     });
 
-    this.activeChannelFromChat.subscribe((channel: any) => {
-      this.getAssignedUsers(channel);
-    });
+  }
 
+  ngOnDestroy() {
+    this.channelSub.unsubscribe();
   }
 
   changeTagImg(hover: boolean) {
@@ -167,7 +203,7 @@ export class ChatInformationComponent {
     channel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
         this.assignedUsers.push(user as unknown as DABubbleUser);
-        });
+      });
     });
     return this.assignedUsers;
   }
@@ -177,29 +213,23 @@ export class ChatInformationComponent {
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
   }
 
-  getPrivateChatPartner(selectChannel: TextChannel) {
-    const privateChatPartnerID = selectChannel.assignedUser.find(
-      (userID) => userID !== this.activeUser.id
+  getPrivateChatPartner() {
+    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+      (userID) => userID !== this.userService.activeUser.id
     );
 
     if (privateChatPartnerID) {
-      this.userService.getOneUserbyId(privateChatPartnerID!).then((privateChatPartner) => {
-        let chatPartner = privateChatPartner as unknown as DABubbleUser;
-        this.privateChatPartnerName = chatPartner?.username
-        this.privateChatPartner = chatPartner;
-      });
-
+      this.userService
+        .getOneUserbyId(privateChatPartnerID!)
+        .then((privateChatPartner) => {
+          /* this.privateChatPartner = privateChatPartner as DABubbleUser; */
+          this.privateChatPartnerName = privateChatPartner?.username;
+          this.privatChatAvatar = privateChatPartner?.avatar;
+        });
     } else {
-      this.privateChatPartnerName = this.activeUser.username + ' (Du)';
-    }
-    this.returnChatPartnerAvatar(selectChannel);
-  }
-
-  returnChatPartnerAvatar(selectChannel: TextChannel) {
-    if (selectChannel.assignedUser.length > 1) {
-      this.privatChatAvatar = this.privateChatPartner?.avatar;
-    } else {
-      this.privatChatAvatar = this.activeUser.avatar;
+      this.privateChatPartnerName =
+        this.userService.activeUser.username + ' (Du)';
+        this.privatChatAvatar = this.userService.activeUser.avatar;
     }
   }
 }

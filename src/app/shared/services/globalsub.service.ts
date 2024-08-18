@@ -20,6 +20,7 @@ export class GlobalsubService {
   private createChannelSubject = new Subject<TextChannel>();
   private activeThreadSubject = new Subject<ThreadMessage>();
   private emjoiSubject = new Subject<Emoji>();
+  private updateUserChangesSubject = new Subject<DABubbleUser>();
 
 
   constructor() {
@@ -54,6 +55,12 @@ export class GlobalsubService {
     return this.createChannelSubject.asObservable();
   }
 
+  getUserUpdateFromDatabaseObservable() {
+    return this.updateUserChangesSubject.asObservable();
+  }
+
+
+
 
 
 
@@ -72,10 +79,12 @@ export class GlobalsubService {
 
   updateActiveChannel(data: TextChannel) {
     this.activeChannelSubject.next(data);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(data));
   }
 
   updateActiveThread(data: ThreadMessage) {
     this.activeThreadSubject.next(data);
+    sessionStorage.setItem('selectedThread', JSON.stringify(data));
   }
 
   updateEmoji(data: Emoji) {
@@ -90,7 +99,9 @@ export class GlobalsubService {
     this.createChannelSubject.next(data);
   }
 
-
+  updateUserFromDatabaseChange(data: DABubbleUser) {
+    this.updateUserChangesSubject.next(data);
+  }
 }
 
 

@@ -12,7 +12,7 @@
     </div>
     <div class="channel-name">
       <img src="./img/tag-hover-thin.svg" />
-      <p>{{ (channelService.selectedChannel$ | async)?.name }}</p>
+       <p>{{selectedChannel.name}}</p>
     </div>
   </section>
 
@@ -21,7 +21,6 @@
       type="text"
       class="inputfield-name"
       placeholder="Name eingeben"
-      (keyup)="searchUser($event)"
       #inputName
     />
     <span class="selected-users">
@@ -44,7 +43,10 @@
         @for (result of searchResults; track $index) {
         <li (click)="putUserToInputfield(result)">
           <img [src]="result.avatar" />
-          <p>{{ result.username }}</p>
+          <span>
+            <h4>{{ result.username }}</h4>
+            <p>{{result.mail}}</p>
+          </span>
         </li>
         }
       </ul>

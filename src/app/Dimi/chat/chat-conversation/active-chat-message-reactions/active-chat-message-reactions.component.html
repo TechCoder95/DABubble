@@ -4,6 +4,7 @@
 >
   @for (emoji of this.chatService.allEmojis; track $index) {
   <app-reaction
+    [messageType]="messageType"
     [emoji]="emoji"
     [activeUser]="user"
     [message]="message"

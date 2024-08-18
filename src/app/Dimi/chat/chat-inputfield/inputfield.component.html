@@ -1,21 +1,40 @@
+
 <section class="inputfield">
   <textarea
     name=""
     id=""
-    
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
-    [placeholder]="placeholderText | async"
+    [placeholder]="getPlaceholderText()"
   ></textarea>
-
+  
   <div class="arrange-input-options">
     <div class="chat-options">
       <div
         class="emoji"
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
+        (click)="fileInput.click()"
       >
+        <input
+          type="file"
+          #fileInput
+          (change)="onFileSelected($event)"
+          hidden
+        />
         <img [src]="addFilesImg" />
+      </div>
+
+      <div *ngIf="filePreview" class="file-preview-container">
+        <div class="file-preview">
+          <img [src]="filePreview" />
+          <!-- <button (click)="sendFile()">Senden</button> -->
+          <img
+            src="./img/send-message.svg"
+            class="send-message-btn"
+            (click)="sendMessage(messageType)"
+          />
+        </div>
       </div>
       <div>
         <img src="/img/line.svg" alt="" />

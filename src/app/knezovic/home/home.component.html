@@ -1,14 +1,30 @@
-<div class="h-screen w-full">
-    <div class="h-full flex flex-column">
-        <div>
-            <app-header></app-header>
-        </div>
-        <div class="h-full">
-            <app-sidenav
-            [activeUserChange]="activeUserChange"
-            [activeGoogleUserChange]="activeGoogleUserChange"
-            [activeChannelChange]="activeChannelChange"
-            ></app-sidenav>
-        </div>
+@if (getStorage()){
+    <div class="wrapper">
+       <main>
+            <section>
+                <app-header [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+            </section>
+            <section class="h-full flex w-full" class="adjustments">
+                <app-sidenav [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
+                <div class="flex w-full">
+                    <router-outlet />
+                </div>
+            </section>
+        </main>
     </div>
-</div>
+}
+@else {
+    <div>
+       <main>
+            <section>
+                <app-header [activeUserChange]="activeUserChange"
+                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+            </section>
+            <section class="absolute flex w-full align-items-center justify-content-center">
+                    <router-outlet />
+            </section>
+        </main>
+    </div>
+}

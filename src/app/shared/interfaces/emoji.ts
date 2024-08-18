@@ -3,5 +3,6 @@ export interface Emoji {
   type: string;
   id?: string;
   usersIds: string[];
+  /* reactions:string, */
   deleted: boolean;
 }

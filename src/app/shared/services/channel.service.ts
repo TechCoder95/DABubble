@@ -19,7 +19,19 @@ export class ChannelService {
   channel!: TextChannel;
   showSingleThread: boolean = false;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) { }
+  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
+
+    this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.subService.updateActiveChannel(this.channel);
+  }
+
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+  }
+
 
   /**
    * Selects a channel.
@@ -29,12 +41,7 @@ export class ChannelService {
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
-    sessionStorage.setItem('selectedChannelId', channel.id);
-    this.getActiveMessages(this.channel);
-  }
-
-  getActiveMessages(channel: TextChannel) {
-    this.databaseService.subscribeToMessages(channel)
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
   }
 
   /**
@@ -55,23 +62,16 @@ export class ChannelService {
     }
   }
 
-  async updateChannel(channel: TextChannel) {
-    const cleanChannel = this.cleanData(channel);
-    if (cleanChannel.id) {
-      await this.databaseService.updateDataInDB('channels', cleanChannel.id, cleanChannel);
-    }
+  async getChannelById(channelId: string) {
+    return await this.databaseService.readDataByID('channels', channelId);
   }
 
-  private cleanData(channel: TextChannel): Partial<TextChannel> {
-    const cleanChannel: Partial<TextChannel> = {};
-    Object.keys(channel).forEach(key => {
-      const value = (channel as any)[key];
-      if (value !== undefined) {
-        (cleanChannel as any)[key] = value;
-      }
-    });
-    return cleanChannel;
+  async updateChannel(channel: TextChannel) {
+    await this.databaseService.updateDataInDB('channels', channel.id, channel);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
+    this.subService.updateActiveChannel(channel);
   }
+
 
   async updateChannelDescription(updatedDescription: any) {
     const currentChannel = this.selectedChannelSubject.value;
@@ -91,6 +91,28 @@ export class ChannelService {
 
   getCleanJSON(updates: { [key: string]: any }): {} {
     return updates;
+  }
+
+  async createOwnDirectChannel(currentUser: DABubbleUser, channels: TextChannel[]): Promise<TextChannel> {
+    let directChannelExists = channels.find((channel: TextChannel) => {
+      return channel.isPrivate && channel.assignedUser.length === 1 && channel.assignedUser.includes(currentUser.id!)
+    });
+
+    if (!directChannelExists) {
+      const ownDirectChannel: TextChannel = {
+        id: '',
+        name: `${currentUser.username} (Du)`,
+        assignedUser: [currentUser.id!],
+        isPrivate: true,
+        description: '',
+        owner: currentUser.id!
+      };
+      const newChannelId = await this.databaseService.addChannelDataToDB('channels', ownDirectChannel);
+      ownDirectChannel.id = newChannelId;
+      directChannelExists = ownDirectChannel;
+    }
+
+    return directChannelExists;
   }
 
   async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
@@ -120,8 +142,7 @@ export class ChannelService {
     return existingChannel;
   }
 
-
-  async createGroupChannel(data: TextChannel) {
+  async createGroupChannel(data: TextChannel): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
       ...data,
@@ -129,13 +150,100 @@ export class ChannelService {
       isPrivate: false,
       owner: currentUser.id!
     };
+    const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+    newChannel.id = newChannelId;
+    return newChannel;
+  }
+
+  async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
+    const channels = await this.databaseService.readDataByField('channels', 'name', channel.name);
+    return channels.find((dbChannel: TextChannel) =>
+      dbChannel.name === channel.name &&
+      dbChannel.isPrivate === channel.isPrivate &&
+      this.arrayEquals(dbChannel.assignedUser, channel.assignedUser)
+    );
+  }
+
+  private arrayEquals(a: any[], b: any[]): boolean {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((value, index) => value === sortedB[index]);
+  }
+
+  createDefaultGroupChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+    return [
+      { id: '', name: 'Allgemein', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id! },
+      { id: '', name: 'Entwicklerteam', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id! }
+    ];
+  }
+
+  createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+    return [
+      { id: '', name: 'Felix', assignedUser: [activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: activeUser.id! },
+      { id: '', name: 'Jimmy', assignedUser: [activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: activeUser.id! },
+      { id: '', name: 'Mia', assignedUser: [activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: activeUser.id! }
+    ];
+  }
+
+  async addOrUpdateDefaultChannels(channels: TextChannel[]): Promise<TextChannel[]> {
+    const updatedChannels: TextChannel[] = [];
+    for (const channel of channels) {
+      const existingChannel = await this.findExistingChannelInDB(channel);
+      if (!existingChannel) {
+        const newChannelId = await this.databaseService.addChannelDataToDB('channels', channel);
+        channel.id = newChannelId;
+        updatedChannels.push(channel);
+      } else {
+        updatedChannels.push(existingChannel);
+      }
+    }
+
+    return updatedChannels;
+  }
+
+  async getAllChannels(): Promise<TextChannel[]> {
+    return await this.databaseService.readDataFromDB<TextChannel>('channels');
+  }
+
+  async isChannelAlreadyExists(channel: TextChannel): Promise<boolean> {
+    const allChannels = await this.getAllChannels();
+    return allChannels.some((existingChannel: TextChannel) =>
+      this.arrayEquals(existingChannel.assignedUser, channel.assignedUser)
+    );
+  }
+
+  async findOrCreateChannelByUserID(): Promise<TextChannel | null> {
     try {
-      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
-      newChannel.id = newChannelId;
-      return newChannel;
-    } catch (err) {
-      console.error('Fehler beim Hinzufügen des neuen Kanals', err);
+      const selectedUser = this.userService.getSelectedUser();
+      if (selectedUser) {
+        const textChannel: TextChannel = {
+          id: '',
+          name: '',
+          assignedUser: [this.userService.activeUser.id!, selectedUser.id!],
+          isPrivate: true,
+          description: '',
+          owner: this.userService.activeUser.id!
+        };
+
+        const channelExists = await this.isChannelAlreadyExists(textChannel);
+
+        if (channelExists) {
+          console.log("channel existiert bereits");
+
+          const allChannels = await this.getAllChannels();
+          return allChannels.find(channel => this.arrayEquals(channel.assignedUser, textChannel.assignedUser))!;
+        } else {
+          return await this.createDirectChannel(selectedUser);
+        }
+      }
+      return null;
+    } catch (error) {
       return null;
     }
   }
 }
+
+
+
+

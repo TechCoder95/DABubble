@@ -1,4 +1,4 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { EventEmitter, Injectable, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { DatabaseService } from './database.service';
@@ -11,8 +11,6 @@ import { DABubbleUser } from '../interfaces/user';
   providedIn: 'root',
 })
 export class ChatService {
-
-
   allEmojis: Emoji[] = [];
 
 
@@ -20,7 +18,7 @@ export class ChatService {
     private databaseService: DatabaseService,
     private userService: UserService,
     private subService: GlobalsubService
-  ) { }
+  ) {}
 
   async sendMessage(message: ChatMessage) {
     await this.databaseService.addDataToDB('messages', message);
@@ -28,19 +26,18 @@ export class ChatService {
 
 
 
-
   /* ==================================================================== */
-  async sendEmoji(newEmoji: Emoji, message: ChatMessage) {
-
-    //Todo Dome: 
-
+  async sendEmoji(
+    newEmoji: Emoji,
+    message: ChatMessage,
+    activeUser: DABubbleUser
+  ) {
     /* Überprüfen, ob Emoji bei der Nachricht schon existiert */
     if (this.emojiExistsOnMessage(newEmoji, message)) {
-      this.handleExistingEmojiOnMessage(newEmoji, message);
+      this.handleExistingEmojiOnMessage(newEmoji, message, activeUser);
     } else {
       this.createNewEmojiOnMessage(newEmoji, message);
     }
-
   }
 
   async createNewEmojiOnMessage(newEmoji: Emoji, message: ChatMessage) {
@@ -49,17 +46,20 @@ export class ChatService {
     this.subService.updateEmoji(newEmoji);
   }
 
-  handleExistingEmojiOnMessage(emoji: Emoji, message: ChatMessage) {
+  handleExistingEmojiOnMessage(
+    emoji: Emoji,
+    message: ChatMessage,
+    activeUser: DABubbleUser
+  ) {
     const existingEmoji: any = this.getExistingEmoji(emoji);
     /* Überprüfen, ob der activeUser schon reagiert hat */
     if (this.userHasAlreadyReacted(emoji, existingEmoji)) {
+      debugger;
       this.eliminateUserReaction(existingEmoji, emoji);
     } else {
       this.addUserReaction(existingEmoji, emoji);
     }
   }
-
-
 
   getExistingEmoji(emoji: Emoji) {
     return this.allEmojis.find(
@@ -84,15 +84,12 @@ export class ChatService {
       this.databaseService.deleteDataFromDB('emojies', existingEmoji.id!);
       this.subService.updateEmoji(existingEmoji);
     } else {
-      this.databaseService.updateDataInDB(
-        'emojies',
-        existingEmoji.id!,
-        existingEmoji
-      ).then(() => {
-        this.subService.updateEmoji(existingEmoji);
-      });
+      this.databaseService
+        .updateDataInDB('emojies', existingEmoji.id!, existingEmoji)
+        .then(() => {
+          this.subService.updateEmoji(existingEmoji);
+        });
     }
-
   }
 
   async addUserReaction(existingEmoji: Emoji, emoji: Emoji) {

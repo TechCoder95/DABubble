@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ThreadReceiveChatComponent } from './thread-receive-chat/thread-receive-chat.component';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
@@ -38,7 +38,7 @@ export class ThreadComponent {
   searchResults: DABubbleUser[] = [];
   searchQuery: string | undefined;
   showSingleThread!: boolean;
-  messageType = MessageType.Threads;
+  messageType: MessageType = MessageType.Threads;
   selectedTicket: boolean = false;
 
   activeUser!: DABubbleUser;
@@ -52,7 +52,8 @@ export class ThreadComponent {
     isPrivate: false,
   };
 
-  @Input() activeUserFromSidenav : any;
+  @Input() selectedChannelFromChat: any;
+  // @Output() message
 
   constructor(
     public ticketService: TicketService,
@@ -61,10 +62,8 @@ export class ThreadComponent {
   ) {}
 
   ngOnInit() {
-  
-    this.activeUserFromSidenav.subscribe((user: any) => {
-      this.userService.activeUser = user;
-    });
+    console.log('ThreadComponent initialized');
+    
   }
 
   // ngOnInit() {

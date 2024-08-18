@@ -24,9 +24,14 @@
   background-color: #eceefe;
 }
 
+mat-tree-node{
+  margin-top: 8px;
+}
+
 mat-drawer-container {
-  padding: 40px;
-  background: initial;
+ /*  padding: 40px;
+  background: initial; */
+  border-radius: 30px;
 }
 
 .extend {
@@ -42,11 +47,11 @@ mat-drawer-container {
   }
 }
 
-.sidenav-style {
+/* .sidenav-style {
   border-radius: 30px;
   top: 40px;
   bottom: 40px;
-}
+} */
 
 .img-container {
   width: 50px;
@@ -58,7 +63,7 @@ mat-drawer-container {
   }
 }
 
-.new-message {
+.new-channel {
   width: 40px;
   height: 40px;
   background-repeat: no-repeat;
@@ -99,8 +104,8 @@ mat-drawer-container {
 // }
 
 .online-status {
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   border-radius: 100%;
   border: 2px solid white;
   position: absolute;
