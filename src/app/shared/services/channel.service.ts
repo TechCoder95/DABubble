@@ -93,14 +93,13 @@ export class ChannelService {
     return updates;
   }
 
-  async createOwnDirectChannel(currentUser: DABubbleUser, channels: any): Promise<TextChannel> {
-    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string[]; }) => {
-      return channel.isPrivate 
-          && channel.assignedUser 
-          && channel.assignedUser.includes(currentUser.id!) 
-          && channel.assignedUser.length === 1;
-  });
-      if (!directChannelExists) {
+  async createOwnDirectChannel(currentUser: DABubbleUser, channels: TextChannel[]): Promise<TextChannel> {
+    console.log("channels: ", channels);
+    let directChannelExists = channels.find((channel: TextChannel) => {
+      return channel.isPrivate && channel.assignedUser.length === 1 && channel.assignedUser.includes(currentUser.id!)
+    });
+
+    if (!directChannelExists) {
       const ownDirectChannel: TextChannel = {
         id: '',
         name: `${currentUser.username} (Du)`,
@@ -113,6 +112,7 @@ export class ChannelService {
       ownDirectChannel.id = newChannelId;
       directChannelExists = ownDirectChannel;
     }
+
     return directChannelExists;
   }
 
@@ -218,7 +218,7 @@ export class ChannelService {
     try {
       const selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
-        const tempChannel: TextChannel = {
+        const textChannel: TextChannel = {
           id: '',
           name: '',
           assignedUser: [this.userService.activeUser.id!, selectedUser.id!],
@@ -226,19 +226,20 @@ export class ChannelService {
           description: '',
           owner: this.userService.activeUser.id!
         };
-  
-        const channelExists = await this.isChannelAlreadyExists(tempChannel);
-  
+
+        const channelExists = await this.isChannelAlreadyExists(textChannel);
+        console.log(channelExists);
+
         if (channelExists) {
+          console.log("channel existiert bereits");
+
           const allChannels = await this.getAllChannels();
-          return allChannels.find(channel =>
-            this.arrayEquals(channel.assignedUser, tempChannel.assignedUser)
-          )!;
+          return allChannels.find(channel => this.arrayEquals(channel.assignedUser, textChannel.assignedUser))!;
         } else {
           return await this.createDirectChannel(selectedUser);
         }
       }
-      return null; 
+      return null;
     } catch (error) {
       return null;
     }
