@@ -8,7 +8,7 @@ import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
 import { TextChannel } from '../../shared/interfaces/textchannel';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { ChannelService } from '../../shared/services/channel.service';
 import { CommonModule } from '@angular/common';
 
@@ -41,7 +41,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-
     
 
     if (!this.userSub)

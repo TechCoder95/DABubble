@@ -1,6 +1,6 @@
 export interface ThreadChannel {
     messageID: string;
-    threadID?: string;
+    id: string;
     channelID: string;
     userID: string;
 }

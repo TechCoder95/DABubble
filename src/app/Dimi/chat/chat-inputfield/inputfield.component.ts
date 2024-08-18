@@ -218,7 +218,7 @@ export class InputfieldComponent implements OnInit {
   getPlaceholderText(): string {
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
-      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Nachricht an...';
+      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
     }
     return `Nachricht an #${this.selectedChannel?.name}`;
   }

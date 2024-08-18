@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
@@ -6,15 +6,45 @@ import { GlobalsubService } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
+import { Subscription } from 'rxjs';
+import { ThreadChannel } from '../interfaces/thread-channel';
+
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class DatabaseService {
+export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
+  private unsubscribe!: (() => void);
 
-  constructor(private subService: GlobalsubService) { }
+  constructor(private subService: GlobalsubService) {
+    this.listenToEntityChanges('users');
+  }
+
+  listenToEntityChanges(entity: string) {
+    const collectionRef = collection(this.firestore, entity);
+    this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
+        }
+        if (change.type === 'modified') {
+          this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
+          //  console.log('Dokument geändert:', change.doc.data());
+        }
+        if (change.type === 'removed') {
+          //  console.log('Dokument entfernt:', change.doc.data());
+        }
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -104,6 +134,33 @@ export class DatabaseService {
     snapshot.forEach((doc) => messages.push(doc.data() as ChatMessage));
     return messages;
   }
+
+  public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
+    const threadsCollectionRef = this.getDataRef('threads');
+    // console.log(threadsCollectionRef);
+    
+    const q = query(
+      threadsCollectionRef,
+      where('messageID', '==', messageId)
+    );
+    console.log(messageId);
+    // console.log(q);
+    
+    const snapshot = await getDocs(q);
+    // console.log(snapshot);
+    
+    if (snapshot.size === 1) {
+        const doc = snapshot.docs[0];
+        const threadData = doc.data() as ThreadChannel;
+        console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+        return threadData;
+    } else {
+        // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
+        return null;
+    }
+}
+
+
 
 
   /**
@@ -201,7 +258,7 @@ export class DatabaseService {
     });
   }
 
-  
+
   /**
    * Subscribes to channel data based on the provided channelId.
    * 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ThreadReceiveChatComponent } from './thread-receive-chat/thread-receive-chat.component';
 import { InputfieldComponent } from '../../Dimi/chat/chat-inputfield/inputfield.component';
@@ -13,7 +13,7 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { TicketService } from '../../shared/services/ticket.service';
 import { ThreadMessage } from '../../shared/interfaces/threadmessage';
 import { TextChannel } from '../../shared/interfaces/textchannel';
-import { ChatMessage } from '../../shared/interfaces/chatmessage';
+import { ThreadService } from '../../shared/services/thread.service';
 
 @Component({
   selector: 'app-thread',
@@ -50,41 +50,22 @@ export class ThreadComponent {
     isPrivate: false,
   };
 
+  @Input() selectedChannelFromChat: any;
+  // @Output() message
+
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
-    private userService: UserService
-  ) {
-
-    console.log("das sollte der offene Thread sein", this.ticket, this.threadChannel);
-
-  }
+    private userService: UserService,
+    public threadService: ThreadService
+  ) {}
 
   ngOnInit() {
     console.log('ThreadComponent initialized');
     
   }
 
-  // ngOnInit() {
-  //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
-  //     if (this.selectedTicket) {
-  //       this.selectedTicket = false;
-  //       return [];
-  //     }
-  //     return this.userService.searchUsersByNameOrEmail(value);
-  //   })
-  //   ).subscribe(results => {
-  //     this.searchResults = results;
-  //   });
-  // }
 
-  // selectUser(user: DABubbleUser) {
-  //   this.selectedTicket = true;
-  //   this.searchQuery = user.username;
-  //   this.searchControl.setValue(user.username);
-  //   this.searchResults = [];
-  //   this.userService.setSelectedUser(user);
-  // }
 
   get getTitle(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
@@ -93,6 +74,6 @@ export class ThreadComponent {
   }
 
   close() {
-    this.channelService.showSingleThread = false;
+    this.threadService.selectedThread = false;
   }
 }

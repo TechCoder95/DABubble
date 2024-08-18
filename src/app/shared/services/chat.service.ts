@@ -25,6 +25,8 @@ export class ChatService {
     await this.databaseService.addDataToDB('messages', message);
   }
 
+
+
   /* ==================================================================== */
   async sendEmoji(
     newEmoji: Emoji,

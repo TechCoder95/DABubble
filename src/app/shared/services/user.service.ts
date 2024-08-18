@@ -10,6 +10,7 @@ import { setDoc, doc } from '@angular/fire/firestore';
 import { GlobalsubService } from './globalsub.service';
 import { user } from '@angular/fire/auth';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +27,8 @@ export class UserService {
   avatarSelected: boolean = false;
   collectionName: string = 'users';
 
-
   constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
+     
     if (sessionStorage.getItem('userLoginGuest')) {
       this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
       this.globalSubService.updateUser(this.activeUser);
@@ -52,7 +53,6 @@ export class UserService {
       });
     }
   }
-
 
 
   /**
@@ -291,14 +291,14 @@ export class UserService {
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
     const lowerCaseSearchText = searchText.toLowerCase();
-  
+
     const querySnapshot = await getDocs(usersRef);
     const users: DABubbleUser[] = [];
-  
-        querySnapshot.forEach(doc => {
+
+    querySnapshot.forEach(doc => {
       const data = doc.data() as DABubbleUser;
       data.id = doc.id;
-      if (this.usernameOrEmailMatchText(data,lowerCaseSearchText)) {
+      if (this.usernameOrEmailMatchText(data, lowerCaseSearchText)) {
         users.push(data);
       }
     });
@@ -306,15 +306,15 @@ export class UserService {
   }
 
 
-async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
+  async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
     const lowerCaseSearchText = searchText.toLowerCase();
-    
+
     const q = query(usersRef, where('nameLowerCase', '>=', lowerCaseSearchText), where('nameLowerCase', '<=', lowerCaseSearchText + '\uf8ff'));
 
     const querySnapshot = await getDocs(q);
     const users: DABubbleUser[] = [];
-  
+
     querySnapshot.forEach(doc => {
       const data = doc.data() as DABubbleUser;
       data.id = doc.id;
@@ -322,10 +322,10 @@ async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> 
     });
 
     return users;
-}
+  }
 
 
-  usernameOrEmailMatchText(data:any, lowerCaseSearchText:string){
+  usernameOrEmailMatchText(data: any, lowerCaseSearchText: string) {
     return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
   }
 
@@ -355,7 +355,7 @@ async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> 
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
       user.id = userRef.id;
-  
+
       await setDoc(userRef, user);
       return userRef.id;  // Rückgabe der erstellten Benutzer-ID
     } catch (err) {
@@ -363,6 +363,6 @@ async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> 
       throw err;
     }
   }
-  
+
 
 }
