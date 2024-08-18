@@ -3,7 +3,7 @@ import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
@@ -273,7 +273,7 @@ export class UserService {
    * @returns A promise that resolves to an array of TextChannel objects.
    */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
-    const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
+    const channelsCollectionRef = await this.DatabaseService.getDataRef('channels');
     const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
     const snapshot = await getDocs(q);
     const channels: TextChannel[] = [];
@@ -333,7 +333,6 @@ export class UserService {
     this.selectedUserSubject.next(user);
   }
 
-
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
@@ -357,12 +356,31 @@ export class UserService {
       user.id = userRef.id;
 
       await setDoc(userRef, user);
-      return userRef.id;  // Rückgabe der erstellten Benutzer-ID
+      return userRef.id;  
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
     }
   }
 
+  async createDefaultUsers(): Promise<{ [key: string]: string }> {
+    const userIdMap: { [key: string]: string } = {};
+    const defaultUsers: DABubbleUser[] = [
+      { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/1.svg', uid: 'Felix-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: false, avatar: '/img/2.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/3.svg', uid: 'Mia-uid' }
+    ];
+
+    for (const user of defaultUsers) {
+      const existingUser = await this.getDefaultUserByUid(user.uid!);
+      if (!existingUser) {
+        const userId = await this.addDefaultUserToDatabase(user);
+        userIdMap[user.username] = userId;
+      } else {
+        userIdMap[user.username] = existingUser.id!;
+      }
+    }
+    return userIdMap;
+  }
 
 }

@@ -52,7 +52,7 @@ export class DatabaseService implements OnDestroy {
    * @param {string} collectionName - The name of the database collection.
    * @returns A reference to the specified database collection.
    */
-  getDataRef(collectionName: string) {
+  async getDataRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
 
@@ -65,6 +65,14 @@ export class DatabaseService implements OnDestroy {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
+
+
+  async readDataFromDB<T>(collectionName: string): Promise<T[]> {
+    const collectionRef = collection(this.firestore, collectionName);
+    const snapshot = await getDocs(collectionRef);
+    return snapshot.docs.map((doc) => doc.data() as T);
+  }
+
 
   /**
    * Adds data to the specified database.
@@ -124,7 +132,7 @@ export class DatabaseService implements OnDestroy {
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
   public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
-    const messagesCollectionRef = this.getDataRef('messages');
+    const messagesCollectionRef = await this.getDataRef('messages');
     const q = query(
       messagesCollectionRef,
       where('channelId', '==', channelName)
@@ -136,8 +144,8 @@ export class DatabaseService implements OnDestroy {
   }
 
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
-    const threadsCollectionRef = this.getDataRef('threads');
-    // console.log(threadsCollectionRef);
+    const threadsCollectionRef = await this.getDataRef('threads');
+    console.log(threadsCollectionRef);
     
     const q = query(
       threadsCollectionRef,
@@ -159,9 +167,6 @@ export class DatabaseService implements OnDestroy {
         return null;
     }
 }
-
-
-
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -268,13 +273,16 @@ export class DatabaseService implements OnDestroy {
   async subscribeToChannelData(channelId: string) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', channelId)
+      where(
+        'id',
+        '==',
+        channel?.id || sessionStorage.getItem('selectedChannelId')
+      )
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveChannel(data as TextChannel);
+        this.onDataChange.next(data);
       });
     });
   }

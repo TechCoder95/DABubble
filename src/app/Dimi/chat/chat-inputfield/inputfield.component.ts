@@ -13,23 +13,24 @@ import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
-export class InputfieldComponent implements OnInit {
+export class InputfieldComponent {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
+  activeUser!: DABubbleUser;
+  selectedChannel: TextChannel | null = null;
   threadAlreadyOpen: boolean = false;
   ticket: any;
-  selectedChannel: TextChannel | null = null;
-  activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -42,6 +43,7 @@ export class InputfieldComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
+    private router: Router
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
@@ -62,7 +64,6 @@ export class InputfieldComponent implements OnInit {
 
     this.ticket = this.ticketService.getTicket();
   }
-
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -100,12 +101,9 @@ export class InputfieldComponent implements OnInit {
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
-        await this.send();
-        break;
       case MessageType.Directs:
         await this.send();
         break;
@@ -113,8 +111,13 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        await this.setSelectedChannel();
-        await this.send();
+        const channel = await this.channelService.findOrCreateChannelByUserID();
+        if (channel) {
+          this.selectedChannel = channel; 
+          this.channelService.selectChannel(channel);
+          await this.router.navigate(['/home/channel/' + channel.id]);         
+          await this.send();
+        }
         break;
       default:
         break;
@@ -169,21 +172,10 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  async setSelectedChannel() {
-    try {
-      let selectedUser = this.userService.getSelectedUser();
-      if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(
-          selectedUser
-        );
-        this.selectedChannel = channel;
-        // todo navigiere zu dem channel
-        //    this.channelService.selectChannel(channel);
-      }
-    } catch (error) {
-      console.log('Fehler beim Senden: ', error);
-    }
-  }
+
+
+
+
 
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
