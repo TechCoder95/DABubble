@@ -171,7 +171,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async initializeChannels() {
-    // await this.initializeDefaultData();
+   // await this.initializeDefaultData();
     await this.loadUserChannels(this.activeUser);
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
@@ -371,14 +371,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     // Jetzt kannst du die IDs der erstellten Benutzer verwenden, um die Kanäle zu erstellen
     const defaultGroupChannels: TextChannel[] = [
-      { id: 'groupChannel1', name: 'Allgemein', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: '' },
-      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: '' }
+      { id: 'groupChannel1', name: 'Allgemein', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: this.activeUser.id! },
+      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: this.activeUser.id! }
     ];
 
     const defaultDirectChannels: TextChannel[] = [
-      { id: 'directChannel1', name: 'Felix', assignedUser: [this.activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: '' },
-      { id: 'directChannel2', name: 'Jimmy', assignedUser: [this.activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: '' },
-      { id: 'directChannel3', name: 'Mia', assignedUser: [this.activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: '' }
+      { id: 'directChannel1', name: 'Felix', assignedUser: [this.activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: this.activeUser.id! },
+      { id: 'directChannel2', name: 'Jimmy', assignedUser: [this.activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: this.activeUser.id! },
+      { id: 'directChannel3', name: 'Mia', assignedUser: [this.activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: this.activeUser.id! }
     ];
 
     // Überprüfe und füge Standard-Gruppenkanäle hinzu

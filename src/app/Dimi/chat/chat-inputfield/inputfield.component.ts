@@ -13,11 +13,12 @@ import { MessageType } from '../../../shared/components/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -42,6 +43,7 @@ export class InputfieldComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
+    private router: Router
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
@@ -115,6 +117,7 @@ export class InputfieldComponent implements OnInit {
       case MessageType.NewDirect:
         await this.setSelectedChannel();
         await this.send();
+        await this.router.navigate(['/home/channel/' + this.selectedChannel]);
         break;
       default:
         break;
@@ -170,9 +173,7 @@ export class InputfieldComponent implements OnInit {
     try {
       let selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
-        const channel = await this.channelService.createDirectChannel(
-          selectedUser
-        );
+        const channel = await this.channelService.createDirectChannel(selectedUser);
         this.selectedChannel = channel;
         // todo navigiere zu dem channel
         //    this.channelService.selectChannel(channel);
