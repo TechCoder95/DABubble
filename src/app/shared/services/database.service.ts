@@ -52,7 +52,7 @@ export class DatabaseService implements OnDestroy {
    * @param {string} collectionName - The name of the database collection.
    * @returns A reference to the specified database collection.
    */
-  getDataRef(collectionName: string) {
+  async getDataRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
 
@@ -65,6 +65,14 @@ export class DatabaseService implements OnDestroy {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
+
+
+  async readDataFromDB<T>(collectionName: string): Promise<T[]> {
+    const collectionRef = collection(this.firestore, collectionName);
+    const snapshot = await getDocs(collectionRef);
+    return snapshot.docs.map((doc) => doc.data() as T);
+  }
+
 
   /**
    * Adds data to the specified database.
@@ -124,7 +132,7 @@ export class DatabaseService implements OnDestroy {
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
   public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
-    const messagesCollectionRef = this.getDataRef('messages');
+    const messagesCollectionRef = await this.getDataRef('messages');
     const q = query(
       messagesCollectionRef,
       where('channelId', '==', channelName)
@@ -136,7 +144,7 @@ export class DatabaseService implements OnDestroy {
   }
 
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
-    const threadsCollectionRef = this.getDataRef('threads');
+    const threadsCollectionRef = await this.getDataRef('threads');
     console.log(threadsCollectionRef);
     
     const q = query(

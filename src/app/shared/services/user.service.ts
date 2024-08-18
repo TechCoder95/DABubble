@@ -273,7 +273,7 @@ export class UserService {
    * @returns A promise that resolves to an array of TextChannel objects.
    */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
-    const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
+    const channelsCollectionRef = await this.DatabaseService.getDataRef('channels');
     const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
     const snapshot = await getDocs(q);
     const channels: TextChannel[] = [];

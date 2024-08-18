@@ -160,7 +160,7 @@ export class ChannelService {
     );
   }
 
-  private arrayEquals(a: any[], b: any[]): boolean {
+  arrayEquals(a: any[], b: any[]): boolean {
     if (a.length !== b.length) return false;
     const sortedA = [...a].sort();
     const sortedB = [...b].sort();
@@ -198,4 +198,19 @@ export class ChannelService {
     return updatedChannels;
   }
 
+  async getAllChannels(): Promise<TextChannel[]> {
+    return await this.databaseService.readDataFromDB<TextChannel>('channels');
+  }
+
+  async isChannelAlreadyExists(channel: TextChannel): Promise<boolean> {
+    const allChannels = await this.getAllChannels();
+    // Überprüfe, ob ein Channel existiert, der genau dieselben assignedUser wie der übergebene Channel hat.
+    return allChannels.some((existingChannel: TextChannel) =>
+      this.arrayEquals(existingChannel.assignedUser, channel.assignedUser)
+    );
+  }
 }
+
+
+
+
