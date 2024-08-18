@@ -14,11 +14,12 @@ import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
+import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule, EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
