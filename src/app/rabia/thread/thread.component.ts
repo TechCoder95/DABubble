@@ -19,6 +19,7 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { TicketService } from '../../shared/services/ticket.service';
 import { ThreadMessage } from '../../shared/interfaces/threadmessage';
 import { TextChannel } from '../../shared/interfaces/textchannel';
+import { ThreadService } from '../../shared/services/thread.service';
 
 @Component({
   selector: 'app-thread',
@@ -58,7 +59,8 @@ export class ThreadComponent {
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    public threadService: ThreadService
   ) {}
 
   ngOnInit() {
@@ -66,26 +68,7 @@ export class ThreadComponent {
     
   }
 
-  // ngOnInit() {
-  //   this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
-  //     if (this.selectedTicket) {
-  //       this.selectedTicket = false;
-  //       return [];
-  //     }
-  //     return this.userService.searchUsersByNameOrEmail(value);
-  //   })
-  //   ).subscribe(results => {
-  //     this.searchResults = results;
-  //   });
-  // }
 
-  // selectUser(user: DABubbleUser) {
-  //   this.selectedTicket = true;
-  //   this.searchQuery = user.username;
-  //   this.searchControl.setValue(user.username);
-  //   this.searchResults = [];
-  //   this.userService.setSelectedUser(user);
-  // }
 
   get getTitle(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
@@ -94,6 +77,6 @@ export class ThreadComponent {
   }
 
   close() {
-    this.channelService.showSingleThread = false;
+    this.threadService.selectedThread = false;
   }
 }
