@@ -52,6 +52,9 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   async openThread() {
+
+    this.threadService.selectedThread = true;
+
     let thread: ThreadChannel = {
       messageID: this.ticket.id!,
       channelID: this.ticket.channelId,
@@ -80,6 +83,9 @@ export class ReceiveChatMessageReactionComponent {
     }
 
     await this.threadService.setThread(newThread);
+
+    console.log(this.threadService.selectedThread );
+    
   }
 
   /* async updateEmojiText() {

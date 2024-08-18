@@ -10,6 +10,8 @@ import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { UserService } from '../../shared/services/user.service';
+import { ThreadService } from '../../shared/services/thread.service';
 
 @Component({
   selector: 'app-chat',
@@ -30,12 +32,21 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
 
+  @Output() activeUserFromThread!: any;
+
   channelsub!: Subscription;
+
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
 
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService) {
+  constructor(
+    private databaseService: DatabaseService,
+    private subService: GlobalsubService,
+    private userService: UserService,
+    public threadService: ThreadService) {
+
+    
   }
 
   async ngOnInit() {
@@ -46,8 +57,22 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannelFromChat.emit(channel);
     });
-  }
 
+    console.log(this.getsessionStorage('selectedThread'));
+
+    let selectedPerson = this.getsessionStorage('selectedThread');
+    console.log(selectedPerson.userID);
+
+    this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
+      this.selectedUserFromChat.emit(user);
+      console.log(user, "butz", this.threadService.selectedThread);
+
+      this.activeUserFromThread = user;
+    }
+    
+    );
+
+  }
   ngOnDestroy() {
     console.log('ChatComponent destroyed');
     if (this.channelsub)

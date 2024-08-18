@@ -137,17 +137,17 @@ export class DatabaseService implements OnDestroy {
 
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = this.getDataRef('threads');
-    console.log(threadsCollectionRef);
+    // console.log(threadsCollectionRef);
     
     const q = query(
       threadsCollectionRef,
       where('messageID', '==', messageId)
     );
     console.log(messageId);
-    console.log(q);
+    // console.log(q);
     
     const snapshot = await getDocs(q);
-    console.log(snapshot);
+    // console.log(snapshot);
     
     if (snapshot.size === 1) {
         const doc = snapshot.docs[0];

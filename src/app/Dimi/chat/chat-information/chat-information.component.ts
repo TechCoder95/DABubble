@@ -22,6 +22,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { user } from '@angular/fire/auth';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { ThreadService } from '../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-chat-information',
@@ -49,21 +50,25 @@ export class ChatInformationComponent implements OnInit {
 
 
   selectedChannel!: TextChannel
+  selectedThread = this.threadService.selectedThread;
 
-  @Input({ required: true }) activeUserFromChat: any;
-  @Input({ required: true }) activeChannelFromChat: any;
+  @Input() activeUserFromChat: any;
+  @Input() activeChannelFromChat: any;
   @Input() activeUserFromThread: any;
-  @Input() activeChannelFromThread: any;  
+
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private subService: GlobalsubService
+    private subService: GlobalsubService,
+    public threadService: ThreadService,
   ) {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+
+    
   }
 
   ngOnInit(): void {
@@ -74,6 +79,12 @@ export class ChatInformationComponent implements OnInit {
         this.assignedUsers.push(user as unknown as DABubbleUser);
       });
     });
+
+    // this.selectedThread.assignedUser.forEach((userID) => {
+    //   this.userService.getOneUserbyId(userID).then((user) => {
+    //     this.assignedUsers.push(user as unknown as DABubbleUser);
+    //   });
+    // });
 
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {

@@ -11,7 +11,7 @@
   </app-chat-inputfield>
 </mat-card>
 
-@if (getsessionStorage('selectedThread')) {
+@if (this.threadService.selectedThread) {
 
   <!-- Todo Rabia 
     Hier wird auf die Threads umgestellt! Der Code ist noch nciht aufbereitet! Das gilt es noch zu machen! 
@@ -27,8 +27,7 @@
   -->
 
    <mat-card>
-    <!-- <app-chat-information [activeUserFromThread]="selectedUserFromChat"
-      [activeChannelFromThread]="activeChannelFromThread"></app-chat-information> -->
+     <app-chat-information [activeUserFromThread]="activeUserFromThread" [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
     <!-- <app-chat-conversation [activeChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
       #scrollContainer>
     </app-chat-conversation>
@@ -37,7 +36,9 @@
     </app-chat-inputfield> -->
   </mat-card>
 
-<app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
+  
+
+<!-- <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread> -->
 
 
 }
