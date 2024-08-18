@@ -367,7 +367,7 @@ export class UserService {
     const userIdMap: { [key: string]: string } = {};
     const defaultUsers: DABubbleUser[] = [
       { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/1.svg', uid: 'Felix-uid' },
-      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: true, avatar: '/img/2.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: false, avatar: '/img/2.svg', uid: 'Jimmy-uid' },
       { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/3.svg', uid: 'Mia-uid' }
     ];
 
