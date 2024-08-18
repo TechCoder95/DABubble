@@ -62,14 +62,14 @@ export class ChannelService {
     }
   }
 
-  async getChannelById(channelId: string){
-  return await this.databaseService.readDataByID('channels', channelId);
+  async getChannelById(channelId: string) {
+    return await this.databaseService.readDataByID('channels', channelId);
   }
 
   async updateChannel(channel: TextChannel) {
-      await this.databaseService.updateDataInDB('channels', channel.id, channel);
-      sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
-      this.subService.updateActiveChannel(channel);
+    await this.databaseService.updateDataInDB('channels', channel.id, channel);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
+    this.subService.updateActiveChannel(channel);
   }
 
 
@@ -94,7 +94,7 @@ export class ChannelService {
   }
 
   async createOwnDirectChannel(currentUser: DABubbleUser, channels: any): Promise<TextChannel> {
-    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string | string[]; }) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!));
+    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string | string[]; }) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && this.channel.assignedUser.length === 1);
     if (!directChannelExists) {
       const ownDirectChannel: TextChannel = {
         id: '',

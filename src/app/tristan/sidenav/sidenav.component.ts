@@ -203,7 +203,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           type: 'directChannel' as const,
           children: [],
           avatar: currentUser.avatar,
-          isLoggedIn: true  // Setze den Status auf true
+          isLoggedIn: true  
         };
         return ownDirectChannelNode;
       }
@@ -245,7 +245,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
     if (ownNode)
       directChannelNodes.push(ownNode);
-    const otherNodes = await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
+    await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
       directChannelNodes.push(...otherNodes);
     });
     return directChannelNodes;
