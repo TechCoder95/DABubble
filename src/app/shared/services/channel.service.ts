@@ -94,7 +94,6 @@ export class ChannelService {
   }
 
   async createOwnDirectChannel(currentUser: DABubbleUser, channels: TextChannel[]): Promise<TextChannel> {
-    console.log("channels: ", channels);
     let directChannelExists = channels.find((channel: TextChannel) => {
       return channel.isPrivate && channel.assignedUser.length === 1 && channel.assignedUser.includes(currentUser.id!)
     });
@@ -214,7 +213,7 @@ export class ChannelService {
     );
   }
 
-  async findOrCreateChannel(): Promise<TextChannel | null> {
+  async findOrCreateChannelByUserID(): Promise<TextChannel | null> {
     try {
       const selectedUser = this.userService.getSelectedUser();
       if (selectedUser) {
@@ -228,7 +227,6 @@ export class ChannelService {
         };
 
         const channelExists = await this.isChannelAlreadyExists(textChannel);
-        console.log(channelExists);
 
         if (channelExists) {
           console.log("channel existiert bereits");

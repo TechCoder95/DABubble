@@ -27,7 +27,7 @@ export class OpenUserInfoComponent {
   // todo
  async newMessage() {    
     this.userService.setSelectedUser(this.getConvertedDABubbleUser());
-    const channel = await this.channelService.findOrCreateChannel();
+    const channel = await this.channelService.findOrCreateChannelByUserID();
     console.log("mein channel: ", channel);
    await this.router.navigate(['/home/channel/' + channel?.id]);
   }

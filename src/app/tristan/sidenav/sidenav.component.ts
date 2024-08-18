@@ -22,6 +22,7 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
+import { initializeApp } from 'firebase/app';
 
 
 interface Node {
@@ -123,6 +124,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
 
     if (this.routeSubscription) {
+      console.log("kill route subscription");
       this.routeSubscription.unsubscribe();
     }
 
@@ -136,38 +138,41 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
-    this.isLoggedIn = this.activeUser?.isLoggedIn;
-
     if (this.activeUser) {
+      this.isLoggedIn = this.activeUser?.isLoggedIn;
       await this.initializeChannels();
-
-      this.routeSubscription = this.route.paramMap.subscribe(params => {
-        const channelId = params.get('channel/channelId');
-        if (channelId) {
-          const selectedChannel = this.channels.find(channel => channel.id === channelId);
-          if (selectedChannel) {
-            this.selectedChannel = selectedChannel;
-            this.channelService.selectChannel(selectedChannel);
-          }
-        }
-      });
-
-      this.activeUserChangeSubscription = this.activeUserChange.subscribe(async (user: DABubbleUser) => {
-        this.activeUser = user;
-      });
-
-      this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe((channel) => {
-        const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
-        if (!exists) {
-          this.channels.push(channel);
-          this.updateTreeData();
-        }
-      });
-
-      this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
-        this.updateTreeData();
-      });
+      this.initializeSubscriptions();
     }
+  }
+
+  initializeSubscriptions() {
+    // todo greift nicht 
+    this.routeSubscription = this.route.paramMap.subscribe(params => {
+      const channelId = params.get('channel/channelId');
+      if (channelId) {
+        const selectedChannel = this.channels.find(channel => channel.id === channelId);
+        if (selectedChannel) {
+          this.selectedChannel = selectedChannel;
+          this.channelService.selectChannel(selectedChannel);
+        }
+      }
+    });
+
+    this.activeUserChangeSubscription = this.activeUserChange.subscribe(async (user: DABubbleUser) => {
+      this.activeUser = user;
+    });
+
+    this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe((channel) => {
+      const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
+      if (!exists) {
+        this.channels.push(channel);
+        this.updateTreeData();
+      }
+    });
+
+    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
+      this.updateTreeData();
+    });
   }
 
   private async initializeChannels() {
@@ -177,7 +182,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
       this.channels.push(ownDirectChannel)
     }
-    
     await this.updateTreeData();
   }
 

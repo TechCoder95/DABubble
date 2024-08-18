@@ -102,7 +102,6 @@ export class InputfieldComponent implements OnInit {
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -113,18 +112,18 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        const channel = await this.channelService.findOrCreateChannel();
+        const channel = await this.channelService.findOrCreateChannelByUserID();
         if (channel) {
+          this.selectedChannel = channel; 
+          this.channelService.selectChannel(channel);
+          await this.router.navigate(['/home/channel/' + channel.id]);         
           await this.send();
-          await this.router.navigate(['/home/channel/' + channel.id]);
         }
         break;
       default:
         break;
     }
   }
-
-
 
   async sendFromThread() {
     let threadMessage: ThreadMessage = {
