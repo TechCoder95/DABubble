@@ -356,12 +356,31 @@ export class UserService {
       user.id = userRef.id;
 
       await setDoc(userRef, user);
-      return userRef.id;  // Rückgabe der erstellten Benutzer-ID
+      return userRef.id;  
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
     }
   }
 
+  async createDefaultUsers(): Promise<{ [key: string]: string }> {
+    const userIdMap: { [key: string]: string } = {};
+    const defaultUsers: DABubbleUser[] = [
+      { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Felix-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/avatar.svg', uid: 'Mia-uid' }
+    ];
+
+    for (const user of defaultUsers) {
+      const existingUser = await this.getDefaultUserByUid(user.uid!);
+      if (!existingUser) {
+        const userId = await this.addDefaultUserToDatabase(user);
+        userIdMap[user.username] = userId;
+      } else {
+        userIdMap[user.username] = existingUser.id!;
+      }
+    }
+    return userIdMap;
+  }
 
 }

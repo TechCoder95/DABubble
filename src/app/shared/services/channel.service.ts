@@ -160,11 +160,42 @@ export class ChannelService {
     );
   }
 
- private arrayEquals(a: any[], b: any[]): boolean {
+  private arrayEquals(a: any[], b: any[]): boolean {
     if (a.length !== b.length) return false;
     const sortedA = [...a].sort();
     const sortedB = [...b].sort();
     return sortedA.every((value, index) => value === sortedB[index]);
+  }
+
+  createDefaultGroupChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+    return [
+      { id: '', name: 'Allgemein', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id! },
+      { id: '', name: 'Entwicklerteam', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id! }
+    ];
+  }
+
+  createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+    return [
+      { id: '', name: 'Felix', assignedUser: [activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: activeUser.id! },
+      { id: '', name: 'Jimmy', assignedUser: [activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: activeUser.id! },
+      { id: '', name: 'Mia', assignedUser: [activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: activeUser.id! }
+    ];
+  }
+
+  async addOrUpdateDefaultChannels(channels: TextChannel[]): Promise<TextChannel[]> {
+    const updatedChannels: TextChannel[] = [];
+    for (const channel of channels) {
+      const existingChannel = await this.findExistingChannelInDB(channel);
+      if (!existingChannel) {
+        const newChannelId = await this.databaseService.addChannelDataToDB('channels', channel);
+        channel.id = newChannelId;
+        updatedChannels.push(channel);
+      } else {
+        updatedChannels.push(existingChannel);
+      }
+    }
+
+    return updatedChannels;
   }
 
 }
