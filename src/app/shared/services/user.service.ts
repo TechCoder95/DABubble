@@ -3,7 +3,7 @@ import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';

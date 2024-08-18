@@ -292,13 +292,16 @@ export class DatabaseService implements OnDestroy {
   async subscribeToChannelData(channelId: string) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', channelId)
+      where(
+        'id',
+        '==',
+        channel?.id || sessionStorage.getItem('selectedChannelId')
+      )
     );
-
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveChannel(data as TextChannel);
+        this.onDataChange.next(data);
       });
     });
   }

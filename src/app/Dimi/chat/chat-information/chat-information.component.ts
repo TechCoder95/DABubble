@@ -30,7 +30,8 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent implements OnInit {
+export class ChatInformationComponent {
+  activeUser!: DABubbleUser;
   isChannel: boolean = true;
   /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
