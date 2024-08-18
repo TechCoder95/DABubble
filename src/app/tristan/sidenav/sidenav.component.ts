@@ -171,12 +171,12 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async initializeChannels() {
-   // await this.initializeDefaultData();
-    await this.loadUserChannels(this.activeUser);
+    await this.initializeDefaultData();
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
-      this.channels.push(ownDirectChannel);
+      this.channels.push(ownDirectChannel)
     }
+    await this.loadUserChannels(this.activeUser);
     await this.updateTreeData();
   }
 
@@ -203,7 +203,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
           type: 'directChannel' as const,
           children: [],
           avatar: currentUser.avatar,
-          isLoggedIn: true  
+          isLoggedIn: true
         };
         return ownDirectChannelNode;
       }
@@ -254,6 +254,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private async updateTreeData(): Promise<void> {
     const groupChannelNodes = await this.createGroupChannelNodes();
     const directChannelNodes = await this.createDirectChannelNodes();
+
+    console.log("Gruppenchannels: ", groupChannelNodes);
+    console.log("Directchannels: ", directChannelNodes);
+
 
     const groupChannelsStructure: Node = {
       id: 'channels',
@@ -371,46 +375,44 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     // Jetzt kannst du die IDs der erstellten Benutzer verwenden, um die Kanäle zu erstellen
     const defaultGroupChannels: TextChannel[] = [
-      { id: 'groupChannel1', name: 'Allgemein', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: this.activeUser.id! },
-      { id: 'groupChannel2', name: 'Entwicklerteam', assignedUser: Object.values(userIdMap), isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: this.activeUser.id! }
+      { id: '', name: 'Allgemein', assignedUser: [this.activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: this.activeUser.id! },
+      { id: '', name: 'Entwicklerteam', assignedUser: [this.activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: this.activeUser.id! }
     ];
 
     const defaultDirectChannels: TextChannel[] = [
-      { id: 'directChannel1', name: 'Felix', assignedUser: [this.activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: this.activeUser.id! },
-      { id: 'directChannel2', name: 'Jimmy', assignedUser: [this.activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: this.activeUser.id! },
-      { id: 'directChannel3', name: 'Mia', assignedUser: [this.activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: this.activeUser.id! }
+      { id: '', name: 'Felix', assignedUser: [this.activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: this.activeUser.id! },
+      { id: '', name: 'Jimmy', assignedUser: [this.activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: this.activeUser.id! },
+      { id: '', name: 'Mia', assignedUser: [this.activeUser.id!, userIdMap['Mia']], isPrivate: true, description: '', owner: this.activeUser.id! }
     ];
 
     // Überprüfe und füge Standard-Gruppenkanäle hinzu
     for (const groupChannel of defaultGroupChannels) {
-      const existingGroupChannel = this.channels.find(channel =>
-        channel.name === groupChannel.name &&
-        channel.isPrivate === groupChannel.isPrivate &&
-        this.arrayEquals(channel.assignedUser, groupChannel.assignedUser)
-      );
+      const existingGroupChannel = await this.findExistingChannelInDB(groupChannel);
 
       if (!existingGroupChannel) {
         const newChannelId = await this.dbService.addChannelDataToDB('channels', groupChannel);
-        this.channels.push({ ...groupChannel, id: newChannelId });
+        groupChannel.id = newChannelId;
+        this.channels.push(groupChannel);
       } else {
+        this.channels.push(existingGroupChannel);
         console.log(`Group channel ${groupChannel.name} already exists.`);
       }
     }
 
     // Überprüfe und füge Standard-Direktnachrichten hinzu
     for (const directChannel of defaultDirectChannels) {
-      const existingDirectChannel = this.channels.find(channel =>
-        channel.isPrivate &&
-        this.arrayEquals(channel.assignedUser, directChannel.assignedUser)
-      );
+      const existingDirectChannel = await this.findExistingChannelInDB(directChannel);
 
       if (!existingDirectChannel) {
         const newChannelId = await this.dbService.addChannelDataToDB('channels', directChannel);
-        this.channels.push({ ...directChannel, id: newChannelId });
+        directChannel.id = newChannelId;
+        this.channels.push(directChannel);
       } else {
+        this.channels.push(existingDirectChannel);
         console.log(`Direct channel ${directChannel.name} already exists.`);
       }
     }
+
   }
 
   // Hilfsfunktion zum Vergleich von Arrays (unabhängig von der Reihenfolge)
@@ -419,5 +421,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const sortedA = [...a].sort();
     const sortedB = [...b].sort();
     return sortedA.every((value, index) => value === sortedB[index]);
+  }
+
+  // Hilfsfunktion zur Suche nach vorhandenen Kanälen in der Datenbank
+  private async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
+    const channels = await this.dbService.readDataByField('channels', 'name', channel.name);
+    return channels.find((dbChannel: TextChannel) =>
+      dbChannel.name === channel.name &&
+      dbChannel.isPrivate === channel.isPrivate &&
+      this.arrayEquals(dbChannel.assignedUser, channel.assignedUser)
+    );
   }
 }
