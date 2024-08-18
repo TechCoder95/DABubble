@@ -94,8 +94,13 @@ export class ChannelService {
   }
 
   async createOwnDirectChannel(currentUser: DABubbleUser, channels: any): Promise<TextChannel> {
-    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string | string[]; }) => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && this.channel.assignedUser.length === 1);
-    if (!directChannelExists) {
+    let directChannelExists = channels.some((channel: { isPrivate: any; assignedUser: string[]; }) => {
+      return channel.isPrivate 
+          && channel.assignedUser 
+          && channel.assignedUser.includes(currentUser.id!) 
+          && channel.assignedUser.length === 1;
+  });
+      if (!directChannelExists) {
       const ownDirectChannel: TextChannel = {
         id: '',
         name: `${currentUser.username} (Du)`,
