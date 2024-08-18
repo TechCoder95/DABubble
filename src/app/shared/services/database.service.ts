@@ -160,9 +160,6 @@ export class DatabaseService implements OnDestroy {
     }
 }
 
-
-
-
   /**
    * Retrieves data from a Firestore collection by ID.
    * @param collectionName - The name of the Firestore collection.

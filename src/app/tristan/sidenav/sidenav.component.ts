@@ -100,7 +100,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private userStatusSubscription!: Subscription;
 
   constructor(
-    private dbService: DatabaseService,
+    private databaseService: DatabaseService,
     private dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
@@ -387,10 +387,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     // Überprüfe und füge Standard-Gruppenkanäle hinzu
     for (const groupChannel of defaultGroupChannels) {
-      const existingGroupChannel = await this.findExistingChannelInDB(groupChannel);
-
+      const existingGroupChannel = await this.channelService.findExistingChannelInDB(groupChannel);
       if (!existingGroupChannel) {
-        const newChannelId = await this.dbService.addChannelDataToDB('channels', groupChannel);
+        const newChannelId = await this.databaseService.addChannelDataToDB('channels', groupChannel);
         groupChannel.id = newChannelId;
         this.channels.push(groupChannel);
       } else {
@@ -401,10 +400,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
     // Überprüfe und füge Standard-Direktnachrichten hinzu
     for (const directChannel of defaultDirectChannels) {
-      const existingDirectChannel = await this.findExistingChannelInDB(directChannel);
+      const existingDirectChannel = await this.channelService.findExistingChannelInDB(directChannel);
 
       if (!existingDirectChannel) {
-        const newChannelId = await this.dbService.addChannelDataToDB('channels', directChannel);
+        const newChannelId = await this.databaseService.addChannelDataToDB('channels', directChannel);
         directChannel.id = newChannelId;
         this.channels.push(directChannel);
       } else {
@@ -412,24 +411,5 @@ export class SidenavComponent implements OnInit, OnDestroy {
         console.log(`Direct channel ${directChannel.name} already exists.`);
       }
     }
-
-  }
-
-  // Hilfsfunktion zum Vergleich von Arrays (unabhängig von der Reihenfolge)
-  arrayEquals(a: any[], b: any[]): boolean {
-    if (a.length !== b.length) return false;
-    const sortedA = [...a].sort();
-    const sortedB = [...b].sort();
-    return sortedA.every((value, index) => value === sortedB[index]);
-  }
-
-  // Hilfsfunktion zur Suche nach vorhandenen Kanälen in der Datenbank
-  private async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
-    const channels = await this.dbService.readDataByField('channels', 'name', channel.name);
-    return channels.find((dbChannel: TextChannel) =>
-      dbChannel.name === channel.name &&
-      dbChannel.isPrivate === channel.isPrivate &&
-      this.arrayEquals(dbChannel.assignedUser, channel.assignedUser)
-    );
-  }
+  } 
 }

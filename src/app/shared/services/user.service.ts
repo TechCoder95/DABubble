@@ -333,7 +333,6 @@ export class UserService {
     this.selectedUserSubject.next(user);
   }
 
-
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }

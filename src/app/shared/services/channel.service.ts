@@ -151,5 +151,20 @@ export class ChannelService {
     return newChannel;
   }
 
-  
+  async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
+    const channels = await this.databaseService.readDataByField('channels', 'name', channel.name);
+    return channels.find((dbChannel: TextChannel) =>
+      dbChannel.name === channel.name &&
+      dbChannel.isPrivate === channel.isPrivate &&
+      this.arrayEquals(dbChannel.assignedUser, channel.assignedUser)
+    );
+  }
+
+ private arrayEquals(a: any[], b: any[]): boolean {
+    if (a.length !== b.length) return false;
+    const sortedA = [...a].sort();
+    const sortedB = [...b].sort();
+    return sortedA.every((value, index) => value === sortedB[index]);
+  }
+
 }
