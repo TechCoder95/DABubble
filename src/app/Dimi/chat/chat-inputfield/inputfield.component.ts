@@ -113,7 +113,7 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        const channel = await this.findOrCreateChannel();
+        const channel = await this.channelService.findOrCreateChannel();
         if (channel) {
           await this.send();
           await this.router.navigate(['/home/channel/' + channel.id]);
@@ -123,7 +123,7 @@ export class InputfieldComponent implements OnInit {
         break;
     }
   }
-  
+
 
 
   async sendFromThread() {
@@ -171,36 +171,8 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  async findOrCreateChannel(): Promise<TextChannel | null> {
-    try {
-      const selectedUser = this.userService.getSelectedUser();
-      if (selectedUser) {
-        const tempChannel: TextChannel = {
-          id: '',
-          name: '',
-          assignedUser: [this.userService.activeUser.id!, selectedUser.id!],
-          isPrivate: true,
-          description: '',
-          owner: this.userService.activeUser.id!
-        };
-  
-        const channelExists = await this.channelService.isChannelAlreadyExists(tempChannel);
-  
-        if (channelExists) {
-          const allChannels = await this.channelService.getAllChannels();
-          return allChannels.find(channel =>
-            this.channelService.arrayEquals(channel.assignedUser, tempChannel.assignedUser)
-          )!;
-        } else {
-          return await this.channelService.createDirectChannel(selectedUser);
-        }
-      }
-      return null; 
-    } catch (error) {
-      return null;
-    }
-  }
-  
+
+
 
 
 
