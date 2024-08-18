@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -14,7 +14,7 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) {}
 
