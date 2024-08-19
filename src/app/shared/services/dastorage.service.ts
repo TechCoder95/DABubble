@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { getApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from "firebase/storage";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll, StorageReference } from "firebase/storage";
 
 @Injectable({
   providedIn: 'root'
@@ -133,13 +133,16 @@ export class DAStorageService {
 
         async downloadMessageImage(url: string){
           let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
-          let fullpath = ref(storage, `${url}`);
-        
+          let fullpath = ref(storage, url);
+
           let downloadedUrl = await getDownloadURL(fullpath);
+
+          debugger;
+          console.log(downloadedUrl);
           
           return downloadedUrl;
-         
       }
+           
        
       
 
