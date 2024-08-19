@@ -34,6 +34,11 @@ export class HeaderComponent implements OnInit {
 
   constructor(public AuthService: AuthenticationService, private router: Router, private userService:UserService) { }
 
+  activeUser!: DABubbleUser;
+  activeGoogleUser!: User;
+
+
+
   @Input() activeUserChange!: any;
   @Input() activeGoogleUserChange!: any;
 
