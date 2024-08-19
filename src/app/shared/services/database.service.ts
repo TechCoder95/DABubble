@@ -17,6 +17,7 @@ import { ThreadChannel } from '../interfaces/thread-channel';
 export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
   private unsubscribe!: (() => void);
+  threadMessageID!: string;
 
   constructor(private subService: GlobalsubService) {
     this.listenToEntityChanges('users');
@@ -145,17 +146,18 @@ export class DatabaseService implements OnDestroy {
 
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
-    console.log(threadsCollectionRef);
+    // console.log(threadsCollectionRef);
 
     const q = query(
       threadsCollectionRef,
       where('messageID', '==', messageId)
     );
-    console.log(messageId);
-    console.log(q);
+    this.threadMessageID = messageId;
+    // console.log(messageId);
+    // console.log(q);
 
     const snapshot = await getDocs(q);
-    console.log(snapshot);
+    // console.log(snapshot);
 
     if (snapshot.size === 1) {
       const doc = snapshot.docs[0];

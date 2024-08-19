@@ -50,16 +50,14 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedChannelFromChat.emit(channel);
     });
 
-    console.log(this.getsessionStorage('selectedThread'));
-
     let selectedPerson = this.getsessionStorage('selectedThread');
-    console.log(selectedPerson.userID);
 
     this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
       this.selectedUserFromChat.emit(user);
       console.log(user, "butz", this.threadService.selectedThread);
 
       this.activeUserFromThread = user;
+      
     }
 
     );

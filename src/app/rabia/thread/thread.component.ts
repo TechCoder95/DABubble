@@ -14,6 +14,7 @@ import { TicketService } from '../../shared/services/ticket.service';
 import { ThreadMessage } from '../../shared/interfaces/threadmessage';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { ThreadService } from '../../shared/services/thread.service';
+import { DatabaseService } from '../../shared/services/database.service';
 
 @Component({
   selector: 'app-thread',
@@ -39,6 +40,8 @@ export class ThreadComponent {
   messageType: MessageType = MessageType.Threads;
 
 
+
+
   activeUser!: DABubbleUser;
 
   threadChannel: TextChannel = {
@@ -57,19 +60,16 @@ export class ThreadComponent {
     public ticketService: TicketService,
     public channelService: ChannelService,
     private userService: UserService,
-    public threadService: ThreadService
-  ) {}
+    public threadService: ThreadService,
+    private databaseService: DatabaseService
+  ) { }
 
   ngOnInit() {
     console.log('ThreadComponent initialized');
     this.selectedChannelFromChat = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
 
-    console.log(this.selectedChannelFromChat, "bruder", this.selectedChannelFromChat.name);
-    
-    
+    this.threadService.findSenderByMessageID(this.databaseService.threadMessageID);
   }
-
-
 
   getTitle() {
     return this.selectedChannelFromChat.name;

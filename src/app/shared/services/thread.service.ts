@@ -9,9 +9,20 @@ import { ThreadChannel } from '../interfaces/thread-channel';
 export class ThreadService {
   private thread: ThreadChannel;
   selectedThread: boolean = false;
+  threadOwner!: any;
 
-  constructor() {
+  constructor(private databaseService: DatabaseService) {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
+  }
+
+  findSenderByMessageID(messageID: string): void {
+    this.databaseService.readDataByID('messages', messageID).then((message) => {
+      console.log(message, "oclas");
+      this.threadOwner = message;
+
+      console.log(this.threadOwner.senderName, "senderName");
+      
+    });
   }
 
 

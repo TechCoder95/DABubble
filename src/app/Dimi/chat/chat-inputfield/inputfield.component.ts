@@ -15,6 +15,7 @@ import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
+import { ThreadService } from '../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -28,9 +29,11 @@ export class InputfieldComponent implements OnInit {
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
-  threadAlreadyOpen: boolean = false;
   ticket: any;
   selectedChannel: TextChannel | null = null;
+
+  selectedThread: ThreadMessage | null = null;
+
   activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
@@ -44,10 +47,13 @@ export class InputfieldComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
+    private threadService: ThreadService,
     private router: Router
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+    this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
+
   }
 
   ngOnInit(): void {
@@ -115,9 +121,9 @@ export class InputfieldComponent implements OnInit {
       case MessageType.NewDirect:
         const channel = await this.channelService.findOrCreateChannelByUserID();
         if (channel) {
-          this.selectedChannel = channel; 
+          this.selectedChannel = channel;
           this.channelService.selectChannel(channel);
-          await this.router.navigate(['/home/channel/' + channel.id]);         
+          await this.router.navigate(['/home/channel/' + channel.id]);
           await this.send();
         }
         break;
@@ -142,7 +148,7 @@ export class InputfieldComponent implements OnInit {
       try {
         this.ticketService.addConversationToThread(threadMessage);
         this.textareaValue = '';
-        
+
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -213,6 +219,8 @@ export class InputfieldComponent implements OnInit {
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
+    } else if (this.threadService.selectedThread) {
+      return `Nachricht an ${this.threadService.threadOwner.senderName}`;
     }
     return `Nachricht an #${this.selectedChannel?.name}`;
   }

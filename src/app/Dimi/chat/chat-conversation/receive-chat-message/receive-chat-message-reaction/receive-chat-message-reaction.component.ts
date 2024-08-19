@@ -84,7 +84,6 @@ export class ReceiveChatMessageReactionComponent {
 
     await this.threadService.setThread(newThread);
 
-    console.log(this.threadService.selectedThread );
     
   }
 
