@@ -14,23 +14,24 @@ import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
+import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule, EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
-export class InputfieldComponent {
+export class InputfieldComponent implements OnInit {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
   textareaValue: string = '';
-  activeUser!: DABubbleUser;
-  selectedChannel: TextChannel | null = null;
   threadAlreadyOpen: boolean = false;
   ticket: any;
+  selectedChannel: TextChannel | null = null;
+  activeUser!: DABubbleUser;
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -64,6 +65,7 @@ export class InputfieldComponent {
 
     this.ticket = this.ticketService.getTicket();
   }
+
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {

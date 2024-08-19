@@ -38,6 +38,7 @@ export class HeaderComponent implements OnInit {
   activeGoogleUser!: User;
 
 
+
   @Input() activeUserChange!: any;
   @Input() activeGoogleUserChange!: any;
 

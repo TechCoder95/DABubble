@@ -31,8 +31,7 @@ import { ThreadService } from '../../../shared/services/thread.service';
   templateUrl: './chat-information.component.html',
   styleUrl: './chat-information.component.scss',
 })
-export class ChatInformationComponent {
-  activeUser!: DABubbleUser;
+export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
   /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
