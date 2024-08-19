@@ -62,15 +62,17 @@ export class ThreadComponent {
 
   ngOnInit() {
     console.log('ThreadComponent initialized');
+    this.selectedChannelFromChat = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+
+    console.log(this.selectedChannelFromChat, "bruder", this.selectedChannelFromChat.name);
+    
     
   }
 
 
 
-  get getTitle(): Observable<string> {
-    return this.channelService.selectedChannel$.pipe(
-      map((channel: any) => channel?.name || 'Channel')
-    );
+  getTitle() {
+    return this.selectedChannelFromChat.name;
   }
 
   close() {

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -6,7 +6,6 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { MessageType } from '../../shared/components/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
-import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
@@ -40,14 +39,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
 
-  constructor(
-    private databaseService: DatabaseService,
-    private subService: GlobalsubService,
-    private userService: UserService,
-    public threadService: ThreadService) {
-
-    
-  }
+  constructor(private subService: GlobalsubService, private userService: UserService, public threadService: ThreadService) { }
 
   async ngOnInit() {
     this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));
@@ -69,7 +61,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
       this.activeUserFromThread = user;
     }
-    
+
     );
 
   }
