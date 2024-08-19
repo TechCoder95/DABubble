@@ -17,6 +17,8 @@ import { DatabaseService } from '../../../../shared/services/database.service';
 import { Emoji } from '../../../../shared/interfaces/emoji';
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { Subscription } from 'rxjs';
+import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
+import { DAStorageService } from '../../../../shared/services/dastorage.service';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -26,6 +28,7 @@ import { Subscription } from 'rxjs';
     SendChatMessageReactionComponent,
     FormsModule,
     ActiveChatMessageReactionsComponent,
+    EmojisPipe
   ],
   templateUrl: './send-chat-message.component.html',
   styleUrl: './send-chat-message.component.scss',
@@ -47,7 +50,8 @@ export class SendChatMessageComponent implements OnInit {
 
   constructor(
     private userService: UserService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private storageService: DAStorageService,
   ) {
     this.user = JSON.parse(sessionStorage.getItem('userLogin')!);
   }
@@ -56,6 +60,7 @@ export class SendChatMessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
+    this.getImage();
   }
 
   async getUserName() {
@@ -117,4 +122,11 @@ export class SendChatMessageComponent implements OnInit {
   onEmojiChange(event: string) {
     this.emojiType = event;
   }
+
+  sentImage='';
+  async getImage(){
+    let imgSrc = await this.storageService.downloadMessageImage(this.sendMessage.imageUrl!);
+    this.sentImage = imgSrc;
+  }
+
 }

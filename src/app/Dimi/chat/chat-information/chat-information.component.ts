@@ -52,6 +52,8 @@ export class ChatInformationComponent implements OnInit {
 
   @Input({ required: true }) activeUserFromChat: any;
   @Input({ required: true }) activeChannelFromChat: any;
+  @Input() activeUserFromThread: any;
+  @Input() activeChannelFromThread: any;  
 
   constructor(
     public dialog: MatDialog,
@@ -62,7 +64,6 @@ export class ChatInformationComponent implements OnInit {
   ) {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
-
   }
 
   ngOnInit(): void {
@@ -220,22 +221,13 @@ export class ChatInformationComponent implements OnInit {
       this.userService
         .getOneUserbyId(privateChatPartnerID!)
         .then((privateChatPartner) => {
-          let chatPartner = privateChatPartner as unknown as DABubbleUser;
-          this.privateChatPartnerName = chatPartner?.username;
-          this.privateChatPartner = chatPartner;
+          this.privateChatPartnerName = privateChatPartner?.username;
+          this.privatChatAvatar = privateChatPartner?.avatar;
         });
     } else {
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
-    }
-    this.returnChatPartnerAvatar(this.selectedChannel);
-  }
-
-  returnChatPartnerAvatar(selectChannel: TextChannel) {
-    if (selectChannel.assignedUser.length > 1) {
-      this.privatChatAvatar = this.privateChatPartner?.avatar;
-    } else {
-      this.privatChatAvatar = this.userService.activeUser.avatar;
+        this.privatChatAvatar = this.userService.activeUser.avatar;
     }
   }
 }

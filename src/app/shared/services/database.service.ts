@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
@@ -6,15 +6,45 @@ import { GlobalsubService } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
+import { Subscription } from 'rxjs';
+import { ThreadChannel } from '../interfaces/thread-channel';
+
 
 
 @Injectable({
   providedIn: 'root',
 })
-export class DatabaseService {
+export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
+  private unsubscribe!: (() => void);
 
-  constructor(private subService: GlobalsubService) { }
+  constructor(private subService: GlobalsubService) {
+    this.listenToEntityChanges('users');
+  }
+
+  listenToEntityChanges(entity: string) {
+    const collectionRef = collection(this.firestore, entity);
+    this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === 'added') {
+          //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
+        }
+        if (change.type === 'modified') {
+          this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
+          //  console.log('Dokument geändert:', change.doc.data());
+        }
+        if (change.type === 'removed') {
+          //  console.log('Dokument entfernt:', change.doc.data());
+        }
+      });
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+    }
+  }
 
   /**
    * Retrieves a reference to the specified database collection.
@@ -22,7 +52,7 @@ export class DatabaseService {
    * @param {string} collectionName - The name of the database collection.
    * @returns A reference to the specified database collection.
    */
-  getDataRef(collectionName: string) {
+  async getDataRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
 
@@ -35,6 +65,14 @@ export class DatabaseService {
   setRef(collectionName: string) {
     return collection(this.firestore, collectionName);
   }
+
+
+  async readDataFromDB<T>(collectionName: string): Promise<T[]> {
+    const collectionRef = collection(this.firestore, collectionName);
+    const snapshot = await getDocs(collectionRef);
+    return snapshot.docs.map((doc) => doc.data() as T);
+  }
+
 
   /**
    * Adds data to the specified database.
@@ -94,7 +132,7 @@ export class DatabaseService {
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
   public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
-    const messagesCollectionRef = this.getDataRef('messages');
+    const messagesCollectionRef = await this.getDataRef('messages');
     const q = query(
       messagesCollectionRef,
       where('channelId', '==', channelName)
@@ -105,6 +143,30 @@ export class DatabaseService {
     return messages;
   }
 
+  public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
+    const threadsCollectionRef = await this.getDataRef('threads');
+    console.log(threadsCollectionRef);
+
+    const q = query(
+      threadsCollectionRef,
+      where('messageID', '==', messageId)
+    );
+    console.log(messageId);
+    console.log(q);
+
+    const snapshot = await getDocs(q);
+    console.log(snapshot);
+
+    if (snapshot.size === 1) {
+      const doc = snapshot.docs[0];
+      const threadData = doc.data() as ThreadChannel;
+      console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+      return threadData;
+    } else {
+      // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
+      return null;
+    }
+  }
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -134,6 +196,25 @@ export class DatabaseService {
     const q = query(
       collection(this.firestore, collectionName),
       where(field, '==', value)
+    );
+    const snapshot = await getDocs(q);
+    const data: any[] = [];
+    snapshot.forEach((doc) => data.push(doc.data()));
+    return data;
+  }
+
+  /**
+   * Retrieves data from a Firestore collection based on an array field value.
+   * 
+   * @param collectionName - The name of the Firestore collection.
+   * @param field - The name of the array field to filter by.
+   * @param value - The value to search for in the array field.
+   * @returns An array of documents that match the specified criteria.
+   */
+  async readDataByArray(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, 'array-contains', value)
     );
     const snapshot = await getDocs(q);
     const data: any[] = [];
@@ -201,7 +282,7 @@ export class DatabaseService {
     });
   }
 
-  
+
   /**
    * Subscribes to channel data based on the provided channelId.
    * 

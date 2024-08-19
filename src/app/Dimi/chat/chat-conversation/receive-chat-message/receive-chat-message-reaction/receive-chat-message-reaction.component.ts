@@ -5,10 +5,11 @@ import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChannelService } from '../../../../../shared/services/channel.service';
-import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../../../../../shared/services/database.service';
 import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
+import { ThreadService } from '../../../../../shared/services/thread.service';
+import { TextChannel } from '../../../../../shared/interfaces/textchannel';
 
 
 @Component({
@@ -29,7 +30,7 @@ export class ReceiveChatMessageReactionComponent {
 
   constructor(
     private channelService: ChannelService,
-    private ticketService: TicketService,
+    private threadService: ThreadService,
     private chatService: ChatService,
     private router: Router,
     private dataService: DatabaseService
@@ -50,22 +51,35 @@ export class ReceiveChatMessageReactionComponent {
     }
   }
 
-  openMessage() {
-
+  async openThread() {
     let thread: ThreadChannel = {
       messageID: this.ticket.id!,
       channelID: this.ticket.channelId,
-      userID: this.user.id!
+      userID: this.user.id!,
+      id: ''
     }
 
-    this.dataService.addDataToDB('threads', thread).then((res) => {
-      thread.threadID = res;
-      this.router.navigate(['home', this.ticket.channelId, thread.threadID]);
-      sessionStorage.setItem('selectedThread', JSON.stringify(thread));
-      console.log('Thread created', thread);
-    });
-    
-    this.ticketService.setTicket(this.ticket);
+    const selectedChannel = await JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    const threadFromDB = await this.dataService.getThreadByMessage(thread.messageID);
+
+    if (threadFromDB === null) {
+      await this.dataService.addDataToDB('threads', thread).then((res) => {
+        thread.id! = res;
+      });
+      await sessionStorage.setItem('selectedThread', JSON.stringify(thread));
+    }
+    else {
+      thread.id = threadFromDB.id;
+    }
+
+    await this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
+
+    let newThread: ThreadChannel = {
+      ...thread,
+      id: thread.id
+    }
+
+    await this.threadService.setThread(newThread);
   }
 
   /* async updateEmojiText() {

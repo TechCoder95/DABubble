@@ -10,6 +10,7 @@ import { setDoc, doc } from '@angular/fire/firestore';
 import { GlobalsubService } from './globalsub.service';
 import { user } from '@angular/fire/auth';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,8 +27,8 @@ export class UserService {
   avatarSelected: boolean = false;
   collectionName: string = 'users';
 
-
   constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
+     
     if (sessionStorage.getItem('userLoginGuest')) {
       this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
       this.globalSubService.updateUser(this.activeUser);
@@ -52,7 +53,6 @@ export class UserService {
       });
     }
   }
-
 
 
   /**
@@ -273,7 +273,7 @@ export class UserService {
    * @returns A promise that resolves to an array of TextChannel objects.
    */
   async getUserChannels(userId: string): Promise<TextChannel[]> {
-    const channelsCollectionRef = this.DatabaseService.getDataRef('channels');
+    const channelsCollectionRef = await this.DatabaseService.getDataRef('channels');
     const q = query(channelsCollectionRef, where('assignedUser', 'array-contains', userId));
     const snapshot = await getDocs(q);
     const channels: TextChannel[] = [];
@@ -291,21 +291,41 @@ export class UserService {
   async searchUsersByNameOrEmail(searchText: string): Promise<DABubbleUser[]> {
     const usersRef = collection(this.DatabaseService.firestore, 'users');
     const lowerCaseSearchText = searchText.toLowerCase();
-  
+
     const querySnapshot = await getDocs(usersRef);
     const users: DABubbleUser[] = [];
-  
-        querySnapshot.forEach(doc => {
+
+    querySnapshot.forEach(doc => {
       const data = doc.data() as DABubbleUser;
       data.id = doc.id;
-      if (this.usernameOrEmailMatchText(data,lowerCaseSearchText)) {
+      if (this.usernameOrEmailMatchText(data, lowerCaseSearchText)) {
         users.push(data);
       }
     });
     return users;
   }
 
-  usernameOrEmailMatchText(data:any, lowerCaseSearchText:string){
+
+  async searchUsersByNameOrEmailTest(searchText: string): Promise<DABubbleUser[]> {
+    const usersRef = collection(this.DatabaseService.firestore, 'users');
+    const lowerCaseSearchText = searchText.toLowerCase();
+
+    const q = query(usersRef, where('nameLowerCase', '>=', lowerCaseSearchText), where('nameLowerCase', '<=', lowerCaseSearchText + '\uf8ff'));
+
+    const querySnapshot = await getDocs(q);
+    const users: DABubbleUser[] = [];
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data() as DABubbleUser;
+      data.id = doc.id;
+      users.push(data);
+    });
+
+    return users;
+  }
+
+
+  usernameOrEmailMatchText(data: any, lowerCaseSearchText: string) {
     return data.username && data.username.toLowerCase().includes(lowerCaseSearchText) || data.mail && data.mail.toLowerCase().includes(lowerCaseSearchText)
   }
 
@@ -313,11 +333,9 @@ export class UserService {
     this.selectedUserSubject.next(user);
   }
 
-
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
-
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(this.DatabaseService.firestore, this.collectionName);
@@ -332,17 +350,37 @@ export class UserService {
     }
   }
 
-
-  async addDefaultUserToDatabase(user: DABubbleUser): Promise<void> {
+  async addDefaultUserToDatabase(user: DABubbleUser): Promise<string> {
     try {
       const userRef = doc(collection(this.DatabaseService.firestore, this.collectionName));
       user.id = userRef.id;
 
       await setDoc(userRef, user);
+      return userRef.id;  
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
     }
+  }
+
+  async createDefaultUsers(): Promise<{ [key: string]: string }> {
+    const userIdMap: { [key: string]: string } = {};
+    const defaultUsers: DABubbleUser[] = [
+      { id: '', username: 'Felix', mail: 'Felix@example.com', isLoggedIn: true, avatar: '/img/1.svg', uid: 'Felix-uid' },
+      { id: '', username: 'Jimmy', mail: 'Jimmy@example.com', isLoggedIn: false, avatar: '/img/2.svg', uid: 'Jimmy-uid' },
+      { id: '', username: 'Mia', mail: 'Mia@example.com', isLoggedIn: true, avatar: '/img/3.svg', uid: 'Mia-uid' }
+    ];
+
+    for (const user of defaultUsers) {
+      const existingUser = await this.getDefaultUserByUid(user.uid!);
+      if (!existingUser) {
+        const userId = await this.addDefaultUserToDatabase(user);
+        userIdMap[user.username] = userId;
+      } else {
+        userIdMap[user.username] = existingUser.id!;
+      }
+    }
+    return userIdMap;
   }
 
 }

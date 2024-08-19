@@ -1,13 +1,13 @@
-@if (selectedChannelFromChat) {
+
 <section class="inputfield">
   <textarea
     name=""
     id=""
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
-    [placeholder]="'Nachricht an #' + selectedChannel?.name"
+    [placeholder]="getPlaceholderText()"
+    [value]="textareaValue | emojis"
   ></textarea>
-
   
   <div class="arrange-input-options">
     <div class="chat-options">
@@ -62,7 +62,3 @@
     />
   </div>
 </section>
-}
-@else {
-  Leck mich am Arsch
-}

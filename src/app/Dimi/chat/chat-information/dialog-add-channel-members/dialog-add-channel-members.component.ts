@@ -6,20 +6,18 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import {
-  debounceTime,
-  distinctUntilChanged,
-  switchMap,
-  takeUntil,
+  debounceTime
 } from 'rxjs/operators';
 import { firstValueFrom, fromEvent, Subject } from 'rxjs';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
+import { DialogUserAlreadyInChannelComponent } from './dialog-user-already-in-channel/dialog-user-already-in-channel.component';
 
 @Component({
   selector: 'app-dialog-add-channel-members',
@@ -30,6 +28,7 @@ import { TextChannel } from '../../../../shared/interfaces/textchannel';
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
+    DialogUserAlreadyInChannelComponent
   ],
   templateUrl: './dialog-add-channel-members.component.html',
   styleUrls: ['./dialog-add-channel-members.component.scss'],
@@ -46,7 +45,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   constructor(
     public dialogRef: MatDialogRef<DialogAddChannelMembersComponent>,
     public channelService: ChannelService,
-    public userService: UserService
+    public userService: UserService,
+    public dialog: MatDialog,
   ) {
 
   }
@@ -124,7 +124,7 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
         await this.channelService.updateChannel(this.selectedChannel);
        this.closeDialog();
       } else {
-        alert('Sorry, User gibt es schon hier im channel');
+       this.dialog.open(DialogUserAlreadyInChannelComponent);
       }
     }
   }
