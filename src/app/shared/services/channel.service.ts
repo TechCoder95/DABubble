@@ -142,17 +142,34 @@ export class ChannelService {
     return existingChannel;
   }
 
-  async createGroupChannel(data: TextChannel): Promise<TextChannel> {
+  async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
+    const nameExists = await this.doesChannelNameAlreadyExist(channel.name);
+    if (nameExists) {
+      // todo fehlermeldung zurück geben eventuell
+      alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
+      return null;
+    }
+
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
-      ...data,
+      ...channel,
       assignedUser: [this.userService.activeUser.id!],
       isPrivate: false,
       owner: currentUser.id!
     };
+
     const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
     newChannel.id = newChannelId;
     return newChannel;
+  }
+
+
+  async doesChannelNameAlreadyExist(channelName: string, excludeChannelId?: string): Promise<boolean> {
+    const lowerCaseName = channelName.toLowerCase();
+    const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
+    return channels.some((channel: TextChannel) =>
+      channel.name.toLowerCase() === lowerCaseName && channel.id !== excludeChannelId
+    );
   }
 
   async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
