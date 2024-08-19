@@ -191,7 +191,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private async initializeDefaultData() {
     const userIdMap = await this.userService.createDefaultUsers();
-    const defaultGroupChannels = await this.channelService.createDefaultGroupChannels(userIdMap, this.activeUser);
+    const defaultGroupChannels = await this.channelService.createDefaultGroupChannels(this.activeUser);
     const defaultDirectChannels = await this.channelService.createDefaultDirectChannels(userIdMap, this.activeUser);
     this.channels = await this.channelService.addOrUpdateDefaultChannels(defaultGroupChannels);
     const updatedDirectChannels = await this.channelService.addOrUpdateDefaultChannels(defaultDirectChannels);
