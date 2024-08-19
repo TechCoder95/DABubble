@@ -171,14 +171,32 @@ export class ChannelService {
     return sortedA.every((value, index) => value === sortedB[index]);
   }
 
-  createDefaultGroupChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+  async createDefaultGroupChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): Promise<TextChannel[]> {
+    const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
+    const allUserIds = users.map(user => user!.id!)
+
     return [
-      { id: '', name: 'Allgemein', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id! },
-      { id: '', name: 'Entwicklerteam', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id! }
+      {
+        id: '',
+        name: 'Allgemein',
+        assignedUser: [...allUserIds],
+        isPrivate: false,
+        description: 'Hier werden alle Benutzer geladen.',
+        owner: activeUser.id!,
+      },
+      {
+        id: '',
+        name: 'Entwicklerteam',
+        assignedUser: [...allUserIds],
+        isPrivate: false,
+        description: 'Ein super tolles Entwicklerteam',
+        owner: activeUser.id!,
+      }
     ];
   }
 
-  createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+
+  async createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): Promise<TextChannel[]> {
     return [
       { id: '', name: 'Felix', assignedUser: [activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: activeUser.id! },
       { id: '', name: 'Jimmy', assignedUser: [activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: activeUser.id! },

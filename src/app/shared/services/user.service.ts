@@ -28,7 +28,7 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
-     
+
     if (sessionStorage.getItem('userLoginGuest')) {
       this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
       this.globalSubService.updateUser(this.activeUser);
@@ -356,7 +356,7 @@ export class UserService {
       user.id = userRef.id;
 
       await setDoc(userRef, user);
-      return userRef.id;  
+      return userRef.id;
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
@@ -381,6 +381,10 @@ export class UserService {
       }
     }
     return userIdMap;
+  }
+
+  async getAllUsersFromDB() {
+    return await this.DatabaseService.readDataFromDB('users');
   }
 
 }
