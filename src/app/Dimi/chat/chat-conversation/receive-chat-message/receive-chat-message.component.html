@@ -18,10 +18,11 @@
         </p>
       </div>
       <span class="actual-message" *ngIf="!receiveMessage.deleted">
-        <p [ngClass]="{ 'mw-70': repeatedMessage }">
+        <p [ngClass]="{ 'mw-70': repeatedMessage }"  *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''">
           {{ receiveMessage.message }}
           <span *ngIf="receiveMessage.edited">bearbeitet</span>
         </p>
+        <img [src]="receivedMessage" *ngIf="receiveMessage.imageUrl && receiveMessage.imageUrl.trim() !== ''">
       </span>
       <p *ngIf="receiveMessage.deleted" class="message-deleted-notification">
         Diese Nachricht wurde gelöscht
