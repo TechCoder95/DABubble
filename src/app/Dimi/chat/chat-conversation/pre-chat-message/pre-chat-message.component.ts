@@ -21,7 +21,7 @@ export class PreChatMessageComponent {
   privateChatPartner!: DABubbleUser | undefined;
   channelName!: string | undefined;
 
-  @Input({required:true}) activeChannelFromChatconv!: any
+  @Input({required:true}) activeChannelFromChatconv!: any;
 
   selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
 
@@ -29,23 +29,15 @@ export class PreChatMessageComponent {
     private chatService: ChatService,
     private userService: UserService,
     private channelService: ChannelService
-  ) {
+  ) {    
     this.isPrivateChat = this.selectedChannel.isPrivate;
+    if(this.isPrivateChat && this.selectedChannel.assignedUser.length ===1){
+      this.isChatWithMyself = true;
+    }else{
+      this.isChatWithMyself=false;
+    }
     this.getChannelName();
     this.getPrivateChatPartner();
-  }
-
-
-  ngOnInit(): void {
-    this.activeChannelFromChatconv.subscribe(
-      (channel : TextChannel) => {
-        this.selectedChannel = channel;
-        this.isPrivateChat = channel.isPrivate;
-        this.getChannelName();
-        this.getPrivateChatPartner();
-      }
-    );
-    this.isPrivateChat = JSON.parse(sessionStorage.getItem('selectedChannel')!).isPrivate;
   }
 
 
@@ -55,18 +47,17 @@ export class PreChatMessageComponent {
     }
   }
 
-  
   async getPrivateChatPartner() {
     if (this.isPrivateChat && !this.isChatWithMyself) {
       const privateChatPartnerID =
-        this.channelService.channel.assignedUser.find(
+        this.selectedChannel.assignedUser.find(
           (userID) => userID !== this.userService.activeUser.id
         );
 
       if (privateChatPartnerID) {
         this.privateChatPartner = await this.userService.getOneUserbyId(
           privateChatPartnerID
-        );
+        );        
       }
     }
   }

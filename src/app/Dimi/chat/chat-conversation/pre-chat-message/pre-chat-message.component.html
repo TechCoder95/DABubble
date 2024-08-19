@@ -15,10 +15,11 @@
   }
   @else {
   <section>
-    <img src="" class="avatar" />
+    <div class="private-channel">
+      <img [src]="privateChatPartner?.avatar" class="avatar" />
+      <h4>{{ privateChatPartner?.username }}</h4>
+    </div>
 
-    <h4>{{ privateChatPartner?.username }}</h4>
-    <p></p>
     <p>
       Diese Unterhaltung findet nur zwischen
       {{ privateChatPartner?.username }} und dir statt.
