@@ -1,10 +1,9 @@
 import {
-  AfterContentChecked,
-  AfterContentInit,
   AfterViewChecked,
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,

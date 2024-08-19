@@ -146,27 +146,27 @@ export class DatabaseService implements OnDestroy {
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
     console.log(threadsCollectionRef);
-    
+
     const q = query(
       threadsCollectionRef,
       where('messageID', '==', messageId)
     );
     console.log(messageId);
-    // console.log(q);
-    
+    console.log(q);
+
     const snapshot = await getDocs(q);
-    // console.log(snapshot);
-    
+    console.log(snapshot);
+
     if (snapshot.size === 1) {
-        const doc = snapshot.docs[0];
-        const threadData = doc.data() as ThreadChannel;
-        console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
-        return threadData;
+      const doc = snapshot.docs[0];
+      const threadData = doc.data() as ThreadChannel;
+      console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+      return threadData;
     } else {
-        // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
-        return null;
+      // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
+      return null;
     }
-}
+  }
 
   /**
    * Retrieves data from a Firestore collection by ID.
@@ -196,6 +196,25 @@ export class DatabaseService implements OnDestroy {
     const q = query(
       collection(this.firestore, collectionName),
       where(field, '==', value)
+    );
+    const snapshot = await getDocs(q);
+    const data: any[] = [];
+    snapshot.forEach((doc) => data.push(doc.data()));
+    return data;
+  }
+
+  /**
+   * Retrieves data from a Firestore collection based on an array field value.
+   * 
+   * @param collectionName - The name of the Firestore collection.
+   * @param field - The name of the array field to filter by.
+   * @param value - The value to search for in the array field.
+   * @returns An array of documents that match the specified criteria.
+   */
+  async readDataByArray(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, 'array-contains', value)
     );
     const snapshot = await getDocs(q);
     const data: any[] = [];
@@ -273,16 +292,13 @@ export class DatabaseService implements OnDestroy {
   async subscribeToChannelData(channelId: string) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where(
-        'id',
-        '==',
-        channel?.id || sessionStorage.getItem('selectedChannelId')
-      )
+      where('id', '==', channelId)
     );
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.onDataChange.next(data);
+        this.subService.updateActiveChannel(data as TextChannel);
       });
     });
   }

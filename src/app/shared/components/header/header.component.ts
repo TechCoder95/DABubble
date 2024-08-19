@@ -6,7 +6,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DABubbleUser } from '../../interfaces/user';
-import { isLoggedIn } from '../../guards/authguard.guard';
 import { User } from 'firebase/auth';
 import { SearchbarComponent } from "./searchbar/searchbar.component";
 import { Subscription } from 'rxjs';
@@ -22,8 +21,6 @@ import { UserService } from '../../services/user.service';
 })
 export class HeaderComponent implements OnInit {
 
-  activeUser!: DABubbleUser;
-  activeGoogleUser!: User;
   public dialog = inject(MatDialog);
 
   searchInput: string = '';
