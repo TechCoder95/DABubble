@@ -9,4 +9,5 @@ export interface ChatMessage {
   id?: string;
   edited?: boolean;
   deleted?: boolean;
+  imageUrl?:string;
 }

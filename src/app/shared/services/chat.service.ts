@@ -22,9 +22,6 @@ export class ChatService {
   ) {}
 
   async sendMessage(message: ChatMessage) {
-
-
-
     await this.databaseService.addDataToDB('messages', message);
   }
 

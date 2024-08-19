@@ -23,10 +23,11 @@
         </p>
       </div>
       <div class="actual-message" *ngIf="!sendMessage.deleted">
-        <p>
+        <p *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
           {{ sendMessage.message | emojis}}
           <span *ngIf="sendMessage.edited">bearbeitet</span>
         </p>
+        <img [src]="sentImage" *ngIf="sendMessage.imageUrl && sendMessage.imageUrl.trim() !== ''">
       </div>
       <p *ngIf="sendMessage.deleted" class="message-deleted-notification">
         Diese Nachricht wurde gelöscht
