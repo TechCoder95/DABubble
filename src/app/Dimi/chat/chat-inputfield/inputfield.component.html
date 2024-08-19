@@ -6,6 +6,7 @@
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="getPlaceholderText()"
+    [value]="textareaValue | emojis"
   ></textarea>
   
   <div class="arrange-input-options">

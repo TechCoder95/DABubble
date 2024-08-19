@@ -17,6 +17,7 @@ import { DatabaseService } from '../../../../shared/services/database.service';
 import { Emoji } from '../../../../shared/interfaces/emoji';
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { Subscription } from 'rxjs';
+import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -26,6 +27,7 @@ import { Subscription } from 'rxjs';
     SendChatMessageReactionComponent,
     FormsModule,
     ActiveChatMessageReactionsComponent,
+    EmojisPipe
   ],
   templateUrl: './send-chat-message.component.html',
   styleUrl: './send-chat-message.component.scss',

@@ -14,11 +14,12 @@ import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
+import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, CommonModule, FormsModule, RouterModule, EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -102,7 +103,6 @@ export class InputfieldComponent implements OnInit {
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -113,18 +113,18 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        const channel = await this.channelService.findOrCreateChannel();
+        const channel = await this.channelService.findOrCreateChannelByUserID();
         if (channel) {
+          this.selectedChannel = channel; 
+          this.channelService.selectChannel(channel);
+          await this.router.navigate(['/home/channel/' + channel.id]);         
           await this.send();
-          await this.router.navigate(['/home/channel/' + channel.id]);
         }
         break;
       default:
         break;
     }
   }
-
-
 
   async sendFromThread() {
     let threadMessage: ThreadMessage = {

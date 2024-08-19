@@ -24,7 +24,7 @@
       </div>
       <div class="actual-message" *ngIf="!sendMessage.deleted">
         <p>
-          {{ sendMessage.message }}
+          {{ sendMessage.message | emojis}}
           <span *ngIf="sendMessage.edited">bearbeitet</span>
         </p>
       </div>
