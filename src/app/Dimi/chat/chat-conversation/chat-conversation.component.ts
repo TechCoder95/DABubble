@@ -5,6 +5,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   Input,
   OnDestroy,
   OnInit,
@@ -46,17 +47,12 @@ export class ChatConversationComponent
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
-  sendChatMessages: ChatMessage[] = [];
-  receiveChatMessages: ChatMessage[] = [];
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
 
   @Input({ required: true }) activeChannelFromChat: any;
   @Input({ required: true }) activeUserFromChat: any;
 
-  private sendMessagesSubscription!: Subscription;
-  private receiveMessagesSubscription!: Subscription;
-  private activeUserSubscription!: Subscription;
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
 
@@ -121,15 +117,15 @@ export class ChatConversationComponent
     this.onScroll();
   }
 
-   onScroll() {
+  onScroll() {
     const messageDaysArray = this.messageDays.toArray();
     for (let i = 0; i < messageDaysArray.length - 1; i++) {
       let currentDay = messageDaysArray[i].nativeElement;
       let nextDay = messageDaysArray[i + 1].nativeElement;
-  
+
       let currentDayRect = currentDay.getBoundingClientRect();
       let nextDayRect = nextDay.getBoundingClientRect();
-  
+
       if (currentDayRect.bottom >= nextDayRect.top - 5) {
         if (currentDay.style.visibility !== 'hidden') {
           currentDay.style.visibility = 'hidden';

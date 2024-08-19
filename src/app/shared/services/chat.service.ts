@@ -6,6 +6,7 @@ import { TextChannel } from '../interfaces/textchannel';
 import { UserService } from './user.service';
 import { Emoji } from '../interfaces/emoji';
 import { DABubbleUser } from '../interfaces/user';
+import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
   providedIn: 'root',
