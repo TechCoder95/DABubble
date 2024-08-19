@@ -1,5 +1,6 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { getApp } from 'firebase/app';
+import { Firestore } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll } from "firebase/storage";
 
 @Injectable({
@@ -9,6 +10,7 @@ export class DAStorageService {
 
   constructor() { }
   firebaseApp = getApp();
+  /* firestore: Firestore = inject(Firestore); */
 
 
   /**
@@ -110,4 +112,35 @@ export class DAStorageService {
         // Uh-oh, an error occurred!
       });
   }
+
+        async uploadMessageImage(channelId: string, file: Blob, fileName:string) {
+          let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
+        
+          // Create a reference to the folder with the channelId
+          let channelFolderRef = ref(storage, `channels/${channelId}`);
+        
+          // Create a reference to the file within the channel folder
+          let fileRef = ref(channelFolderRef, fileName); 
+        
+          // Upload the file and return URL
+          try {
+            let snapshot = await uploadBytes(fileRef, file);
+            return snapshot.metadata.fullPath;
+          } catch (error) {
+            return console.error("Error uploading file: ", error);
+          }
+        }
+
+        async downloadMessageImage(url: string){
+          let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
+          let fullpath = ref(storage, `${url}`);
+        
+          let downloadedUrl = await getDownloadURL(fullpath);
+          
+          return downloadedUrl;
+         
+      }
+       
+      
+
 }

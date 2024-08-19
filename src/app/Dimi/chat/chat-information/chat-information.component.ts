@@ -221,7 +221,6 @@ export class ChatInformationComponent implements OnInit {
       this.userService
         .getOneUserbyId(privateChatPartnerID!)
         .then((privateChatPartner) => {
-          /* this.privateChatPartner = privateChatPartner as DABubbleUser; */
           this.privateChatPartnerName = privateChatPartner?.username;
           this.privatChatAvatar = privateChatPartner?.avatar;
         });

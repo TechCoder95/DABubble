@@ -6,6 +6,7 @@ import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reac
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { DatabaseService } from '../../../../shared/services/database.service';
+import { DAStorageService } from '../../../../shared/services/dastorage.service';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -28,12 +29,13 @@ export class ReceiveChatMessageComponent {
 
   senderUser: DABubbleUser= {username: "dummy", avatar: "./img/avatar.svg", mail:"", isLoggedIn: false};
 
-  constructor(private databaseService:DatabaseService, private userService: UserService) {
+  constructor(private databaseService:DatabaseService, private userService: UserService,private storageService: DAStorageService,) {
     
   }
 
   ngOnInit(): void {
     this.getUser();
+    this.getImage();
   }
 
 
@@ -43,8 +45,7 @@ export class ReceiveChatMessageComponent {
     this.senderUser = user;
   }
 
-
-
+  
   checkDate(date: number): string {
     const today = new Date();
     const givenDate = new Date(date);
@@ -58,6 +59,12 @@ export class ReceiveChatMessageComponent {
         year: 'numeric',
       }).format(givenDate);
     }
+  }
+
+  receivedMessage='';
+  async getImage(){
+    let imgSrc = await this.storageService.downloadMessageImage(this.receiveMessage.imageUrl!);
+    this.receivedMessage = imgSrc;
   }
 
 }
