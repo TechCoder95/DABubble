@@ -125,9 +125,7 @@ export class SendChatMessageComponent implements OnInit {
 
   sentImage='';
   async getImage(){
-    let imgSrc = await this.storageService.downloadMessageImage(this.sendMessage.channelId, this.sendMessage.imageUrl!);
-    debugger
-    console.log(imgSrc);
+    let imgSrc = await this.storageService.downloadMessageImage(this.sendMessage.imageUrl!);
     this.sentImage = imgSrc;
   }
 

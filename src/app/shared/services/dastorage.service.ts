@@ -131,18 +131,12 @@ export class DAStorageService {
           }
         }
 
-        async downloadMessageImage(channelID: string, url: string){
+        async downloadMessageImage(url: string){
           let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
           let fullpath = ref(storage, `${url}`);
-          debugger;
-          console.log(fullpath);
-          
-
+        
           let downloadedUrl = await getDownloadURL(fullpath);
-          debugger;
-          console.log(downloadedUrl);
           
-
           return downloadedUrl;
          
       }
