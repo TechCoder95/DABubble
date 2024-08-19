@@ -60,7 +60,9 @@ export class SendChatMessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
-    this.getImage();
+    if(this.sendMessage.imageUrl){
+      this.getImage();
+    }
   }
 
   async getUserName() {
