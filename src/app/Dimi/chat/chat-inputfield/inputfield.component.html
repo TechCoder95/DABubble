@@ -12,29 +12,26 @@
   <div class="arrange-input-options">
     <div class="chat-options">
       <div
-        class="emoji"
-        (mouseenter)="changeAddFilesImg(true)"
-        (mouseleave)="changeAddFilesImg(false)"
-        (click)="fileInput.click()"
-      >
+      class="emoji"
+      (mouseenter)="!fileIsSelected ? changeAddFilesImg(true) : changeCloseImg(true)"
+      (mouseleave)="!fileIsSelected ? changeAddFilesImg(false) : changeCloseImg(false)"
+      (click)="!fileIsSelected ? fileInput.click() : removeSelectedFile()"
+      [title]="fileIsSelected ? 'Bild rausnehmen' : ''"
+    >
         <input
           type="file"
           #fileInput
           (change)="onFileSelected($event)"
           hidden
         />
-        <img [src]="addFilesImg" />
+        <img [src]="addFilesImg" *ngIf="!fileIsSelected"/>
+        <img [src]="removeFileImg" *ngIf="fileIsSelected">
       </div>
 
       <div *ngIf="filePreview" class="file-preview-container">
         <div class="file-preview">
           <img [src]="filePreview" />
-          <!-- <button (click)="sendFile()">Senden</button> -->
-          <img
-            src="./img/send-message.svg"
-            class="send-message-btn"
-            (click)="sendMessage(messageType)"
-          />
+
         </div>
       </div>
       <div>

@@ -32,6 +32,13 @@
       </div>
     </div>
   </section>
+  <section
+    class="bg"
+    (mouseenter)="hoverReaction('answer', true)"
+    (mouseleave)="hoverReaction('answer', false)"
+  >
+    <img [src]="answerImg" />
+  </section>
   <section class="edit-message-section">
     <div
       class="bg"

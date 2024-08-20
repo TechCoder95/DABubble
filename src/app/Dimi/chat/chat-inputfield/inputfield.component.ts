@@ -75,7 +75,8 @@ export class InputfieldComponent implements OnInit {
       this.addFilesImg = './img/add-files-hover.svg';
       this.addEmojiImg = './img/add-emoji.svg';
       this.addLinkImg = './img/add-link.svg';
-    } else {
+    } 
+    else {
       this.setDefaultImages();
     }
   }
@@ -83,7 +84,7 @@ export class InputfieldComponent implements OnInit {
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
       this.addEmojiImg = './img/add-emoji-hover.svg';
-      this.addFilesImg = './img/add-files.svg';
+      this.addFilesImg =  this.fileIsSelected? './img/add-files-default.svg'  :'./img/add-files.svg';
       this.addLinkImg = './img/add-link.svg';
     } else {
       this.setDefaultImages();
@@ -94,7 +95,7 @@ export class InputfieldComponent implements OnInit {
     if (hover) {
       this.addLinkImg = './img/add-link-hover.svg';
       this.addEmojiImg = './img/add-emoji.svg';
-      this.addFilesImg = './img/add-files.svg';
+      this.addFilesImg =  this.fileIsSelected? './img/add-files-default.svg'  :'./img/add-files.svg';
     } else {
       this.setDefaultImages();
     }
@@ -212,7 +213,7 @@ export class InputfieldComponent implements OnInit {
 
   filePreview: string | ArrayBuffer | null = null;
   fileName: string = '';
-
+  fileIsSelected!:boolean;
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -223,13 +224,18 @@ export class InputfieldComponent implements OnInit {
         if (e.target?.result) {
           this.filePreview = e.target.result;
           this.image = e.target.result;
+          this.fileIsSelected=true;
         }
       };
       reader.readAsDataURL(file);
     }
+    this.getPlaceholderText();
   }
 
   getPlaceholderText(): string {
+    if (this.filePreview) {
+      return 'Bildunterschrift hinzufügen';
+    }
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
@@ -237,5 +243,18 @@ export class InputfieldComponent implements OnInit {
     return `Nachricht an #${this.selectedChannel?.name}`;
   }
 
+  removeFileImg:string = './img/close-default.png';
+  changeCloseImg(hover: boolean) {
+    if (hover) {
+      this.removeFileImg = './img/close-hover.png';
+    } else {
+      this.removeFileImg = './img/close-default.png';
+    }
+  }
+
+  removeSelectedFile(){
+    this.filePreview ='';
+    this.fileIsSelected = false;
+  }
 
 }
