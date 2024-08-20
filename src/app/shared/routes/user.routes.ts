@@ -13,7 +13,7 @@ const userRoutes : Routes = [
     //Vorbereitung für Lazy Loading
 
     {
-        path: '', component: VariableContentComponent,
+        path: 'user', component: VariableContentComponent,
     
         //hier wird Lazy Loading noch eingebaut!
     
