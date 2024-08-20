@@ -2,9 +2,14 @@
   <mat-card>
     <app-chat-information [activeUserFromChat]="selectedUserFromChat"
       [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
-    <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
+    
+    
+      <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" 
+      [activeUserFromChat]="selectedUserFromChat"
       #scrollContainer>
     </app-chat-conversation>
+
+
     <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       [messageType]="messageType">
     </app-chat-inputfield>
@@ -28,12 +33,13 @@
   <mat-card class="ml-4">
     <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
 
-    <app-chat-conversation [selectedThreadOwner]="selectedThreadOwner" [activeUserFromChat]="selectedUserFromChat" #scrollContainer>
+    <app-chat-conversation [activeChannelFromChat]="selectedThreadOwner" 
+    [activeUserFromChat]="selectedUserFromChat" #scrollContainer>
     </app-chat-conversation>
 
 
-    <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
-      [messageType]="messageType">
+    <app-chat-inputfield [selectedThreadOwner]="selectedThreadOwner" [activeUserFromChat]="selectedUserFromChat"
+      [messageType]="messageTypeThreads">
     </app-chat-inputfield>
   </mat-card>
 

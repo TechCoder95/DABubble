@@ -16,6 +16,7 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { ThreadService } from '../../../shared/services/thread.service';
+import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -32,7 +33,7 @@ export class InputfieldComponent implements OnInit {
   ticket: any;
   selectedChannel: TextChannel | null = null;
 
-  selectedThread: ThreadMessage | null = null;
+  selectedThread: TextChannel | null = null;
 
   activeUser!: DABubbleUser;
 
@@ -40,6 +41,8 @@ export class InputfieldComponent implements OnInit {
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
   fileInput: any;
+
+  @Input() selectedThreadOwner: any;
 
 
   constructor(
@@ -69,7 +72,7 @@ export class InputfieldComponent implements OnInit {
       });
     }
 
-    this.ticket = this.ticketService.getTicket();
+     this.ticket = this.ticketService.getTicket();
   }
 
 
@@ -133,20 +136,22 @@ export class InputfieldComponent implements OnInit {
   }
 
   async sendFromThread() {
-    let threadMessage: ThreadMessage = {
-      ticketId: this.ticket.id,
+    let threadMessage: ChatMessage = {
+      channelId: this.threadService.threadOwner.id,
+      channelName: this.threadService.threadOwner.senderName,
       message: this.textareaValue,
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
-      messageId: '',
-      emoticons: [],
+      allConversations: [],
       edited: false,
       deleted: false,
     };
     if (threadMessage.message !== '') {
       try {
-        this.ticketService.addConversationToThread(threadMessage);
+        console.log("TestUno", threadMessage);
+        
+        // this.ticketService.addConversationToThread(threadMessage);
         this.textareaValue = '';
 
       } catch (error) {
@@ -219,7 +224,7 @@ export class InputfieldComponent implements OnInit {
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
-    } else if (this.threadService.selectedThread) {
+    } else if (this.messageType === MessageType.Threads) {
       return `Nachricht an ${this.threadService.threadOwner.senderName}`;
     }
     return `Nachricht an #${this.selectedChannel?.name}`;

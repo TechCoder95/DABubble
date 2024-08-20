@@ -40,6 +40,7 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
+  messageTypeThreads = MessageType.Threads;
 
   constructor(private subService: GlobalsubService, private userService: UserService, public threadService: ThreadService) { }
 

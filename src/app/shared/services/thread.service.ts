@@ -7,13 +7,13 @@ import { ThreadChannel } from '../interfaces/thread-channel';
   providedIn: 'root'
 })
 export class ThreadService {
-  private thread: ThreadChannel;
+  thread: ThreadChannel;
   selectedThread: boolean = false;
   threadOwner!: any;
 
   @Output() selectedThreadOwner: EventEmitter<any> = new EventEmitter();
 
-  
+
   constructor(private databaseService: DatabaseService) {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
@@ -22,10 +22,7 @@ export class ThreadService {
     this.databaseService.readDataByID('messages', messageID).then((message) => {
       console.log(message, "oclas");
       this.threadOwner = message;
-      this.selectedThreadOwner.emit(this.threadOwner);
-
-      console.log(this.threadOwner.senderName, "senderName");
-      
+      this.selectedThreadOwner.emit(this.threadOwner);    
     });
   }
 
