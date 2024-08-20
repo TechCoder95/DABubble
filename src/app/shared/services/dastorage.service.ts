@@ -137,7 +137,6 @@ export class DAStorageService {
 
           let downloadedUrl = await getDownloadURL(fullpath);
 
-          debugger;
           console.log(downloadedUrl);
           
           return downloadedUrl;

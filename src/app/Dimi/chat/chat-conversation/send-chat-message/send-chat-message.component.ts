@@ -90,7 +90,6 @@ export class SendChatMessageComponent implements OnInit {
 
   onEditModeChange(event: boolean) {
     this.inEditMessageMode = event;
-    this.mainContainer.nativeElement.style.background = 'Antiquewhite';
   }
 
   cancel() {

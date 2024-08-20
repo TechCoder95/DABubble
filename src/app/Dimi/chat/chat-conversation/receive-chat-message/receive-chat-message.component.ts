@@ -66,8 +66,6 @@ export class ReceiveChatMessageComponent {
   receivedMessage='';
   async getImage(){
     let imgSrc = await this.storageService.downloadMessageImage(this.receiveMessage.imageUrl!);
-    debugger;
-    console.log(imgSrc);
     
     this.receivedMessage = imgSrc;
   }

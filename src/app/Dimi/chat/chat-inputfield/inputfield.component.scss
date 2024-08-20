@@ -50,9 +50,8 @@
     width: 40px;
     height: 40px;
     padding: 8px;
-    cursor: pointer;
-
     &:hover {
+      cursor: pointer;
       background-color: #eceefe;
       border-radius: 100%;
     }
@@ -65,23 +64,36 @@
   }
 }
 
+.disable-btn{
+  cursor: not-allowed !important;
+  >img{
+    cursor: not-allowed !important;
+  }
+  &:hover{
+    background-color: unset !important;
+  }
+}
+
 file-preview-container {
   margin-top: 20px;
 }
 
 .file-preview {
+  background: rgb(121, 126, 243);
+   border: 1px solid rgb(173, 176, 217);;
   display: flex;
   justify-content: space-evenly;
   position: absolute;
-  border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
-  top: 0;
-  background: azure;
   right: 0;
   left: 0;
-  bottom: 0;
+  bottom: 100%;
   border-radius: 20px;
+  >img{
+    max-width: 200px;
+    max-height: 200px;
+  }
 }
 
 .file-preview button {
