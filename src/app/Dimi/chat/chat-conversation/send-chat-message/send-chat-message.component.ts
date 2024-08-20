@@ -52,6 +52,7 @@ export class SendChatMessageComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService,
     private storageService: DAStorageService,
+    private chatService:ChatService,
   ) {
     this.user = JSON.parse(sessionStorage.getItem('userLogin')!);
   }
@@ -113,6 +114,8 @@ export class SendChatMessageComponent implements OnInit {
     this.messageDeleted = event;
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;
+    debugger;
+    await this.chatService.deleteEmojisOnMessage(this.sendMessage.id!);
     await this.databaseService.updateDataInDB(
       'messages',
       this.sendMessage.id!,

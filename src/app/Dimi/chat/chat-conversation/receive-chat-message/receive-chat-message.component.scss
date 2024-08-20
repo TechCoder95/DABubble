@@ -63,6 +63,7 @@ h5 {
 .message-information {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
   gap: 8px;
   > .sender-and-time {
     display: flex;
