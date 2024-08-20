@@ -22,7 +22,7 @@ import { ThreadChannel } from '../../shared/interfaces/thread-channel';
     ChatInformationComponent,
     InputfieldComponent,
     ThreadComponent
-],
+  ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
@@ -32,10 +32,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
   @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
+  @Output() ebbes = new EventEmitter<TextChannel>();
 
   @Output() activeUser!: any;
 
   channelsub!: Subscription;
+  threadsub!: Subscription;
 
 
   messageTypeDirects: MessageType = MessageType.Directs;
@@ -53,6 +55,11 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedChannelFromChat.emit(channel);
     });
 
+    this.ebbes.emit(JSON.parse(sessionStorage.getItem('selectedThreads')!));
+
+    this.threadsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
+      this.ebbes.emit(channel);
+    });
     let selectedPerson = this.getsessionStorage('selectedThread');
 
     this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
@@ -69,8 +76,11 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     console.log('ChatComponent destroyed');
-    if (this.channelsub)
+    if (this.channelsub) {
       this.channelsub.unsubscribe();
+    } else if (this.threadsub) {
+      this.threadsub.unsubscribe();
+    }
   }
 
   getsessionStorage(key: string) {

@@ -44,6 +44,7 @@ export class ChatConversationComponent
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
+  @Output() ebbes = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
@@ -78,7 +79,7 @@ export class ChatConversationComponent
     });
 
     
-    this.threadService.selectedThreadOwner.subscribe((threadOwner: any) => {
+    this.selectedThreadOwner = this.threadService.selectedThreadOwner.subscribe((threadOwner: any) => {
       this.selectedThreadOwner = threadOwner;
       console.log(threadOwner, "jutta");
 
@@ -93,6 +94,13 @@ export class ChatConversationComponent
       this.databaseService.subscribeToMessageDatainChannel(channel.id);
       this.selectedChannelFromChat.emit(channel);
     });
+    
+
+    // this.activeChannelFromChat.subscribe((channel: TextChannel) => {
+    //   this.allMessages = [];
+    //   this.databaseService.subscribeToMessageDatainChannel(channel.id);
+    //   this.ebbes.emit(channel);
+    // });
 
 
 
@@ -105,6 +113,10 @@ export class ChatConversationComponent
         this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
       }
     });
+
+    console.log(this.allMessages, "allMessages", this.ebbes, this.selectedChannelFromChat);
+
+    
   }
 
   ngOnDestroy() {
