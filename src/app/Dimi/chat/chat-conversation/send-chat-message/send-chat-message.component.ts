@@ -60,7 +60,9 @@ export class SendChatMessageComponent implements OnInit {
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
-    this.getImage();
+    if(this.sendMessage.imageUrl){
+      this.getImage();
+    }
   }
 
   async getUserName() {
@@ -88,7 +90,6 @@ export class SendChatMessageComponent implements OnInit {
 
   onEditModeChange(event: boolean) {
     this.inEditMessageMode = event;
-    this.mainContainer.nativeElement.style.background = 'Antiquewhite';
   }
 
   cancel() {

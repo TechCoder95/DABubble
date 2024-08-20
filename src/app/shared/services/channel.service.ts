@@ -142,17 +142,34 @@ export class ChannelService {
     return existingChannel;
   }
 
-  async createGroupChannel(data: TextChannel): Promise<TextChannel> {
+  async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
+    const nameExists = await this.doesChannelNameAlreadyExist(channel.name);
+    if (nameExists) {
+      // todo fehlermeldung zurück geben eventuell
+      alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
+      return null;
+    }
+
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
-      ...data,
+      ...channel,
       assignedUser: [this.userService.activeUser.id!],
       isPrivate: false,
       owner: currentUser.id!
     };
+
     const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
     newChannel.id = newChannelId;
     return newChannel;
+  }
+
+
+  async doesChannelNameAlreadyExist(channelName: string, excludeChannelId?: string): Promise<boolean> {
+    const lowerCaseName = channelName.toLowerCase();
+    const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
+    return channels.some((channel: TextChannel) =>
+      channel.name.toLowerCase() === lowerCaseName && channel.id !== excludeChannelId
+    );
   }
 
   async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
@@ -171,14 +188,18 @@ export class ChannelService {
     return sortedA.every((value, index) => value === sortedB[index]);
   }
 
-  createDefaultGroupChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+  async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
+    const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
+    const allUserIds = users.map(user => user!.id!)
+
     return [
-      { id: '', name: 'Allgemein', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id! },
-      { id: '', name: 'Entwicklerteam', assignedUser: [activeUser.id!, ...Object.values(userIdMap)], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id! }
+      { id: '', name: 'Allgemein', assignedUser: [...allUserIds], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id!, },
+      { id: '', name: 'Entwicklerteam', assignedUser: [...allUserIds], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id!, }
     ];
   }
 
-  createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): TextChannel[] {
+
+  async createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): Promise<TextChannel[]> {
     return [
       { id: '', name: 'Felix', assignedUser: [activeUser.id!, userIdMap['Felix']], isPrivate: true, description: '', owner: activeUser.id! },
       { id: '', name: 'Jimmy', assignedUser: [activeUser.id!, userIdMap['Jimmy']], isPrivate: true, description: '', owner: activeUser.id! },
