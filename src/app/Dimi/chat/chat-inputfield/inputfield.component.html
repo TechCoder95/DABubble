@@ -1,5 +1,5 @@
 
-<section class="inputfield">
+<main class="inputfield">
   <textarea
     name=""
     id=""
@@ -9,9 +9,9 @@
     [value]="textareaValue | emojis"
   ></textarea>
   
-  <div class="arrange-input-options">
+  <section class="arrange-input-options">
     <div class="chat-options">
-      <div
+      <span
       class="emoji"
       (mouseenter)="!fileIsSelected ? changeAddFilesImg(true) : changeCloseImg(true)"
       (mouseleave)="!fileIsSelected ? changeAddFilesImg(false) : changeCloseImg(false)"
@@ -26,7 +26,7 @@
         />
         <img [src]="addFilesImg" *ngIf="!fileIsSelected"/>
         <img [src]="removeFileImg" *ngIf="fileIsSelected">
-      </div>
+      </span>
 
       <div *ngIf="filePreview" class="file-preview-container">
         <div class="file-preview">
@@ -57,5 +57,5 @@
       class="send-message-btn"
       (click)="sendMessage(messageType)"
     />
-  </div>
-</section>
+  </section>
+</main>

@@ -130,4 +130,8 @@ export class SendChatMessageComponent implements OnInit {
     this.sentImage = imgSrc;
   }
 
+  sentImageExists(){
+    return this.sendMessage.imageUrl && this.sendMessage.imageUrl.trim() !== ''
+  }
+
 }

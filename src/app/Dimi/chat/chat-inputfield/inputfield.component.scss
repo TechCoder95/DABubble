@@ -79,20 +79,23 @@ file-preview-container {
 }
 
 .file-preview {
-  background: rgb(121, 126, 243);
+  z-index: 10;
+  background: rgb(63,169,245);
    border: 1px solid rgb(173, 176, 217);;
   display: flex;
   justify-content: space-evenly;
   position: absolute;
   padding: 10px;
-  border-radius: 5px;
-  right: 0;
-  left: 0;
-  bottom: 100%;
   border-radius: 20px;
+  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 100%;
+  width: 100%;
   >img{
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 100%;
+    max-height: 50vh;
+    border-radius: 8px;
   }
 }
 
