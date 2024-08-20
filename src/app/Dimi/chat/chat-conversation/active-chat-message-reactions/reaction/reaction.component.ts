@@ -32,7 +32,9 @@ export class ReactionComponent implements OnInit {
     this.emojiSubscription = this.subService
       .getEmojiObservable()
       .subscribe((emoji: Emoji) => {
-        this.loadEmojiReactions(emoji);
+        if(emoji.messageId === this.emoji.messageId && emoji.type === this.emoji.type){
+          this.loadEmojiReactions(emoji);
+        }
       });
 
     this.loadEmojiReactions(this.emoji);
