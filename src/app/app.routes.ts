@@ -17,19 +17,8 @@ import { NewChatComponent } from './rabia/new-chat/new-chat.component';
 export const routes: Routes = [
   { path: '', component: StartscreenComponent },
   {
-    path: 'user', component: VariableContentComponent,
-
-    //hier wird Lazy Loading noch eingebaut!
-
-    children: [
-      { path: 'register', component: AddUserComponent },
-      { path: 'chooseAvatar', component: ChooseAvatarComponent },
-      { path: 'login', component: LoginComponent },
-      { path: 'password-reset', component: PasswordResetComponent },
-      { path: 'password-change', component: PasswordChangeComponent },
-      { path: 'imprint', component: ImprintComponent },
-      { path: 'privacy', component: PrivacyComponent },
-    ]
+    path: 'user',
+    loadChildren: () => import('./shared/routes/user.routes'),
   },
   {
     path: 'home', canActivate: [isLoggedIn],
