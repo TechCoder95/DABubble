@@ -25,6 +25,7 @@ import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { ThreadService } from '../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -48,20 +49,20 @@ export class ChatConversationComponent
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
 
-  @Input({ required: true }) activeChannelFromChat: any;
-  @Input({ required: true }) activeUserFromChat: any;
+  @Input() activeChannelFromChat: any;
+  @Input() activeUserFromChat: any;
+  @Input() selectedThreadOwner: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
 
-  private allMessageSub!: Subscription;
 
   constructor(
-    private chatService: ChatService,
     private userService: UserService,
     private channelService: ChannelService,
     private databaseService: DatabaseService,
-    private subService: GlobalsubService
+    private subService: GlobalsubService, 
+    private threadService: ThreadService
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
@@ -73,8 +74,15 @@ export class ChatConversationComponent
     
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
+      console.log("butzu", user);
     });
 
+    
+    this.threadService.selectedThreadOwner.subscribe((threadOwner: any) => {
+      this.selectedThreadOwner = threadOwner;
+      console.log(threadOwner, "jutta");
+
+    });
 
     this.allMessages = [];
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);

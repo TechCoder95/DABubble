@@ -11,6 +11,7 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { UserService } from '../../shared/services/user.service';
 import { ThreadService } from '../../shared/services/thread.service';
+import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +22,7 @@ import { ThreadService } from '../../shared/services/thread.service';
     ChatInformationComponent,
     InputfieldComponent,
     ThreadComponent
-  ],
+],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
@@ -30,8 +31,9 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
+  @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
 
-  @Output() activeUserFromThread!: any;
+  @Output() activeUser!: any;
 
   channelsub!: Subscription;
 
@@ -56,13 +58,14 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedUserFromChat.emit(user);
       console.log(user, "butz", this.threadService.selectedThread);
 
-      this.activeUserFromThread = user;
-      
+      this.activeUser = user;
     }
-
     );
 
+    this.selectedThreadOwner.emit(this.getsessionStorage('selectedThread')!);
   }
+
+
   ngOnDestroy() {
     console.log('ChatComponent destroyed');
     if (this.channelsub)

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { UserService } from './user.service';
 import { DatabaseService } from './database.service';
 import { ThreadChannel } from '../interfaces/thread-channel';
@@ -11,6 +11,9 @@ export class ThreadService {
   selectedThread: boolean = false;
   threadOwner!: any;
 
+  @Output() selectedThreadOwner: EventEmitter<any> = new EventEmitter();
+
+  
   constructor(private databaseService: DatabaseService) {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
@@ -19,6 +22,7 @@ export class ThreadService {
     this.databaseService.readDataByID('messages', messageID).then((message) => {
       console.log(message, "oclas");
       this.threadOwner = message;
+      this.selectedThreadOwner.emit(this.threadOwner);
 
       console.log(this.threadOwner.senderName, "senderName");
       
