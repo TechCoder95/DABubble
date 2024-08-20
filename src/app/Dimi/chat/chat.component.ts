@@ -4,7 +4,7 @@ import { ChatConversationComponent } from './chat-conversation/chat-conversation
 import { ChatInformationComponent } from './chat-information/chat-information.component';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
-import { MessageType } from '../../shared/components/enums/messagetype';
+import { MessageType } from '../../shared/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';

@@ -9,7 +9,7 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
-import { MessageType } from '../../../shared/components/enums/messagetype';
+import { MessageType } from '../../../shared/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
