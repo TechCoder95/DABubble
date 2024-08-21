@@ -76,6 +76,7 @@ h5 {
 .message-information {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
   > .sender-and-time {
     display: flex;
@@ -108,8 +109,10 @@ h5 {
     }
     >img{
       border-radius: 30px 0px 30px 30px;
-      max-width: 200px;
-      max-height: 200px;
+      min-height: 150px;
+      min-width: 150px;
+      max-width: 250px;
+      max-height: 250px;
     }
   }
 }
@@ -178,4 +181,12 @@ h5 {
 
 .position-component {
   top: 0px !important;
+}
+
+.file-and-text{
+  flex-direction: column-reverse;
+  gap: 5px;
+  >img{
+  border-radius: 30px 0 0 0 !important;
+  }
 }

@@ -123,4 +123,17 @@ export class ChatService {
   }
 
   /* ========================================================== */
+   async deleteEmojisOnMessage(messageID: string) {
+    const emojisToDelete = this.allEmojis.filter(
+      (emoji: Emoji) => emoji.messageId === messageID
+    );
+    
+    for (const emoji of emojisToDelete) {
+      emoji.deleted = true;
+      emoji.usersIds = [];
+      await this.databaseService.updateDataInDB('emojies', emoji.id!, emoji);
+      await this.databaseService.deleteDataFromDB('emojies', emoji.id!);
+      this.subService.updateEmoji(emoji);
+    }
+  }
 }
