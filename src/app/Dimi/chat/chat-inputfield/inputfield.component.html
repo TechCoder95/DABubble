@@ -1,4 +1,3 @@
-
 <main class="inputfield">
   <textarea
     name=""
@@ -8,49 +7,56 @@
     [placeholder]="getPlaceholderText()"
     [value]="textareaValue | emojis"
   ></textarea>
-  
+
   <section class="arrange-input-options">
     <div class="chat-options">
       <span
-      class="emoji"
-      (mouseenter)="!fileIsSelected ? changeAddFilesImg(true) : changeCloseImg(true)"
-      (mouseleave)="!fileIsSelected ? changeAddFilesImg(false) : changeCloseImg(false)"
-      (click)="!fileIsSelected ? fileInput.click() : removeSelectedFile()"
-      [title]="fileIsSelected ? 'Bild rausnehmen' : ''"
-    >
+        class="emoji"
+        (mouseenter)="changeAddFilesImg(true)"
+        (mouseleave)="changeAddFilesImg(false)"
+        (click)="!fileIsSelected ? fileInput.click() : removeSelectedFile()"
+        [title]="fileIsSelected ? 'Bild rausnehmen' : ''"
+      >
         <input
           type="file"
           #fileInput
           (change)="onFileSelected($event)"
           hidden
         />
-        <img [src]="addFilesImg" [ngStyle]="fileIsSelected ? {'transform': 'rotate(45deg)'} : {}" />
-       <!--  <img [src]="removeFileImg" *ngIf="fileIsSelected"> -->
+        <img
+          [src]="addFilesImg"
+          [ngStyle]="fileIsSelected ? { transform: 'rotate(45deg)' } : {}"
+        />
+        <app-file-selection
+          *ngIf="filePreview"
+          [filePreview]="filePreview"
+        ></app-file-selection>
       </span>
 
-      <div *ngIf="filePreview" class="file-preview-container">
-        <div class="file-preview">
-          <img [src]="filePreview" />
-
-        </div>
-      </div>
       <div>
-        <img src="/img/line.svg" alt="" />
+        <img src="/img/line.svg" />
       </div>
-      <div
+
+      <span
         class="emoji"
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
+        (click)="handleEmojiSelection()"
       >
         <img [src]="addEmojiImg" />
-      </div>
-      <div
+        <app-emoji-selection
+          *ngIf="emojiSelectionOn"
+          (selectedEmoji)="handleSelectedEmoji($event)"
+        ></app-emoji-selection>
+      </span>
+
+      <span
         class="emoji"
         (mouseenter)="changeAddLinkImg(true)"
         (mouseleave)="changeAddLinkImg(false)"
       >
         <img [src]="addLinkImg" />
-      </div>
+      </span>
     </div>
     <img
       src="./img/send-message.svg"

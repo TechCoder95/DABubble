@@ -146,8 +146,6 @@ export class DAStorageService {
         let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
         let fullpath = ref(storage, url);
 
-        debugger;
-
         deleteObject(fullpath).then(()=>{
           console.log('FILE DELETED SUCCESSFULLY');
         }).catch((error)=>{

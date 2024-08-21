@@ -114,7 +114,6 @@ export class SendChatMessageComponent implements OnInit {
     this.messageDeleted = event;
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;
-    debugger;
     if(this.sendMessage.imageUrl){
       this.storageService.deleteMessageImage(this.sendMessage.imageUrl);
     }
