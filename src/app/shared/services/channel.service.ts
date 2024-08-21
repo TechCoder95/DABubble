@@ -143,6 +143,7 @@ export class ChannelService {
   }
 
   async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
+    // todo 
     const nameExists = await this.doesChannelNameAlreadyExist(channel.name);
     if (nameExists) {
       // todo fehlermeldung zurück geben eventuell
@@ -167,9 +168,13 @@ export class ChannelService {
   async doesChannelNameAlreadyExist(channelName: string, excludeChannelId?: string): Promise<boolean> {
     const lowerCaseName = channelName.toLowerCase();
     const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
-    return channels.some((channel: TextChannel) =>
-      channel.name.toLowerCase() === lowerCaseName && channel.id !== excludeChannelId
-    );
+    return channels.some((channel: TextChannel) => {
+      if (channel && (channel != null) && (channel.name != undefined)) {
+        console.log(channel.name); 
+        return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
+      }
+      return null;
+    });
   }
 
   async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
@@ -258,6 +263,10 @@ export class ChannelService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async leaveChannel() {
+    //  await this.databaseService.deleteDataFromDB('channels', this.channel.id);
   }
 }
 
