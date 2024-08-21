@@ -26,8 +26,8 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
-import { EmojiSelectionComponent } from './emoji-selection/emoji-selection.component';
-import { FileSelectionComponent } from './file-selection/file-selection.component';
+import { AddFilesComponent } from './add-files/add-files.component';
+import { EmojiesComponent } from './emojies/emojies.component';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -38,10 +38,10 @@ import { FileSelectionComponent } from './file-selection/file-selection.componen
     FormsModule,
     RouterModule,
     EmojisPipe,
-    EmojiSelectionComponent,
-    FileSelectionComponent,
+    EmojiesComponent,
+    AddFilesComponent,
   ],
-  providers: [EmojisPipe], 
+  providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -105,9 +105,7 @@ export class InputfieldComponent implements OnInit {
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
       this.addEmojiImg = './img/add-emoji-hover.svg';
-      this.addFilesImg = this.fileIsSelected
-        ? './img/add-files-default.svg'
-        : './img/add-files.svg';
+      this.addFilesImg = './img/add-files.svg';
       this.addLinkImg = './img/add-link.svg';
     } else {
       this.setDefaultImages();
@@ -118,9 +116,7 @@ export class InputfieldComponent implements OnInit {
     if (hover) {
       this.addLinkImg = './img/add-link-hover.svg';
       this.addEmojiImg = './img/add-emoji.svg';
-      this.addFilesImg = this.fileIsSelected
-        ? './img/add-files-default.svg'
-        : './img/add-files.svg';
+      this.addFilesImg = './img/add-files.svg';
     } else {
       this.setDefaultImages();
     }
@@ -187,8 +183,7 @@ export class InputfieldComponent implements OnInit {
         }
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
-        this.filePreview = '';
-        this.fileIsSelected = false;
+        this.selectedFile = '';
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -241,29 +236,8 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  filePreview: string | ArrayBuffer | null = null;
-  fileName: string = '';
-  fileIsSelected!: boolean;
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      this.fileName = file.name;
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        if (e.target?.result) {
-          this.filePreview = e.target.result;
-          this.image = e.target.result;
-          this.fileIsSelected = true;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-    this.getPlaceholderText();
-  }
-
   getPlaceholderText(): string {
-    if (this.filePreview) {
+    if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
     }
     if (this.messageType === MessageType.NewDirect) {
@@ -275,18 +249,21 @@ export class InputfieldComponent implements OnInit {
     return `Nachricht an #${this.selectedChannel?.name}`;
   }
 
-  removeSelectedFile() {
-    this.filePreview = '';
-    this.fileIsSelected = false;
-  }
-
-  emojiSelectionOn: boolean = false;
-  handleEmojiSelection() {
-    this.emojiSelectionOn = !this.emojiSelectionOn;
-  }
-
   handleSelectedEmoji(event: string) {
     let transformedEmoji = this.emojiPipe.transform(event);
     this.textareaValue += transformedEmoji;
+  }
+
+  selectedFile: string | ArrayBuffer | null = null;
+  fileName: string = '';
+
+  handleSelectedFile(event: string | ArrayBuffer) {
+    this.selectedFile = event;
+    this.image = event;
+    this.getPlaceholderText();
+  }
+
+  handleFileName(event: string) {
+    this.fileName = event;
   }
 }

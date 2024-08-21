@@ -10,45 +10,26 @@
 
   <section class="arrange-input-options">
     <div class="chat-options">
-      <span
-        class="emoji"
+      <app-add-files
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
-        (click)="!fileIsSelected ? fileInput.click() : removeSelectedFile()"
-        [title]="fileIsSelected ? 'Bild rausnehmen' : ''"
-      >
-        <input
-          type="file"
-          #fileInput
-          (change)="onFileSelected($event)"
-          hidden
-        />
-        <img
-          [src]="addFilesImg"
-          [ngStyle]="fileIsSelected ? { transform: 'rotate(45deg)' } : {}"
-        />
-        <app-file-selection
-          *ngIf="filePreview"
-          [filePreview]="filePreview"
-        ></app-file-selection>
-      </span>
+        [title]="fileName ? 'Bild rausnehmen' : ''"
+        [addFilesImg]="addFilesImg"
+        (selectedFile)="handleSelectedFile($event)"
+        [filePreview]="selectedFile"
+        (fileName)="handleFileName($event)"
+      ></app-add-files>
 
       <div>
         <img src="/img/line.svg" />
       </div>
 
-      <span
-        class="emoji"
+      <app-emojies
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
-        (click)="handleEmojiSelection()"
-      >
-        <img [src]="addEmojiImg" />
-        <app-emoji-selection
-          *ngIf="emojiSelectionOn"
-          (selectedEmoji)="handleSelectedEmoji($event)"
-        ></app-emoji-selection>
-      </span>
+        [addEmojiImg]="addEmojiImg"
+        (selectedEmoji)="handleSelectedEmoji($event)"
+      ></app-emojies>
 
       <span
         class="emoji"

@@ -1,0 +1,16 @@
+<main
+  class="emoji"
+  (click)="!filePreview ? fileInput.click() : removeSelectedFile()"
+>
+  <input type="file" #fileInput (change)="onFileSelected($event)" hidden />
+  <img
+    [src]="addFilesImg"
+    [ngStyle]="filePreview ? { transform: 'rotate(45deg)' } : {}"
+  />
+  
+  <section class="file-preview-container" *ngIf="filePreview">
+    <div class="file-preview">
+      <img [src]="filePreview" />
+    </div>
+  </section>
+</main>

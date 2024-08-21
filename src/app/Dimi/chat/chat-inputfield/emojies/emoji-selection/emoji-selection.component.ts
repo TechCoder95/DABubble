@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
-import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
+import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-emoji-selection',
