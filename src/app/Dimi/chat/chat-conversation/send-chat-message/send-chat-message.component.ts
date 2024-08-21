@@ -115,6 +115,9 @@ export class SendChatMessageComponent implements OnInit {
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;
     debugger;
+    if(this.sendMessage.imageUrl){
+      this.storageService.deleteMessageImage(this.sendMessage.imageUrl);
+    }
     await this.chatService.deleteEmojisOnMessage(this.sendMessage.id!);
     await this.databaseService.updateDataInDB(
       'messages',

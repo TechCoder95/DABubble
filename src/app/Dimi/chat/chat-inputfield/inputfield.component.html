@@ -24,8 +24,8 @@
           (change)="onFileSelected($event)"
           hidden
         />
-        <img [src]="addFilesImg" *ngIf="!fileIsSelected"/>
-        <img [src]="removeFileImg" *ngIf="fileIsSelected">
+        <img [src]="addFilesImg" [ngStyle]="fileIsSelected ? {'transform': 'rotate(45deg)'} : {}" />
+       <!--  <img [src]="removeFileImg" *ngIf="fileIsSelected"> -->
       </span>
 
       <div *ngIf="filePreview" class="file-preview-container">

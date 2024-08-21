@@ -57,6 +57,7 @@
     }
 
     > img {
+      transition: transform 0.3s ease;
       cursor: pointer;
       height: 20px;
       width: 20px;
@@ -64,7 +65,7 @@
   }
 }
 
-.disable-btn{
+/* .disable-btn{
   cursor: not-allowed !important;
   >img{
     cursor: not-allowed !important;
@@ -72,7 +73,7 @@
   &:hover{
     background-color: unset !important;
   }
-}
+} */
 
 file-preview-container {
   margin-top: 20px;
