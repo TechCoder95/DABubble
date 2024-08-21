@@ -10,6 +10,7 @@ import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -34,8 +35,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
+  showChatComponent!: boolean;
 
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService) {
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService,  private router: Router) {
+
   }
 
   async ngOnInit() {
@@ -52,7 +55,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('ChatComponent destroyed');
     if (this.channelsub)
       this.channelsub.unsubscribe();
+
+    
   }
+
+
 
   getsessionStorage(key: string) {
     return JSON.parse(sessionStorage.getItem(key)!);
