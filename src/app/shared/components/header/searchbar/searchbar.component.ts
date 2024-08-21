@@ -42,17 +42,38 @@ export class SearchbarComponent implements OnInit {
   private searchSubject: Subject<string> = new Subject();
 
   ngOnInit(): void {
-    this.searchSubject.pipe(
-      debounceTime(300) // 300ms debounce time
-    ).subscribe(searchText => {
-      this.searchInput = searchText;
-      this.searchItems();
-    });
+    this.searchSubject
+      .pipe(
+        debounceTime(300) // 300ms debounce time
+      ).subscribe(searchText => {
+        this.searchInput = searchText;
+        this.searchItems();
+      });
+
+
+    this.databaseService.readDataByArray('channels', 'assignedUser', JSON.parse(sessionStorage.getItem('userLogin')!).id)
+      .then((results: TextChannel[]) => {
+        this.channelSearch = results;
+      }).catch((error) => {
+        console.error('Error fetching search results:', error);
+      });
+
+
+
 
   }
 
   onSearchInputChange(searchText: string) {
-    this.searchSubject.next(searchText);
+    if (searchText === '') {
+      this.searchResults = [];
+      return;
+    }
+    else if (this.searchResults.length === 1) {
+      return;
+    }
+    else {
+      this.searchSubject.next(searchText);
+    }
   }
 
 
@@ -68,7 +89,7 @@ export class SearchbarComponent implements OnInit {
   searchItems() {
     this.searchResults = [];
     this.pushUsers();
-    // this.pushMessages();
+    this.pushMessages();
     this.pushChannels();
   }
 
@@ -90,33 +111,32 @@ export class SearchbarComponent implements OnInit {
   }
 
   pushChannels() {
-    this.databaseService
-      .readDataByArray('channels', 'assignedUser', JSON.parse(sessionStorage.getItem('userLogin')!).id)
-      .then((results: TextChannel[]) => {
-        const newResults = results.filter(channel => channel.name.includes(this.searchInput));
-        newResults.forEach(channel => {
-          let searchItem = {
-            title: 'Channel: ',
-            description: channel
-          }
-          this.searchResults.push(searchItem);
-        });
-      }).catch((error) => {
-        console.error('Error fetching search results:', error);
-      });
+    const newResults = this.channelSearch.filter(channel => channel.name.includes(this.searchInput));
+    newResults.forEach(channel => {
+      let searchItem = {
+        title: 'Channel: ',
+        description: channel
+      }
+      this.searchResults.push(searchItem);
+    });
   }
 
   pushMessages() {
-
-    //Todo Dome: Implement this
-
-    // let searchItem = {
-    //   title: 'Message: ',
-    //   description: message.message,
-    //   channel: this.channelSearch.find(channel => channel.id === message.channelId)?.name,
-    //   id: message.id
-    // }
-    // this.searchResults.push(searchItem);
+    this.channelSearch.forEach(channel => {
+      this.databaseService.readDataByField('messages', 'channelId', channel.id)
+        .then((messages: ChatMessage[]) => {
+          const newResults = messages.filter(message => message.message.toLowerCase().includes(this.searchInput.toLowerCase()));
+          newResults.forEach(message => {
+            let searchItem = {
+              title: 'Message: ',
+              description: message
+            }
+            this.searchResults.push(searchItem);
+          });
+        }).catch((error) => {
+          console.error('Error fetching search results:', error);
+        });
+    });
   }
 
   openInfo(user: any) {
@@ -129,7 +149,10 @@ export class SearchbarComponent implements OnInit {
 
   openChannel(channel: TextChannel) {
     this.channelService.selectChannel(channel);
-    this.router.navigate(['/home/channel', channel.id]);
+    this.router.navigate(['/home']);
+    setTimeout(() => {
+      this.router.navigate(['/home/channel', channel.id]);
+    }, 0.1);
     this.resetInput();
   }
 

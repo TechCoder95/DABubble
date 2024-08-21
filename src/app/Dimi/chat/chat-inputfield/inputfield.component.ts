@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -16,11 +26,22 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
+import { AddFilesComponent } from './add-files/add-files.component';
+import { EmojiesComponent } from './emojies/emojies.component';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule, RouterModule, EmojisPipe],
+  imports: [
+    CommonModule,
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    EmojisPipe,
+    EmojiesComponent,
+    AddFilesComponent,
+  ],
+  providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -40,7 +61,6 @@ export class InputfieldComponent implements OnInit {
   fileInput: any;
   storage: any;
 
-
   constructor(
     public channelService: ChannelService,
     private userService: UserService,
@@ -48,9 +68,12 @@ export class InputfieldComponent implements OnInit {
     private ticketService: TicketService,
     private router: Router,
     private storageService: DAStorageService,
+    private emojiPipe: EmojisPipe,
   ) {
     this.activeUser = this.userService.activeUser;
-    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+    this.selectedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel')!,
+    );
   }
 
   ngOnInit(): void {
@@ -69,14 +92,12 @@ export class InputfieldComponent implements OnInit {
     this.ticket = this.ticketService.getTicket();
   }
 
-
   changeAddFilesImg(hover: boolean) {
     if (hover) {
       this.addFilesImg = './img/add-files-hover.svg';
       this.addEmojiImg = './img/add-emoji.svg';
       this.addLinkImg = './img/add-link.svg';
-    } 
-    else {
+    } else {
       this.setDefaultImages();
     }
   }
@@ -84,7 +105,7 @@ export class InputfieldComponent implements OnInit {
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
       this.addEmojiImg = './img/add-emoji-hover.svg';
-      this.addFilesImg =  this.fileIsSelected? './img/add-files-default.svg'  :'./img/add-files.svg';
+      this.addFilesImg = './img/add-files.svg';
       this.addLinkImg = './img/add-link.svg';
     } else {
       this.setDefaultImages();
@@ -95,7 +116,7 @@ export class InputfieldComponent implements OnInit {
     if (hover) {
       this.addLinkImg = './img/add-link-hover.svg';
       this.addEmojiImg = './img/add-emoji.svg';
-      this.addFilesImg =  this.fileIsSelected? './img/add-files-default.svg'  :'./img/add-files.svg';
+      this.addFilesImg = './img/add-files.svg';
     } else {
       this.setDefaultImages();
     }
@@ -119,9 +140,9 @@ export class InputfieldComponent implements OnInit {
       case MessageType.NewDirect:
         const channel = await this.channelService.findOrCreateChannelByUserID();
         if (channel) {
-          this.selectedChannel = channel; 
+          this.selectedChannel = channel;
           this.channelService.selectChannel(channel);
-          await this.router.navigate(['/home/channel/' + channel.id]);         
+          await this.router.navigate(['/home/channel/' + channel.id]);
           await this.send();
         }
         break;
@@ -151,18 +172,18 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  image!:string | ArrayBuffer;
+  image!: string | ArrayBuffer;
   async send() {
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
       try {
-        if(this.image){
+        if (this.image) {
           message.imageUrl = await this.saveImageInStorage(message);
         }
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
-        this.filePreview = '';
+        this.selectedFile = '';
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -171,7 +192,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  returnCurrentMessage(){
+  returnCurrentMessage() {
     return {
       channelId: this.selectedChannel!.id,
       channelName: this.selectedChannel!.name,
@@ -181,27 +202,31 @@ export class InputfieldComponent implements OnInit {
       senderId: this.activeUser.id || 'senderIdDefault',
       edited: false,
       deleted: false,
-      imageUrl:'',
+      imageUrl: '',
     };
   }
 
-  async saveImageInStorage(message:ChatMessage):Promise<string>{
-     // Bild in Firestore Storage hochladen
-     let imageBlob: Blob;
-     if (typeof this.image === 'string') {
-       const byteString = atob(this.image.split(',')[1]);
-       const mimeString = this.image.split(',')[0].split(':')[1].split(';')[0];
-       const ab = new ArrayBuffer(byteString.length);
-       const ia = new Uint8Array(ab);
-       for (let i = 0; i < byteString.length; i++) {
-         ia[i] = byteString.charCodeAt(i);
-       }
-       imageBlob = new Blob([ab], { type: mimeString });
-     } else {
-       imageBlob = new Blob([this.image]);
-     }
-     let imageUrl:any = await this.storageService.uploadMessageImage(message.channelId, imageBlob, this.fileName);
-     return imageUrl;
+  async saveImageInStorage(message: ChatMessage): Promise<string> {
+    // Bild in Firestore Storage hochladen
+    let imageBlob: Blob;
+    if (typeof this.image === 'string') {
+      const byteString = atob(this.image.split(',')[1]);
+      const mimeString = this.image.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      imageBlob = new Blob([ab], { type: mimeString });
+    } else {
+      imageBlob = new Blob([this.image]);
+    }
+    let imageUrl: any = await this.storageService.uploadMessageImage(
+      message.channelId,
+      imageBlob,
+      this.fileName,
+    );
+    return imageUrl;
   }
 
   handleEnterKey(event: KeyboardEvent) {
@@ -211,50 +236,34 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  filePreview: string | ArrayBuffer | null = null;
-  fileName: string = '';
-  fileIsSelected!:boolean;
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      this.fileName = file.name;
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        if (e.target?.result) {
-          this.filePreview = e.target.result;
-          this.image = e.target.result;
-          this.fileIsSelected=true;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-    this.getPlaceholderText();
-  }
-
   getPlaceholderText(): string {
-    if (this.filePreview) {
+    if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
     }
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
-      return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
+      return selectedUser
+        ? `Nachricht an @${selectedUser.username}`
+        : 'Starte eine neue Nachricht';
     }
     return `Nachricht an #${this.selectedChannel?.name}`;
   }
 
-  removeFileImg:string = './img/close-default.png';
-  changeCloseImg(hover: boolean) {
-    if (hover) {
-      this.removeFileImg = './img/close-hover.png';
-    } else {
-      this.removeFileImg = './img/close-default.png';
-    }
+  handleSelectedEmoji(event: string) {
+    let transformedEmoji = this.emojiPipe.transform(event);
+    this.textareaValue += transformedEmoji;
   }
 
-  removeSelectedFile(){
-    this.filePreview ='';
-    this.fileIsSelected = false;
+  selectedFile: string | ArrayBuffer | null = null;
+  fileName: string = '';
+
+  handleSelectedFile(event: string | ArrayBuffer) {
+    this.selectedFile = event;
+    this.image = event;
+    this.getPlaceholderText();
   }
 
+  handleFileName(event: string) {
+    this.fileName = event;
+  }
 }

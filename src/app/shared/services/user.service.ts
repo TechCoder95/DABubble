@@ -8,7 +8,6 @@ import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
 import { GlobalsubService } from './globalsub.service';
-import { user } from '@angular/fire/auth';
 
 
 @Injectable({
@@ -191,21 +190,16 @@ export class UserService {
    * and navigates to the login page.
    */
   async logout() {
-
-    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
-    if (gast) {
-      this.guestLogout();
-    } else {
-      let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
-      this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
-        .then(() => {
-          sessionStorage.removeItem('userLogin');
-          sessionStorage.removeItem('uId');
-          sessionStorage.removeItem('userLogin');
-          sessionStorage.removeItem('selectedChannel');
-          this.router.navigate(['/user/login']);
-        });
-    }
+    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+    this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
+      .then(() => {
+        sessionStorage.removeItem('userLogin');
+        sessionStorage.removeItem('uId');
+        sessionStorage.removeItem('userLogin');
+        sessionStorage.removeItem('selectedChannel');
+        sessionStorage.removeItem('selectedThread');
+        this.router.navigate(['/user/login']);
+      });
   }
 
 

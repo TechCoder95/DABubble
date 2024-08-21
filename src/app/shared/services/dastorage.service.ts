@@ -65,7 +65,7 @@ export class DAStorageService {
    * @param name - The name of the file in the storage.
    * @returns A Promise that resolves when the file is deleted.
    */
-  async deleteFile(url: string) {
+ /*  async deleteFile(url: string) {
     const storage = getStorage();
 
     // Create a reference to the file to delete
@@ -76,7 +76,7 @@ export class DAStorageService {
     }).catch((error) => {
       // Uh-oh, an error occurred!
     });
-  }
+  } */
 
 
   /**
@@ -141,8 +141,18 @@ export class DAStorageService {
           
           return downloadedUrl;
       }
-           
-       
-      
+
+      async deleteMessageImage(url:string){
+        let storage = getStorage(this.firebaseApp, "gs://dabubble-da785.appspot.com");
+        let fullpath = ref(storage, url);
+
+        deleteObject(fullpath).then(()=>{
+          console.log('FILE DELETED SUCCESSFULLY');
+        }).catch((error)=>{
+          console.error('Error deleting file:', error);
+        })
+        
+      }
+          
 
 }

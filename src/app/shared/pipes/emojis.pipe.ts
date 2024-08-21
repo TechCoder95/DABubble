@@ -83,56 +83,6 @@ export class EmojisPipe implements PipeTransform {
       return value;
     }
 
-    if (value.includes(':-(')) {
-      value = value.replace(':-(', '😞');
-      return value;
-    }
-
-    if (value.includes(':-)')) {
-      value = value.replace(':-)', '😊');
-      return value;
-    }
-
-    if (value.includes(':-D')) {
-      value = value.replace(':-D', '😁');
-      return value;
-    }
-
-    if (value.includes(':-P')) {
-      value = value.replace(':-P', '😛');
-      return value;
-    }
-
-    if (value.includes(':-O')) {
-      value = value.replace(':-O', '😮');
-      return value;
-    }
-
-    if (value.includes(':-/')) {
-      value = value.replace(':-/', '😕');
-      return value;
-    }
-
-    if (value.includes(':-*')) {
-      value = value.replace(':-*', '😘');
-      return value;
-    }
-
-    if (value.includes(':-|')) {
-      value = value.replace(':-|', '😐');
-      return value;
-    }
-
-    if (value.includes(':-$')) {
-      value = value.replace(':-$', '🤑');
-      return value;
-    }
-
-    if (value.includes(':-!')) {
-      value = value.replace(':-!', '😠');
-      return value;
-    }
-
 
     return value;
   }
