@@ -19,7 +19,7 @@
       </div>
       <span class="actual-message" *ngIf="!receiveMessage.deleted" [ngClass]="{'file-and-text':receiveMessage.imageUrl && receiveMessage.message}">
         <p [ngClass]="{ 'mw-70': repeatedMessage }"  *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''">
-          {{ receiveMessage.message }}
+          {{ receiveMessage.message | emojis }}
           <span *ngIf="receiveMessage.edited">bearbeitet</span>
         </p>
         <img [src]="receivedMessage" *ngIf="receiveMessage.imageUrl && receiveMessage.imageUrl.trim() !== ''">
