@@ -49,10 +49,11 @@ export class ChatConversationComponent
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
+  allThreadMessages: ChatMessage[] = [];
+  selectedMessage!: DABubbleUser;
 
   @Input() activeChannelFromChat: any;
   @Input() activeUserFromChat: any;
-  @Input() selectedThreadOwner: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
@@ -62,7 +63,7 @@ export class ChatConversationComponent
     private userService: UserService,
     private channelService: ChannelService,
     private databaseService: DatabaseService,
-    private subService: GlobalsubService, 
+    private subService: GlobalsubService,
     public threadService: ThreadService
   ) {
     this.activeUser = this.userService.activeUser;
@@ -72,32 +73,38 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
-    
+
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
 
-    
-    this.selectedThreadOwner = this.threadService.selectedThreadOwner.subscribe((threadOwner: any) => {
-      this.selectedThreadOwner = threadOwner;
-      console.log(threadOwner, "jutta");
 
-    });
+    if (sessionStorage.getItem('selectedThread')) {
+      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
+        this.selectedMessage = selectedMessage;
+        console.log(selectedMessage, "jutta");
+      });
 
-    this.allMessages = [];
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+      this.allThreadMessages = [];
+      this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
+    }
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {
       this.allMessages = [];
-      this.databaseService.subscribeToMessageDatainChannel(channel.id);
       this.selectedChannelFromChat.emit(channel);
+
     });
-    
+
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+
+    this.allMessages = [];
+    this.allThreadMessages = [];
 
     /* debugger;
     console.log(this.activeChannelFromChat); */
-    
+
 
 
     this.subService.getAllMessageObservable().subscribe((message) => {
@@ -105,14 +112,20 @@ export class ChatConversationComponent
         if (this.allMessages.some((msg) => msg.id === message.id)) {
           return;
         }
-        this.allMessages.push(message);
-        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        if (message.isThreadMsg) {
+          this.allThreadMessages.push(message);
+          this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
+        }
+        else {
+          this.allMessages.push(message);
+          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        }
       }
     });
 
     // console.log(this.allMessages, "allMessages", this.ebbes, this.selectedChannelFromChat);
 
-    
+
   }
 
   ngOnDestroy() {
@@ -179,17 +192,6 @@ export class ChatConversationComponent
     return messageDate.toLocaleDateString();
   }
 
-  groupMessagesByDate() {
-    let groupedMessages: any = {};
-    this.allMessages.forEach((message) => {
-      let date = this.checkDate(message.timestamp);
-      if (!groupedMessages[date]) {
-        groupedMessages[date] = [];
-      }
-      groupedMessages[date].push(message);
-    });
-    return groupedMessages;
-  }
 
   formatDateWithDay(timestamp: any): string {
     const messageDate = new Date(timestamp);

@@ -2,6 +2,7 @@ import { EventEmitter, Injectable, Output } from '@angular/core';
 import { UserService } from './user.service';
 import { DatabaseService } from './database.service';
 import { ThreadChannel } from '../interfaces/thread-channel';
+import { ChatMessage } from '../interfaces/chatmessage';
 
 @Injectable({
   providedIn: 'root'
@@ -9,9 +10,9 @@ import { ThreadChannel } from '../interfaces/thread-channel';
 export class ThreadService {
   thread: ThreadChannel;
   selectedThread: boolean = false;
-  threadOwner!: any;
+  message!: any;
 
-  @Output() selectedThreadOwner: EventEmitter<any> = new EventEmitter();
+  @Output() selectedMessage: EventEmitter<ChatMessage> = new EventEmitter();
 
 
   constructor(private databaseService: DatabaseService) {
@@ -19,10 +20,10 @@ export class ThreadService {
   }
 
   findSenderByMessageID(messageID: string): void {
-    this.databaseService.readDataByID('messages', messageID).then((message) => {
+    this.databaseService.readDataByField('messages', 'id', messageID).then((message) => {
       // console.log(message, "das ist der geöffnete Thread");
-      this.threadOwner = message;
-      this.selectedThreadOwner.emit(this.threadOwner);    
+      this.message = message;
+      this.selectedMessage.emit(this.message);    
     });
   }
 

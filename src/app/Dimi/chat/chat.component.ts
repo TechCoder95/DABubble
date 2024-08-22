@@ -14,6 +14,7 @@ import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { NavigationStart, Router } from '@angular/router';
 import { DatabaseService } from '../../shared/services/database.service';
+import { ChatMessage } from '../../shared/interfaces/chatmessage';
 
 @Component({
   selector: 'app-chat',
@@ -34,7 +35,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
   @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
-  @Output() ebbes = new EventEmitter<TextChannel>();
+  @Output() ebbes = new EventEmitter<ChatMessage>();
 
   @Output() activeUser!: any;
 
@@ -64,11 +65,6 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedChannelFromChat.emit(channel);
     });
 
-    this.ebbes.emit(JSON.parse(sessionStorage.getItem('selectedThreads')!));
-
-    this.threadsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
-      this.ebbes.emit(channel);
-    });
     let selectedPerson = this.getsessionStorage('selectedThread');
 
     this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {

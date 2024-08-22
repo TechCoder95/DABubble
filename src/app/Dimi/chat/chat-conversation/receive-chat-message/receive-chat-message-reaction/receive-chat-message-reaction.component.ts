@@ -59,6 +59,7 @@ export class ReceiveChatMessageReactionComponent {
       messageID: this.ticket.id!,
       channelID: this.ticket.channelId,
       userID: this.user.id!,
+      messages: [],
       id: ''
     }
 
@@ -69,12 +70,11 @@ export class ReceiveChatMessageReactionComponent {
       await this.dataService.addDataToDB('threads', thread).then((res) => {
         thread.id! = res;
       });
-      await sessionStorage.setItem('selectedThread', JSON.stringify(thread));
     }
     else {
       thread.id = threadFromDB.id;
     }
-
+    sessionStorage.setItem('selectedThread', JSON.stringify(thread));
     await this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
 
     let newThread: ThreadChannel = {

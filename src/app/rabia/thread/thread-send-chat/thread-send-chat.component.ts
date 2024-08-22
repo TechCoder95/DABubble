@@ -5,9 +5,9 @@ import { TicketService } from '../../../shared/services/ticket.service';
 import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
-import { MessageType } from '../../../shared/components/enums/messagetype';
 import { InputfieldComponent } from '../../../Dimi/chat/chat-inputfield/inputfield.component';
 import { MatInputModule } from '@angular/material/input';
+import { MessageType } from '../../../shared/enums/messagetype';
 
 @Component({
   selector: 'app-thread-send-chat',

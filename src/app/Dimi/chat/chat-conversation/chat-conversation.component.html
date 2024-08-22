@@ -5,8 +5,14 @@
     'justify-content': allMessages.length === 0 ? 'flex-end' : 'flex-start'
   }"
 >
+
+
+
+
+
   <div>
     @for (message of allMessages; track $index) {
+
 
 
     @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
@@ -55,4 +61,7 @@
 
 
   </div>
+
+
+
 </main>

@@ -10,7 +10,7 @@ import {
   inject,
 } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { map, Observable, pipe, Subscription } from 'rxjs';
+import { async, map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from '../../../shared/services/chat.service';
@@ -57,6 +57,8 @@ export class InputfieldComponent implements OnInit {
   selectedThread: TextChannel | null = null;
 
   activeUser!: DABubbleUser;
+  threadOwner!: DABubbleUser;
+  selectedMessage!: ChatMessage;
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -96,7 +98,18 @@ export class InputfieldComponent implements OnInit {
       });
     }
 
-     this.ticket = this.ticketService.getTicket();
+    if (this.selectedThreadOwner) {
+      this.selectedThreadOwner.subscribe((threadOwner: any) => {
+        this.threadOwner = threadOwner;
+      });
+    }
+
+    if (this.threadService.selectedMessage) {
+      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
+        this.selectedMessage = selectedMessage[0];
+      });
+    }
+    this.ticket = this.ticketService.getTicket();
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -139,10 +152,12 @@ export class InputfieldComponent implements OnInit {
     switch (type) {
       case MessageType.Groups:
       case MessageType.Directs:
+        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
         await this.send();
         break;
       case MessageType.Threads:
-        await this.sendFromThread();
+        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedThread')!);
+        await this.send();
         break;
       case MessageType.NewDirect:
         const channel = await this.channelService.findOrCreateChannelByUserID();
@@ -158,30 +173,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  async sendFromThread() {
-    let threadMessage: ChatMessage = {
-      channelId: this.threadService.threadOwner.id,
-      channelName: this.threadService.threadOwner.senderName,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      allConversations: [],
-      edited: false,
-      deleted: false,
-    };
-    if (threadMessage.message !== '') {
-      try {
-        console.log("TestUno", threadMessage);
-        
-        // this.ticketService.addConversationToThread(threadMessage);
-        this.textareaValue = '';
 
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
-      }
-    }
-  }
 
   image!: string | ArrayBuffer;
   async send() {
@@ -206,7 +198,7 @@ export class InputfieldComponent implements OnInit {
   returnCurrentMessage() {
     return {
       channelId: this.selectedChannel!.id,
-      channelName: this.selectedChannel!.name,
+      channelName: this.selectedChannel!.name || this.activeUser.username,
       message: this.textareaValue,
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
@@ -214,6 +206,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
+      isThreadMsg: this.messageType === MessageType.Threads,
     };
   }
 
@@ -255,7 +248,7 @@ export class InputfieldComponent implements OnInit {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
     } else if (this.messageType === MessageType.Threads) {
-      return `Nachricht an ${this.threadService.threadOwner.senderName}`;
+      return `Nachricht an ${this.selectedMessage.senderName}`;
     }
     return `Nachricht an #${this.selectedChannel?.name}`;
   }

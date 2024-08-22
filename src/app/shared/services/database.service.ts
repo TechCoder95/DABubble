@@ -132,11 +132,11 @@ export class DatabaseService implements OnDestroy {
    * @param {string} channelName - The name of the channel.
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
-  public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
+  public async getMessagesByChannel(channelID: string): Promise<ChatMessage[]> {
     const messagesCollectionRef = await this.getDataRef('messages');
     const q = query(
       messagesCollectionRef,
-      where('channelId', '==', channelName)
+      where('channelId', '==', channelID)
     );
     const snapshot = await getDocs(q);
     const messages: ChatMessage[] = [];

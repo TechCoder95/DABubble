@@ -12,4 +12,5 @@ export interface ChatMessage {
   edited?: boolean;
   deleted?: boolean;
   imageUrl?:string;
+  isThreadMsg?: boolean;
 }
