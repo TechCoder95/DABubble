@@ -186,7 +186,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async initializeChannels() {
-    await this.initializeDefaultData();
+    await this.channelService.initializeDefaultData();
     await this.loadUserChannels(this.activeUser);
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
@@ -196,17 +196,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
-    this.channels = await this.userService.getUserChannels(currentUser.id!);
+    this.channels = this.channelService.channels;
   }
 
-  private async initializeDefaultData() {
-    const userIdMap = await this.userService.createDefaultUsers();
-    const defaultGroupChannels = await this.channelService.createDefaultGroupChannels(this.activeUser);
-    const defaultDirectChannels = await this.channelService.createDefaultDirectChannels(userIdMap, this.activeUser);
-    this.channels = await this.channelService.addOrUpdateDefaultChannels(defaultGroupChannels);
-    const updatedDirectChannels = await this.channelService.addOrUpdateDefaultChannels(defaultDirectChannels);
-    this.channels.push(...updatedDirectChannels);
-  }
+
 
 
   private createGroupChannelNodes(): Node[] {

@@ -196,23 +196,23 @@ export class ChannelService {
   async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
     const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
     const allUserIds = users.map(user => user!.id!);
-  
+
     if (!allUserIds.includes(activeUser.id!)) {
       allUserIds.push(activeUser.id!);
     }
-  
+
     const updatedChannels: TextChannel[] = [];
-  
+
     const existingChannels = await this.getAllChannels();
-  
+
     const defaultChannels = [
       { name: 'Allgemein', description: 'Hier werden alle Benutzer geladen.' },
       { name: 'Entwicklerteam', description: 'Ein super tolles Entwicklerteam' }
     ];
-  
+
     for (const defaultChannel of defaultChannels) {
       let channel = existingChannels.find(channel => channel.name === defaultChannel.name);
-  
+
       if (channel) {
         const updatedAssignedUsers = [...new Set([...channel.assignedUser, ...allUserIds])];
         if (updatedAssignedUsers.length !== channel.assignedUser.length) {
@@ -231,10 +231,10 @@ export class ChannelService {
         const newChannelId = await this.databaseService.addChannelDataToDB('channels', channel);
         channel.id = newChannelId;
       }
-  
+
       updatedChannels.push(channel);
     }
-  
+
     return updatedChannels;
   }
 
@@ -303,7 +303,7 @@ export class ChannelService {
     const currentUser: DABubbleUser = this.userService.activeUser;
     const channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
     const assignedUsersWithoutCurrentUser: string[] = this.channel.assignedUser.filter(id => id !== currentUser.id);
-    
+
     if (assignedUsersWithoutCurrentUser.length > 0) {
       await this.databaseService.updateDataInDB('channels', channel!.id, { assignedUser: assignedUsersWithoutCurrentUser });
     } else {
@@ -312,6 +312,21 @@ export class ChannelService {
 
     this.selectedChannelSubject.next(null);
     sessionStorage.removeItem('selectedChannel');
+  }
+
+  public channels!: TextChannel[];
+
+  async initializeDefaultData() {
+    await this.createDefaultData();
+  }
+
+  private async createDefaultData() {
+    const userIdMap = await this.userService.createDefaultUsers();
+    const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
+    const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
+    this.channels = await this.addOrUpdateDefaultChannels(defaultGroupChannels);
+    const updatedDirectChannels = await this.addOrUpdateDefaultChannels(defaultDirectChannels);
+    this.channels.push(...updatedDirectChannels);
   }
 }
 
