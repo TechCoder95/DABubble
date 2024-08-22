@@ -18,6 +18,7 @@ export class ChannelService {
 
   channel!: TextChannel;
   showSingleThread: boolean = false;
+  public channels!: TextChannel[];
 
   constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
 
@@ -314,15 +315,15 @@ export class ChannelService {
     sessionStorage.removeItem('selectedChannel');
   }
 
-  public channels!: TextChannel[];
+  
 
-  async initializeDefaultData() {
+  async initializeSidenavData() {
     await this.createDefaultData();
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
   }
 
-  private async createDefaultData() {
+   async createDefaultData() {
     const userIdMap = await this.userService.createDefaultUsers();
     const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
     const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);

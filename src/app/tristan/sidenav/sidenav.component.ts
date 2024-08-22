@@ -186,7 +186,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async initializeChannels() {
-    await this.channelService.initializeDefaultData();
+    // todo vorher laden initializeSidenavData()
+    await this.channelService.initializeSidenavData();
     await this.loadUserChannels(this.activeUser);
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
@@ -196,7 +197,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
-    this.channels = this.channels = JSON.parse(sessionStorage.getItem('channels')!);
+    this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
 
 
