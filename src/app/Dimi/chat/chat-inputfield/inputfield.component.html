@@ -1,5 +1,4 @@
-
-<section class="inputfield">
+<main class="inputfield">
   <textarea
     name=""
     id=""
@@ -8,57 +7,42 @@
     [placeholder]="getPlaceholderText()"
     [value]="textareaValue | emojis"
   ></textarea>
-  
-  <div class="arrange-input-options">
+
+  <section class="arrange-input-options">
     <div class="chat-options">
-      <div
-        class="emoji"
+      <app-add-files
         (mouseenter)="changeAddFilesImg(true)"
         (mouseleave)="changeAddFilesImg(false)"
-        (click)="fileInput.click()"
-      >
-        <input
-          type="file"
-          #fileInput
-          (change)="onFileSelected($event)"
-          hidden
-        />
-        <img [src]="addFilesImg" />
+        [title]="fileName ? 'Bild rausnehmen' : ''"
+        [addFilesImg]="addFilesImg"
+        (selectedFile)="handleSelectedFile($event)"
+        [filePreview]="selectedFile"
+        (fileName)="handleFileName($event)"
+      ></app-add-files>
+
+      <div>
+        <img src="/img/line.svg" />
       </div>
 
-      <div *ngIf="filePreview" class="file-preview-container">
-        <div class="file-preview">
-          <img [src]="filePreview" />
-          <!-- <button (click)="sendFile()">Senden</button> -->
-          <img
-            src="./img/send-message.svg"
-            class="send-message-btn"
-            (click)="sendMessage(messageType)"
-          />
-        </div>
-      </div>
-      <div>
-        <img src="/img/line.svg" alt="" />
-      </div>
-      <div
-        class="emoji"
+      <app-emojies
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
-      >
-        <img [src]="addEmojiImg" />
-      </div>
-      <div
+        [addEmojiImg]="addEmojiImg"
+        (selectedEmoji)="handleSelectedEmoji($event)"
+      ></app-emojies>
+
+      <span
         class="emoji"
         (mouseenter)="changeAddLinkImg(true)"
         (mouseleave)="changeAddLinkImg(false)"
       >
         <img [src]="addLinkImg" />
-      </div>
+      </span>
     </div>
     <img
       src="./img/send-message.svg"
       class="send-message-btn"
       (click)="sendMessage(messageType)"
     />
-  </div>
-</section>
+  </section>
+</main>

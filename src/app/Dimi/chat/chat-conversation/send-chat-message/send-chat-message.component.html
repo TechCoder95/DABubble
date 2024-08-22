@@ -18,15 +18,19 @@
     <div class="message-information">
       <div class="sender-and-time">
         <h5 *ngIf="!repeatedMessage">{{ user.username }}</h5>
-        <p *ngIf="!repeatedMessageInUnder5Minutes && !repeatedMessage">
-          {{ sendMessage.timestamp | date : "HH.mm" }} Uhr
+        <p  *ngIf="
+        !repeatedMessage ||
+        (repeatedMessage && !repeatedMessageInUnder5Minutes)
+      ">
+          {{ sendMessage.timestamp | date : "HH:mm" }} Uhr
         </p>
       </div>
-      <div class="actual-message" *ngIf="!sendMessage.deleted">
-        <p>
+      <div class="actual-message" *ngIf="!sendMessage.deleted" [ngClass]="{'file-and-text':sendMessage.imageUrl && sendMessage.message}">
+        <p *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
           {{ sendMessage.message | emojis}}
           <span *ngIf="sendMessage.edited">bearbeitet</span>
         </p>
+        <img [src]="sentImage" *ngIf="sentImageExists()">
       </div>
       <p *ngIf="sendMessage.deleted" class="message-deleted-notification">
         Diese Nachricht wurde gelöscht

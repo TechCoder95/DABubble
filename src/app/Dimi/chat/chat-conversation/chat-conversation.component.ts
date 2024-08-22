@@ -95,6 +95,9 @@ export class ChatConversationComponent
     });
     
 
+    /* debugger;
+    console.log(this.activeChannelFromChat); */
+    
 
 
     this.subService.getAllMessageObservable().subscribe((message) => {

@@ -8,7 +8,6 @@ import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
 import { GlobalsubService } from './globalsub.service';
-import { user } from '@angular/fire/auth';
 
 
 @Injectable({
@@ -28,7 +27,7 @@ export class UserService {
   collectionName: string = 'users';
 
   constructor(private DatabaseService: DatabaseService, private router: Router, private globalSubService: GlobalsubService) {
-     
+
     if (sessionStorage.getItem('userLoginGuest')) {
       this.activeUser = JSON.parse(sessionStorage.getItem('userLoginGuest')!)!;
       this.globalSubService.updateUser(this.activeUser);
@@ -144,7 +143,14 @@ export class UserService {
           this.checkOnlineStatus(this.activeUser);
           this.updateLoggedInUser(this.activeUser);
           this.globalSubService.updateUser(this.activeUser);
-          this.router.navigate(['/home']);
+          if (sessionStorage.getItem('userLogin')) {
+            if (JSON.parse(sessionStorage.getItem('userLogin')!).avatar.includes('avatar')) {
+              this.router.navigate(['/user/chooseAvatar']);
+            }
+            else {
+              this.router.navigate(['/home']);
+            }
+          }
         }
       }
     });
@@ -191,11 +197,7 @@ export class UserService {
    * and navigates to the login page.
    */
   async logout() {
-
-    let gast = JSON.parse(sessionStorage.getItem('userLogin')!).mail === 'Gast';
-    if (gast) {
-      this.guestLogout();
-    } else {
+    if (sessionStorage.getItem('userLogin')) {
       let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
       this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
         .then(() => {
@@ -203,6 +205,7 @@ export class UserService {
           sessionStorage.removeItem('uId');
           sessionStorage.removeItem('userLogin');
           sessionStorage.removeItem('selectedChannel');
+          sessionStorage.removeItem('selectedThread');
           this.router.navigate(['/user/login']);
         });
     }
@@ -356,7 +359,7 @@ export class UserService {
       user.id = userRef.id;
 
       await setDoc(userRef, user);
-      return userRef.id;  
+      return userRef.id;
     } catch (err) {
       console.error('Error adding user to DB', err);
       throw err;
@@ -381,6 +384,10 @@ export class UserService {
       }
     }
     return userIdMap;
+  }
+
+  async getAllUsersFromDB() {
+    return await this.DatabaseService.readDataFromDB('users');
   }
 
 }

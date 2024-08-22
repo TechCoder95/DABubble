@@ -7,7 +7,7 @@ import { map, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../shared/services/user.service';
 import { ThreadSendChatComponent } from './thread-send-chat/thread-send-chat.component';
-import { MessageType } from '../../shared/components/enums/messagetype';
+import { MessageType } from '../../shared/enums/messagetype';
 import { FormControl } from '@angular/forms';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { TicketService } from '../../shared/services/ticket.service';

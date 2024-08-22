@@ -1,4 +1,14 @@
-import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  OnInit,
+  OnDestroy,
+  AfterViewInit,
+  ChangeDetectorRef,
+  inject,
+} from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
@@ -9,19 +19,30 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
-import { MessageType } from '../../../shared/components/enums/messagetype';
+import { MessageType } from '../../../shared/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
+import { DAStorageService } from '../../../shared/services/dastorage.service';
+import { AddFilesComponent } from './add-files/add-files.component';
+import { EmojiesComponent } from './emojies/emojies.component';
 import { ThreadService } from '../../../shared/services/thread.service';
-import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 
 @Component({
   selector: 'app-chat-inputfield',
   standalone: true,
-  imports: [CommonModule, CommonModule, FormsModule, RouterModule, EmojisPipe],
+  imports: [
+    CommonModule,
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    EmojisPipe,
+    EmojiesComponent,
+    AddFilesComponent,
+  ],
+  providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
@@ -44,19 +65,22 @@ export class InputfieldComponent implements OnInit {
 
   @Input() selectedThreadOwner: any;
 
+  storage: any;
 
   constructor(
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
     private ticketService: TicketService,
+    private router: Router,
+    private storageService: DAStorageService,
+    private emojiPipe: EmojisPipe,
     private threadService: ThreadService,
-    private router: Router
   ) {
     this.activeUser = this.userService.activeUser;
-    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
-    this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-
+    this.selectedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel')!,
+    );
   }
 
   ngOnInit(): void {
@@ -74,7 +98,6 @@ export class InputfieldComponent implements OnInit {
 
      this.ticket = this.ticketService.getTicket();
   }
-
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -160,23 +183,18 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+  image!: string | ArrayBuffer;
   async send() {
-    let message: ChatMessage = {
-      channelId: this.selectedChannel!.id,
-      channelName: this.selectedChannel!.name,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      allConversations: [],
-      edited: false,
-      deleted: false,
-    };
+    let message: ChatMessage = this.returnCurrentMessage();
 
-    if (message.message !== '') {
+    if (message.message !== '' || this.image) {
       try {
+        if (this.image) {
+          message.imageUrl = await this.saveImageInStorage(message);
+        }
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
+        this.selectedFile = '';
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -185,10 +203,42 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+  returnCurrentMessage() {
+    return {
+      channelId: this.selectedChannel!.id,
+      channelName: this.selectedChannel!.name,
+      message: this.textareaValue,
+      timestamp: new Date().getTime(),
+      senderName: this.activeUser.username || 'guest',
+      senderId: this.activeUser.id || 'senderIdDefault',
+      edited: false,
+      deleted: false,
+      imageUrl: '',
+    };
+  }
 
-
-
-
+  async saveImageInStorage(message: ChatMessage): Promise<string> {
+    // Bild in Firestore Storage hochladen
+    let imageBlob: Blob;
+    if (typeof this.image === 'string') {
+      const byteString = atob(this.image.split(',')[1]);
+      const mimeString = this.image.split(',')[0].split(':')[1].split(';')[0];
+      const ab = new ArrayBuffer(byteString.length);
+      const ia = new Uint8Array(ab);
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+      }
+      imageBlob = new Blob([ab], { type: mimeString });
+    } else {
+      imageBlob = new Blob([this.image]);
+    }
+    let imageUrl: any = await this.storageService.uploadMessageImage(
+      message.channelId,
+      imageBlob,
+      this.fileName,
+    );
+    return imageUrl;
+  }
 
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -197,30 +247,10 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-  filePreview: string | ArrayBuffer | null = null;
-  /* fileName: string = ''; */
-
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0]) {
-      const file = input.files[0];
-      /* this.fileName = file.name; */
-      const reader = new FileReader();
-      reader.onload = (e: ProgressEvent<FileReader>) => {
-        if (e.target?.result) {
-          this.filePreview = e.target.result;
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  sendFile(): void {
-    // Implementieren Sie die Logik zum Senden der Datei
-    console.log('Datei gesendet:');
-  }
-
   getPlaceholderText(): string {
+    if (this.selectedFile) {
+      return 'Bildunterschrift hinzufügen';
+    }
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
@@ -230,5 +260,21 @@ export class InputfieldComponent implements OnInit {
     return `Nachricht an #${this.selectedChannel?.name}`;
   }
 
+  handleSelectedEmoji(event: string) {
+    let transformedEmoji = this.emojiPipe.transform(event);
+    this.textareaValue += transformedEmoji;
+  }
 
+  selectedFile: string | ArrayBuffer | null = null;
+  fileName: string = '';
+
+  handleSelectedFile(event: string | ArrayBuffer) {
+    this.selectedFile = event;
+    this.image = event;
+    this.getPlaceholderText();
+  }
+
+  handleFileName(event: string) {
+    this.fileName = event;
+  }
 }

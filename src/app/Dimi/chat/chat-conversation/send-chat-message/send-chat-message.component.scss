@@ -76,6 +76,7 @@ h5 {
 .message-information {
   display: flex;
   flex-direction: column;
+  align-items: flex-end;
   gap: 8px;
   > .sender-and-time {
     display: flex;
@@ -91,6 +92,9 @@ h5 {
     }
   }
   > .actual-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border-radius: 30px 0px 30px 30px;
     background: rgba(121, 126, 243, 1);
     padding: 15px;
@@ -102,6 +106,13 @@ h5 {
         font-size: 10px;
         color: white;
       }
+    }
+    >img{
+      border-radius: 30px 0px 30px 30px;
+      min-height: 150px;
+      min-width: 150px;
+      max-width: 250px;
+      max-height: 250px;
     }
   }
 }
@@ -120,7 +131,7 @@ h5 {
   > div {
     width: 100%;
     padding: 20px;
-    background: whitesmoke;
+    background: white;
     border-radius: 20px;
     border: 1px solid rgba(173, 176, 217, 1);
   }
@@ -170,4 +181,14 @@ h5 {
 
 .position-component {
   top: 0px !important;
+}
+
+.file-and-text{
+  flex-direction: column-reverse;
+  gap: 5px;
+  width: min-content;
+  padding: 8px 8px !important;
+  >img{
+  border-radius: 30px 0 0 0 !important;
+  }
 }

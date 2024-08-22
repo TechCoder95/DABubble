@@ -50,14 +50,14 @@
     width: 40px;
     height: 40px;
     padding: 8px;
-    cursor: pointer;
-
     &:hover {
+      cursor: pointer;
       background-color: #eceefe;
       border-radius: 100%;
     }
 
     > img {
+      transition: transform 0.3s ease;
       cursor: pointer;
       height: 20px;
       width: 20px;
@@ -67,35 +67,4 @@
 
 file-preview-container {
   margin-top: 20px;
-}
-
-.file-preview {
-  display: flex;
-  justify-content: space-evenly;
-  position: absolute;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
-  top: 0;
-  background: azure;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  border-radius: 20px;
-}
-
-.file-preview button {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.file-preview button:hover {
-  background-color: #0056b3;
 }

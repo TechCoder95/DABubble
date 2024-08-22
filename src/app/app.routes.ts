@@ -18,6 +18,9 @@ export const routes: Routes = [
   { path: '', component: StartscreenComponent },
   {
     path: 'user', component: VariableContentComponent,
+
+    //hier wird Lazy Loading noch eingebaut!
+
     children: [
       { path: 'register', component: AddUserComponent },
       { path: 'chooseAvatar', component: ChooseAvatarComponent },
@@ -45,6 +48,6 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: 'verifyEmail', component: VariableContentComponent },
+  { path: 'verfiyEmail', component: VariableContentComponent },
 ];
 

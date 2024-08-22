@@ -1,12 +1,13 @@
 <div class="flex">
-    <input type="search" aria-label="awd" [(ngModel)]="searchInput" (keydown)="handleEnterKey($event)"
+    <input type="search" aria-label="awd" [(ngModel)]="searchInput" class="searchInput"
         placeholder="Devspace durchsuchen">
-    <!-- <img [ngClass]="{'d-none': searchInput !== ''}" src="/img/search.svg" alt="" class="search"> -->
+        <!-- >>> (input)="onSearchInputChange(searchInput)" <<<
+             Todo Dome: Vor der Abgabe muss die Funktion onSearchInputChange wieder einkommentiert werden
+             Diese Funktion muss einfach nach oben und dann funktioniert die Suche
+        -->
+    <img [ngClass]="{'d-none': searchInput !== ''}" src="/img/search.svg" alt="" class="search">
 </div>
-
-
-
-@if (searchInput !== '') {
+@if (searchResults.length > 0) {
 <div class="searchResultsCard">
     <div class="card-groesse">
         @for (result of searchResults; track $index) {
@@ -22,11 +23,11 @@
                 <p>#{{result.description.name}}</p>
             </div>
             }
-            <!-- @else if (result.title === "Message: ") {
-            <div class="w-full" (click)="scrollToMessage(result.id)">
-                <p>{{result.description + " "}} </p>in<p>{{"#" + result.channel}}</p>
+            @else if (result.title === "Message: ") {
+            <div class="w-full flex align-items-center gap-2">
+                <p>{{result.description.message }} </p>in<p>{{"#" + result.description.channelName}}</p>
             </div>
-            } -->
+            }
         </div>
         }
         @empty {

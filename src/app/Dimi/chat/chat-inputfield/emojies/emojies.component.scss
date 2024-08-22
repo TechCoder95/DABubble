@@ -1,0 +1,20 @@
+.emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;
+    border-radius: 100%;
+  }
+
+  > img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+}

@@ -1,10 +1,10 @@
-import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
-import { MessageType } from '../../shared/components/enums/messagetype';
+import { MessageType } from '../../shared/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
@@ -12,6 +12,8 @@ import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { UserService } from '../../shared/services/user.service';
 import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
+import { NavigationStart, Router } from '@angular/router';
+import { DatabaseService } from '../../shared/services/database.service';
 
 @Component({
   selector: 'app-chat',
@@ -42,9 +44,16 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
+  showChatComponent!: boolean;
   messageTypeThreads = MessageType.Threads;
 
-  constructor(private subService: GlobalsubService, private userService: UserService, public threadService: ThreadService) { }
+
+  private userService = inject(UserService);
+
+  
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService,  private router: Router, public threadService: ThreadService) {
+
+  }
 
   async ngOnInit() {
     this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));
@@ -80,6 +89,8 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.threadsub.unsubscribe();
     }
   }
+
+
 
   getsessionStorage(key: string) {
     return JSON.parse(sessionStorage.getItem(key)!);
