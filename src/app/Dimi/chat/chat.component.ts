@@ -64,8 +64,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
     this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
       this.selectedUserFromChat.emit(user);
-      console.log(user, "butz", this.threadService.selectedThread);
-
       this.activeUser = user;
     }
     );

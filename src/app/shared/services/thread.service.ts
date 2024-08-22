@@ -20,7 +20,7 @@ export class ThreadService {
 
   findSenderByMessageID(messageID: string): void {
     this.databaseService.readDataByID('messages', messageID).then((message) => {
-      console.log(message, "oclas");
+      // console.log(message, "das ist der geöffnete Thread");
       this.threadOwner = message;
       this.selectedThreadOwner.emit(this.threadOwner);    
     });

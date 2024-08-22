@@ -63,7 +63,7 @@ export class ChatConversationComponent
     private channelService: ChannelService,
     private databaseService: DatabaseService,
     private subService: GlobalsubService, 
-    private threadService: ThreadService
+    public threadService: ThreadService
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
@@ -75,7 +75,6 @@ export class ChatConversationComponent
     
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
-      console.log("butzu", user);
     });
 
     
@@ -96,12 +95,6 @@ export class ChatConversationComponent
     });
     
 
-    // this.activeChannelFromChat.subscribe((channel: TextChannel) => {
-    //   this.allMessages = [];
-    //   this.databaseService.subscribeToMessageDatainChannel(channel.id);
-    //   this.ebbes.emit(channel);
-    // });
-
 
 
     this.subService.getAllMessageObservable().subscribe((message) => {
@@ -114,7 +107,7 @@ export class ChatConversationComponent
       }
     });
 
-    console.log(this.allMessages, "allMessages", this.ebbes, this.selectedChannelFromChat);
+    // console.log(this.allMessages, "allMessages", this.ebbes, this.selectedChannelFromChat);
 
     
   }
