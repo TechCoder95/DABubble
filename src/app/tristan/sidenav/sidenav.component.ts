@@ -134,6 +134,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }
+
+    if (this.updateTreeSubscription) {
+      this.updateTreeSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
@@ -145,8 +149,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
+  private updateTreeSubscription!: Subscription;
+
   initializeSubscriptions() {
-    // todo greift nicht 
     this.routeSubscription = this.route.paramMap.subscribe(params => {
       const channelId = params.get('channel/channelId');
       if (channelId) {
@@ -173,6 +178,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
       this.updateTreeData();
     });
+
+    this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(() => {
+      console.log("führe udpateTreeData sub aus");
+      
+      this.updateTreeData();  
+    });
+
+
+
   }
 
   private async initializeChannels() {
@@ -265,7 +279,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async updateTreeData(): Promise<void> {
-    const groupChannelNodes = await this.createGroupChannelNodes();
+    const groupChannelNodes = this.createGroupChannelNodes();
+    // die node muss die aktuellen channels haben
+   // console.log(groupChannelNodes);
+    
     const directChannelNodes = await this.createDirectChannelNodes();
 
     const groupChannelsStructure: Node = {

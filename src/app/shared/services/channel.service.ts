@@ -170,7 +170,7 @@ export class ChannelService {
     const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
     return channels.some((channel: TextChannel) => {
       if (channel && (channel != null) && (channel.name != undefined)) {
-        console.log(channel.name); 
+        console.log(channel.name);
         return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
       }
       return null;
@@ -266,8 +266,18 @@ export class ChannelService {
   }
 
   async leaveChannel() {
-    // die datenbank funktion soll meine id in assignedUser vom channel löschen und falls dann assignedUser leer ist soll der channel gelöscht werden.
-    //  await this.databaseService.deleteDataFromDB('channels', this.channel.id);
+    let currentUser: DABubbleUser = this.userService.activeUser;
+    let channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
+    let assignedUsersWithoutCurrentUser: string[] = this.channel.assignedUser.filter(id => id !== currentUser.id);
+    
+    if (assignedUsersWithoutCurrentUser.length > 0) {
+      await this.databaseService.updateDataInDB('channels', channel!.id, { assignedUser: assignedUsersWithoutCurrentUser });
+    } else {
+      await this.databaseService.deleteDataFromDB('channels', channel!.id);
+    }
+
+    this.selectedChannelSubject.next(null);
+    sessionStorage.removeItem('selectedChannel');
   }
 }
 

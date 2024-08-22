@@ -10,6 +10,9 @@ import { map, Observable } from 'rxjs';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
+import { Router } from '@angular/router';
+import { SidenavComponent } from '../../../../tristan/sidenav/sidenav.component';
+import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -53,7 +56,9 @@ export class DialogChannelInformationComponent {
   constructor(
     public dialogRef: MatDialogRef<DialogChannelInformationComponent>,
     public channelService: ChannelService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
+    private subscriptionService: GlobalsubService
   ) {
 
 
@@ -180,7 +185,11 @@ export class DialogChannelInformationComponent {
     this.channelCreatorName = this.channelCreatorObject.username;
   }
 
- async onLeaveChannel(){
+  async onLeaveChannel() {
     this.channelService.leaveChannel();
+    this.subscriptionService.updateSidenavTree();
+    this.dialogRef.close();
+    // ui muss noch aktualisiert werden
+    await this.router.navigate(['/home/']);
   }
 }

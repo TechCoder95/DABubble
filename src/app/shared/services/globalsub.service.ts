@@ -21,7 +21,7 @@ export class GlobalsubService {
   private activeThreadSubject = new Subject<ThreadMessage>();
   private emjoiSubject = new Subject<Emoji>();
   private updateUserChangesSubject = new Subject<DABubbleUser>();
-
+  private updateTreeSubject = new Subject<void>();
 
   constructor() {
 
@@ -59,10 +59,9 @@ export class GlobalsubService {
     return this.updateUserChangesSubject.asObservable();
   }
 
-
-
-
-
+  getSidenavTreeObservable() {
+    return this.updateTreeSubject.asObservable();
+  }
 
   updateUser(data: DABubbleUser) {
     this.userSubject.next(data);
@@ -102,6 +101,13 @@ export class GlobalsubService {
   updateUserFromDatabaseChange(data: DABubbleUser) {
     this.updateUserChangesSubject.next(data);
   }
+
+  updateSidenavTree() {
+    this.updateTreeSubject.next();
+  }
+
+
+
 }
 
 
