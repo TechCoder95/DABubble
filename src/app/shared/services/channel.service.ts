@@ -266,6 +266,7 @@ export class ChannelService {
   }
 
   async leaveChannel() {
+    // die datenbank funktion soll meine id in assignedUser vom channel löschen und falls dann assignedUser leer ist soll der channel gelöscht werden.
     //  await this.databaseService.deleteDataFromDB('channels', this.channel.id);
   }
 }
