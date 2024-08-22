@@ -195,14 +195,48 @@ export class ChannelService {
 
   async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
     const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
-    const allUserIds = users.map(user => user!.id!)
-
-    return [
-      { id: '', name: 'Allgemein', assignedUser: [...allUserIds], isPrivate: false, description: 'Hier werden alle Benutzer geladen.', owner: activeUser.id!, },
-      { id: '', name: 'Entwicklerteam', assignedUser: [...allUserIds], isPrivate: false, description: 'Ein super tolles Entwicklerteam', owner: activeUser.id!, }
+    const allUserIds = users.map(user => user!.id!);
+  
+    if (!allUserIds.includes(activeUser.id!)) {
+      allUserIds.push(activeUser.id!);
+    }
+  
+    const updatedChannels: TextChannel[] = [];
+  
+    const existingChannels = await this.getAllChannels();
+  
+    const defaultChannels = [
+      { name: 'Allgemein', description: 'Hier werden alle Benutzer geladen.' },
+      { name: 'Entwicklerteam', description: 'Ein super tolles Entwicklerteam' }
     ];
+  
+    for (const defaultChannel of defaultChannels) {
+      let channel = existingChannels.find(channel => channel.name === defaultChannel.name);
+  
+      if (channel) {
+        const updatedAssignedUsers = [...new Set([...channel.assignedUser, ...allUserIds])];
+        if (updatedAssignedUsers.length !== channel.assignedUser.length) {
+          channel.assignedUser = updatedAssignedUsers;
+          await this.updateChannel(channel);
+        }
+      } else {
+        channel = {
+          id: '',
+          name: defaultChannel.name,
+          assignedUser: [...allUserIds],
+          isPrivate: false,
+          description: defaultChannel.description,
+          owner: activeUser.id!
+        };
+        const newChannelId = await this.databaseService.addChannelDataToDB('channels', channel);
+        channel.id = newChannelId;
+      }
+  
+      updatedChannels.push(channel);
+    }
+  
+    return updatedChannels;
   }
-
 
   async createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): Promise<TextChannel[]> {
     return [
