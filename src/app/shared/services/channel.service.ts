@@ -266,9 +266,9 @@ export class ChannelService {
   }
 
   async leaveChannel() {
-    let currentUser: DABubbleUser = this.userService.activeUser;
-    let channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
-    let assignedUsersWithoutCurrentUser: string[] = this.channel.assignedUser.filter(id => id !== currentUser.id);
+    const currentUser: DABubbleUser = this.userService.activeUser;
+    const channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
+    const assignedUsersWithoutCurrentUser: string[] = this.channel.assignedUser.filter(id => id !== currentUser.id);
     
     if (assignedUsersWithoutCurrentUser.length > 0) {
       await this.databaseService.updateDataInDB('channels', channel!.id, { assignedUser: assignedUsersWithoutCurrentUser });

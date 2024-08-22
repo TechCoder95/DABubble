@@ -37,17 +37,13 @@ export class OpenUserInfoComponent implements OnDestroy {
   async newMessage() {
     const user = this.getConvertedDABubbleUser();
     this.userService.setSelectedUser(user);
-    const channel = await this.channelService.findOrCreateChannelByUserID();
-    // todo navigiert nicht zu dem channel. steht nur in der url
-
-    const x = channel as unknown as TextChannel;
-
-    sessionStorage.setItem('selectedChannel', JSON.stringify(x));
+    const channel: TextChannel | null = await this.channelService.findOrCreateChannelByUserID();
+    sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
     await this.router.navigate(['/home']);
     setTimeout(async () => {
-      this.router.navigate(['home', 'channel', x.id]);
+      this.router.navigate(['home', 'channel', channel!.id]);
     }, 0.1);
-    this.subscriptionService.updateActiveChannel(x);
+    this.subscriptionService.updateActiveChannel(channel!);
     this.dialogRef.close();
   }
 

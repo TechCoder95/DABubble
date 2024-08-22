@@ -189,7 +189,6 @@ export class DialogChannelInformationComponent {
     this.channelService.leaveChannel();
     this.subscriptionService.updateSidenavTree();
     this.dialogRef.close();
-    // ui muss noch aktualisiert werden
-    await this.router.navigate(['/home/']);
+    await this.router.navigate(['home']);
   }
 }

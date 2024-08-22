@@ -179,14 +179,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.updateTreeData();
     });
 
-    this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(() => {
-      console.log("führe udpateTreeData sub aus");
-      
-      this.updateTreeData();  
+    this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
+      await this.loadUserChannels(this.activeUser);
+      await this.updateTreeData();
     });
-
-
-
   }
 
   private async initializeChannels() {
@@ -239,7 +235,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return null;
   }
 
-
   private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
     const directChannelNodes: Node[] = [];
     for (const channel of this.channels) {
@@ -280,9 +275,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   private async updateTreeData(): Promise<void> {
     const groupChannelNodes = this.createGroupChannelNodes();
-    // die node muss die aktuellen channels haben
-   // console.log(groupChannelNodes);
-    
     const directChannelNodes = await this.createDirectChannelNodes();
 
     const groupChannelsStructure: Node = {
@@ -374,14 +366,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
-
-
-
-
-
-
-
-
-
-
 }
