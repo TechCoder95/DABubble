@@ -41,7 +41,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    
+
 
     if (!this.userSub)
       this.userSub = this.globalSubService.getUserObservable()
@@ -54,9 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.activeGoogleUserChange.emit(data);
       });
    
-
-
-
 
     // Todo Rabia
     // this.activeThreadSub = this.globalSubService.getActiveThreadObservable().subscribe(data => {
@@ -85,6 +82,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     return false;
   }
 
-
+  getLocation() {
+    return this.router.url;
+  }
 
 }

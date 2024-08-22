@@ -48,6 +48,6 @@ export const routes: Routes = [
       }
     ]
   },
-  { path: 'verifyEmail', component: VariableContentComponent },
+  { path: 'verfiyEmail', component: VariableContentComponent },
 ];
 

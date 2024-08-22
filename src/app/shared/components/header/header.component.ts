@@ -82,4 +82,9 @@ export class HeaderComponent implements OnInit {
     this.userService.logout();
   }
 
+
+  getUrl() {
+    return this.router.url;
+  }
+
 }
