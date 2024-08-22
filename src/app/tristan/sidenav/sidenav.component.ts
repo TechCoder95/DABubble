@@ -196,7 +196,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
-    this.channels = this.channelService.channels;
+    this.channels = this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
 
 

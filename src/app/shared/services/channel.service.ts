@@ -318,15 +318,16 @@ export class ChannelService {
 
   async initializeDefaultData() {
     await this.createDefaultData();
+    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
+    sessionStorage.setItem('channels', JSON.stringify(this.channels));
   }
 
   private async createDefaultData() {
     const userIdMap = await this.userService.createDefaultUsers();
     const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
     const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
-    this.channels = await this.addOrUpdateDefaultChannels(defaultGroupChannels);
-    const updatedDirectChannels = await this.addOrUpdateDefaultChannels(defaultDirectChannels);
-    this.channels.push(...updatedDirectChannels);
+    await this.addOrUpdateDefaultChannels(defaultGroupChannels);
+    await this.addOrUpdateDefaultChannels(defaultDirectChannels);
   }
 }
 
