@@ -1,30 +1,39 @@
-@if (getStorage() && getLocation() !== '/user/chooseAvatar') {
-    <div class="wrapper">
-       <main>
-            <section>
-                <app-header [activeUserChange]="activeUserChange"
-                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
-            </section>
-            <section class="h-full flex w-full" class="adjustments">
-                <app-sidenav [activeUserChange]="activeUserChange"
-                    [activeGoogleUserChange]="activeGoogleUserChange"></app-sidenav>
-                <div class="flex w-full">
-                    <router-outlet />
-                </div>
-            </section>
-        </main>
-    </div>
-}
-@else {
-    <div>
-       <main>
-            <section>
-                <app-header [activeUserChange]="activeUserChange"
-                    [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
-            </section>
-            <section class="absolute flex w-full align-items-center justify-content-center">
-                    <router-outlet />
-            </section>
-        </main>
-    </div>
+@if (getStorage() && getLocation() !== "/user/chooseAvatar") {
+  <div class="wrapper">
+    <main>
+      <section>
+        <app-header
+          [activeUserChange]="activeUserChange"
+          [activeGoogleUserChange]="activeGoogleUserChange"
+        ></app-header>
+      </section>
+      <section class="h-full flex w-full" class="adjustments">
+        <app-sidenav
+          [activeUserChange]="activeUserChange"
+          [activeGoogleUserChange]="activeGoogleUserChange"
+        ></app-sidenav>
+        <div class="flex w-full">
+          <router-outlet />
+        </div>
+      </section>
+    </main>
+  </div>
+} @else {
+  <div>
+    <main>
+      <section>
+        @if (getRoute()) {
+          <app-header
+            [activeUserChange]="activeUserChange"
+            [activeGoogleUserChange]="activeGoogleUserChange"
+          ></app-header>
+        }
+      </section>
+      <section
+        class="absolute flex w-full align-items-center justify-content-center"
+      >
+        <router-outlet />
+      </section>
+    </main>
+  </div>
 }
