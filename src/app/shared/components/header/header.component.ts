@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, HostListener, inject, Input, OnInit } from '@angular/core';
 import { AuthenticationService } from '../../services/authentication.service';
 import { MatDialog } from '@angular/material/dialog';
 import { OpenProfileInfoComponent } from '../../../rabia/open-profile-info/open-profile-info.component';
@@ -75,6 +75,11 @@ export class HeaderComponent implements OnInit {
     } else {
       return false;
     }
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  unloadHandler() {
+    this.userService.logout();
   }
 
 }
