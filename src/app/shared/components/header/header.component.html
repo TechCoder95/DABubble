@@ -1,4 +1,4 @@
-@if (activeUser) {
+@if (activeUser && getUrl() !== '/user/login' && getUrl() !== '/user/register' && getUrl() !== '/user/chooseAvatar') {
 <div class="flex justify-content-between align-items-center">
     <img src="/img/logo.svg" alt="">
 
@@ -39,3 +39,5 @@
 
 
 }
+
+<div (window:beforeunload)="unloadHandler()"></div>

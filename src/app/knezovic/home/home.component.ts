@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
 import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
@@ -22,7 +22,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private globalSubService: GlobalsubService, private router : Router) {
+  constructor(private globalSubService: GlobalsubService, private router: Router) {
     let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
 
     if (googleUser) {
@@ -41,21 +41,18 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    
+
 
     if (!this.userSub)
       this.userSub = this.globalSubService.getUserObservable()
-    .pipe()
-    .subscribe(data => {
-        this.activeUserChange.emit(data);
-      });
+        .pipe()
+        .subscribe(data => {
+          this.activeUserChange.emit(data);
+        });
     if (!this.googleUserSub)
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
-   
-
-
 
 
     // Todo Rabia
@@ -85,6 +82,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  getLocation() {
+    return this.router.url;
+  }
 
-
+  getRoute() {
+    if (this.router.url === '/') {
+      return false;
+    }
+    else {
+      return true;
+    }
+  }
 }
