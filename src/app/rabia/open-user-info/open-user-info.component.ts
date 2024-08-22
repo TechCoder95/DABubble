@@ -8,6 +8,8 @@ import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChannelService } from '../../shared/services/channel.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { RouterModule, Router, ActivatedRoute, NavigationStart } from '@angular/router';
+import { GlobalsubService } from '../../shared/services/globalsub.service';
+import { TextChannel } from '../../shared/interfaces/textchannel';
 
 
 @Component({
@@ -25,6 +27,8 @@ export class OpenUserInfoComponent implements OnDestroy {
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, public userService: UserService, private channelService: ChannelService, private router: Router) {
   }
 
+  private subscriptionService = inject(GlobalsubService);
+
   ngOnDestroy(): void {
     console.log("open-userinfo-component zerstört");
 
@@ -35,7 +39,15 @@ export class OpenUserInfoComponent implements OnDestroy {
     this.userService.setSelectedUser(user);
     const channel = await this.channelService.findOrCreateChannelByUserID();
     // todo navigiert nicht zu dem channel. steht nur in der url
-    await this.router.navigate(['/home/channel/' + channel!.id]);
+
+    const x = channel as unknown as TextChannel;
+
+    sessionStorage.setItem('selectedChannel', JSON.stringify(x));
+    await this.router.navigate(['/home']);
+    setTimeout(async () => {
+      this.router.navigate(['home', 'channel', x.id]);
+    }, 0.1);
+    this.subscriptionService.updateActiveChannel(x);
     this.dialogRef.close();
   }
 
