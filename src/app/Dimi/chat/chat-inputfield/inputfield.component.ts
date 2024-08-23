@@ -29,6 +29,7 @@ import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -280,17 +281,14 @@ export class InputfieldComponent implements OnInit {
     this.fileName = event;
   }
 
-  handleLinkedUsernames(users: DABubbleUser[] ) {
-    debugger;
-    console.log(users);
-    
-
+  handleLinkedUsernames(users: DABubbleUser[]) {
     if (this.usersInChannel.length === users.length) {
       let linkedUserString = '@Alle';
       this.textareaValue += this.textareaValue += linkedUserString;
+      this.changeAddLinkImg(false);
     } else {
       let usernamesString = users
-        .map((username) => `@${username} `)
+        .map((user) => `@${user.username} `)
         .join(', ');
       this.textareaValue += usernamesString;
     }
