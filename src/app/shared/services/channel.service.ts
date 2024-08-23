@@ -315,21 +315,23 @@ export class ChannelService {
     sessionStorage.removeItem('selectedChannel');
   }
 
-  
+
 
   async initializeSidenavData() {
-    this.createDefaultData();
-    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
-    sessionStorage.setItem('channels', JSON.stringify(this.channels));
+    this.createDefaultData().then(() => {
+      this.userService.getUserChannels(this.userService.activeUser.id!).then((channels) => {
+        sessionStorage.setItem('channels', JSON.stringify(channels));
+      });
+    });
   }
 
-   async createDefaultData() {
-    const userIdMap = await this.userService.createDefaultUsers();
-    const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
-    const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
-    this.addOrUpdateDefaultChannels(defaultGroupChannels);
-    this.addOrUpdateDefaultChannels(defaultDirectChannels);
-  }
+  async createDefaultData() {
+      const userIdMap = await this.userService.createDefaultUsers();
+      const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
+      const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
+      this.addOrUpdateDefaultChannels(defaultGroupChannels);
+      this.addOrUpdateDefaultChannels(defaultDirectChannels);
+    }
 }
 
 
