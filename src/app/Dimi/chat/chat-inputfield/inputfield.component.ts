@@ -28,6 +28,7 @@ import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
+import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -40,6 +41,7 @@ import { EmojiesComponent } from './emojies/emojies.component';
     EmojisPipe,
     EmojiesComponent,
     AddFilesComponent,
+    LinkChannelMemberComponent,
   ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
@@ -54,6 +56,7 @@ export class InputfieldComponent implements OnInit {
   ticket: any;
   selectedChannel: TextChannel | null = null;
   activeUser!: DABubbleUser;
+  usersInChannel: DABubbleUser[] = [];
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -90,6 +93,16 @@ export class InputfieldComponent implements OnInit {
     }
 
     this.ticket = this.ticketService.getTicket();
+
+    this.getUsersInChannel();
+  }
+
+  getUsersInChannel() {
+    this.selectedChannel?.assignedUser.forEach((id) => {
+      this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
+        this.usersInChannel.push(user);
+      });
+    });
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -265,5 +278,21 @@ export class InputfieldComponent implements OnInit {
 
   handleFileName(event: string) {
     this.fileName = event;
+  }
+
+  handleLinkedUsernames(users: DABubbleUser[] ) {
+    debugger;
+    console.log(users);
+    
+
+    if (this.usersInChannel.length === users.length) {
+      let linkedUserString = '@Alle';
+      this.textareaValue += this.textareaValue += linkedUserString;
+    } else {
+      let usernamesString = users
+        .map((username) => `@${username} `)
+        .join(', ');
+      this.textareaValue += usernamesString;
+    }
   }
 }

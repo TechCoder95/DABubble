@@ -1,0 +1,51 @@
+.emoji {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;
+    border-radius: 100%;
+  }
+
+  > img {
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+  }
+}
+
+.link-window {
+  overflow: auto;
+  position: absolute;
+  bottom: 50%;
+  height: 250px;
+  border-radius: 20px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid rgb(173, 176, 217);
+  z-index: 5;
+  > div {
+    padding: 10px;
+    border-radius: 30px;
+    &:hover {
+      background: rgb(236, 238, 254);
+    }
+  }
+  > div p {
+    margin: 0;
+  }
+}
+
+.username-checkbox,
+.select-all-usernames {
+  display: flex;
+  justify-content: space-between;
+}
