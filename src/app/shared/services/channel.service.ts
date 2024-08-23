@@ -20,6 +20,9 @@ export class ChannelService {
   showSingleThread: boolean = false;
   public channels!: TextChannel[];
 
+
+  loading: boolean = false;
+
   constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
 
     this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
@@ -318,9 +321,11 @@ export class ChannelService {
 
 
   async initializeSidenavData() {
+    this.loading = true;
     await this.createDefaultData();
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
+    
   }
 
    async createDefaultData() {
@@ -328,7 +333,9 @@ export class ChannelService {
     const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
     const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
     await this.addOrUpdateDefaultChannels(defaultGroupChannels);
-    await this.addOrUpdateDefaultChannels(defaultDirectChannels);
+    this.addOrUpdateDefaultChannels(defaultDirectChannels).then(()=> {
+      this.loading = false;
+    });
   }
 }
 

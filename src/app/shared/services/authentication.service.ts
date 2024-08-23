@@ -22,6 +22,13 @@ import { GlobalsubService } from './globalsub.service';
 export class AuthenticationService {
 
   constructor(private userService: UserService, private emailService: EmailService, private subService: GlobalsubService) {
+  
+  }
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
     this.setLocalPersistent();
     if (this.auth.currentUser !== null) {
       this.subService.updateGoogleUser(this.auth.currentUser);

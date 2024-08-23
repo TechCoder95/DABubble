@@ -1,45 +1,52 @@
+@if (this.channelService.loading) {
+
+}
+@else {
 
 <div class="flex height">
-<mat-card>
-  <app-chat-information [activeUserFromChat]="selectedUserFromChat"
-    [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
-  <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
-    #scrollContainer>
-  </app-chat-conversation>
-  <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
-    [messageType]="messageType">
-  </app-chat-inputfield>
-</mat-card>
-
-@if (getsessionStorage('selectedThread')) {
-
-  <!-- Todo Rabia 
-    Hier wird auf die Threads umgestellt! Der Code ist noch nciht aufbereitet! Das gilt es noch zu machen! 
-    Er geht auf den SessionStorage und prüft ob ein Thread ausgewählt wurde.
-    Wenn ja, wird der Thread angezeigt.
-    Wenn nein, wird nur der normale Chat angezeigt.
-
-    Heißt im sessionStorage "selectedThread" -> Wird beim öffnen schon einfach kurz in die Datenbank geändert!
-
-    Das muss alles noch Sauber gecodet werden!
-
-
-  -->
-
-   <mat-card>
-    <!-- <app-chat-information [activeUserFromThread]="selectedUserFromChat"
-      [activeChannelFromThread]="activeChannelFromThread"></app-chat-information> -->
-    <!-- <app-chat-conversation [activeChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
+  <mat-card>
+    <app-chat-information [activeUserFromChat]="selectedUserFromChat"
+      [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
+    <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       #scrollContainer>
     </app-chat-conversation>
-    <app-chat-inputfield [selectedChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
+    <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       [messageType]="messageType">
-    </app-chat-inputfield> -->
+    </app-chat-inputfield>
   </mat-card>
 
-<app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
+  @if (getsessionStorage('selectedThread')) {
+
+  <!-- Todo Rabia 
+        Hier wird auf die Threads umgestellt! Der Code ist noch nciht aufbereitet! Das gilt es noch zu machen! 
+        Er geht auf den SessionStorage und prüft ob ein Thread ausgewählt wurde.
+        Wenn ja, wird der Thread angezeigt.
+        Wenn nein, wird nur der normale Chat angezeigt.
+    
+        Heißt im sessionStorage "selectedThread" -> Wird beim öffnen schon einfach kurz in die Datenbank geändert!
+    
+        Das muss alles noch Sauber gecodet werden!
+    
+    
+      -->
+
+  <mat-card>
+    <!-- <app-chat-information [activeUserFromThread]="selectedUserFromChat"
+          [activeChannelFromThread]="activeChannelFromThread"></app-chat-information> -->
+    <!-- <app-chat-conversation [activeChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
+          #scrollContainer>
+        </app-chat-conversation>
+        <app-chat-inputfield [selectedChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
+          [messageType]="messageType">
+        </app-chat-inputfield> -->
+  </mat-card>
+
+  <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
+
+
+  }
+
+</div>
 
 
 }
-
-</div>

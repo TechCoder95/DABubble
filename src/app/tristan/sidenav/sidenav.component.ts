@@ -23,6 +23,7 @@ import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { initializeApp } from 'firebase/app';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 interface Node {
@@ -57,7 +58,8 @@ interface FlattenedNode {
     ChatComponent,
     NewChatComponent,
     ThreadComponent,
-    RouterModule
+    RouterModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],

@@ -1,8 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from "./shared/components/header/header.component";
 import { UserService } from './shared/services/user.service';
 import { LoginComponent } from "./knezovic/home/login/login.component";
 import { HomeComponent } from "./knezovic/home/home.component";
+import { ChannelService } from './shared/services/channel.service';
 
 @Component({
   selector: 'app-root',
@@ -14,5 +15,7 @@ import { HomeComponent } from "./knezovic/home/home.component";
 export class AppComponent {
   title = 'dabubble';
   constructor() { }
+
+  public readonly channelService = inject(ChannelService);
 
 }

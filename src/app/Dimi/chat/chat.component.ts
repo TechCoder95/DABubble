@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, EventEmitter, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, EventEmitter, inject, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -11,6 +11,8 @@ import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { NavigationStart, Router } from '@angular/router';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ChannelService } from '../../shared/services/channel.service';
 
 @Component({
   selector: 'app-chat',
@@ -20,7 +22,8 @@ import { NavigationStart, Router } from '@angular/router';
     ChatConversationComponent,
     ChatInformationComponent,
     InputfieldComponent,
-    ThreadComponent
+    ThreadComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -32,6 +35,9 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
 
   channelsub!: Subscription;
+
+
+  public readonly channelService = inject(ChannelService);
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
