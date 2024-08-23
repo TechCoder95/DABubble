@@ -181,15 +181,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
 
     this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
-      await this.loadUserChannels(this.activeUser);
+      await this.loadUserChannels();
       await this.updateTreeData();
     });
   }
 
   private async initializeChannels() {
-    // todo vorher laden initializeSidenavData()
     await this.channelService.initializeSidenavData();
-    await this.loadUserChannels(this.activeUser);
+    await this.loadUserChannels();
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
       this.channels.push(ownDirectChannel)
@@ -197,7 +196,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.updateTreeData();
   }
 
-  private async loadUserChannels(currentUser: DABubbleUser) {
+  private async loadUserChannels() {
     this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
 
