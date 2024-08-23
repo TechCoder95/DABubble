@@ -72,7 +72,6 @@ export class DialogChannelMembersComponent implements OnInit {
 
   async addChannelMembers() {
     this.subService.getActiveChannelObservable().subscribe((channel) => {
-      // console.log('dialog-channel-members zeile 36');
       if (channel) {
         this.channelMembers = [];
         channel.assignedUser.forEach((userID) => {

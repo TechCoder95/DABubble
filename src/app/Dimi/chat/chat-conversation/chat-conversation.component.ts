@@ -88,8 +88,6 @@ export class ChatConversationComponent
       this.selectedChannelFromChat.emit(channel);
     });
 
-    /*  ;
-    console.log(this.activeChannelFromChat); */
     
 
 
@@ -105,7 +103,6 @@ export class ChatConversationComponent
   }
 
   ngOnDestroy() {
-    console.log('Chat Conversation Destroyed');
     if (this.channelService.channelSub)
       this.channelService.channelSub.unsubscribe();
   }

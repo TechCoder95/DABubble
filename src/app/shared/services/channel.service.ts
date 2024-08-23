@@ -174,7 +174,6 @@ export class ChannelService {
     const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
     return channels.some((channel: TextChannel) => {
       if (channel && (channel != null) && (channel.name != undefined)) {
-        console.log(channel.name);
         return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
       }
       return null;

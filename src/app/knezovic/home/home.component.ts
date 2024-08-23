@@ -54,12 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
-
-
-    // Todo Rabia
-    // this.activeThreadSub = this.globalSubService.getActiveThreadObservable().subscribe(data => {
-    //   console.log('Active Thread:', data);
-    // });
   }
 
 

@@ -30,7 +30,6 @@ export class OpenUserInfoComponent implements OnDestroy {
   private subscriptionService = inject(GlobalsubService);
 
   ngOnDestroy(): void {
-    console.log("open-userinfo-component zerstört");
 
   }
 

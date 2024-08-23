@@ -126,7 +126,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
 
     if (this.routeSubscription) {
-      console.log("kill route subscription");
       this.routeSubscription.unsubscribe();
     }
 
