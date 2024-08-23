@@ -318,7 +318,7 @@ export class ChannelService {
   
 
   async initializeSidenavData() {
-    this.createDefaultData();
+    await this.createDefaultData();
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
   }
@@ -327,8 +327,8 @@ export class ChannelService {
     const userIdMap = await this.userService.createDefaultUsers();
     const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
     const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
-    this.addOrUpdateDefaultChannels(defaultGroupChannels);
-    this.addOrUpdateDefaultChannels(defaultDirectChannels);
+    await this.addOrUpdateDefaultChannels(defaultGroupChannels);
+    await this.addOrUpdateDefaultChannels(defaultDirectChannels);
   }
 }
 
