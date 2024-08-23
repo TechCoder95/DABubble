@@ -23,7 +23,7 @@ import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { initializeApp } from 'firebase/app';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 
 interface Node {
@@ -101,6 +101,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private activeUserChangeSubscription!: Subscription;
   private routeSubscription!: Subscription;
   private userStatusSubscription!: Subscription;
+  private updateTreeSubscription!: Subscription;
+
 
   constructor(
     private databaseService: DatabaseService,
@@ -150,7 +152,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateTreeSubscription!: Subscription;
 
   initializeSubscriptions() {
     this.routeSubscription = this.route.paramMap.subscribe(params => {
@@ -199,9 +200,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private async loadUserChannels() {
     this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
-
-
-
 
   private createGroupChannelNodes(): Node[] {
     const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({

@@ -204,7 +204,7 @@ export class DialogChannelInformationComponent {
   }
 
   async onLeaveChannel() {
-    this.channelService.leaveChannel();
+   await this.channelService.leaveChannel();
     this.subscriptionService.updateSidenavTree();
     this.dialogRef.close();
     await this.router.navigate(['home']);
