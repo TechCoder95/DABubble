@@ -179,4 +179,8 @@ export class DialogChannelInformationComponent {
     );
     this.channelCreatorName = this.channelCreatorObject.username;
   }
+
+ async onLeaveChannel(){
+    this.channelService.leaveChannel();
+  }
 }

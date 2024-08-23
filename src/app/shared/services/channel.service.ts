@@ -143,6 +143,7 @@ export class ChannelService {
   }
 
   async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
+    // todo 
     const nameExists = await this.doesChannelNameAlreadyExist(channel.name);
     if (nameExists) {
       // todo fehlermeldung zurück geben eventuell
@@ -167,9 +168,13 @@ export class ChannelService {
   async doesChannelNameAlreadyExist(channelName: string, excludeChannelId?: string): Promise<boolean> {
     const lowerCaseName = channelName.toLowerCase();
     const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
-    return channels.some((channel: TextChannel) =>
-      channel.name.toLowerCase() === lowerCaseName && channel.id !== excludeChannelId
-    );
+    return channels.some((channel: TextChannel) => {
+      if (channel && (channel != null) && (channel.name != undefined)) {
+        console.log(channel.name); 
+        return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
+      }
+      return null;
+    });
   }
 
   async findExistingChannelInDB(channel: TextChannel): Promise<TextChannel | undefined> {
@@ -181,12 +186,12 @@ export class ChannelService {
     );
   }
 
-  private arrayEquals(a: any[], b: any[]): boolean {
-    if (a.length !== b.length) return false;
-    const sortedA = [...a].sort();
-    const sortedB = [...b].sort();
-    return sortedA.every((value, index) => value === sortedB[index]);
+  arrayEquals(arr1: any[], arr2: any[]): boolean {
+    if (!arr1 || !arr2) return false;
+    if (arr1.length !== arr2.length) return false;
+    return arr1.every((value, index) => value === arr2[index]);
   }
+
 
   async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
     const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
@@ -246,12 +251,8 @@ export class ChannelService {
           description: '',
           owner: this.userService.activeUser.id!
         };
-
         const channelExists = await this.isChannelAlreadyExists(textChannel);
-
         if (channelExists) {
-          console.log("channel existiert bereits");
-
           const allChannels = await this.getAllChannels();
           return allChannels.find(channel => this.arrayEquals(channel.assignedUser, textChannel.assignedUser))!;
         } else {
@@ -260,8 +261,12 @@ export class ChannelService {
       }
       return null;
     } catch (error) {
-      return null;
+      throw error;
     }
+  }
+
+  async leaveChannel() {
+    //  await this.databaseService.deleteDataFromDB('channels', this.channel.id);
   }
 }
 

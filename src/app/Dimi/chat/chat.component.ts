@@ -4,12 +4,13 @@ import { ChatConversationComponent } from './chat-conversation/chat-conversation
 import { ChatInformationComponent } from './chat-information/chat-information.component';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
-import { MessageType } from '../../shared/components/enums/messagetype';
+import { MessageType } from '../../shared/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { NavigationStart, Router } from '@angular/router';
 
 @Component({
   selector: 'app-chat',
@@ -34,8 +35,10 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
+  showChatComponent!: boolean;
 
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService) {
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService,  private router: Router) {
+
   }
 
   async ngOnInit() {
@@ -52,7 +55,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     console.log('ChatComponent destroyed');
     if (this.channelsub)
       this.channelsub.unsubscribe();
+
+    
   }
+
+
 
   getsessionStorage(key: string) {
     return JSON.parse(sessionStorage.getItem(key)!);

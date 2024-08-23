@@ -1,0 +1,7 @@
+<main class="emoji" (click)="handleEmojiSelection()">
+  <img [src]="addEmojiImg" />
+  <app-emoji-selection
+    *ngIf="emojiSelectionOn"
+    (selectedEmoji)="handleSelectedEmoji($event)"
+  ></app-emoji-selection>
+</main>

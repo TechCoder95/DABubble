@@ -7,6 +7,7 @@ import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reac
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { DatabaseService } from '../../../../shared/services/database.service';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
+import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -15,6 +16,7 @@ import { DAStorageService } from '../../../../shared/services/dastorage.service'
     CommonModule,
     ReceiveChatMessageReactionComponent,
     ActiveChatMessageReactionsComponent,
+    EmojisPipe
   ],
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
