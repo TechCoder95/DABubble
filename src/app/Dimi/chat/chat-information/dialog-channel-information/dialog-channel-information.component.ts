@@ -58,12 +58,24 @@ export class DialogChannelInformationComponent {
     public channelService: ChannelService,
     private userService: UserService,
     private router: Router,
-    private subscriptionService: GlobalsubService
+    private subscriptionService: GlobalsubService,
+    private subService: GlobalsubService
   ) {
 
 
     this.getChannelCreator();
   }
+
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
+      this.selectedChannel = channel;
+    });
+  }
+
+
 
   changeCloseImg(hover: boolean) {
     if (hover) {
@@ -115,7 +127,10 @@ export class DialogChannelInformationComponent {
   }
 
   saveNewChannelName(updatedName: string) {
+    this.selectedChannel.name = updatedName;
     this.channelService.updateChannelName(updatedName);
+    this.subService.updateActiveChannel(this.selectedChannel);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(this.selectedChannel));
   }
 
   inEditModeDescription: boolean = false;
@@ -164,7 +179,10 @@ export class DialogChannelInformationComponent {
   }
 
   saveNewChannelDescription(updatedDescription: string) {
+    this.selectedChannel.description = updatedDescription;
     this.channelService.updateChannelDescription(updatedDescription);
+    this.subService.updateActiveChannel(this.selectedChannel);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(this.selectedChannel));
   }
 
   get placeholderText(): Observable<string> {
