@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginAsGuest() {
     this.authService.signInAsGuest();
   }
-
+  
 
   /**
    * Initiates the password reset process.
