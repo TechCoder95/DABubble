@@ -62,7 +62,7 @@ export class LinkChannelMemberComponent {
   
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         checkbox.checked = isChecked;
-        debugger;
+         ;
         const userId = checkbox.getAttribute('id');
         if (userId) {
           const user = this.usersInChannel.find((u) => u.id === userId);
@@ -78,7 +78,7 @@ export class LinkChannelMemberComponent {
         }
       });
     }
-    debugger;
+     ;
     console.log(this.selectedUsers);
     
     this.users.emit(this.selectedUsers);
@@ -96,7 +96,7 @@ export class LinkChannelMemberComponent {
         document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
       ) as HTMLInputElement[];
 
-      debugger;
+       ;
 
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         checkbox.checked = isChecked;
