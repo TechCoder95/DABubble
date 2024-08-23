@@ -16,22 +16,27 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
 
-  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) {}
+  constructor(private UserService: UserService, private router: Router, public authService: AuthenticationService, private subService: GlobalsubService) { }
 
   userSub: any;
 
 
   ngOnInit() {
     this.subService.getUserObservable().subscribe(async (user) => {
-      if (sessionStorage.getItem('userLogin') || sessionStorage.getItem('userLoginGuest')) {
-        this.router.navigate(['/home']);
+      if (sessionStorage.getItem('userLogin')) {
+        if (JSON.parse(sessionStorage.getItem('userLogin')!).avatar.includes('avatar')) {
+          this.router.navigate(['/user/chooseAvatar']);
+        }
+        else {
+          this.router.navigate(['/home']);
+        }
       }
     });
   }
 
   ngOnDestroy(): void {
     if (this.userSub)
-    this.userSub.unsubscribe();
+      this.userSub.unsubscribe();
   }
 
   email: string = '';
@@ -45,7 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    * Initiates the Google login process.
    */
   googleLogin() {
-      this.authService.googleSignIn();
+    this.authService.googleSignIn();
   }
 
 
@@ -55,7 +60,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
-        this.login();
+      this.login();
     }
     else {
       console.info('Form is not valid');
@@ -85,7 +90,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    * Logs in the user as a guest.
    */
   loginAsGuest() {
-      this.authService.signInAsGuest();
+    this.authService.signInAsGuest();
   }
 
 

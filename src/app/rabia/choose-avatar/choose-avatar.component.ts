@@ -90,7 +90,7 @@ export class ChooseAvatarComponent {
     this.UserService.updateUser(this.UserService.activeUser)
       .then(() => {
         this.authService.registerProcess = false;
-        this.router.navigate(['/user/login'])
+        this.router.navigate(['/home'])
       });
   }
 
