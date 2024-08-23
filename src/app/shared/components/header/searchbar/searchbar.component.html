@@ -1,5 +1,5 @@
 <div class="flex">
-    <input type="search" aria-label="awd" [(ngModel)]="searchInput" class="searchInput"
+    <input type="search" aria-label="awd" [(ngModel)]="searchInput" class="searchInput" (input)="onSearchInputChange(searchInput)"
         placeholder="Devspace durchsuchen">
         <!-- >>> (input)="onSearchInputChange(searchInput)" <<<
              Todo Dome: Vor der Abgabe muss die Funktion onSearchInputChange wieder einkommentiert werden
@@ -7,7 +7,7 @@
         -->
     <img [ngClass]="{'d-none': searchInput !== ''}" src="/img/search.svg" alt="" class="search">
 </div>
-@if (searchResults.length > 0) {
+@if (searchInput.length > 1) {
 <div class="searchResultsCard">
     <div class="card-groesse">
         @for (result of searchResults; track $index) {
