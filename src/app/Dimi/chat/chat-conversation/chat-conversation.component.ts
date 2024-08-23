@@ -102,7 +102,12 @@ export class ChatConversationComponent
     this.allMessages = [];
     this.allThreadMessages = [];
 
-    /* debugger;
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+
+    this.allMessages = [];
+    this.allThreadMessages = [];
+
+    /*  ;
     console.log(this.activeChannelFromChat); */
 
 

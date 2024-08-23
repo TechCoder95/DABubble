@@ -136,6 +136,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }
+
+    if (this.updateTreeSubscription) {
+      this.updateTreeSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
@@ -147,8 +151,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
+  private updateTreeSubscription!: Subscription;
+
   initializeSubscriptions() {
-    // todo greift nicht 
     this.routeSubscription = this.route.paramMap.subscribe(params => {
       const channelId = params.get('channel/channelId');
       if (channelId) {
@@ -175,10 +180,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
       this.updateTreeData();
     });
+
+    this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
+      await this.loadUserChannels(this.activeUser);
+      await this.updateTreeData();
+    });
   }
 
   private async initializeChannels() {
-    await this.initializeDefaultData();
+    // todo vorher laden initializeSidenavData()
+    await this.channelService.initializeSidenavData();
     await this.loadUserChannels(this.activeUser);
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
@@ -188,17 +199,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async loadUserChannels(currentUser: DABubbleUser) {
-    this.channels = await this.userService.getUserChannels(currentUser.id!);
+    this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
 
-  private async initializeDefaultData() {
-    const userIdMap = await this.userService.createDefaultUsers();
-    const defaultGroupChannels = await this.channelService.createDefaultGroupChannels(this.activeUser);
-    const defaultDirectChannels = await this.channelService.createDefaultDirectChannels(userIdMap, this.activeUser);
-    this.channels = await this.channelService.addOrUpdateDefaultChannels(defaultGroupChannels);
-    const updatedDirectChannels = await this.channelService.addOrUpdateDefaultChannels(defaultDirectChannels);
-    this.channels.push(...updatedDirectChannels);
-  }
+
 
 
   private createGroupChannelNodes(): Node[] {
@@ -226,7 +230,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
     return null;
   }
-
 
   private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
     const directChannelNodes: Node[] = [];
@@ -267,7 +270,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   private async updateTreeData(): Promise<void> {
-    const groupChannelNodes = await this.createGroupChannelNodes();
+    const groupChannelNodes = this.createGroupChannelNodes();
     const directChannelNodes = await this.createDirectChannelNodes();
 
     const groupChannelsStructure: Node = {
@@ -359,14 +362,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
-
-
-
-
-
-
-
-
-
-
 }

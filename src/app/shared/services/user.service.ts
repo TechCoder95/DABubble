@@ -88,32 +88,6 @@ export class UserService {
 
 
   /**
-   * Logs out the guest user.
-   * Removes the user login from the session storage, updates the active user subject,
-   * deletes the user data from the database, and reloads the page.
-   */
-  async guestLogout() {
-    let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
-    await this.DatabaseService.deleteDatabyField('channels', 'owner', id);
-    this.DatabaseService.deleteDataFromDB(this.collectionName, id)
-      .then(() => {
-        // this.DatabaseService.deleteDatabyField(this.collectionName, 'username', this.guestName);
-
-        //ToDo Dome: Hier sollte dringend noch nach dem Neuladen, auch der GoogleUser gelöscht werden
-
-        if (this.googleUser)
-          this.googleUser.delete();
-        else {
-          this.googleUser = JSON.parse(sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')!);
-          this.googleUser.delete();
-        }
-        sessionStorage.removeItem('userLogin');
-        this.router.navigate(['/user/login']);
-      });
-  }
-
-
-  /**
    * Logs in a user using the provided Google user object.
    * If the user is not found in the database, a new user entry is created.
    * If the user is found, the user is logged in and their information is updated.

@@ -1,7 +1,5 @@
 <main class="inputfield">
   <textarea
-    name=""
-    id=""
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="getPlaceholderText()"
@@ -31,13 +29,13 @@
         (selectedEmoji)="handleSelectedEmoji($event)"
       ></app-emojies>
 
-      <span
-        class="emoji"
+      <app-link-channel-member
         (mouseenter)="changeAddLinkImg(true)"
         (mouseleave)="changeAddLinkImg(false)"
-      >
-        <img [src]="addLinkImg" />
-      </span>
+        [usersInChannel]="usersInChannel"
+        [addLinkImg]="addLinkImg"
+        (users)="handleLinkedUsernames($event)"
+      ></app-link-channel-member>
     </div>
     <img
       src="./img/send-message.svg"

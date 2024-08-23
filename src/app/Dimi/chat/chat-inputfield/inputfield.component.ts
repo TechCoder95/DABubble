@@ -28,6 +28,8 @@ import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
+import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
+import { user } from '@angular/fire/auth';
 import { ThreadService } from '../../../shared/services/thread.service';
 
 @Component({
@@ -41,6 +43,7 @@ import { ThreadService } from '../../../shared/services/thread.service';
     EmojisPipe,
     EmojiesComponent,
     AddFilesComponent,
+    LinkChannelMemberComponent,
   ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
@@ -57,6 +60,7 @@ export class InputfieldComponent implements OnInit {
   selectedThread: TextChannel | null = null;
 
   activeUser!: DABubbleUser;
+  usersInChannel: DABubbleUser[] = [];
   threadOwner!: DABubbleUser;
   selectedMessage!: ChatMessage;
 
@@ -110,6 +114,16 @@ export class InputfieldComponent implements OnInit {
       });
     }
     this.ticket = this.ticketService.getTicket();
+
+    this.getUsersInChannel();
+  }
+
+  getUsersInChannel() {
+    this.selectedChannel?.assignedUser.forEach((id) => {
+      this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
+        this.usersInChannel.push(user);
+      });
+    });
   }
 
   changeAddFilesImg(hover: boolean) {
@@ -269,5 +283,18 @@ export class InputfieldComponent implements OnInit {
 
   handleFileName(event: string) {
     this.fileName = event;
+  }
+
+  handleLinkedUsernames(users: DABubbleUser[]) {
+    if (this.usersInChannel.length === users.length) {
+      let linkedUserString = '@Alle';
+      this.textareaValue += this.textareaValue += linkedUserString;
+      this.changeAddLinkImg(false);
+    } else {
+      let usernamesString = users
+        .map((user) => `@${user.username} `)
+        .join(', ');
+      this.textareaValue += usernamesString;
+    }
   }
 }
