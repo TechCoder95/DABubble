@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
@@ -9,8 +9,8 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
   templateUrl: './link-channel-member.component.html',
   styleUrl: './link-channel-member.component.scss',
 })
-export class LinkChannelMemberComponent {
-  @Input() usersInChannel: DABubbleUser[] = [];
+export class LinkChannelMemberComponent{
+  @Input() usersInChannel!: DABubbleUser[];
   @Input() addLinkImg!: string;
   @Output() users = new EventEmitter<DABubbleUser[]>();
   linkWindowOpen: boolean = false;
@@ -53,7 +53,7 @@ export class LinkChannelMemberComponent {
     let checkboxToSelectAll = this.getCheckbox(event);
 
     if (checkboxToSelectAll) {
-      checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
+     /*  checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
       let isChecked = checkboxToSelectAll.checked;
 
       let checkboxes = this.getAllCheckboxes();
@@ -61,6 +61,10 @@ export class LinkChannelMemberComponent {
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         checkbox.checked = isChecked;
         this.handleEachCheckbox(checkbox, isChecked);
+      }); */
+
+      this.usersInChannel.forEach((user) => {
+        this.selectedUsers.push(user);
       });
     }
     this.users.emit(this.selectedUsers);
@@ -68,13 +72,13 @@ export class LinkChannelMemberComponent {
     this.linkWindowOpen = false;
   }
 
-  getAllCheckboxes() {
+ /*  getAllCheckboxes() {
     return Array.from(
       document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
     ) as HTMLInputElement[];
-  }
+  } */
 
-  handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
+ /*  handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
     let userId = checkbox.getAttribute('id');
     let user: DABubbleUser | undefined = this.usersInChannel.find(
       (u) => u.id === userId,
@@ -87,6 +91,5 @@ export class LinkChannelMemberComponent {
       } else {
         this.deleteUserFromArray(user);
       }
-    }
+    } */
   }
-}
