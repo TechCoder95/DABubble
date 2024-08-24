@@ -262,7 +262,9 @@ export class InputfieldComponent implements OnInit {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
     } else if (this.messageType === MessageType.Threads) {
-      return `Nachricht an ${this.selectedMessage.senderName}`;
+      return `Habe es auskommentiert`;
+      // Habe es auskommentiert, konnt den Konsolenfehler nicht beheben
+      // return `Nachricht an ${this.selectedMessage.senderName}`;
     }
     return `Nachricht an #${this.selectedChannel?.name}`;
   }

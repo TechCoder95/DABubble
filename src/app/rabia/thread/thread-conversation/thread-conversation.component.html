@@ -1,7 +1,7 @@
-<main #scrollContainer (scroll)="onScroll()"
-  [ngStyle]="{   'justify-content': allMessages.length === 0 ? 'flex-end' : 'flex-start' }">
+<main #scrollContainer (click)="onScroll()"
+  [ngStyle]="{   'justify-content': allThreadMessages.length === 0 ? 'flex-end' : 'flex-start' }">
 
-  <div>
+  <!-- <div>
     @for (message of allMessages; track $index) {
 
 
@@ -47,5 +47,5 @@
     <app-pre-chat-message [activeChannelFromChatconv]="activeChannelFromChat"></app-pre-chat-message>
     }
 
-  </div>
+  </div> -->
 </main>

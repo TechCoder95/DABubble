@@ -60,12 +60,7 @@ export class ChatConversationComponent
 
 
   constructor(
-    private userService: UserService,
-    private channelService: ChannelService,
-    private databaseService: DatabaseService,
-    private subService: GlobalsubService,
-    public threadService: ThreadService
-  ) {
+    private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
@@ -73,22 +68,20 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
-
-
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
 
 
-    if (sessionStorage.getItem('selectedThread')) {
-      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-        this.selectedMessage = selectedMessage;
-        console.log(selectedMessage, "jutta");
-      });
+    // if (sessionStorage.getItem('selectedThread')) {
+    //   this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
+    //     this.selectedMessage = selectedMessage;
+    //     console.log(selectedMessage, "jutta");
+    //   });
 
-      this.allThreadMessages = [];
-      this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
-    }
+    //   this.allThreadMessages = [];
+    //   this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
+    // }
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {
@@ -127,10 +120,6 @@ export class ChatConversationComponent
         }
       }
     });
-
-    // console.log(this.allMessages, "allMessages", this.ebbes, this.selectedChannelFromChat);
-
-
   }
 
   ngOnDestroy() {

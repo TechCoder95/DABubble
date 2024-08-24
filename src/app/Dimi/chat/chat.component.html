@@ -1,11 +1,10 @@
 <div class="flex height">
-  <mat-card>
+  <mat-card style="width: 30vw;">
     <app-chat-information [activeUserFromChat]="selectedUserFromChat"
       [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
-    
-    
-      <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" 
-      [activeUserFromChat]="selectedUserFromChat"
+
+
+    <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       #scrollContainer>
     </app-chat-conversation>
 
@@ -33,9 +32,11 @@
   <mat-card class="ml-4">
     <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
 
-    <app-chat-conversation
+    <!-- <app-chat-conversation
     [activeUserFromChat]="selectedUserFromChat" #scrollContainer>
-    </app-chat-conversation>
+    </app-chat-conversation> -->
+
+    <app-thread-conversation [activeUserFromChat]="selectedUserFromChat" #scrollContainer> </app-thread-conversation>
 
 
     <app-chat-inputfield [selectedThreadOwner]="selectedThreadOwner" [activeUserFromChat]="selectedUserFromChat"

@@ -15,6 +15,7 @@ import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { NavigationStart, Router } from '@angular/router';
 import { DatabaseService } from '../../shared/services/database.service';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
+import { ThreadConversationComponent } from "../../rabia/thread/thread-conversation/thread-conversation.component";
 
 @Component({
   selector: 'app-chat',
@@ -24,8 +25,9 @@ import { ChatMessage } from '../../shared/interfaces/chatmessage';
     ChatConversationComponent,
     ChatInformationComponent,
     InputfieldComponent,
-    ThreadComponent
-  ],
+    ThreadComponent,
+    ThreadConversationComponent
+],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
