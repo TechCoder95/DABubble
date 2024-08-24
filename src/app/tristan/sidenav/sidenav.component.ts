@@ -177,7 +177,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe((user: DABubbleUser) => {
+    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe(() => {
       this.updateTreeData();
     });
 
@@ -301,13 +301,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
-        sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-        await this.router.navigate(['/home']);
-        setTimeout(async () => {
-          this.router.navigate(['/home', selectedChannel.id]);
-          await this.navToChannel(selectedChannel.id);
-        }, 0.1);
-        this.subscriptionService.updateActiveChannel(selectedChannel);
+        await this.navToSelectedChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();
@@ -321,14 +315,20 @@ export class SidenavComponent implements OnInit, OnDestroy {
         const newChannel = await this.channelService.createGroupChannel(result);
         if (newChannel) {
           this.channels.push(newChannel);
+          await this.navToSelectedChannel(newChannel);
           await this.updateTreeData();
         }
       }
     });
   }
 
-  async navToChannel(channelId: string) {
-    await this.router.navigate(['/home/channel', channelId]);
+  async navToSelectedChannel(selectedChannel: TextChannel) {
+    sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
+    await this.router.navigate(['/home']);
+    setTimeout(async () => {
+      this.router.navigate(['/home/channel', selectedChannel.id]);
+    }, 0.1);
+    this.subscriptionService.updateActiveChannel(selectedChannel);
   }
 
   async navToCreateNewChat() {

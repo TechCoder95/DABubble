@@ -29,14 +29,16 @@
                 </div>
               </ng-container>
     
-              <span (click)="onNode(channelNode)" [ngClass]="{
+              <span [routerLink]="['/home/channel', channelNode.id]" 
+              routerLinkActive="selected-channel" (click)="onNode(channelNode)" [ngClass]="{
                   'cursor-pointer': true,
                   'blue-channel-name': isGroupChannel(channelNode),
                   'blue-name': isCategoryNode(channelNode),
                   'font-bold': isCategoryNode(channelNode),
                   'blue-action-name': isActionNode(channelNode),
-                  'selected-channel': isSelectedChannel(channelNode)
+                  'router-link-active-class': true
                 }">{{ channelNode.name }}</span>
+
             </div>
           </mat-tree-node>
     
@@ -63,7 +65,6 @@
                     'blue-name': isCategoryNode(channelNode),
                     'font-bold': isCategoryNode(channelNode),
                     'blue-action-name': isActionNode(channelNode),
-                    'selected-channel': isSelectedChannel(channelNode)
                   }">
     
                   {{ channelNode.name }}</span>
