@@ -19,6 +19,7 @@ import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reac
 import { Subscription } from 'rxjs';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
+import { ActualMessageComponent } from './actual-message/actual-message.component';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -28,7 +29,8 @@ import { DAStorageService } from '../../../../shared/services/dastorage.service'
     SendChatMessageReactionComponent,
     FormsModule,
     ActiveChatMessageReactionsComponent,
-    EmojisPipe
+    EmojisPipe,
+    ActualMessageComponent
   ],
   templateUrl: './send-chat-message.component.html',
   styleUrl: './send-chat-message.component.scss',
@@ -52,16 +54,18 @@ export class SendChatMessageComponent implements OnInit {
     private userService: UserService,
     private databaseService: DatabaseService,
     private storageService: DAStorageService,
-    private chatService:ChatService,
+    private chatService: ChatService,
   ) {
     this.user = JSON.parse(sessionStorage.getItem('userLogin')!);
   }
 
-  userFromSession: DABubbleUser = JSON.parse(sessionStorage.getItem('userLogin')!);
+  userFromSession: DABubbleUser = JSON.parse(
+    sessionStorage.getItem('userLogin')!,
+  );
 
   ngOnInit(): void {
     this.originalMessage = this.sendMessage.message;
-    if(this.sendMessage.imageUrl){
+    if (this.sendMessage.imageUrl) {
       this.getImage();
     }
   }
@@ -105,7 +109,7 @@ export class SendChatMessageComponent implements OnInit {
     await this.databaseService.updateDataInDB(
       'messages',
       this.sendMessage.id!,
-      this.sendMessage
+      this.sendMessage,
     );
     this.inEditMessageMode = false;
   }
@@ -114,14 +118,14 @@ export class SendChatMessageComponent implements OnInit {
     this.messageDeleted = event;
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;
-    if(this.sendMessage.imageUrl){
+    if (this.sendMessage.imageUrl) {
       this.storageService.deleteMessageImage(this.sendMessage.imageUrl);
     }
     await this.chatService.deleteEmojisOnMessage(this.sendMessage.id!);
     await this.databaseService.updateDataInDB(
       'messages',
       this.sendMessage.id!,
-      this.sendMessage
+      this.sendMessage,
     );
   }
 
@@ -129,14 +133,19 @@ export class SendChatMessageComponent implements OnInit {
     this.emojiType = event;
   }
 
-  sentImage='';
-  async getImage(){
-    let imgSrc = await this.storageService.downloadMessageImage(this.sendMessage.imageUrl!);
+  sentImage = '';
+  async getImage() {
+    let imgSrc = await this.storageService.downloadMessageImage(
+      this.sendMessage.imageUrl!,
+    );
     this.sentImage = imgSrc;
   }
 
-  sentImageExists(){
-    return this.sendMessage.imageUrl && this.sendMessage.imageUrl.trim() !== ''
+ /*  sentImageExists() {
+    return this.sendMessage.imageUrl && this.sendMessage.imageUrl.trim() !== '';
   }
 
+  getLinkedUserNames(): string[] {
+    return this.sendMessage.linkedUsers.map((user) => `@${user.username}`);
+  } */
 }

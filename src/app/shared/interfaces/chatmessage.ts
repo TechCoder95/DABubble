@@ -1,3 +1,5 @@
+import { DABubbleUser } from './user';
+
 export interface ChatMessage {
   channelId: string;
   channelName?: string;
@@ -9,5 +11,6 @@ export interface ChatMessage {
   id?: string;
   edited?: boolean;
   deleted?: boolean;
-  imageUrl?:string;
+  imageUrl?: string;
+  linkedUsers: DABubbleUser[];
 }

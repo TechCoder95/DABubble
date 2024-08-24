@@ -9,17 +9,48 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
   templateUrl: './link-channel-member.component.html',
   styleUrl: './link-channel-member.component.scss',
 })
-export class LinkChannelMemberComponent{
+export class LinkChannelMemberComponent {
   @Input() usersInChannel!: DABubbleUser[];
   @Input() addLinkImg!: string;
+  @Input() linkedUsers!: DABubbleUser[];
   @Output() users = new EventEmitter<DABubbleUser[]>();
   linkWindowOpen: boolean = false;
+  selectedUsers: DABubbleUser[] = [];
 
   openWindow() {
     this.linkWindowOpen = !this.linkWindowOpen;
+    if (this.linkWindowOpen) {
+      this.setCheckboxesForSelectedUsers();
+    }
   }
 
-  selectedUsers: DABubbleUser[] = [];
+  setCheckboxesForSelectedUsers() {
+    setTimeout(() => {
+      let checkboxes = this.getAllCheckboxes();
+      /*  this.selectedUsers = []; */
+      checkboxes.forEach((checkbox: HTMLInputElement) => {
+        let userID = checkbox.getAttribute('id');
+        if (this.linkedUsers.some((user) => user.id === userID)) {
+          checkbox.checked = true;
+          /* this.selectedUsers.push(user); */
+        } else {
+          checkbox.checked = false;
+        }
+      });
+      this.selectedUsers = this.linkedUsers;
+      if (this.linkedUsers.length === this.usersInChannel.length) {
+        let allUsersSelectedCheckbox = this.getAllUsersSelectedCheckbox();
+        allUsersSelectedCheckbox.checked = true;
+      }
+    }, 100);
+  }
+
+  getAllUsersSelectedCheckbox() {
+    return document.querySelector(
+      '.select-all-usernames input[type="checkbox"]',
+    ) as HTMLInputElement;
+  }
+
   toggleUsername(event: Event, user: DABubbleUser) {
     event.stopPropagation();
     let checkbox = this.getCheckbox(event);
@@ -32,7 +63,6 @@ export class LinkChannelMemberComponent{
       }
     }
     this.users.emit(this.selectedUsers);
-    this.selectedUsers = [];
   }
 
   getCheckbox(event: Event) {
@@ -53,32 +83,29 @@ export class LinkChannelMemberComponent{
     let checkboxToSelectAll = this.getCheckbox(event);
 
     if (checkboxToSelectAll) {
-     /*  checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
+      checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
       let isChecked = checkboxToSelectAll.checked;
 
       let checkboxes = this.getAllCheckboxes();
 
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         checkbox.checked = isChecked;
-        this.handleEachCheckbox(checkbox, isChecked);
-      }); */
+      });
 
       this.usersInChannel.forEach((user) => {
         this.selectedUsers.push(user);
       });
     }
     this.users.emit(this.selectedUsers);
-    this.selectedUsers = [];
-    this.linkWindowOpen = false;
   }
 
- /*  getAllCheckboxes() {
+  getAllCheckboxes() {
     return Array.from(
       document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
     ) as HTMLInputElement[];
-  } */
+  }
 
- /*  handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
+  handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
     let userId = checkbox.getAttribute('id');
     let user: DABubbleUser | undefined = this.usersInChannel.find(
       (u) => u.id === userId,
@@ -91,5 +118,6 @@ export class LinkChannelMemberComponent{
       } else {
         this.deleteUserFromArray(user);
       }
-    } */
+    }
   }
+}
