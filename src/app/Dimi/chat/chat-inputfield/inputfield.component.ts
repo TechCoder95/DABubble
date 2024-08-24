@@ -29,6 +29,7 @@ import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
+import { user } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -97,10 +98,12 @@ export class InputfieldComponent implements OnInit {
     this.getUsersInChannel();
   }
 
-  getUsersInChannel() {
+  async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
-        this.usersInChannel.push(user);
+        if (user !== null && user !== undefined) {
+          this.usersInChannel.push(user);
+        }
       });
     });
   }
@@ -197,6 +200,7 @@ export class InputfieldComponent implements OnInit {
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
         this.selectedFile = '';
+        this.linkedUsers = [];
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -216,6 +220,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
+      linkedUsers: this.linkedUsers,
     };
   }
 
@@ -247,12 +252,33 @@ export class InputfieldComponent implements OnInit {
       event.preventDefault();
       this.sendMessage(this.messageType);
     }
+    if (event.key === 'Backspace') {
+      this.checkLinkedUsers(event);
+    }
+  }
+
+  checkLinkedUsers(event: Event) {
+    let textarea = event.target as HTMLTextAreaElement;
+    if (textarea.selectionStart === 0 && this.linkedUsers.length > 0) {
+      // Letzte Markierung aus linkedUsers-Array entfernen
+      this.linkedUsers.pop();
+      event.preventDefault();
+    }
+  }
+
+  removeLinkedUser(index: number) {
+    this.linkedUsers.splice(index, 1);
   }
 
   getPlaceholderText(): string {
     if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
     }
+
+    if (this.linkedUsers.length > 0) {
+      return '';
+    }
+
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser
@@ -280,19 +306,28 @@ export class InputfieldComponent implements OnInit {
     this.fileName = event;
   }
 
-  handleLinkedUsernames(users: DABubbleUser[] ) {
-    debugger;
-    console.log(users);
-    
+  hasLinkedUsers(): boolean {
+    return this.linkedUsers.length > 0;
+  }
 
+  linkedUsers: DABubbleUser[] = [];
+  handleLinkedUsernames(users: DABubbleUser[]) {
     if (this.usersInChannel.length === users.length) {
-      let linkedUserString = '@Alle';
-      this.textareaValue += this.textareaValue += linkedUserString;
+      this.linkedUsers = [];
+
+      users.forEach((user) => {
+        this.linkedUsers.push(user);
+      });
+
+      this.changeAddLinkImg(false);
+    } else if (users.length === 0) {
+      this.linkedUsers = [];
     } else {
-      let usernamesString = users
-        .map((username) => `@${username} `)
-        .join(', ');
-      this.textareaValue += usernamesString;
+      this.linkedUsers = [];
+
+      users.forEach((user) => {
+        this.linkedUsers.push(user);
+      });
     }
   }
 }

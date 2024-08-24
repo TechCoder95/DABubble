@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 
 @Component({
@@ -10,16 +10,47 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
   styleUrl: './link-channel-member.component.scss',
 })
 export class LinkChannelMemberComponent {
-  @Input() usersInChannel: DABubbleUser[] = [];
+  @Input() usersInChannel!: DABubbleUser[];
   @Input() addLinkImg!: string;
+  @Input() linkedUsers!: DABubbleUser[];
   @Output() users = new EventEmitter<DABubbleUser[]>();
   linkWindowOpen: boolean = false;
+  selectedUsers: DABubbleUser[] = [];
 
   openWindow() {
     this.linkWindowOpen = !this.linkWindowOpen;
+    if (this.linkWindowOpen) {
+      this.setCheckboxesForSelectedUsers();
+    }
   }
 
-  selectedUsers: DABubbleUser[] = [];
+  setCheckboxesForSelectedUsers() {
+    setTimeout(() => {
+      let checkboxes = this.getAllCheckboxes();
+      /*  this.selectedUsers = []; */
+      checkboxes.forEach((checkbox: HTMLInputElement) => {
+        let userID = checkbox.getAttribute('id');
+        if (this.linkedUsers.some((user) => user.id === userID)) {
+          checkbox.checked = true;
+          /* this.selectedUsers.push(user); */
+        } else {
+          checkbox.checked = false;
+        }
+      });
+      this.selectedUsers = this.linkedUsers;
+      if (this.linkedUsers.length === this.usersInChannel.length) {
+        let allUsersSelectedCheckbox = this.getAllUsersSelectedCheckbox();
+        allUsersSelectedCheckbox.checked = true;
+      }
+    }, 100);
+  }
+
+  getAllUsersSelectedCheckbox() {
+    return document.querySelector(
+      '.select-all-usernames input[type="checkbox"]',
+    ) as HTMLInputElement;
+  }
+
   toggleUsername(event: Event, user: DABubbleUser) {
     event.stopPropagation();
     let checkbox = this.getCheckbox(event);
@@ -32,7 +63,6 @@ export class LinkChannelMemberComponent {
       }
     }
     this.users.emit(this.selectedUsers);
-    /*  this.selectedUsers = []; */
   }
 
   getCheckbox(event: Event) {
@@ -48,71 +78,46 @@ export class LinkChannelMemberComponent {
     }
   }
 
-   toggleAllUsernames(event: Event) {
+  toggleAllUsernames(event: Event) {
     event.stopPropagation();
     let checkboxToSelectAll = this.getCheckbox(event);
-  
+
     if (checkboxToSelectAll) {
       checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
       let isChecked = checkboxToSelectAll.checked;
-  
-      let checkboxes = Array.from(
-        document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
-      ) as HTMLInputElement[];
-  
+
+      let checkboxes = this.getAllCheckboxes();
+
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         checkbox.checked = isChecked;
-        debugger;
-        const userId = checkbox.getAttribute('id');
-        if (userId) {
-          const user = this.usersInChannel.find((u) => u.id === userId);
-          if (user) {
-            if (isChecked) {
-              if (!this.selectedUsers.some((u) => u.id === user.id)) {
-                this.selectedUsers.push(user);
-              }
-            } else {
-              this.deleteUserFromArray(user);
-            }
-          }
-        }
+      });
+
+      this.usersInChannel.forEach((user) => {
+        this.selectedUsers.push(user);
       });
     }
-    debugger;
-    console.log(this.selectedUsers);
-    
     this.users.emit(this.selectedUsers);
   }
 
-  /*   toggleAllUsernames(event: Event) {
-    event.stopPropagation();
-    let checkboxToSelectAll = this.getCheckbox(event);
+  getAllCheckboxes() {
+    return Array.from(
+      document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
+    ) as HTMLInputElement[];
+  }
 
-    if (checkboxToSelectAll) {
-      checkboxToSelectAll.checked = !checkboxToSelectAll.checked;
-      let isChecked = checkboxToSelectAll.checked;
-
-      let checkboxes = Array.from(
-        document.querySelectorAll('.username-checkbox input[type="checkbox"]'),
-      ) as HTMLInputElement[];
-
-      debugger;
-
-      checkboxes.forEach((checkbox: HTMLInputElement) => {
-        checkbox.checked = isChecked;
-        const user = checkbox
-          .closest('.username-checkbox')
-          ?.querySelector('p')?.textContent;
-        if (user) {
-          if (isChecked) {
-            this.selectedUsers.push(us);
-          } else {
-            this.selectedUsernames.delete(username);
-          }
+  handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
+    let userId = checkbox.getAttribute('id');
+    let user: DABubbleUser | undefined = this.usersInChannel.find(
+      (u) => u.id === userId,
+    );
+    if (user) {
+      if (isChecked) {
+        if (!this.selectedUsers.some((u) => u.id === user.id)) {
+          this.selectedUsers.push(user);
         }
-        console.log(this.selectedUsers);
-      });
+      } else {
+        this.deleteUserFromArray(user);
+      }
     }
-    this.users.emit(this.selectedUsers);
-  } */
+  }
 }
