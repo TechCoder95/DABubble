@@ -98,7 +98,7 @@ export class InputfieldComponent implements OnInit {
     this.getUsersInChannel();
   }
 
-   async getUsersInChannel() {
+  async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
         if (user !== null && user !== undefined) {
@@ -200,6 +200,7 @@ export class InputfieldComponent implements OnInit {
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
         this.selectedFile = '';
+        this.linkedUsers = [];
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -219,6 +220,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
+      linkedUsers: this.linkedUsers,
     };
   }
 
@@ -250,12 +252,33 @@ export class InputfieldComponent implements OnInit {
       event.preventDefault();
       this.sendMessage(this.messageType);
     }
+    if (event.key === 'Backspace') {
+      this.checkLinkedUsers(event);
+    }
+  }
+
+  checkLinkedUsers(event: Event) {
+    let textarea = event.target as HTMLTextAreaElement;
+    if (textarea.selectionStart === 0 && this.linkedUsers.length > 0) {
+      // Letzte Markierung aus linkedUsers-Array entfernen
+      this.linkedUsers.pop();
+      event.preventDefault();
+    }
+  }
+
+  removeLinkedUser(index: number) {
+    this.linkedUsers.splice(index, 1);
   }
 
   getPlaceholderText(): string {
     if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
     }
+
+    if (this.linkedUsers.length > 0) {
+      return '';
+    }
+
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser
@@ -283,16 +306,28 @@ export class InputfieldComponent implements OnInit {
     this.fileName = event;
   }
 
+  hasLinkedUsers(): boolean {
+    return this.linkedUsers.length > 0;
+  }
+
+  linkedUsers: DABubbleUser[] = [];
   handleLinkedUsernames(users: DABubbleUser[]) {
     if (this.usersInChannel.length === users.length) {
-      let linkedUserString = '@Alle';
-      this.textareaValue += linkedUserString;
+      this.linkedUsers = [];
+
+      users.forEach((user) => {
+        this.linkedUsers.push(user);
+      });
+
       this.changeAddLinkImg(false);
+    } else if (users.length === 0) {
+      this.linkedUsers = [];
     } else {
-      let usernamesString = users
-        .map((user) => `@${user.username} `)
-        .join(', ');
-      this.textareaValue += usernamesString;
+      this.linkedUsers = [];
+
+      users.forEach((user) => {
+        this.linkedUsers.push(user);
+      });
     }
   }
 }

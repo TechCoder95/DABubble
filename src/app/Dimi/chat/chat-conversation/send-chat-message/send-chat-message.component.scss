@@ -91,7 +91,7 @@ h5 {
       color: rgba(104, 104, 104, 1);
     }
   }
-  > .actual-message {
+  /* .actual-message {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -114,13 +114,13 @@ h5 {
       max-width: 250px;
       max-height: 250px;
     }
-  }
+  } */
 }
 
-.message-deleted-notification {
+/* .message-deleted-notification {
   color: rgba(83, 90, 241, 1);
   font-size: 10px;
-}
+} */
 
 .in-edit-mode-section {
   display: flex;
@@ -183,7 +183,7 @@ h5 {
   top: 0px !important;
 }
 
-.file-and-text{
+/* .file-and-text{
   flex-direction: column-reverse;
   gap: 5px;
   width: min-content;
@@ -191,4 +191,9 @@ h5 {
   >img{
   border-radius: 30px 0 0 0 !important;
   }
-}
+} */
+
+/* .linked-user-style{
+  background: antiquewhite;
+  font-size: 18px;
+} */

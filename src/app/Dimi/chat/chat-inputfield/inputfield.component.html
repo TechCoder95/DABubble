@@ -1,10 +1,26 @@
-<main class="inputfield">
-  <textarea
-    (keydown)="handleEnterKey($event)"
-    [(ngModel)]="textareaValue"
-    [placeholder]="getPlaceholderText()"
-    [value]="textareaValue | emojis"
-  ></textarea>
+<main
+  class="inputfield"
+  [ngStyle]="{ height: hasLinkedUsers() ? '130px' : '100px' }"
+>
+  <section class="arrange-textarea">
+    <div class="linked-users" *ngIf="linkedUsers.length > 0">
+      @if (linkedUsers.length === usersInChannel.length) {
+        <p class="style">Alle</p>
+      } @else {
+        @for (user of linkedUsers; track $index) {
+          <p class="style" (click)="removeLinkedUser($index)">
+            {{ user.username }}
+          </p>
+        }
+      }
+    </div>
+    <textarea
+      (keydown)="handleEnterKey($event)"
+      [(ngModel)]="textareaValue"
+      [placeholder]="getPlaceholderText()"
+      [value]="textareaValue | emojis"
+    ></textarea>
+  </section>
 
   <section class="arrange-input-options">
     <div class="chat-options">
@@ -34,6 +50,7 @@
         (mouseleave)="changeAddLinkImg(false)"
         [usersInChannel]="usersInChannel"
         [addLinkImg]="addLinkImg"
+        [linkedUsers]="linkedUsers"
         (users)="handleLinkedUsernames($event)"
       ></app-link-channel-member>
     </div>
