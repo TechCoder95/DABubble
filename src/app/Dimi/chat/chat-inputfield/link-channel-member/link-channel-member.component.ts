@@ -19,7 +19,6 @@ export class LinkChannelMemberComponent {
 
   openWindow() {
     this.linkWindowOpen = !this.linkWindowOpen;
-    console.log('openWindow called, linkWindowOpen:', this.linkWindowOpen);
     if (this.linkWindowOpen) {
       this.setCheckboxesForSelectedUsers();
     }
