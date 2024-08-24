@@ -58,6 +58,7 @@ export class InputfieldComponent implements OnInit {
   selectedChannel: TextChannel | null = null;
   activeUser!: DABubbleUser;
   usersInChannel: DABubbleUser[] = [];
+  linkedUsers: DABubbleUser[] = [];
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -252,31 +253,11 @@ export class InputfieldComponent implements OnInit {
       event.preventDefault();
       this.sendMessage(this.messageType);
     }
-    if (event.key === 'Backspace') {
-      this.checkLinkedUsers(event);
-    }
-  }
-
-  checkLinkedUsers(event: Event) {
-    let textarea = event.target as HTMLTextAreaElement;
-    if (textarea.selectionStart === 0 && this.linkedUsers.length > 0) {
-      // Letzte Markierung aus linkedUsers-Array entfernen
-      this.linkedUsers.pop();
-      event.preventDefault();
-    }
-  }
-
-  removeLinkedUser(index: number) {
-    this.linkedUsers.splice(index, 1);
   }
 
   getPlaceholderText(): string {
     if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
-    }
-
-    if (this.linkedUsers.length > 0) {
-      return '';
     }
 
     if (this.messageType === MessageType.NewDirect) {
@@ -310,24 +291,7 @@ export class InputfieldComponent implements OnInit {
     return this.linkedUsers.length > 0;
   }
 
-  linkedUsers: DABubbleUser[] = [];
   handleLinkedUsernames(users: DABubbleUser[]) {
-    if (this.usersInChannel.length === users.length) {
-      this.linkedUsers = [];
-
-      users.forEach((user) => {
-        this.linkedUsers.push(user);
-      });
-
-      this.changeAddLinkImg(false);
-    } else if (users.length === 0) {
-      this.linkedUsers = [];
-    } else {
-      this.linkedUsers = [];
-
-      users.forEach((user) => {
-        this.linkedUsers.push(user);
-      });
-    }
+    this.linkedUsers = users;
   }
 }

@@ -19,7 +19,7 @@ import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reac
 import { Subscription } from 'rxjs';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
-import { ActualMessageComponent } from './actual-message/actual-message.component';
+import { ActualMessageComponent } from './actual-send-message/actual-message.component';
 
 @Component({
   selector: 'app-send-chat-message',

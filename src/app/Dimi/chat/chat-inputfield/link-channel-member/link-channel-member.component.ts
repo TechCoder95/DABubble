@@ -19,6 +19,7 @@ export class LinkChannelMemberComponent {
 
   openWindow() {
     this.linkWindowOpen = !this.linkWindowOpen;
+    console.log('openWindow called, linkWindowOpen:', this.linkWindowOpen);
     if (this.linkWindowOpen) {
       this.setCheckboxesForSelectedUsers();
     }
@@ -30,15 +31,15 @@ export class LinkChannelMemberComponent {
       /*  this.selectedUsers = []; */
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         let userID = checkbox.getAttribute('id');
-        if (this.linkedUsers.some((user) => user.id === userID)) {
+        if (this.selectedUsers.some((user) => user.id === userID)) {
           checkbox.checked = true;
           /* this.selectedUsers.push(user); */
         } else {
           checkbox.checked = false;
         }
       });
-      this.selectedUsers = this.linkedUsers;
-      if (this.linkedUsers.length === this.usersInChannel.length) {
+      /* this.selectedUsers = this.linkedUsers; */
+      if (this.selectedUsers.length === this.usersInChannel.length) {
         let allUsersSelectedCheckbox = this.getAllUsersSelectedCheckbox();
         allUsersSelectedCheckbox.checked = true;
       }
@@ -92,6 +93,8 @@ export class LinkChannelMemberComponent {
         checkbox.checked = isChecked;
       });
 
+      this.selectedUsers = [];
+
       this.usersInChannel.forEach((user) => {
         this.selectedUsers.push(user);
       });
@@ -119,5 +122,10 @@ export class LinkChannelMemberComponent {
         this.deleteUserFromArray(user);
       }
     }
+  }
+
+  removeLinkedUser(index: number) {
+    this.selectedUsers.splice(index, 1);
+    this.linkWindowOpen = false;
   }
 }

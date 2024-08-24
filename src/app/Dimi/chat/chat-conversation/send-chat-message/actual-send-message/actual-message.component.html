@@ -1,16 +1,15 @@
-<div
+<main
   class="actual-message"
   *ngIf="!sendMessage.deleted"
   [ngClass]="{
-    'file-and-text': sendMessage.imageUrl && sendMessage.message
+    'file-and-text': sendMessage.imageUrl && sendMessage.message,
   }"
 >
   <div *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
-    <aside
-      *ngFor="let username of getLinkedUserNames()"
-      class="linked-user-style"
-    >
-      {{ username }}
+    <aside class="linked-user-style">
+      @for (user of sendMessage.linkedUsers; track $index) {
+        <h5>AT{{ user.username }}</h5>
+      }
     </aside>
     <p>
       {{ sendMessage.message | emojis }}
@@ -18,7 +17,7 @@
     </p>
   </div>
   <img [src]="sentImage" *ngIf="sentImageExists()" />
-</div>
+</main>
 <p *ngIf="sendMessage.deleted" class="message-deleted-notification">
   Diese Nachricht wurde gelöscht
 </p>
