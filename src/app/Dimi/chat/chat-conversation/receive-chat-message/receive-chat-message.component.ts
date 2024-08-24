@@ -40,6 +40,9 @@ export class ReceiveChatMessageComponent {
     if(this.receiveMessage.imageUrl){
       this.getImage();
     }
+
+    console.log(this.receiveMessage, "gt3 RS");
+    
   }
 
 

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -51,8 +51,6 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   public readonly channelService = inject(ChannelService);
 
-
-  public readonly channelService = inject(ChannelService);
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;

@@ -1,6 +1,12 @@
 <main #scrollContainer (click)="onScroll()"
   [ngStyle]="{   'justify-content': allThreadMessages.length === 0 ? 'flex-end' : 'flex-start' }">
 
+  <div>
+    @for (message of allThreadMessages; track $index) {
+      <app-receive-chat-message [receiveMessage]="message" [user]="activeUser"
+      [repeatedMessage]="false"></app-receive-chat-message>
+    }
+  </div>
   <!-- <div>
     @for (message of allMessages; track $index) {
 

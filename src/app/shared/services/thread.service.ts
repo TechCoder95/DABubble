@@ -38,7 +38,7 @@ export class ThreadService {
 
     // die threadID ist die ID des Threads
 
-    this.dataService.readDataByID('threads', thread.channelID)
+    this.databaseService.readDataByID('threads', thread.channelID)
 
   }
 
