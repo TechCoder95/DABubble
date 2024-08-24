@@ -25,7 +25,8 @@
       "default",
       {
         "ignore": [
-          "zoom"
+          "zoom",
+          "scrollbar-width"
         ]
       }
     ],

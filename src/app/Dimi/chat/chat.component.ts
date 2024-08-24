@@ -1,4 +1,4 @@
-import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -13,6 +13,8 @@ import { UserService } from '../../shared/services/user.service';
 import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { NavigationStart, Router } from '@angular/router';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { ChannelService } from '../../shared/services/channel.service';
 import { DatabaseService } from '../../shared/services/database.service';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ThreadConversationComponent } from "../../rabia/thread/thread-conversation/thread-conversation.component";
@@ -26,6 +28,7 @@ import { ThreadConversationComponent } from "../../rabia/thread/thread-conversat
     ChatInformationComponent,
     InputfieldComponent,
     ThreadComponent,
+    MatProgressSpinnerModule,
     ThreadConversationComponent
 ],
   templateUrl: './chat.component.html',
@@ -44,6 +47,12 @@ export class ChatComponent implements OnInit, OnDestroy {
   channelsub!: Subscription;
   threadsub!: Subscription;
 
+
+
+  public readonly channelService = inject(ChannelService);
+
+
+  public readonly channelService = inject(ChannelService);
 
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;

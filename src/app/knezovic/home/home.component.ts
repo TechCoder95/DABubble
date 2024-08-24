@@ -23,12 +23,8 @@ import { CommonModule } from '@angular/common';
 export class HomeComponent implements OnInit, OnDestroy {
 
   constructor(private globalSubService: GlobalsubService, private router: Router) {
-    let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
 
-    if (googleUser) {
-      let googleUserObj = JSON.parse(googleUser);
-      this.globalSubService.updateGoogleUser(googleUserObj);
-    }
+    
   }
 
   userSub!: Subscription;
@@ -41,7 +37,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-
+    
+    let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
+    if (googleUser) {
+      let googleUserObj = JSON.parse(googleUser);
+      this.globalSubService.updateGoogleUser(googleUserObj);
+    }
 
     if (!this.userSub)
       this.userSub = this.globalSubService.getUserObservable()
@@ -53,12 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
-
-
-    // Todo Rabia
-    // this.activeThreadSub = this.globalSubService.getActiveThreadObservable().subscribe(data => {
-    //   console.log('Active Thread:', data);
-    // });
   }
 
 

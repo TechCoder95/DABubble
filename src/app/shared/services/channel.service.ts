@@ -20,6 +20,9 @@ export class ChannelService {
   showSingleThread: boolean = false;
   public channels!: TextChannel[];
 
+
+  loading: boolean = false;
+
   constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
 
     this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
@@ -171,7 +174,6 @@ export class ChannelService {
     const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
     return channels.some((channel: TextChannel) => {
       if (channel && (channel != null) && (channel.name != undefined)) {
-        console.log(channel.name);
         return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
       }
       return null;
@@ -311,24 +313,30 @@ export class ChannelService {
       await this.databaseService.deleteDataFromDB('channels', channel!.id);
     }
 
+    let channels = JSON.parse(sessionStorage.getItem('channels')!);
+    channels = channels.filter((ch: any) => ch.id !== channel.id);
+    sessionStorage.setItem('channels', JSON.stringify(channels));
+
     this.selectedChannelSubject.next(null);
     sessionStorage.removeItem('selectedChannel');
   }
 
-  
-
   async initializeSidenavData() {
+    this.loading = true;
     await this.createDefaultData();
     this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
+
   }
 
-   async createDefaultData() {
+  async createDefaultData() {
     const userIdMap = await this.userService.createDefaultUsers();
     const defaultGroupChannels = await this.createDefaultGroupChannels(this.userService.activeUser);
     const defaultDirectChannels = await this.createDefaultDirectChannels(userIdMap, this.userService.activeUser);
     await this.addOrUpdateDefaultChannels(defaultGroupChannels);
-    await this.addOrUpdateDefaultChannels(defaultDirectChannels);
+    this.addOrUpdateDefaultChannels(defaultDirectChannels).then(() => {
+      this.loading = false;
+    });
   }
 }
 

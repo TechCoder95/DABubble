@@ -118,10 +118,12 @@ export class InputfieldComponent implements OnInit {
     this.getUsersInChannel();
   }
 
-  getUsersInChannel() {
+   async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
-        this.usersInChannel.push(user);
+        if (user !== null && user !== undefined) {
+          this.usersInChannel.push(user);
+        }
       });
     });
   }
@@ -290,7 +292,7 @@ export class InputfieldComponent implements OnInit {
   handleLinkedUsernames(users: DABubbleUser[]) {
     if (this.usersInChannel.length === users.length) {
       let linkedUserString = '@Alle';
-      this.textareaValue += this.textareaValue += linkedUserString;
+      this.textareaValue += linkedUserString;
       this.changeAddLinkImg(false);
     } else {
       let usernamesString = users

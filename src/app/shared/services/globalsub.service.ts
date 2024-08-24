@@ -105,9 +105,6 @@ export class GlobalsubService {
   updateSidenavTree() {
     this.updateTreeSubject.next();
   }
-
-
-
 }
 
 

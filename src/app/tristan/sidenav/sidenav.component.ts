@@ -23,6 +23,7 @@ import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { initializeApp } from 'firebase/app';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
 
 
@@ -59,7 +60,8 @@ interface FlattenedNode {
     NewChatComponent,
     ThreadComponent,
     SearchbarComponent,
-    RouterModule
+    RouterModule,
+    MatProgressSpinnerModule
 ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
@@ -101,6 +103,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private activeUserChangeSubscription!: Subscription;
   private routeSubscription!: Subscription;
   private userStatusSubscription!: Subscription;
+  private updateTreeSubscription!: Subscription;
+
 
   constructor(
     private databaseService: DatabaseService,
@@ -126,7 +130,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
 
     if (this.routeSubscription) {
-      console.log("kill route subscription");
       this.routeSubscription.unsubscribe();
     }
 
@@ -151,7 +154,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateTreeSubscription!: Subscription;
 
   initializeSubscriptions() {
     this.routeSubscription = this.route.paramMap.subscribe(params => {
@@ -182,15 +184,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
 
     this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
-      await this.loadUserChannels(this.activeUser);
+      await this.loadUserChannels();
       await this.updateTreeData();
     });
   }
 
   private async initializeChannels() {
-    // todo vorher laden initializeSidenavData()
     await this.channelService.initializeSidenavData();
-    await this.loadUserChannels(this.activeUser);
+    await this.loadUserChannels();
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
       this.channels.push(ownDirectChannel)
@@ -198,12 +199,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.updateTreeData();
   }
 
-  private async loadUserChannels(currentUser: DABubbleUser) {
+  private async loadUserChannels() {
     this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
-
-
-
 
   private createGroupChannelNodes(): Node[] {
     const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({

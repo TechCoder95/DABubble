@@ -3,7 +3,7 @@ import { DABubbleUser } from '../interfaces/user';
 import { DatabaseService } from './database.service';
 import { User } from 'firebase/auth';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { BehaviorSubject, distinctUntilChanged, Subscription } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { setDoc, doc } from '@angular/fire/firestore';
@@ -44,7 +44,9 @@ export class UserService {
 
       //Hier sind die User abonniert
       this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-      this.globalSubService.getGoogleUserObservable().subscribe(googleUser => {
+      this.globalSubService.getGoogleUserObservable()
+      .pipe(distinctUntilChanged())
+      .subscribe(googleUser => {
         if (googleUser) {
           this.googleUser = googleUser;
           this.globalSubService.updateGoogleUser(this.googleUser);

@@ -100,6 +100,7 @@ export class ChatConversationComponent
     this.allMessages = [];
     this.allThreadMessages = [];
 
+    
     /*  ;
     console.log(this.activeChannelFromChat); */
 
@@ -123,7 +124,6 @@ export class ChatConversationComponent
   }
 
   ngOnDestroy() {
-    console.log('Chat Conversation Destroyed');
     if (this.channelService.channelSub)
       this.channelService.channelSub.unsubscribe();
   }
