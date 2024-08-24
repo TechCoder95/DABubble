@@ -16,6 +16,11 @@ export class ActualReceiveMessageComponent {
   @Input() repeatedMessage!: boolean | undefined;
 
   getLinkedUserNames(): string[] {
-    return this.receiveMessage.linkedUsers.map((user) => `@${user.username}`);
+    if (this.receiveMessage.linkedUsers) {
+      return this.receiveMessage.linkedUsers.map((user) => `@${user.username}`);
+    }
+    else {
+      return [];
+    }
   }
 }
