@@ -25,6 +25,8 @@ export class NewChatComponent implements OnInit {
   searchQuery: string | undefined;
   isSelectingUser!: boolean;
   isSelectingChannel!: boolean;
+  hasSelection: boolean = false;
+
   messageType: MessageType = MessageType.NewDirect;
 
   @Input() selectedChannelFromSidenav: any;
@@ -37,7 +39,8 @@ export class NewChatComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(value => {
-        if (this.isSelectingUser || this.isSelectingChannel) { 
+        if (this.hasSelection) { 
+          this.hasSelection = false;
           return [];
         }
         return Promise.all([
@@ -53,6 +56,7 @@ export class NewChatComponent implements OnInit {
   selectUser(user: DABubbleUser) {
     this.isSelectingUser = true;
     this.isSelectingChannel = false;
+    this.hasSelection = true;
     this.searchQuery = user.username;
     this.searchControl.setValue(user.username);
     this.searchResults = { users: [], channels: [] };
@@ -62,6 +66,7 @@ export class NewChatComponent implements OnInit {
   selectChannel(channel: TextChannel) {
     this.isSelectingChannel = true;
     this.isSelectingUser = false;
+    this.hasSelection = true;
     this.searchQuery = `#${channel.name}`;
     this.searchControl.setValue(`#${channel.name}`);
     this.searchResults = { users: [], channels: [] };
