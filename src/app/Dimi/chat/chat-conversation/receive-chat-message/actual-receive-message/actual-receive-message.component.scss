@@ -3,6 +3,12 @@
   background: rgba(236, 238, 254, 1);
   padding: 15px;
   transition: background-color 0.3s ease-in-out;
+  > div {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
   > div p {
     font-size: 18px;
     margin: 0;
@@ -21,6 +27,7 @@
 }
 
 .file-and-text {
+  display: flex;
   flex-direction: column-reverse;
   gap: 5px;
   width: min-content;
@@ -33,7 +40,6 @@
 .mw-70 {
   min-width: 70px;
 }
-
 
 .linked-user-style {
   font-size: 18px;

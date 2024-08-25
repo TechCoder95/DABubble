@@ -8,12 +8,7 @@
     <div class="message-information">
       <div class="sender-and-time" [ngClass]="{ 'jc-end': repeatedMessage }">
         <h5 *ngIf="!repeatedMessage">{{ senderUser.username }}</h5>
-        <p
-          *ngIf="
-            !repeatedMessage ||
-            (repeatedMessage && !repeatedMessageInUnder5Minutes)
-          "
-        >
+        <p *ngIf="isNotRepeatedMessageInUnder5Minuten()">
           {{ receiveMessage.timestamp | date: "HH:mm" }} Uhr
         </p>
       </div>
