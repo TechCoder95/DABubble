@@ -10,6 +10,8 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { ReceiveChatMessageComponent } from "../../../Dimi/chat/chat-conversation/receive-chat-message/receive-chat-message.component";
 import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/send-chat-message/send-chat-message.component";
+import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-thread-conversation',
@@ -21,8 +23,9 @@ import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/s
 export class ThreadConversationComponent {
   activeUser!: DABubbleUser;
   allThreadMessages: ChatMessage[] = [];
-  selectedMessage!: DABubbleUser;
-  selectedThread!: TextChannel;
+  selectedMessage!: ChatMessage;
+  selectedThread!: ThreadChannel;
+  threadSub!: Subscription
 
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
@@ -34,40 +37,31 @@ export class ThreadConversationComponent {
 
   constructor(private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
 
-    this.activeUser = this.userService.activeUser;
-    this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-  }
+ }
 
   ngOnInit(): void {
-    this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-      this.selectedMessage = selectedMessage[0];
-      // console.log(selectedMessage[0], "jutta");
+    this.activeUser = this.userService.activeUser;
+    this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
 
-      this.allThreadMessages.push(selectedMessage[0]);
-    });
+    this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
-    this.allThreadMessages = [];
+      this.selectedThread = thread;
+      this.allThreadMessages = [];
+      this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
 
-    console.log(this.selectedThread.id, "Nummer 1", this.databaseService.threadID);
+      this.allThreadMessages.push(this.selectedMessage)
 
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
-    this.allThreadMessages = [];
-
-
-    console.log(this.selectedThread.id, "Nummer 2", this.databaseService.threadID);
-
-
-
-    this.subService.getAllMessageObservable().subscribe((message) => {
-      if (message.id) {
-        if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
-          // console.log(message, "das hier zeigt die nachricht an, die man grad eingegeben hat");
-          return;
-        }
-        this.allThreadMessages.push(message);
-        this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-      }
+      this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
+        this.subService.getAllMessageObservable().subscribe((message) => {
+          if (message.id) {
+            if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
+              return;
+            }
+            this.allThreadMessages.push(message);
+            this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
+          }
+        });
+      });
     });
   }
 
@@ -75,8 +69,12 @@ export class ThreadConversationComponent {
 
   ngOnDestroy() {
     console.log('Chat Conversation Destroyed');
-    if (this.channelService.channelSub)
+    if (this.channelService.channelSub) {
       this.channelService.channelSub.unsubscribe();
+    }
+    if (this.threadSub) {
+      this.threadSub.unsubscribe();
+    }
   }
 
   onScroll() {

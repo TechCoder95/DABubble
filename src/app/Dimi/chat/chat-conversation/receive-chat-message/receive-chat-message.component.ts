@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
