@@ -33,6 +33,11 @@ app-chat-conversation {
   overflow-y: auto;
 }
 
+app-thread-conversation {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
 app-chat{
   width: 100% !important;
 }

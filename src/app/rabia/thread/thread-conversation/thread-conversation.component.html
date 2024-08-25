@@ -3,8 +3,13 @@
 
   <div>
     @for (message of allThreadMessages; track $index) {
+
+
       <app-receive-chat-message [receiveMessage]="message" [user]="activeUser"
       [repeatedMessage]="false"></app-receive-chat-message>
+
+      <!-- <app-send-chat-message [sendMessage]="message" [user]="activeUser"></app-send-chat-message> -->
+
     }
   </div>
   <!-- <div>

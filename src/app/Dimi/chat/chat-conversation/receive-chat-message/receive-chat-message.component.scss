@@ -46,6 +46,7 @@ h5 {
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    object-fit: cover;
   }
   &:hover .slide-in {
     animation: slideIn 0.1s forwards;
