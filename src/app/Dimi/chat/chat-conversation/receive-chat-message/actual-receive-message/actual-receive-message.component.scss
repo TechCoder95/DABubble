@@ -3,9 +3,10 @@
   background: rgba(236, 238, 254, 1);
   padding: 15px;
   transition: background-color 0.3s ease-in-out;
-  > p {
+  > div p {
     font-size: 18px;
-    > span {
+    margin: 0;
+    > div span {
       font-size: 10px;
       color: gray;
     }
