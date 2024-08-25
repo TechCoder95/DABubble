@@ -5,8 +5,8 @@
     'file-and-text': sendMessage.imageUrl && sendMessage.message,
   }"
 >
-  <div *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
-    <aside class="linked-user-style" *ngIf="sendMessage.linkedUsers.length > 0">
+  <div *ngIf="messageExists()">
+    <aside class="linked-user-style" *ngIf="linkedUsersExists()">
       @for (username of sendMessage.linkedUsers; track $index) {
         <h5>{{ username }}</h5>
       }
