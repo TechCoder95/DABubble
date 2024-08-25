@@ -15,7 +15,7 @@ export class LinkChannelMemberComponent {
   @Input() linkedUsers!: DABubbleUser[];
   @Output() users = new EventEmitter<DABubbleUser[]>();
   linkWindowOpen: boolean = false;
-  selectedUsers: DABubbleUser[] = [];
+  /* selectedUsers: DABubbleUser[] = []; */
 
   openWindow() {
     this.linkWindowOpen = !this.linkWindowOpen;
@@ -30,7 +30,7 @@ export class LinkChannelMemberComponent {
       /*  this.selectedUsers = []; */
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         let userID = checkbox.getAttribute('id');
-        if (this.selectedUsers.some((user) => user.id === userID)) {
+        if (this.linkedUsers.some((user) => user.id === userID)) {
           checkbox.checked = true;
           /* this.selectedUsers.push(user); */
         } else {
@@ -38,7 +38,7 @@ export class LinkChannelMemberComponent {
         }
       });
       /* this.selectedUsers = this.linkedUsers; */
-      if (this.selectedUsers.length === this.usersInChannel.length) {
+      if (this.linkedUsers.length === this.usersInChannel.length) {
         let allUsersSelectedCheckbox = this.getAllUsersSelectedCheckbox();
         allUsersSelectedCheckbox.checked = true;
       }
@@ -57,12 +57,12 @@ export class LinkChannelMemberComponent {
     if (checkbox) {
       checkbox.checked = !checkbox.checked;
       if (checkbox.checked) {
-        this.selectedUsers.push(user);
+        this.linkedUsers.push(user);
       } else {
         this.deleteUserFromArray(user);
       }
     }
-    this.users.emit(this.selectedUsers);
+    this.users.emit(this.linkedUsers);
   }
 
   getCheckbox(event: Event) {
@@ -72,9 +72,9 @@ export class LinkChannelMemberComponent {
   }
 
   deleteUserFromArray(user: DABubbleUser) {
-    let index = this.selectedUsers.findIndex((u) => u.id === user.id);
+    let index = this.linkedUsers.findIndex((u) => u.id === user.id);
     if (index !== -1) {
-      this.selectedUsers.splice(index, 1);
+      this.linkedUsers.splice(index, 1);
     }
   }
 
@@ -92,13 +92,13 @@ export class LinkChannelMemberComponent {
         checkbox.checked = isChecked;
       });
 
-      this.selectedUsers = [];
+      this.linkedUsers = [];
 
       this.usersInChannel.forEach((user) => {
-        this.selectedUsers.push(user);
+        this.linkedUsers.push(user);
       });
     }
-    this.users.emit(this.selectedUsers);
+    this.users.emit(this.linkedUsers);
   }
 
   getAllCheckboxes() {
@@ -114,8 +114,8 @@ export class LinkChannelMemberComponent {
     );
     if (user) {
       if (isChecked) {
-        if (!this.selectedUsers.some((u) => u.id === user.id)) {
-          this.selectedUsers.push(user);
+        if (!this.linkedUsers.some((u) => u.id === user.id)) {
+          this.linkedUsers.push(user);
         }
       } else {
         this.deleteUserFromArray(user);
@@ -124,7 +124,7 @@ export class LinkChannelMemberComponent {
   }
 
   removeLinkedUser(index: number) {
-    this.selectedUsers.splice(index, 1);
+    this.linkedUsers.splice(index, 1);
     this.linkWindowOpen = false;
   }
 }

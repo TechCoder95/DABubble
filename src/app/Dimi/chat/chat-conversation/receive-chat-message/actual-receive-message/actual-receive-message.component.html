@@ -9,11 +9,10 @@
     [ngClass]="{ 'mw-70': repeatedMessage }"
     *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''"
   >
-  <aside
-      *ngFor="let username of getLinkedUserNames()"
-      class="linked-user-style"
-    >
-      {{ username }}
+  <aside class="linked-user-style" *ngIf="receiveMessage.linkedUsers.length > 0">
+      @for (username of receiveMessage.linkedUsers; track $index) {
+        <h5>{{ username }}</h5>
+      }
     </aside>
     {{ receiveMessage.message | emojis }}
     <span *ngIf="receiveMessage.edited">bearbeitet</span>

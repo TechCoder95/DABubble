@@ -6,9 +6,9 @@
   }"
 >
   <div *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
-    <aside class="linked-user-style">
-      @for (user of sendMessage.linkedUsers; track $index) {
-        <h5>AT{{ user.username }}</h5>
+    <aside class="linked-user-style" *ngIf="sendMessage.linkedUsers.length > 0">
+      @for (username of sendMessage.linkedUsers; track $index) {
+        <h5>{{ username }}</h5>
       }
     </aside>
     <p>
