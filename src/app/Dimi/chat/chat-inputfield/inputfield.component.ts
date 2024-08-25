@@ -194,7 +194,7 @@ export class InputfieldComponent implements OnInit {
 
   image!: string | ArrayBuffer;
   async send() {
-    debugger;
+    // debugger;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -203,7 +203,7 @@ export class InputfieldComponent implements OnInit {
           message.imageUrl = await this.saveImageInStorage(message);
         }
         this.databaseService.addChannelDataToDB('messages', message);
-        debugger;
+        // debugger;
         this.textareaValue = '';
         this.selectedFile = '';
         this.linkedUsers = [];
@@ -227,6 +227,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
+      isThreadMsg: this.messageType === MessageType.Threads,
       linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }

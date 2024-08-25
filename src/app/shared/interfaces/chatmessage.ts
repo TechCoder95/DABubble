@@ -7,10 +7,11 @@ export interface ChatMessage {
   timestamp: number;
   senderName: string;
   senderId: string;
-  allConversations?: ThreadMessage[];
+  threadConversationId?: string[];
   id?: string;
   edited?: boolean;
   deleted?: boolean;
   imageUrl?: string;
   linkedUsers: string[];
+  isThreadMsg?: boolean;
 }

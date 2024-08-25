@@ -41,16 +41,15 @@ export class ThreadConversationComponent {
   ngOnInit(): void {
     this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
       this.selectedMessage = selectedMessage[0];
-      console.log(selectedMessage[0], "jutta");
 
       this.allThreadMessages.push(selectedMessage[0]);
     });
 
-    // this.allThreadMessages = [];
-    // this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
+    this.allThreadMessages = [];
+    this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
 
-    // this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
-    // this.allThreadMessages = [];
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
+    this.allThreadMessages = [];
 
     this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
     this.allThreadMessages = [];
@@ -59,13 +58,13 @@ export class ThreadConversationComponent {
     this.subService.getAllMessageObservable().subscribe((message) => {
       if (message.id) {
         if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
-          console.log(message, "das hier zeigt die nachricht an, die man grad eingegeben hat");
           return;
         }
         this.allThreadMessages.push(message);
         this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
       }
     });
+   
 
   }
 
@@ -78,71 +77,71 @@ export class ThreadConversationComponent {
   }
 
   onScroll() {
-    console.log('scrolling', this.selectedMessage, "gidilmez", this.allThreadMessages);
+    console.log('scrolling', this.selectedMessage, "hier der gesamte Array von den allThreadMesgs", this.allThreadMessages);
 
-    // const messageDaysArray = this.messageDays.toArray();
-    // for (let i = 0; i < messageDaysArray.length - 1; i++) {
-    //   let currentDay = messageDaysArray[i].nativeElement;
-    //   let nextDay = messageDaysArray[i + 1].nativeElement;
+    const messageDaysArray = this.messageDays.toArray();
+    for (let i = 0; i < messageDaysArray.length - 1; i++) {
+      let currentDay = messageDaysArray[i].nativeElement;
+      let nextDay = messageDaysArray[i + 1].nativeElement;
 
-    //   let currentDayRect = currentDay.getBoundingClientRect();
-    //   let nextDayRect = nextDay.getBoundingClientRect();
+      let currentDayRect = currentDay.getBoundingClientRect();
+      let nextDayRect = nextDay.getBoundingClientRect();
 
-    //   if (currentDayRect.bottom >= nextDayRect.top - 5) {
-    //     if (currentDay.style.visibility !== 'hidden') {
-    //       currentDay.style.visibility = 'hidden';
-    //     }
-    //   } else {
-    //     if (currentDay.style.visibility !== 'visible') {
-    //       currentDay.style.visibility = 'visible';
-    //     }
-    //   }
-    // }
+      if (currentDayRect.bottom >= nextDayRect.top - 5) {
+        if (currentDay.style.visibility !== 'hidden') {
+          currentDay.style.visibility = 'hidden';
+        }
+      } else {
+        if (currentDay.style.visibility !== 'visible') {
+          currentDay.style.visibility = 'visible';
+        }
+      }
+    }
   }
 
-  // isSameDay(timestamp1: number, timestamp2: number): boolean {
-  //   let date1 = new Date(timestamp1);
-  //   let date2 = new Date(timestamp2);
-  //   return (
-  //     date1.getFullYear() === date2.getFullYear() &&
-  //     date1.getMonth() === date2.getMonth() &&
-  //     date1.getDate() === date2.getDate()
-  //   );
-  // }
+  isSameDay(timestamp1: number, timestamp2: number): boolean {
+    let date1 = new Date(timestamp1);
+    let date2 = new Date(timestamp2);
+    return (
+      date1.getFullYear() === date2.getFullYear() &&
+      date1.getMonth() === date2.getMonth() &&
+      date1.getDate() === date2.getDate()
+    );
+  }
 
-  // repeatedMessageInUnder5Minutes(
-  //   currentMessage: ChatMessage,
-  //   previousMessage: ChatMessage
-  // ): boolean {
-  //   let currentTime = new Date(currentMessage.timestamp).getTime();
-  //   let previousTime = new Date(previousMessage.timestamp).getTime();
+  repeatedMessageInUnder5Minutes(
+    currentMessage: ChatMessage,
+    previousMessage: ChatMessage
+  ): boolean {
+    let currentTime = new Date(currentMessage.timestamp).getTime();
+    let previousTime = new Date(previousMessage.timestamp).getTime();
 
-  //   let timeDifferenceInMinutes = (currentTime - previousTime) / (1000 * 60);
+    let timeDifferenceInMinutes = (currentTime - previousTime) / (1000 * 60);
 
-  //   return timeDifferenceInMinutes < 10;
-  // }
-
-
-  // checkDate(timestamp: number): string {
-  //   let messageDate = new Date(timestamp);
-  //   return messageDate.toLocaleDateString();
-  // }
+    return timeDifferenceInMinutes < 10;
+  }
 
 
-  // formatDateWithDay(timestamp: any): string {
-  //   const messageDate = new Date(timestamp);
-  //   const options: Intl.DateTimeFormatOptions = {
-  //     weekday: 'long',
-  //     year: 'numeric',
-  //     month: 'long',
-  //     day: 'numeric',
-  //     timeZone: 'Europe/Berlin',
-  //   };
-  //   return messageDate.toLocaleDateString('de-DE', options);
-  // }
+  checkDate(timestamp: number): string {
+    let messageDate = new Date(timestamp);
+    return messageDate.toLocaleDateString();
+  }
 
-  // scrollToBottom() {
-  //   this.scrollContainer.nativeElement.scrollTop =
-  //     this.scrollContainer.nativeElement.scrollHeight;
-  // }
+
+  formatDateWithDay(timestamp: any): string {
+    const messageDate = new Date(timestamp);
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      timeZone: 'Europe/Berlin',
+    };
+    return messageDate.toLocaleDateString('de-DE', options);
+  }
+
+  scrollToBottom() {
+    this.scrollContainer.nativeElement.scrollTop =
+      this.scrollContainer.nativeElement.scrollHeight;
+  }
 }

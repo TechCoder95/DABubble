@@ -43,7 +43,7 @@ export class ReceiveChatMessageComponent {
       this.getImage();
     }
 
-    console.log(this.receiveMessage, "gt3 RS");
+    // console.log(this.receiveMessage, "gt3 RS");
     
   }
 
