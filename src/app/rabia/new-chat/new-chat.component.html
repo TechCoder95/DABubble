@@ -5,6 +5,7 @@
     
     <div class="members">
       <!-- Benutzer anzeigen -->
+       <p>Benutzer:</p>
       <div *ngFor="let member of searchResults.users; let i = index" class="member" (click)="selectUser(member)">
         <div class="relative img-container">
           <img [src]="member.avatar" />
@@ -14,6 +15,7 @@
       </div>
       
       <!-- Channels anzeigen -->
+       <p>Channels:</p>
       <div *ngFor="let channel of searchResults.channels; let i = index" class="channel" (click)="selectChannel(channel)">
         <p>#{{ channel.name }}</p>
       </div>
