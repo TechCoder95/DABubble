@@ -78,7 +78,7 @@ h5 {
       color: rgba(104, 104, 104, 1);
     }
   }
-  > .actual-message {
+   /* .actual-message {
     border-radius: 0 30px 30px 30px;
     background: rgba(236, 238, 254, 1);
     padding: 15px;
@@ -97,7 +97,7 @@ h5 {
       max-width: 250px;
       max-height: 250px;
     }
-  }
+  } */
 }
 
 @keyframes slideIn {
@@ -133,15 +133,15 @@ h5 {
   justify-content: flex-end;
 }
 
-.mw-70 {
+/* .mw-70 {
   min-width: 70px;
-}
+} */
 
 .position-component {
   top: 0px !important;
 }
 
-.file-and-text{
+/* .file-and-text{
   flex-direction: column-reverse;
   gap: 5px;
   width: min-content;
@@ -149,4 +149,4 @@ h5 {
   >img{
     border-radius: 0 30px 0 0 !important;
     }
-}
+} */

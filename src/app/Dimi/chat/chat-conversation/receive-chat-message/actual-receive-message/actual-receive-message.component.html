@@ -1,0 +1,27 @@
+<main
+  class="actual-message"
+  *ngIf="!receiveMessage.deleted"
+  [ngClass]="{
+    'file-and-text': receiveMessage.imageUrl && receiveMessage.message,
+  }"
+>
+  <div
+    [ngClass]="{ 'mw-70': repeatedMessage }"
+    *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''"
+  >
+    <aside
+      class="linked-user-style"
+      *ngIf="receiveMessage.linkedUsers.length > 0"
+    >
+      @for (username of receiveMessage.linkedUsers; track $index) {
+        <h5>{{ username }}</h5>
+      }
+    </aside>
+    <p>{{ receiveMessage.message | emojis }}</p>
+    <span *ngIf="receiveMessage.edited">bearbeitet</span>
+  </div>
+  <img
+    [src]="receivedImgMessage"
+    *ngIf="receiveMessage.imageUrl && receiveMessage.imageUrl.trim() !== ''"
+  />
+</main>

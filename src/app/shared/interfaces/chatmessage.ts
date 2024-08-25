@@ -1,4 +1,4 @@
-import { ThreadMessage } from "./threadmessage";
+import { DABubbleUser } from './user';
 
 export interface ChatMessage {
   channelId: string;
@@ -11,6 +11,6 @@ export interface ChatMessage {
   id?: string;
   edited?: boolean;
   deleted?: boolean;
-  imageUrl?:string;
-  isThreadMsg?: boolean;
+  imageUrl?: string;
+  linkedUsers: string[];
 }

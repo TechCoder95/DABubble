@@ -8,6 +8,7 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { DatabaseService } from '../../../../shared/services/database.service';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
+import { ActualReceiveMessageComponent } from './actual-receive-message/actual-receive-message.component';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -16,7 +17,8 @@ import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
     CommonModule,
     ReceiveChatMessageReactionComponent,
     ActiveChatMessageReactionsComponent,
-    EmojisPipe
+    EmojisPipe,
+    ActualReceiveMessageComponent,
   ],
   templateUrl: './receive-chat-message.component.html',
   styleUrl: './receive-chat-message.component.scss',
@@ -68,11 +70,11 @@ export class ReceiveChatMessageComponent {
     }
   }
 
-  receivedMessage='';
+  receivedImgMessage='';
   async getImage(){
     let imgSrc = await this.storageService.downloadMessageImage(this.receiveMessage.imageUrl!);
     
-    this.receivedMessage = imgSrc;
+    this.receivedImgMessage = imgSrc;
   }
 
 }

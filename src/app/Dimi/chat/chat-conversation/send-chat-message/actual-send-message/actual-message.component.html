@@ -1,0 +1,23 @@
+<main
+  class="actual-message"
+  *ngIf="!sendMessage.deleted"
+  [ngClass]="{
+    'file-and-text': sendMessage.imageUrl && sendMessage.message,
+  }"
+>
+  <div *ngIf="sendMessage.message && sendMessage.message.trim() !== ''">
+    <aside class="linked-user-style" *ngIf="sendMessage.linkedUsers.length > 0">
+      @for (username of sendMessage.linkedUsers; track $index) {
+        <h5>{{ username }}</h5>
+      }
+    </aside>
+    <p>
+      {{ sendMessage.message | emojis }}
+      <span *ngIf="sendMessage.edited">bearbeitet</span>
+    </p>
+  </div>
+  <img [src]="sentImage" *ngIf="sentImageExists()" />
+</main>
+<p *ngIf="sendMessage.deleted" class="message-deleted-notification">
+  Diese Nachricht wurde gelöscht
+</p>

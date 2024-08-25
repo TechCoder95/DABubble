@@ -61,6 +61,7 @@ export class InputfieldComponent implements OnInit {
 
   activeUser!: DABubbleUser;
   usersInChannel: DABubbleUser[] = [];
+  linkedUsers: DABubbleUser[] = [];
   threadOwner!: DABubbleUser;
   selectedMessage!: ChatMessage;
 
@@ -118,7 +119,7 @@ export class InputfieldComponent implements OnInit {
     this.getUsersInChannel();
   }
 
-   async getUsersInChannel() {
+  async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
         if (user !== null && user !== undefined) {
@@ -193,6 +194,7 @@ export class InputfieldComponent implements OnInit {
 
   image!: string | ArrayBuffer;
   async send() {
+    debugger;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -201,8 +203,11 @@ export class InputfieldComponent implements OnInit {
           message.imageUrl = await this.saveImageInStorage(message);
         }
         this.databaseService.addChannelDataToDB('messages', message);
+        debugger;
         this.textareaValue = '';
         this.selectedFile = '';
+        this.linkedUsers = [];
+        console.log(this.linkedUsers);
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
@@ -222,7 +227,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
-      isThreadMsg: this.messageType === MessageType.Threads,
+      linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
 
@@ -260,6 +265,7 @@ export class InputfieldComponent implements OnInit {
     if (this.selectedFile) {
       return 'Bildunterschrift hinzufügen';
     }
+
     if (this.messageType === MessageType.NewDirect) {
       const selectedUser = this.userService.getSelectedUser();
       return selectedUser ? `Nachricht an @${selectedUser.username}` : 'Starte eine neue Nachricht';
@@ -289,16 +295,11 @@ export class InputfieldComponent implements OnInit {
     this.fileName = event;
   }
 
+  hasLinkedUsers(): boolean {
+    return this.linkedUsers.length > 0;
+  }
+
   handleLinkedUsernames(users: DABubbleUser[]) {
-    if (this.usersInChannel.length === users.length) {
-      let linkedUserString = '@Alle';
-      this.textareaValue += linkedUserString;
-      this.changeAddLinkImg(false);
-    } else {
-      let usernamesString = users
-        .map((user) => `@${user.username} `)
-        .join(', ');
-      this.textareaValue += usernamesString;
-    }
+    this.linkedUsers = users;
   }
 }

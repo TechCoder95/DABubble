@@ -16,6 +16,7 @@
     outline: none;
     background-color: rgb(253, 251, 255);
     font-size: 16px;
+    width: 100%;
 
     &::placeholder {
       color: rgba(104, 104, 104, 1);
@@ -69,6 +70,13 @@ file-preview-container {
   margin-top: 20px;
 }
 
-.tag{
-  background-color: aqua;
+.arrange-textarea {
+  display: flex;
+  flex-direction: column;
+}
+
+.linked-users {
+  display: flex;
+  gap: 5px;
+  height: fit-content;
 }
