@@ -18,6 +18,7 @@ export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
   private unsubscribe!: (() => void);
   threadMessageID!: string;
+  threadID!: string;
 
   constructor(private subService: GlobalsubService) {
     this.listenToEntityChanges('users');
@@ -163,6 +164,7 @@ export class DatabaseService implements OnDestroy {
       const doc = snapshot.docs[0];
       const threadData = doc.data() as ThreadChannel;
       console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+      this.threadID = JSON.stringify(threadData.id);      
       return threadData;
     } else {
       // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
@@ -359,7 +361,7 @@ export class DatabaseService implements OnDestroy {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveThread(data as ThreadMessage);
+        this.subService.updateActiveThread(data as ThreadChannel);
       });
     });
   }

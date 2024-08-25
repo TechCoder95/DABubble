@@ -41,31 +41,34 @@ export class ThreadConversationComponent {
   ngOnInit(): void {
     this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
       this.selectedMessage = selectedMessage[0];
+      // console.log(selectedMessage[0], "jutta");
 
       this.allThreadMessages.push(selectedMessage[0]);
     });
 
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
     this.allThreadMessages = [];
-    this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
+
+    console.log(this.selectedThread.id, "Nummer 1", this.databaseService.threadID);
 
     this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
     this.allThreadMessages = [];
 
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id);
-    this.allThreadMessages = [];
+
+    console.log(this.selectedThread.id, "Nummer 2", this.databaseService.threadID);
+
 
 
     this.subService.getAllMessageObservable().subscribe((message) => {
       if (message.id) {
         if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
+          // console.log(message, "das hier zeigt die nachricht an, die man grad eingegeben hat");
           return;
         }
         this.allThreadMessages.push(message);
         this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
       }
     });
-   
-
   }
 
 

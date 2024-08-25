@@ -93,12 +93,12 @@ export class ChatConversationComponent
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
     this.allMessages = [];
-    this.allThreadMessages = [];
+    // this.allThreadMessages = [];
 
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
     this.allMessages = [];
-    this.allThreadMessages = [];
+    // this.allThreadMessages = [];
 
     
     /*  ;
