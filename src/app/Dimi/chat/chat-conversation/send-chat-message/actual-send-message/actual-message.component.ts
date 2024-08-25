@@ -20,7 +20,11 @@ export class ActualMessageComponent {
     return this.sendMessage.imageUrl && this.sendMessage.imageUrl.trim() !== '';
   }
 
-  /* getLinkedUserNames(): string[] {
-    return this.sendMessage.linkedUsers.map((user) => `@${user.username}`);
-  } */
+  messageExists(){
+    return this.sendMessage.message && this.sendMessage.message.trim() !== '';
+  }
+
+  linkedUsersExists(){
+    return this.sendMessage.linkedUsers.length > 0
+  }
 }

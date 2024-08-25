@@ -18,12 +18,12 @@
     }
   </section>
 </main>
-<section class="linked-users" *ngIf="selectedUsers.length > 0">
+<section class="linked-users" *ngIf="linkedUsers.length > 0">
   <h4>Verlinkungen:</h4>
-  @if (selectedUsers.length === usersInChannel.length) {
+  @if (linkedUsers.length === usersInChannel.length) {
     <p class="style">Alle</p>
   } @else {
-    @for (user of selectedUsers; track $index) {
+    @for (user of linkedUsers; track $index) {
       <p
         class="style"
         (click)="removeLinkedUser($index)"

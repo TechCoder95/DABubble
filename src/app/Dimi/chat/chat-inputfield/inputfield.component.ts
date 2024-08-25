@@ -239,7 +239,7 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
-      linkedUsers: this.linkedUsers,
+      linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
 
