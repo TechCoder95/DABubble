@@ -15,7 +15,7 @@ export class ActualReceiveMessageComponent {
   @Input() receivedImgMessage!: string;
   @Input() repeatedMessage!: boolean | undefined;
 
-  getLinkedUserNames(): string[] {
+ /*  getLinkedUserNames(): string[] {
     return this.receiveMessage.linkedUsers.map((username) => `@${username}`);
-  }
+  } */
 }
