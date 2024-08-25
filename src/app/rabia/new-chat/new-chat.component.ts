@@ -23,9 +23,9 @@ export class NewChatComponent implements OnInit {
   searchControl = new FormControl();
   searchResults: { users: DABubbleUser[], channels: TextChannel[] } = { users: [], channels: [] };
   searchQuery: string | undefined;
-  isSelectingUser: boolean = false;
-  isSelectingChannel: boolean = false; 
-  messageType = MessageType.NewDirect;
+  isSelectingUser!: boolean;
+  isSelectingChannel!: boolean;
+  messageType: MessageType = MessageType.NewDirect;
 
   @Input() selectedChannelFromSidenav: any;
   @Input() activeUserFromSidenav: any;
@@ -37,9 +37,7 @@ export class NewChatComponent implements OnInit {
       debounceTime(300),
       distinctUntilChanged(),
       switchMap(value => {
-        if (this.isSelectingUser || this.isSelectingChannel) {
-          this.isSelectingUser = false;
-          this.isSelectingChannel = false;
+        if (this.isSelectingUser || this.isSelectingChannel) { 
           return [];
         }
         return Promise.all([

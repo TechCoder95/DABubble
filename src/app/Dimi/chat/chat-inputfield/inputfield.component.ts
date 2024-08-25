@@ -8,6 +8,9 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   inject,
+  SimpleChanges,
+  OnChanges,
+  AfterViewChecked,
 } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { map, Observable, pipe, Subscription } from 'rxjs';
@@ -76,12 +79,16 @@ export class InputfieldComponent implements OnInit {
     private router: Router,
     private storageService: DAStorageService,
     private emojiPipe: EmojisPipe,
+    private cdr: ChangeDetectorRef,
+
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(
       sessionStorage.getItem('selectedChannel')!,
     );
   }
+
+
 
   ngOnInit(): void {
     if (this.activeUserFromChat) {
@@ -157,31 +164,32 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        console.log(this.isSelectingChannel);
-        console.log(this.isSelectingUser);
-        
-        
-        if (this.isSelectingChannel) {
-          // Falls ein Channel ausgewählt wurde, navigiere direkt zu diesem Channel
-          const selectedChannel = this.channelService.getSelectedChannel();
-          if (selectedChannel) {
-            this.selectedChannel = selectedChannel;
-            await this.router.navigate(['/home/channel/' + selectedChannel.id]);
-            await this.send();
-          }
-        } else if (this.isSelectingUser) {
-          // Falls ein Benutzer ausgewählt wurde, erstelle oder finde einen Channel
-          const channel = await this.channelService.findOrCreateChannelByUserID();
-          if (channel) {
-            this.selectedChannel = channel;
-            this.channelService.selectChannel(channel);
-            await this.router.navigate(['/home/channel/' + channel.id]);
-            await this.send();
-          }
-        }
+        if (this.isSelectingChannel)
+          await this.sendMessageToChannel()
+        else if (this.isSelectingUser)
+          await this.sendMessageToUser();
         break;
       default:
         break;
+    }
+  }
+
+  async sendMessageToChannel() {
+    const selectedChannel = this.channelService.getSelectedChannel();
+    if (selectedChannel) {
+      this.selectedChannel = selectedChannel;
+      await this.router.navigate(['/home/channel/' + selectedChannel.id]);
+      await this.send();
+    }
+  }
+
+  async sendMessageToUser() {
+    const channel = await this.channelService.findOrCreateChannelByUserID();
+    if (channel) {
+      this.selectedChannel = channel;
+      this.channelService.selectChannel(channel);
+      await this.router.navigate(['/home/channel/' + channel.id]);
+      await this.send();
     }
   }
 
