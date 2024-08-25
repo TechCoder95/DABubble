@@ -124,7 +124,11 @@ export class LinkChannelMemberComponent {
   }
 
   removeLinkedUser(index: number) {
-    this.linkedUsers.splice(index, 1);
-    this.linkWindowOpen = false;
+    if (index === 12345) {
+      this.linkedUsers = [];
+    } else {
+      this.linkedUsers.splice(index, 1);
+      this.linkWindowOpen = false;
+    }
   }
 }
