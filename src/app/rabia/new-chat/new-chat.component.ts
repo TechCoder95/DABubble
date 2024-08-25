@@ -8,6 +8,8 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { InputfieldComponent } from "../../Dimi/chat/chat-inputfield/inputfield.component";
 import { CommonModule } from '@angular/common';
 import { MessageType } from '../../shared/enums/messagetype';
+import { TextChannel } from '../../shared/interfaces/textchannel';
+import { ChannelService } from '../../shared/services/channel.service';
 
 @Component({
   selector: 'app-new-chat',
@@ -16,27 +18,35 @@ import { MessageType } from '../../shared/enums/messagetype';
   templateUrl: './new-chat.component.html',
   styleUrls: ['./new-chat.component.scss']
 })
+
 export class NewChatComponent implements OnInit {
   searchControl = new FormControl();
-  searchResults: DABubbleUser[] = [];
+  searchResults: { users: DABubbleUser[], channels: TextChannel[] } = { users: [], channels: [] };
   searchQuery: string | undefined;
   isSelectingUser: boolean = false;
+  isSelectingChannel: boolean = false; 
   messageType = MessageType.NewDirect;
-
 
   @Input() selectedChannelFromSidenav: any;
   @Input() activeUserFromSidenav: any;
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private channelService: ChannelService) { }
 
   ngOnInit() {
-    this.searchControl.valueChanges.pipe(debounceTime(300), distinctUntilChanged(), switchMap(value => {
-      if (this.isSelectingUser) {
-        this.isSelectingUser = false;
-        return [];
-      }
-      return this.userService.searchUsersByNameOrEmail(value);
-    })
+    this.searchControl.valueChanges.pipe(
+      debounceTime(300),
+      distinctUntilChanged(),
+      switchMap(value => {
+        if (this.isSelectingUser || this.isSelectingChannel) {
+          this.isSelectingUser = false;
+          this.isSelectingChannel = false;
+          return [];
+        }
+        return Promise.all([
+          this.userService.searchUsersByNameOrEmail(value),
+          this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
+        ]).then(([users, channels]) => ({ users, channels }));
+      })
     ).subscribe(results => {
       this.searchResults = results;
     });
@@ -44,9 +54,19 @@ export class NewChatComponent implements OnInit {
 
   selectUser(user: DABubbleUser) {
     this.isSelectingUser = true;
+    this.isSelectingChannel = false;
     this.searchQuery = user.username;
     this.searchControl.setValue(user.username);
-    this.searchResults = [];
+    this.searchResults = { users: [], channels: [] };
     this.userService.setSelectedUser(user);
+  }
+
+  selectChannel(channel: TextChannel) {
+    this.isSelectingChannel = true;
+    this.isSelectingUser = false;
+    this.searchQuery = `#${channel.name}`;
+    this.searchControl.setValue(`#${channel.name}`);
+    this.searchResults = { users: [], channels: [] };
+    this.channelService.selectChannel(channel);
   }
 }

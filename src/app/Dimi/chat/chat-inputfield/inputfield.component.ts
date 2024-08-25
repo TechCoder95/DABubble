@@ -63,6 +63,8 @@ export class InputfieldComponent implements OnInit {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
+  @Input() isSelectingUser: boolean | undefined;
+  @Input() isSelectingChannel: boolean | undefined;
   fileInput: any;
   storage: any;
 
@@ -155,18 +157,34 @@ export class InputfieldComponent implements OnInit {
         await this.sendFromThread();
         break;
       case MessageType.NewDirect:
-        const channel = await this.channelService.findOrCreateChannelByUserID();
-        if (channel) {
-          this.selectedChannel = channel;
-          this.channelService.selectChannel(channel);
-          await this.router.navigate(['/home/channel/' + channel.id]);
-          await this.send();
+        console.log(this.isSelectingChannel);
+        console.log(this.isSelectingUser);
+        
+        
+        if (this.isSelectingChannel) {
+          // Falls ein Channel ausgewählt wurde, navigiere direkt zu diesem Channel
+          const selectedChannel = this.channelService.getSelectedChannel();
+          if (selectedChannel) {
+            this.selectedChannel = selectedChannel;
+            await this.router.navigate(['/home/channel/' + selectedChannel.id]);
+            await this.send();
+          }
+        } else if (this.isSelectingUser) {
+          // Falls ein Benutzer ausgewählt wurde, erstelle oder finde einen Channel
+          const channel = await this.channelService.findOrCreateChannelByUserID();
+          if (channel) {
+            this.selectedChannel = channel;
+            this.channelService.selectChannel(channel);
+            await this.router.navigate(['/home/channel/' + channel.id]);
+            await this.send();
+          }
         }
         break;
       default:
         break;
     }
   }
+
 
   async sendFromThread() {
     let threadMessage: ThreadMessage = {

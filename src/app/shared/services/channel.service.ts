@@ -48,6 +48,10 @@ export class ChannelService {
     sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
   }
 
+  getSelectedChannel(): TextChannel | null {
+    return this.channel; 
+  }
+
   /**
    * Updates the name of the selected channel.
    *
@@ -338,8 +342,13 @@ export class ChannelService {
       this.loading = false;
     });
   }
+
+  searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
+    return this.databaseService.getChannelsByName(searchText).then(channels => {
+      return channels.filter(channel => channel.assignedUser.includes(activeUserId));
+    });
+  }
+
 }
-
-
 
 
