@@ -5,19 +5,14 @@
         <img src="./img/tag.png" class="headline-tag" />
         <h3>{{ selectedChannel.name }}</h3>
       </div>
-      <img
-        [src]="closeImg"
-        class="close"
-        (mouseenter)="changeCloseImg(true)"
-        (mouseleave)="changeCloseImg(false)"
-        (click)="closeDialog()"
-      />
+      <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
+        (click)="closeDialog()" />
     </section>
 
     <section #editChannelNameSection class="channel-info">
       <div class="arrange-sub-div">
         <h4 #title1 class="transition">Channel-Name</h4>
-        <p (click)="editChannelName()" class="transition" #editName>
+        <p *ngIf="!selectedChannel.isPrivate" (click)="editChannelName()" class="transition" #editName>
           Bearbeiten
         </p>
       </div>
@@ -26,13 +21,8 @@
         <p *ngIf="!inEditModeName">
           {{ selectedChannel.name }}
         </p>
-        <input
-          type="text"
-          [placeholder]="placeholderText | async"
-          *ngIf="inEditModeName"
-          class="input-channel-name"
-          #updatedChannelName
-        />
+        <input type="text" [placeholder]="placeholderText | async" *ngIf="inEditModeName" class="input-channel-name"
+          #updatedChannelName />
       </div>
     </section>
 
@@ -40,11 +30,7 @@
       <div class="channel-description-wrapper">
         <div class="arrange-sub-div">
           <h4 class="transition" #title2>Beschreibung</h4>
-          <p
-            (click)="editChannelDescription()"
-            class="transition"
-            #editDescription
-          >
+          <p (click)="editChannelDescription()" class="transition" #editDescription>
             Bearbeiten
           </p>
         </div>
@@ -52,13 +38,8 @@
           <p *ngIf="!inEditModeDescription">
             {{ selectedChannel.description }}
           </p>
-          <input
-            type="text"
-            [placeholder]="channelService.channel.description"
-            *ngIf="inEditModeDescription"
-            class="input-channel-name"
-            #updatedChannelDescription
-          />
+          <input type="text" [placeholder]="channelService.channel.description" *ngIf="inEditModeDescription"
+            class="input-channel-name" #updatedChannelDescription />
         </div>
       </div>
 
