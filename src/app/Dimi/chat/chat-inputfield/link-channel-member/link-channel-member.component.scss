@@ -20,6 +20,7 @@
 }
 
 .link-window {
+  z-index: 12;
   overflow: auto;
   position: absolute;
   bottom: 50%;
@@ -31,7 +32,6 @@
   gap: 10px;
   padding: 10px;
   border: 1px solid rgb(173, 176, 217);
-  z-index: 5;
   > div {
     padding: 10px;
     border-radius: 30px;
@@ -51,8 +51,10 @@
 }
 
 .linked-users {
-  z-index: 4;
+  z-index: 11;
   position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   right: 0;
   bottom: 102%;
   background-color: white;

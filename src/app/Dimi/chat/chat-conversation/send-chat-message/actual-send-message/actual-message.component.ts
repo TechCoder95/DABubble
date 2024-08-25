@@ -21,6 +21,6 @@ export class ActualMessageComponent {
   }
 
   /* getLinkedUserNames(): string[] {
-    return this.sendMessage.linkedUsers.map((user) => `@${user.username}`);
+    return this.sendMessage.linkedUsers.map((user) => `@${user}`);
   } */
 }

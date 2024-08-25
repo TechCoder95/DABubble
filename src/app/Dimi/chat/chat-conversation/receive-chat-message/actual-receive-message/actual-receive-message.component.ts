@@ -17,7 +17,7 @@ export class ActualReceiveMessageComponent {
 
   getLinkedUserNames(): string[] {
     if (this.receiveMessage.linkedUsers) {
-      return this.receiveMessage.linkedUsers.map((user) => `@${user.username}`);
+      return this.receiveMessage.linkedUsers.map((username) => `@${username}`);
     }
     else {
       return [];

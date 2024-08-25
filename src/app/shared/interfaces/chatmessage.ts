@@ -12,5 +12,5 @@ export interface ChatMessage {
   edited?: boolean;
   deleted?: boolean;
   imageUrl?: string;
-  linkedUsers: DABubbleUser[];
+  linkedUsers: string[];
 }
