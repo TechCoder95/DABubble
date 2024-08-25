@@ -58,7 +58,7 @@ export class ChannelService {
    * @param updatedName - The updated name for the channel.
    */
   async updateChannelName(updatedName: string) {
-    const currentChannel = this.selectedChannelSubject.value;
+    const currentChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
     const updatedChannel = { ...currentChannel, name: updatedName };
     this.selectedChannelSubject.next(updatedChannel as TextChannel);
     if (this.channel.id) {

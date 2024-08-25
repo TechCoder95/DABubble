@@ -58,8 +58,7 @@ export class DialogChannelInformationComponent {
     public channelService: ChannelService,
     private userService: UserService,
     private router: Router,
-    private subscriptionService: GlobalsubService,
-    private subService: GlobalsubService
+    private subscriptionService: GlobalsubService
   ) {
 
 
@@ -70,7 +69,7 @@ export class DialogChannelInformationComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
+    this.subscriptionService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannel = channel;
     });
   }
@@ -126,11 +125,32 @@ export class DialogChannelInformationComponent {
     );
   }
 
-  saveNewChannelName(updatedName: string) {
+  async saveNewChannelName(updatedName: string) {
+    const nameExists = await this.channelService.doesChannelNameAlreadyExist(updatedName);
+    if (nameExists) {
+      // todo fehlermeldung zurück geben eventuell
+      alert(`Ein Kanal mit dem Namen "${updatedName}" existiert bereits.`);
+      return;
+    }
     this.selectedChannel.name = updatedName;
     this.channelService.updateChannelName(updatedName);
-    this.subService.updateActiveChannel(this.selectedChannel);
     sessionStorage.setItem('selectedChannel', JSON.stringify(this.selectedChannel));
+    await this.router.navigate(['/home']);
+    setTimeout(async () => {
+      this.router.navigate(['/home/channel', this.selectedChannel.id]);
+    }, 0.1);
+    this.subscriptionService.updateActiveChannel(this.selectedChannel);
+  }
+
+  async saveNewChannelDescription(updatedDescription: string) {
+    this.selectedChannel.description = updatedDescription;
+    this.channelService.updateChannelDescription(updatedDescription);
+    sessionStorage.setItem('selectedChannel', JSON.stringify(this.selectedChannel));
+    await this.router.navigate(['/home']);
+    setTimeout(async () => {
+      this.router.navigate(['/home/channel', this.selectedChannel.id]);
+    }, 0.1);
+    this.subscriptionService.updateActiveChannel(this.selectedChannel);
   }
 
   inEditModeDescription: boolean = false;
@@ -178,12 +198,7 @@ export class DialogChannelInformationComponent {
     this.channelCreator.nativeElement.style.paddingBottom = '0';
   }
 
-  saveNewChannelDescription(updatedDescription: string) {
-    this.selectedChannel.description = updatedDescription;
-    this.channelService.updateChannelDescription(updatedDescription);
-    this.subService.updateActiveChannel(this.selectedChannel);
-    sessionStorage.setItem('selectedChannel', JSON.stringify(this.selectedChannel));
-  }
+
 
   get placeholderText(): Observable<string> {
     return this.channelService.selectedChannel$.pipe(
@@ -204,7 +219,7 @@ export class DialogChannelInformationComponent {
   }
 
   async onLeaveChannel() {
-   await this.channelService.leaveChannel();
+    await this.channelService.leaveChannel();
     this.subscriptionService.updateSidenavTree();
     this.dialogRef.close();
     await this.router.navigate(['home']);

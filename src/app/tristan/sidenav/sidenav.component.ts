@@ -102,6 +102,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private routeSubscription!: Subscription;
   private userStatusSubscription!: Subscription;
   private updateTreeSubscription!: Subscription;
+  private activeChannelSubscription!: Subscription;
 
 
   constructor(
@@ -141,6 +142,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.updateTreeSubscription) {
       this.updateTreeSubscription.unsubscribe();
     }
+
+    if (this.activeChannelSubscription) {
+      this.activeChannelSubscription.unsubscribe();
+    }
   }
 
   async ngOnInit() {
@@ -169,22 +174,35 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.activeUser = user;
     });
 
-    this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe((channel) => {
+    this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe(async (channel) => {
       const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
       if (!exists) {
         this.channels.push(channel);
-        this.updateTreeData();
+        await this.updateTreeData();
       }
     });
 
-    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe(() => {
-      this.updateTreeData();
+    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe(async () => {
+      await this.updateTreeData();
     });
 
     this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
       await this.loadUserChannels();
       await this.updateTreeData();
     });
+
+    this.activeChannelSubscription = this.subscriptionService.getActiveChannelObservable().subscribe(async (channel: TextChannel) => {
+      const index = this.channels.findIndex(c => c.id === channel.id);
+      if (index !== -1) {
+        this.channels[index] = channel;
+      } else {
+        this.channels.push(channel);
+      }
+
+      this.selectedChannel = channel;
+      await this.updateTreeData();
+    });
+
   }
 
   private async initializeChannels() {
@@ -207,6 +225,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       name: channel.name,
       type: 'groupChannel' as const,
     }));
+
     return groupChannelNodes;
   }
 
