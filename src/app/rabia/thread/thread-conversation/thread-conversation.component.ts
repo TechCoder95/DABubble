@@ -11,7 +11,7 @@ import { ChannelService } from '../../../shared/services/channel.service';
 import { ReceiveChatMessageComponent } from "../../../Dimi/chat/chat-conversation/receive-chat-message/receive-chat-message.component";
 import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/send-chat-message/send-chat-message.component";
 import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -51,18 +51,19 @@ export class ThreadConversationComponent {
 
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-
+    
     console.log(this.selectedThread);
     this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
       this.selectedThread = thread;
       this.allThreadMessages = [];
       this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
-
       this.allThreadMessages.push(this.selectedMessage)
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
-        this.subService.getAllMessageObservable().subscribe((message) => {
+        this.subService.getAllMessageObservable()
+        .pipe(filter((message) => message.channelId === this.selectedThread.id))
+        .subscribe((message) => {
           if (message.id) {
             if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
               return;
@@ -73,6 +74,8 @@ export class ThreadConversationComponent {
         });
       });
     });
+
+    this.subService.updateActiveThread(this.selectedThread);
   }
 
 

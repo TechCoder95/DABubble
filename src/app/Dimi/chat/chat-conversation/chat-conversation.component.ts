@@ -20,7 +20,7 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { UserService } from '../../../shared/services/user.service';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { Subscription } from 'rxjs';
+import { filter, map, pluck, Subscription } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
@@ -106,7 +106,9 @@ export class ChatConversationComponent
 
 
 
-    this.subService.getAllMessageObservable().subscribe((message) => {
+    this.subService.getAllMessageObservable()
+    .pipe(filter((message) => message.channelId === this.selectedChannel.id))
+    .subscribe((message) => {
       if (message.id) {
         if (this.allMessages.some((msg) => msg.id === message.id)) {
           return;
