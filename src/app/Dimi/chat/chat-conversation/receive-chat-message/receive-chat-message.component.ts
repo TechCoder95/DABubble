@@ -31,15 +31,22 @@ export class ReceiveChatMessageComponent {
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
   @Input() sender!: DABubbleUser;
 
-  senderUser: DABubbleUser= {username: "dummy", avatar: "./img/avatar.svg", mail:"", isLoggedIn: false};
+  senderUser: DABubbleUser = {
+    username: 'dummy',
+    avatar: './img/avatar.svg',
+    mail: '',
+    isLoggedIn: false,
+  };
 
-  constructor(private databaseService:DatabaseService, private userService: UserService,private storageService: DAStorageService,) {
-    
-  }
+  constructor(
+    private databaseService: DatabaseService,
+    private userService: UserService,
+    private storageService: DAStorageService,
+  ) {}
 
   ngOnInit(): void {
     this.getUser();
-    if(this.receiveMessage.imageUrl){
+    if (this.receiveMessage.imageUrl) {
       this.getImage();
     }
 
@@ -47,14 +54,14 @@ export class ReceiveChatMessageComponent {
     
   }
 
-
   async getUser() {
-    this.senderUser.avatar = "./img/avatar.svg";
-    let user = await this.userService.getOneUserbyId(this.receiveMessage.senderId);
+    this.senderUser.avatar = './img/avatar.svg';
+    let user = await this.userService.getOneUserbyId(
+      this.receiveMessage.senderId,
+    );
     this.senderUser = user;
   }
 
-  
   checkDate(date: number): string {
     const today = new Date();
     const givenDate = new Date(date);
@@ -70,11 +77,19 @@ export class ReceiveChatMessageComponent {
     }
   }
 
-  receivedImgMessage='';
-  async getImage(){
-    let imgSrc = await this.storageService.downloadMessageImage(this.receiveMessage.imageUrl!);
-    
+  receivedImgMessage = '';
+  async getImage() {
+    let imgSrc = await this.storageService.downloadMessageImage(
+      this.receiveMessage.imageUrl!,
+    );
+
     this.receivedImgMessage = imgSrc;
   }
 
+  isNotRepeatedMessageInUnder5Minuten() {
+    return (
+      !this.repeatedMessage ||
+      (this.repeatedMessage && !this.repeatedMessageInUnder5Minutes)
+    );
+  }
 }

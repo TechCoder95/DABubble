@@ -2,20 +2,29 @@
   <main>
     <mat-card-subtitle class="font-bold text-2xl">Neue Nachricht</mat-card-subtitle>
     <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse" [formControl]="searchControl">
+
     <div class="members">
-      @for (member of this.searchResults; track $index) {
-      <div class="member" (click)="selectUser(member)">
+      <!-- Benutzer anzeigen -->
+      <p class="font-bold text-2xl" *ngIf="searchResults.users.length > 0">Benutzer</p>
+      <div *ngFor="let member of searchResults.users; let i = index" class="member" (click)="selectUser(member)">
         <div class="relative img-container">
           <img [src]="member.avatar" />
           <div class="online-status" [ngClass]="member.isLoggedIn ? 'green' : 'grey'"></div>
         </div>
-        <p>{{ member.username }}</p>
+        <p>{{ member.username }} - ({{member.mail}})</p>
       </div>
-      }
-    </div>
 
+      <!-- Channels anzeigen -->
+      <br>
+      <p class="font-bold text-2xl" *ngIf="searchResults.channels.length > 0">Channels</p>
+      <div *ngFor="let channel of searchResults.channels; let i = index" class="channel"
+        (click)="selectChannel(channel)">
+        <div class="relative img-container"></div>
+        <p class="channel-text">#{{ channel.name }}</p>
+      </div>
+    </div>
   </main>
 
-  <app-chat-inputfield class="input" [messageType]="messageType">
-  </app-chat-inputfield>
+  <app-chat-inputfield class="input" [messageType]="messageType" [isSelectingUser]="isSelectingUser"
+    [isSelectingChannel]="isSelectingChannel">></app-chat-inputfield>
 </mat-card>

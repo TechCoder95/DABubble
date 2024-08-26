@@ -55,7 +55,7 @@ h5 {
   }
   &:hover {
     background-color: rgba(236, 238, 254, 1);
-    & > .message-information > .actual-message {
+    & > .message-information > app-actual-receive-message ::ng-deep .actual-message {
       background-color: white;
     }
   }

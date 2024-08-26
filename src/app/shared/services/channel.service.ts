@@ -48,13 +48,17 @@ export class ChannelService {
     sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
   }
 
+  getSelectedChannel(): TextChannel | null {
+    return this.channel;
+  }
+
   /**
    * Updates the name of the selected channel.
    *
    * @param updatedName - The updated name for the channel.
    */
   async updateChannelName(updatedName: string) {
-    const currentChannel = this.selectedChannelSubject.value;
+    const currentChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
     const updatedChannel = { ...currentChannel, name: updatedName };
     this.selectedChannelSubject.next(updatedChannel as TextChannel);
     if (this.channel.id) {
@@ -147,14 +151,6 @@ export class ChannelService {
   }
 
   async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
-    // todo 
-    const nameExists = await this.doesChannelNameAlreadyExist(channel.name);
-    if (nameExists) {
-      // todo fehlermeldung zurück geben eventuell
-      alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
-      return null;
-    }
-
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
       ...channel,
@@ -205,16 +201,16 @@ export class ChannelService {
     }
 
     const updatedChannels: TextChannel[] = [];
-
     const existingChannels = await this.getAllChannels();
-
     const defaultChannels = [
       { name: 'Allgemein', description: 'Hier werden alle Benutzer geladen.' },
       { name: 'Entwicklerteam', description: 'Ein super tolles Entwicklerteam' }
     ];
 
     for (const defaultChannel of defaultChannels) {
-      let channel = existingChannels.find(channel => channel.name === defaultChannel.name);
+      let channel = existingChannels.find(channel => 
+        channel.name === defaultChannel.name || (channel.id && existingChannels.some(ec => ec.id === channel.id))
+      );
 
       if (channel) {
         const updatedAssignedUsers = [...new Set([...channel.assignedUser, ...allUserIds])];
@@ -232,14 +228,14 @@ export class ChannelService {
           owner: activeUser.id!
         };
         const newChannelId = await this.databaseService.addChannelDataToDB('channels', channel);
-        channel.id = newChannelId;
+        channel.id = newChannelId; 
       }
 
       updatedChannels.push(channel);
     }
 
     return updatedChannels;
-  }
+}
 
   async createDefaultDirectChannels(userIdMap: { [key: string]: string }, activeUser: DABubbleUser): Promise<TextChannel[]> {
     return [
@@ -338,8 +334,13 @@ export class ChannelService {
       this.loading = false;
     });
   }
+
+  searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
+    return this.databaseService.getChannelsByName(searchText).then(channels => {
+      return channels.filter(channel => channel.assignedUser.includes(activeUserId));
+    });
+  }
+
 }
-
-
 
 

@@ -8,6 +8,9 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   inject,
+  SimpleChanges,
+  OnChanges,
+  AfterViewChecked,
 } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { async, map, Observable, pipe, Subscription } from 'rxjs';
@@ -68,6 +71,8 @@ export class InputfieldComponent implements OnInit {
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
   @Input() activeUserFromChat: any;
+  @Input() isSelectingUser: boolean | undefined;
+  @Input() isSelectingChannel: boolean | undefined;
   fileInput: any;
 
   @Input() selectedThreadOwner: any;
@@ -83,12 +88,16 @@ export class InputfieldComponent implements OnInit {
     private storageService: DAStorageService,
     private emojiPipe: EmojisPipe,
     private threadService: ThreadService,
+    private cdr: ChangeDetectorRef,
+
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(
       sessionStorage.getItem('selectedChannel')!,
     );
   }
+
+
 
   ngOnInit(): void {
     if (this.activeUserFromChat) {
@@ -177,13 +186,10 @@ export class InputfieldComponent implements OnInit {
         await this.send();
         break;
       case MessageType.NewDirect:
-        const channel = await this.channelService.findOrCreateChannelByUserID();
-        if (channel) {
-          this.selectedChannel = channel;
-          this.channelService.selectChannel(channel);
-          await this.router.navigate(['/home/channel/' + channel.id]);
-          await this.send();
-        }
+        if (this.isSelectingChannel)
+          await this.sendMessageToChannel()
+        else if (this.isSelectingUser)
+          await this.sendMessageToUser();
         break;
       default:
         break;
@@ -191,10 +197,31 @@ export class InputfieldComponent implements OnInit {
   }
 
 
+  async sendMessageToChannel() {
+    const selectedChannel = this.channelService.getSelectedChannel();
+    if (selectedChannel) {
+      this.selectedChannel = selectedChannel;
+      await this.router.navigate(['/home/channel/' + selectedChannel.id]);
+      await this.send();
+    }
+  }
+
+  async sendMessageToUser() {
+    const channel = await this.channelService.findOrCreateChannelByUserID();
+    if (channel) {
+      this.selectedChannel = channel;
+      this.channelService.selectChannel(channel);
+      await this.router.navigate(['/home/channel/' + channel.id]);
+      await this.send();
+    }
+  }
+
+
+
 
   image!: string | ArrayBuffer;
   async send() {
-    // debugger;
+    debugger;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -203,11 +230,9 @@ export class InputfieldComponent implements OnInit {
           message.imageUrl = await this.saveImageInStorage(message);
         }
         this.databaseService.addChannelDataToDB('messages', message);
-        // debugger;
         this.textareaValue = '';
         this.selectedFile = '';
         this.linkedUsers = [];
-        console.log(this.linkedUsers);
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
