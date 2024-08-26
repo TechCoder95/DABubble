@@ -28,16 +28,16 @@ export class StartscreenComponent {
 
 
 
-  // ngOnInit(): void {
-  //   if (sessionStorage.getItem('userLogin')) {
-  //     this.router.navigate(['/home']);
-  //   }
-  //   else {
-  //     setTimeout(() => {
-  //       this.router.navigate(['/user/login']);
-  //     }, 5300);
-  //   }
-  // }
+  ngOnInit(): void {
+    if (sessionStorage.getItem('userLogin')) {
+      this.router.navigate(['/home']);
+    }
+    else {
+      setTimeout(() => {
+        this.router.navigate(['/user/login']);
+      }, 5300);
+    }
+  }
 
 
 
