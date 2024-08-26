@@ -24,12 +24,12 @@
   background-color: #eceefe;
 }
 
-mat-tree-node{
+mat-tree-node {
   margin-top: 8px;
 }
 
 mat-drawer-container {
- /*  padding: 40px;
+  /*  padding: 40px;
   background: initial; */
   border-radius: 30px;
 }
@@ -60,6 +60,7 @@ mat-drawer-container {
   img {
     width: 50px;
     height: 50px;
+    object-fit: cover;
   }
 }
 
@@ -77,6 +78,21 @@ mat-drawer-container {
     transition: 75ms;
     background-image: url(/img/new-message-hover.svg);
   }
+}
+
+.new-msg-mobile {
+  position: absolute;
+  bottom: 32px;
+  right: 16px;
+  border-radius: 100%;
+  background-color: #444DF2;
+  width: 60px;
+  height: 60px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/new-message-white.svg);
+  box-shadow: 0px 6px 10px 0px #00000033;
+  cursor: pointer;
 }
 
 .add-channel {
@@ -128,7 +144,23 @@ mat-drawer-container {
   transform: translate(-50%, -50%);
 }
 
+.show-if-mobile {
+  display: none;
+}
+
+
+
 @media (max-width: 910px) {
+
+
+  .hide-if-mobile {
+    display: none !important;
+  }
+
+  .show-if-mobile {
+    display: block;
+  }
+
   .mobile-view-btn {
     display: none;
   }
@@ -139,6 +171,7 @@ mat-drawer-container {
 
   mat-drawer-container {
     padding: 0;
+    border-radius: 0 !important;
   }
 
   mat-drawer {
@@ -146,6 +179,32 @@ mat-drawer-container {
     left: 0;
     right: 0;
     top: 0 !important;
-    border-radius: 0 !important;
+
   }
+
+  .style-mobile-channel-btn {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+  }
+  
+  .new-channel-mobile {
+    width: 40px;
+    height: 40px;
+    background-color: #444DF2;
+    border-radius: 100%;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/img/new-message-white.svg);
+  
+    padding: 8px;
+  
+    &:hover {
+      cursor: pointer;
+      box-shadow: 0px 6px 10px 0px #00000033;
+      transition: 75ms;
+  
+    }
+  }
+
 }

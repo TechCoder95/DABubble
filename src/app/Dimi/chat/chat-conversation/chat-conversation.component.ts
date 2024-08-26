@@ -1,6 +1,4 @@
 import {
-  AfterContentChecked,
-  AfterContentInit,
   AfterViewChecked,
   AfterViewInit,
   Component,
@@ -22,11 +20,12 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { UserService } from '../../../shared/services/user.service';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { Subscription } from 'rxjs';
+import { filter, map, pluck, Subscription } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
+import { ThreadService } from '../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -45,26 +44,23 @@ export class ChatConversationComponent
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
+  @Output() ebbes = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
+  allThreadMessages: ChatMessage[] = [];
+  selectedMessage!: DABubbleUser;
 
-  @Input({ required: true }) activeChannelFromChat: any;
-  @Input({ required: true }) activeUserFromChat: any;
+  @Input() activeChannelFromChat: any;
+  @Input() activeUserFromChat: any;
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
 
-  private allMessageSub!: Subscription;
 
   constructor(
-    private chatService: ChatService,
-    private userService: UserService,
-    private channelService: ChannelService,
-    private databaseService: DatabaseService,
-    private subService: GlobalsubService
-  ) {
+    private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
@@ -72,32 +68,59 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
-    
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
 
 
-    this.allMessages = [];
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+    // if (sessionStorage.getItem('selectedThread')) {
+    //   this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
+    //     this.selectedMessage = selectedMessage;
+    //     console.log(selectedMessage, "jutta");
+    //   });
+
+    //   this.allThreadMessages = [];
+    //   this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
+    // }
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {
       this.allMessages = [];
-      this.databaseService.subscribeToMessageDatainChannel(channel.id);
       this.selectedChannelFromChat.emit(channel);
+
     });
 
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+
+    this.allMessages = [];
+    // this.allThreadMessages = [];
+
+    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
+
+    this.allMessages = [];
+    // this.allThreadMessages = [];
+
     
+    /*  ;
+    console.log(this.activeChannelFromChat); */
 
 
-    this.subService.getAllMessageObservable().subscribe((message) => {
+
+    this.subService.getAllMessageObservable()
+    .pipe(filter((message) => message.channelId === this.selectedChannel.id))
+    .subscribe((message) => {
       if (message.id) {
         if (this.allMessages.some((msg) => msg.id === message.id)) {
           return;
         }
-        this.allMessages.push(message);
-        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        if (message.isThreadMsg) {
+          this.allThreadMessages.push(message);
+          this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
+        }
+        else {
+          this.allMessages.push(message);
+          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+        }
       }
     });
   }
@@ -165,17 +188,6 @@ export class ChatConversationComponent
     return messageDate.toLocaleDateString();
   }
 
-  groupMessagesByDate() {
-    let groupedMessages: any = {};
-    this.allMessages.forEach((message) => {
-      let date = this.checkDate(message.timestamp);
-      if (!groupedMessages[date]) {
-        groupedMessages[date] = [];
-      }
-      groupedMessages[date].push(message);
-    });
-    return groupedMessages;
-  }
 
   formatDateWithDay(timestamp: any): string {
     const messageDate = new Date(timestamp);

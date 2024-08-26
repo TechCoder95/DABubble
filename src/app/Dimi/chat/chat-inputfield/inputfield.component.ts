@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
+import { async, map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
@@ -18,6 +19,9 @@ import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 import { SafeHtml } from '@angular/platform-browser';
 import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
+import { user } from '@angular/fire/auth';
+import { ThreadService } from '../../../shared/services/thread.service';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -32,7 +36,7 @@ import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
     AddFilesComponent,
     LinkChannelMemberComponent,
     HtmlConverterPipe
-],
+  ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
@@ -45,9 +49,13 @@ export class InputfieldComponent implements OnInit {
   selectedThread: boolean = false;
   ticket: any;
   selectedChannel: TextChannel | null = null;
+
+
   activeUser!: DABubbleUser;
   usersInChannel: DABubbleUser[] = [];
   linkedUsers: DABubbleUser[] = [];
+  threadOwner!: DABubbleUser;
+  selectedMessage!: ChatMessage;
 
   textareaValue: SafeHtml = '';
 
@@ -57,6 +65,9 @@ export class InputfieldComponent implements OnInit {
   @Input() isSelectingUser: boolean | undefined;
   @Input() isSelectingChannel: boolean | undefined;
   fileInput: any;
+
+  @Input() selectedThreadOwner: any;
+
   storage: any;
 
   constructor(
@@ -67,6 +78,7 @@ export class InputfieldComponent implements OnInit {
     private router: Router,
     private storageService: DAStorageService,
     private emojiPipe: EmojisPipe,
+    private threadService: ThreadService,
     private cdr: ChangeDetectorRef,
 
   ) {
@@ -89,6 +101,17 @@ export class InputfieldComponent implements OnInit {
       });
     }
 
+    if (this.selectedThreadOwner) {
+      this.selectedThreadOwner.subscribe((threadOwner: any) => {
+        this.threadOwner = threadOwner;
+      });
+    }
+
+    if (this.threadService.selectedMessage) {
+      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
+        this.selectedMessage = selectedMessage[0];
+      });
+    }
     this.ticket = this.ticketService.getTicket();
     this.getUsersInChannel();
   }
@@ -149,10 +172,12 @@ export class InputfieldComponent implements OnInit {
     switch (type) {
       case MessageType.Groups:
       case MessageType.Directs:
+        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
         await this.send();
         break;
       case MessageType.Threads:
-        await this.sendFromThread();
+        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedThread')!);
+        await this.send();
         break;
       case MessageType.NewDirect:
         if (this.isSelectingChannel)
@@ -187,29 +212,11 @@ export class InputfieldComponent implements OnInit {
   }
 
 
-  async sendFromThread() {
-    let threadMessage: ThreadMessage = {
-      ticketId: this.ticket.id,
-      message: this.textareaValue,
-      timestamp: new Date().getTime(),
-      senderName: this.activeUser.username || 'guest',
-      senderId: this.activeUser.id || 'senderIdDefault',
-      emoticons: [],
-      edited: false,
-      deleted: false,
-    };
-    if (threadMessage.message !== '') {
-      try {
-        await this.ticketService.sendThreads(threadMessage);
-        console.log('mal sehen ob das klappt mit dem Thread', threadMessage);
-      } catch (error) {
-        console.error('Fehler beim Senden der Nachricht:', error);
-      }
-    }
-  }
+
 
 
   image!: string | ArrayBuffer;
+  pdf: SafeResourceUrl | null = null;
   async send() {
 
     this.textareaValue = document.getElementById('textarea')!.innerHTML;
@@ -217,8 +224,9 @@ export class InputfieldComponent implements OnInit {
 
     if (message.message !== '' || this.image) {
       try {
-        if (this.image) {
-          message.imageUrl = await this.saveImageInStorage(message);
+        if (this.image || this.pdf) {
+          message.fileUrl = await this.saveFileInStorage(message);
+          message.fileName = this.fileName;
         }
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
@@ -237,7 +245,7 @@ export class InputfieldComponent implements OnInit {
   returnCurrentMessage() {
     return {
       channelId: this.selectedChannel!.id,
-      channelName: this.selectedChannel!.name,
+      channelName: this.selectedChannel!.name || this.activeUser.username,
       message: this.textareaValue.toString(),
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
@@ -245,14 +253,15 @@ export class InputfieldComponent implements OnInit {
       edited: false,
       deleted: false,
       imageUrl: '',
+      isThreadMsg: this.messageType === MessageType.Threads,
+      fileUrl: '',
       linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
 
-
-  async saveImageInStorage(message: ChatMessage): Promise<string> {
-    // Bild in Firestore Storage hochladen
-    let imageBlob: Blob;
+  async saveFileInStorage(message: ChatMessage): Promise<string> {
+    // Bild/PDF in Firestore Storage hochladen
+    let fileBlob: Blob;
     if (typeof this.image === 'string') {
       const byteString = atob(this.image.split(',')[1]);
       const mimeString = this.image.split(',')[0].split(':')[1].split(';')[0];
@@ -261,13 +270,13 @@ export class InputfieldComponent implements OnInit {
       for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
       }
-      imageBlob = new Blob([ab], { type: mimeString });
+      fileBlob = new Blob([ab], { type: mimeString });
     } else {
-      imageBlob = new Blob([this.image]);
+      fileBlob = new Blob([this.image]);
     }
     let imageUrl: any = await this.storageService.uploadMessageImage(
       message.channelId,
-      imageBlob,
+      fileBlob,
       this.fileName,
     );
     return imageUrl;
@@ -290,6 +299,7 @@ export class InputfieldComponent implements OnInit {
   }
 
 
+
   handleBlur() {
     this.getPlaceholderText();
   }
@@ -303,9 +313,17 @@ export class InputfieldComponent implements OnInit {
   getPlaceholderText(): void {
     const setRef = document.getElementById('textarea');
 
+
+
+
+
     if (setRef) {
-      if (this.selectedFile) {
+      if (this.image) {
         setRef.innerHTML = '<div>Bildunterschrift hinzufügen</div>';
+      }
+
+      if (this.pdf) {
+        setRef.innerHTML = 'PDF kommentieren';
       }
 
       if (this.messageType === MessageType.NewDirect) {
@@ -328,9 +346,18 @@ export class InputfieldComponent implements OnInit {
   selectedFile: string | ArrayBuffer | null = null;
   fileName: string = '';
 
-  handleSelectedFile(event: string | ArrayBuffer) {
+  handleSelectedFile(event: string) {
     this.selectedFile = event;
-    this.image = event;
+
+    if (this.selectedFile.includes('image/')) {
+      this.image = this.selectedFile;
+    } else if (this.selectedFile.includes('application/pdf')) {
+      this.pdf = this.selectedFile;
+    } else {
+      this.image = '';
+      this.pdf = '';
+    }
+
     this.getPlaceholderText();
   }
 

@@ -64,8 +64,8 @@ export class SendChatMessageComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.originalMessage = this.sendMessage.message.toString();
-    if (this.sendMessage.imageUrl) {
+    this.originalMessage = this.sendMessage.message;
+    if (this.sendMessage.fileUrl) {
       this.getImage();
     }
   }
@@ -118,8 +118,8 @@ export class SendChatMessageComponent implements OnInit {
     this.messageDeleted = event;
     this.sendMessage.message = '';
     this.sendMessage.deleted = true;
-    if (this.sendMessage.imageUrl) {
-      this.storageService.deleteMessageImage(this.sendMessage.imageUrl);
+    if (this.sendMessage.fileUrl) {
+      this.storageService.deleteMessageImage(this.sendMessage.fileUrl);
     }
     await this.chatService.deleteEmojisOnMessage(this.sendMessage.id!);
     await this.databaseService.updateDataInDB(
@@ -136,7 +136,7 @@ export class SendChatMessageComponent implements OnInit {
   sentImage = '';
   async getImage() {
     let imgSrc = await this.storageService.downloadMessageImage(
-      this.sendMessage.imageUrl!,
+      this.sendMessage.fileUrl!,
     );
     this.sentImage = imgSrc;
   }

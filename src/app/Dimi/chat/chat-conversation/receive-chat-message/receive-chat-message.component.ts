@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
@@ -46,9 +46,12 @@ export class ReceiveChatMessageComponent {
 
   ngOnInit(): void {
     this.getUser();
-    if (this.receiveMessage.imageUrl) {
+    if (this.receiveMessage.fileUrl) {
       this.getImage();
     }
+
+    // console.log(this.receiveMessage, "gt3 RS");
+    
   }
 
   async getUser() {
@@ -77,7 +80,7 @@ export class ReceiveChatMessageComponent {
   receivedImgMessage = '';
   async getImage() {
     let imgSrc = await this.storageService.downloadMessageImage(
-      this.receiveMessage.imageUrl!,
+      this.receiveMessage.fileUrl!,
     );
 
     this.receivedImgMessage = imgSrc;

@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, Component, EventEmitter, inject, Input, input, OnDestroy, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { ChatConversationComponent } from './chat-conversation/chat-conversation.component';
 import { ChatInformationComponent } from './chat-information/chat-information.component';
@@ -6,13 +6,18 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
 import { InputfieldComponent } from './chat-inputfield/inputfield.component';
 import { MessageType } from '../../shared/enums/messagetype';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
-import { DatabaseService } from '../../shared/services/database.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { UserService } from '../../shared/services/user.service';
+import { ThreadService } from '../../shared/services/thread.service';
+import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { NavigationStart, Router } from '@angular/router';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
+import { DatabaseService } from '../../shared/services/database.service';
+import { ChatMessage } from '../../shared/interfaces/chatmessage';
+import { ThreadConversationComponent } from "../../rabia/thread/thread-conversation/thread-conversation.component";
 
 @Component({
   selector: 'app-chat',
@@ -23,7 +28,8 @@ import { ChannelService } from '../../shared/services/channel.service';
     ChatInformationComponent,
     InputfieldComponent,
     ThreadComponent,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    ThreadConversationComponent
   ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
@@ -33,17 +39,29 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
+  @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
+  @Output() ebbes = new EventEmitter<ChatMessage>();
+
+  @Output() activeUser!: any;
 
   channelsub!: Subscription;
+  threadsub!: Subscription;
+
 
 
   public readonly channelService = inject(ChannelService);
 
+
   messageTypeDirects: MessageType = MessageType.Directs;
   messageType: MessageType = MessageType.Groups;
   showChatComponent!: boolean;
+  messageTypeThreads = MessageType.Threads;
 
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService,  private router: Router) {
+
+  private userService = inject(UserService);
+
+
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService, private router: Router, public threadService: ThreadService) {
 
   }
 
@@ -55,18 +73,40 @@ export class ChatComponent implements OnInit, OnDestroy {
     this.channelsub = this.subService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannelFromChat.emit(channel);
     });
+
+
+    if (sessionStorage.getItem('selectedThread')) {
+
+      let selectedPerson = JSON.parse(sessionStorage.getItem('selectedThread')!);
+
+      this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
+        this.selectedUserFromChat.emit(user);
+        this.activeUser = user;
+      }
+      );
+
+      this.selectedThreadOwner.emit(JSON.parse(sessionStorage.getItem('selectedThread')!));
+    }
   }
+
 
   ngOnDestroy() {
-    if (this.channelsub)
+    console.log('ChatComponent destroyed');
+    if (this.channelsub) {
       this.channelsub.unsubscribe();
+    } else if (this.threadsub) {
+      this.threadsub.unsubscribe();
+    }
+  }
 
-    
+
+  getStorage() {
+    if (sessionStorage.getItem('selectedThread')) {
+      return true;
+    }
+    return false;
   }
 
 
 
-  getsessionStorage(key: string) {
-    return JSON.parse(sessionStorage.getItem(key)!);
-  }
 }

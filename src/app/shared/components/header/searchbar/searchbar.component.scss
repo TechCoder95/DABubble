@@ -4,10 +4,14 @@ input[type="search"] {
     height: 50px;
     border: 1px solid #ccc;
     border-radius: 25px;
-    margin-right: 10px;
     font-size: 20px;
     outline: none;
     cursor: pointer;
+    background-image: url(/img/search.svg);
+    background-repeat: no-repeat;
+    background-size: 32px;
+    background-position: center;
+    background-position-x: 98%;
 
     &:hover {
         border: 1px solid #ADB0D9
@@ -18,12 +22,6 @@ input[type="search"] {
     }
 }
 
-
-.search{
-    position: relative;
-    right: 60px;
-    cursor: pointer;
-}
 
 .d-none{
     display: none;
