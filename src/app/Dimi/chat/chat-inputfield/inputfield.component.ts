@@ -1,22 +1,7 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  Output,
-  OnInit,
-  OnDestroy,
-  AfterViewInit,
-  ChangeDetectorRef,
-  inject,
-  SimpleChanges,
-  OnChanges,
-  AfterViewChecked,
-} from '@angular/core';
+import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ChatService } from '../../../shared/services/chat.service';
 import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
@@ -25,14 +10,14 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/enums/messagetype';
 import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
-import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
-import { user } from '@angular/fire/auth';
+import { SafeHtml } from '@angular/platform-browser';
+import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -46,7 +31,8 @@ import { user } from '@angular/fire/auth';
     EmojiesComponent,
     AddFilesComponent,
     LinkChannelMemberComponent,
-  ],
+    HtmlConverterPipe
+],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
@@ -55,13 +41,15 @@ export class InputfieldComponent implements OnInit {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
-  textareaValue: string = '';
+
   selectedThread: boolean = false;
   ticket: any;
   selectedChannel: TextChannel | null = null;
   activeUser!: DABubbleUser;
   usersInChannel: DABubbleUser[] = [];
   linkedUsers: DABubbleUser[] = [];
+
+  textareaValue: SafeHtml = '';
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -83,14 +71,13 @@ export class InputfieldComponent implements OnInit {
 
   ) {
     this.activeUser = this.userService.activeUser;
-    this.selectedChannel = JSON.parse(
-      sessionStorage.getItem('selectedChannel')!,
-    );
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
   }
 
 
-
   ngOnInit(): void {
+
+
     if (this.activeUserFromChat) {
       this.activeUserFromChat.subscribe((user: DABubbleUser) => {
         this.activeUser = user;
@@ -217,6 +204,8 @@ export class InputfieldComponent implements OnInit {
 
   image!: string | ArrayBuffer;
   async send() {
+
+    this.textareaValue = document.getElementById('textarea')!.innerHTML;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -227,6 +216,7 @@ export class InputfieldComponent implements OnInit {
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
         this.selectedFile = '';
+        this.getPlaceholderText();
         this.linkedUsers = [];
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
@@ -240,7 +230,7 @@ export class InputfieldComponent implements OnInit {
     return {
       channelId: this.selectedChannel!.id,
       channelName: this.selectedChannel!.name,
-      message: this.textareaValue,
+      message: this.textareaValue.toString(),
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
@@ -277,28 +267,48 @@ export class InputfieldComponent implements OnInit {
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
+
       this.sendMessage(this.messageType);
     }
   }
 
-  getPlaceholderText(): string {
-    if (this.selectedFile) {
-      return 'Bildunterschrift hinzufügen';
-    }
+  handleFocus(event: FocusEvent) {
+    //Wenn er fokusiert, soll er leer machen, wenn der fokus weg ist, soll er wieder den placeholder anzeigen
 
-    if (this.messageType === MessageType.NewDirect) {
-      const selectedUser = this.userService.getSelectedUser();
-      return selectedUser
-        ? `Nachricht an @${selectedUser.username}`
-        : 'Starte eine neue Nachricht';
+    const setRef = document.getElementById('textarea');
+    if (setRef) {
+      setRef.innerHTML = '';
     }
-    return `Nachricht an #${this.selectedChannel?.name}`;
   }
 
-  handleSelectedEmoji(event: string) {
-    let transformedEmoji = this.emojiPipe.transform(event);
-    this.textareaValue += transformedEmoji;
+  handleBlur(event: FocusEvent) {
+    this.getPlaceholderText();
   }
+
+  getPlaceholderText(): void {
+    const setRef = document.getElementById('textarea');
+
+    if (setRef) {
+      if (this.selectedFile) {
+        setRef.innerHTML = '<div>Bildunterschrift hinzufügen</div>';
+      }
+
+      if (this.messageType === MessageType.NewDirect) {
+        const selectedUser = this.userService.getSelectedUser();
+        setRef.innerHTML = selectedUser
+          ? `<textarea> style="color:gray">Nachricht an @${selectedUser.username}</textarea>`
+          : '<div style="color:gray">Starte eine neue Nachricht</div>';
+      }
+      if (this.selectedChannel) {
+        setRef.innerHTML = `<div style="color:gray">Nachricht an #${this.selectedChannel?.name}</div>`;
+      }
+    }
+  }
+
+  // handleSelectedEmoji(event: string) {
+  //   let transformedEmoji = this.emojiPipe.transform(event);
+  //   this.textareaValue += transformedEmoji;
+  // }
 
   selectedFile: string | ArrayBuffer | null = null;
   fileName: string = '';

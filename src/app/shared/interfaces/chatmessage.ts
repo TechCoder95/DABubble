@@ -1,3 +1,4 @@
+import { SafeHtml } from '@angular/platform-browser';
 import { DABubbleUser } from './user';
 
 export interface ChatMessage {

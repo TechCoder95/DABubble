@@ -64,7 +64,7 @@ export class SendChatMessageComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.originalMessage = this.sendMessage.message;
+    this.originalMessage = this.sendMessage.message.toString();
     if (this.sendMessage.imageUrl) {
       this.getImage();
     }

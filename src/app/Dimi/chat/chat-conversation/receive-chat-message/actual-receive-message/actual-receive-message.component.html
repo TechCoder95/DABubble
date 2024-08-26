@@ -7,7 +7,7 @@
 >
   <div
     [ngClass]="{ 'mw-70': repeatedMessage }"
-    *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''"
+    *ngIf="receiveMessage.message && receiveMessage.message.toString().trim() !== ''"
   >
     <aside
       class="linked-user-style"
@@ -17,7 +17,7 @@
         <h5>{{ username }}</h5>
       }
     </aside>
-    <p>{{ receiveMessage.message | emojis }}</p>
+    <div class="message" [innerHTML]="receiveMessage.message | emojis | safeHTML"></div>
     <span *ngIf="receiveMessage.edited">bearbeitet</span>
   </div>
   <img

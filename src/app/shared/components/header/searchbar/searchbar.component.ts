@@ -125,7 +125,7 @@ export class SearchbarComponent implements OnInit {
     this.channelSearch.forEach(channel => {
       this.databaseService.readDataByField('messages', 'channelId', channel.id)
         .then((messages: ChatMessage[]) => {
-          const newResults = messages.filter(message => message.message.toLowerCase().includes(this.searchInput.toLowerCase()));
+          const newResults = messages.filter(message => message.message.toString().toLowerCase().includes(this.searchInput.toLowerCase()));
           newResults.forEach(message => {
             let searchItem = {
               title: 'Message: ',

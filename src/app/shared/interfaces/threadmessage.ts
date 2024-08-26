@@ -1,7 +1,9 @@
+import { SafeHtml } from "@angular/platform-browser";
+
 export interface ThreadMessage {
   ticketId: string;
   /* messageId: string; */
-  message: string;
+  message: string | SafeHtml;
   timestamp: number;
   senderName: string;
   senderId: string;
