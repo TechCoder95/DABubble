@@ -13,7 +13,13 @@ span {
     color: white;
     font-weight: 700;
     animation: moveTheFontToTop 2s forwards 2s;
+
+  
 }
+
+.cursor {
+    font-weight: 200 !important; 
+  }
 
 .logo {
     animation: rotate 1s forwards 1s, moveTheLogoToTop 2s forwards 2s;

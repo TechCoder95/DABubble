@@ -13,8 +13,8 @@ interface TypeParams {
 export class TypewriterService {
   private type({ word, speed }: TypeParams) {
     return interval(speed).pipe(
-      map((x) => word.substring(0, x + 1)),
-      take(word.length)
+      map((x) => word.substring(0, x + 1) + (x < word.length ? '|' : '')),
+      take(word.length + 1)
     );
   }
 
@@ -22,14 +22,12 @@ export class TypewriterService {
     return concat(
       this.type({ word, speed: 100 }),
       of('').pipe(delay(1200), ignoreElements())
-      // Rückwärts-Bewegung entfernt
     );
   }
 
   getTypewriterEffect(titles: string[]) {
     return from(titles).pipe(
       concatMap((title) => this.typeEffect(title))
-      // `repeat()` entfernt, um den Effekt nicht zu wiederholen
     );
   }
 }

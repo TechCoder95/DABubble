@@ -1,34 +1,40 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginComponent } from '../home/login/login.component';
-import { concat, concatMap, delay, from, ignoreElements, interval, map, of, repeat, take } from 'rxjs';
 import { TypewriterService } from '../../shared/services/typewriter.service';
-import { AsyncPipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-startscreen',
   standalone: true,
-  imports: [LoginComponent, AsyncPipe],
+  imports: [LoginComponent],
   templateUrl: './startscreen.component.html',
   styleUrl: './startscreen.component.scss'
 })
 export class StartscreenComponent {
 
 
-
-  titles = ['DABubble'];
+  displayedTextWithoutCursor = '';
+  cursor = '';
   private typewriterService = inject(TypewriterService);
-
-  typedText$ = this.typewriterService
-    .getTypewriterEffect(this.titles)
-    .pipe(map((text) => text));
 
   constructor(private router: Router) { }
 
-
-
   ngOnInit(): void {
+
+    this.typewriterService.getTypewriterEffect(['DABubble']).subscribe(
+      (text) => {
+        if (text.endsWith('|')) {
+          this.displayedTextWithoutCursor = text.slice(0, -1);
+          this.cursor = '|';
+        } else {
+          this.displayedTextWithoutCursor = text;
+          this.cursor = ''; // Entfernt den Cursor, wenn das Tippen fertig ist
+        }
+      },
+      (error) => console.error(error)
+    );
+
     if (sessionStorage.getItem('userLogin')) {
       this.router.navigate(['/home']);
     }
@@ -38,7 +44,7 @@ export class StartscreenComponent {
       }, 5500);
     }
   }
-
-
-
 }
+
+
+
