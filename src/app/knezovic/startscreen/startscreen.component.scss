@@ -1,95 +1,109 @@
-.background {
+.bg-color {
     background-color: royalblue;
-    animation: visibility 1.5s reverse 4s;
+    animation: visibility 1.5s reverse 4s, change-bg forwards 5s,
+}
+
+.background {
+    animation: moveTheBGToTop 4s forwards 2s;
+    position: absolute;
+}
+
+span {
+    font-size: 116px;
+    color: white;
+    font-weight: 700;
+    animation: moveTheFontToTop 2s forwards 2s;
 }
 
 .logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    animation: rotate 1s forwards 1s, moveTheLogoToTop 2s forwards 2s;
 }
 
-.schrift {
-    position: absolute;
-    top: 50%;
-    left: 60%;
-    transform: translate(-50%, -50%);
-    zoom: 150%;
-    opacity: 0;
+.animate-logo {
+    position: relative;
+    animation: change-gap 2s forwards 2s;
 }
 
-@keyframes moveLeft {
+@keyframes change-gap {
     from {
-        left: 50%;
+        gap: 48px;
     }
 
     to {
-        left: 38%;
+        gap: 12px;
     }
 }
 
-@keyframes moveRight {
+@keyframes change-bg {
     from {
-        left: 50%;
+        background-color: royalblue;
     }
 
     to {
-        opacity: 1;
+        background-color: #ECEEFE;
+    }
+}
+
+@keyframes moveTheLogoToTop {
+    from {
+        width: 188px;
+    }
+
+    to {
+        width: 72px;
+    }
+}
+
+@keyframes moveTheBGToTop {
+    from {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%);
+    }
+
+    to {
+        top: 16px;
+        left: 15px;
+    }
+}
+
+@keyframes moveTheFontToTop {
+    from {
+        font-size: 116px;
+        color: white;
+        font-weight: 700;
+    }
+
+    to {
+        font-size: 31px;
+        font-weight: 700;
+        color: black;
+        letter-spacing: 1px;
     }
 }
 
 @keyframes visibility {
     from {
+
+        z-index: 2;
         opacity: 0;
     }
 
     to {
+        z-index: -1000;
         opacity: 1;
     }
-
-}
-
-.logo {
-    animation: moveLeft 2s forwards 1s, moveToTopLogo 1s forwards 3s;
-
-
-}
-
-.schrift {
-    animation: moveRight 3s forwards;
-    animation: visibility 1s forwards 2s, moveToTopSchrift 1s forwards 3s;
 }
 
 
+@keyframes rotate {
 
-@keyframes moveToTopLogo {
     from {
-        top: 50%;
-        height: 35%;
-        width: 35%;
+        transform: rotate(0deg);
     }
 
     to {
-        height: 13%;
-        width: 13%;
-        top: 6%;
-        left: 4%;
-    }
-}
-
-@keyframes moveToTopSchrift {
-    from {
-        height: 35%;
-        width: 35%;
-        top: 50%;
-    }
-
-    to {
-        height: 8%;
-        width: 8%;
-        top: 6%;
-        left: 9.5%;
+        transform: rotate(360deg);
     }
 }
 
@@ -132,9 +146,10 @@ a {
     .mobile-view {
         display: none !important;
     }
+    
 }
 
-.logincard{
+.logincard {
     position: absolute;
     top: 50%;
     left: 50%;
