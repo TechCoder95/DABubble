@@ -9,17 +9,14 @@ main {
 
   /*  padding-top: 24px; */
   position: relative;
-  -ms-overflow-style: none;  /* IE und Edge */
-    scrollbar-width: none;  /* Firefox */
-
-
-
-
+  -ms-overflow-style: none; /* IE und Edge */
+  scrollbar-width: none; /* Firefox */
 }
 
 .message-day {
   z-index: 5;
   position: sticky;
+ /*  top: 10px; */
   padding: 5px;
   display: flex;
   justify-content: center;

@@ -35,7 +35,7 @@
         (click)="removeLinkedUser($index)"
         [title]="'Entferne ' + user.username"
       >
-        ${{ user.username }}
+        {{ "@" + user.username }}
       </p>
     }
   }
