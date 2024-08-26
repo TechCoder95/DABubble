@@ -20,7 +20,6 @@ export class AddFilesComponent {
   fileIsPdf!: boolean;
 
   onFileSelected(event: Event): void {
-    debugger;
     let input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
       let file = input.files[0];

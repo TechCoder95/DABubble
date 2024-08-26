@@ -224,7 +224,6 @@ export class InputfieldComponent implements OnInit {
     if (message.message !== '' || this.image) {
       try {
         if (this.image || this.pdf) {
-          debugger;
           message.fileUrl = await this.saveFileInStorage(message);
           message.fileName = this.fileName;
         }
@@ -257,7 +256,6 @@ export class InputfieldComponent implements OnInit {
 
   async saveFileInStorage(message: ChatMessage): Promise<string> {
     // Bild/PDF in Firestore Storage hochladen
-    debugger;
     let fileBlob: Blob;
     if (typeof this.image === 'string') {
       const byteString = atob(this.image.split(',')[1]);
@@ -276,7 +274,6 @@ export class InputfieldComponent implements OnInit {
       fileBlob,
       this.fileName,
     );
-    debugger;
     return imageUrl;
   }
 
@@ -314,7 +311,6 @@ export class InputfieldComponent implements OnInit {
   fileName: string = '';
 
   handleSelectedFile(event: string) {
-    debugger;
     this.selectedFile = event;
 
     if (this.selectedFile.includes('image/')) {
