@@ -5,19 +5,16 @@
     [placeholder]="getPlaceholderText()"
     [value]="textareaValue | emojis"
   ></textarea> -->
-
-
-  <div
-  id="textarea"
-  class="textarea"
-  (keydown)="handleEnterKey($event)"
-  contenteditable="true"
-  (focus)="handleFocus($event)"
-  (blur)="handleBlur($event)"
-  >
-  {{textareaValue.toString() | emojis | safeHTML}}
-  </div>
-
+    <div
+      id="textarea"
+      class="textarea"
+      (keydown)="handleEnterKey($event)"
+      contenteditable="true"
+      (focus)="handleFocus()"
+      (blur)="handleBlur()"
+    >
+      {{ textareaValue.toString() | emojis | safeHTML }}
+    </div>
 
   <section class="arrange-input-options">
     <div class="chat-options">
@@ -35,13 +32,11 @@
         <img src="/img/line.svg" />
       </div>
 
-
       <!-- (selectedEmoji)="handleSelectedEmoji($event)" -->
       <app-emojies
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
         [addEmojiImg]="addEmojiImg"
-       
       ></app-emojies>
 
       <app-link-channel-member

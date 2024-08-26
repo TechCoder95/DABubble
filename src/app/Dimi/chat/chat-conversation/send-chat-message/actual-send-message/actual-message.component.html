@@ -11,7 +11,7 @@
         <h5>{{ username }}</h5>
       }
     </aside>
-    <div class="message" [innerHTML]="sendMessage.message | emojis | safeHTML"></div>
+    <div class="message" [innerHTML]="sendMessage.message | emojis | verlinkung"></div>
       <span *ngIf="sendMessage.edited">bearbeitet</span>
   </div>
   <img [src]="sentImage" *ngIf="sentImageExists()" />

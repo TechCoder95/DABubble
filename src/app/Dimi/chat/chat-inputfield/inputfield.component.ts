@@ -76,8 +76,7 @@ export class InputfieldComponent implements OnInit {
 
 
   ngOnInit(): void {
-
-
+    this.getPlaceholderText();
     if (this.activeUserFromChat) {
       this.activeUserFromChat.subscribe((user: DABubbleUser) => {
         this.activeUser = user;
@@ -91,9 +90,9 @@ export class InputfieldComponent implements OnInit {
     }
 
     this.ticket = this.ticketService.getTicket();
-
     this.getUsersInChannel();
   }
+
 
   async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
@@ -105,6 +104,7 @@ export class InputfieldComponent implements OnInit {
     });
   }
 
+
   changeAddFilesImg(hover: boolean) {
     if (hover) {
       this.addFilesImg = './img/add-files-hover.svg';
@@ -114,6 +114,7 @@ export class InputfieldComponent implements OnInit {
       this.setDefaultImages();
     }
   }
+
 
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
@@ -125,6 +126,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   changeAddLinkImg(hover: boolean) {
     if (hover) {
       this.addLinkImg = './img/add-link-hover.svg';
@@ -135,11 +137,13 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
     this.addEmojiImg = './img/add-emoji-default.svg';
     this.addLinkImg = './img/add-link-default.svg';
   }
+
 
   async sendMessage(type: MessageType) {
     switch (type) {
@@ -161,6 +165,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   async sendMessageToChannel() {
     const selectedChannel = this.channelService.getSelectedChannel();
     if (selectedChannel) {
@@ -169,6 +174,7 @@ export class InputfieldComponent implements OnInit {
       await this.send();
     }
   }
+
 
   async sendMessageToUser() {
     const channel = await this.channelService.findOrCreateChannelByUserID();
@@ -202,6 +208,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   image!: string | ArrayBuffer;
   async send() {
 
@@ -226,6 +233,7 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
+
   returnCurrentMessage() {
     return {
       channelId: this.selectedChannel!.id,
@@ -240,6 +248,7 @@ export class InputfieldComponent implements OnInit {
       linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
+
 
   async saveImageInStorage(message: ChatMessage): Promise<string> {
     // Bild in Firestore Storage hochladen
@@ -264,26 +273,32 @@ export class InputfieldComponent implements OnInit {
     return imageUrl;
   }
 
+
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
-
       this.sendMessage(this.messageType);
     }
   }
 
-  handleFocus(event: FocusEvent) {
-    //Wenn er fokusiert, soll er leer machen, wenn der fokus weg ist, soll er wieder den placeholder anzeigen
 
+  handleFocus() {
     const setRef = document.getElementById('textarea');
     if (setRef) {
       setRef.innerHTML = '';
     }
   }
 
-  handleBlur(event: FocusEvent) {
+
+  handleBlur() {
     this.getPlaceholderText();
   }
+
+  handleEmoji(event: any) {
+    document.getElementById('textarea')!.innerHTML += event.data;
+
+  }
+
 
   getPlaceholderText(): void {
     const setRef = document.getElementById('textarea');
