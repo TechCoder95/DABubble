@@ -3,28 +3,47 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DAStorageService } from '../../../../../shared/services/dastorage.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { SafePipe } from '../../../../../shared/pipes/safe.pipe';
 
 @Component({
   selector: 'app-actual-message',
   standalone: true,
-  imports: [CommonModule, EmojisPipe],
+  imports: [CommonModule, EmojisPipe, SafePipe],
   templateUrl: './actual-message.component.html',
   styleUrl: './actual-message.component.scss',
 })
-export class ActualMessageComponent {
+export class ActualMessageComponent implements OnInit {
   @Input() sendMessage!: ChatMessage;
-  @Input() sentImage!: string;
+  @Input() sentFile!: string;
 
-
-  sentImageExists() {
-    return this.sendMessage.imageUrl && this.sendMessage.imageUrl.trim() !== '';
+  ngOnInit(): void {
+    this.sentImageExists();
+    this.sentPdfExists();
   }
 
-  messageExists(){
+  sentImageExists() {
+    if (!this.sendMessage?.fileUrl || this.sendMessage.fileUrl.trim() === '') {
+      return false;
+    }
+    let imageExtensions = ['.png', '.jpg', '.jpeg', '.svg'];
+    return imageExtensions.some((ext) =>
+      this.sendMessage.fileUrl?.toLowerCase().endsWith(ext),
+    );
+  }
+
+  sentPdfExists() {
+    if (!this.sendMessage?.fileUrl || this.sendMessage.fileUrl.trim() === '') {
+      return false;
+    }
+    return this.sendMessage.fileUrl.toLowerCase().endsWith('.pdf');
+  }
+
+  messageExists() {
     return this.sendMessage.message && this.sendMessage.message.trim() !== '';
   }
 
-  linkedUsersExists(){
-    return this.sendMessage.linkedUsers.length > 0
+  linkedUsersExists() {
+    return this.sendMessage.linkedUsers.length > 0;
   }
 }

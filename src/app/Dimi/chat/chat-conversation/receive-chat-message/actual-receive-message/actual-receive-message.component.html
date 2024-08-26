@@ -2,10 +2,10 @@
   class="actual-message"
   *ngIf="!receiveMessage.deleted"
   [ngClass]="{
-    'file-and-text': receiveMessage.imageUrl && receiveMessage.message,
+    'file-and-text': receiveMessage.fileUrl && receiveMessage.message,
   }"
 >
-  <div
+  <section
     [ngClass]="{ 'mw-70': repeatedMessage }"
     *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''"
   >
@@ -19,9 +19,9 @@
     </aside>
     <p>{{ receiveMessage.message | emojis }}</p>
     <span *ngIf="receiveMessage.edited">bearbeitet</span>
+  </section>
+  <div *ngIf="imageExists()">
+    <img [src]="receivedImgMessage" />
+    <button>Herunterladen</button>
   </div>
-  <img
-    [src]="receivedImgMessage"
-    *ngIf="receiveMessage.imageUrl && receiveMessage.imageUrl.trim() !== ''"
-  />
 </main>
