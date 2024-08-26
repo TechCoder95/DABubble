@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, input, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
@@ -12,6 +12,7 @@ import { ReceiveChatMessageComponent } from "../../../Dimi/chat/chat-conversatio
 import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/send-chat-message/send-chat-message.component";
 import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-thread-conversation',
@@ -21,6 +22,9 @@ import { Subscription } from 'rxjs';
   styleUrl: './thread-conversation.component.scss'
 })
 export class ThreadConversationComponent {
+
+
+  private readonly router = inject(Router);
   activeUser!: DABubbleUser;
   allThreadMessages: ChatMessage[] = [];
   selectedMessage!: ChatMessage;
@@ -35,14 +39,20 @@ export class ThreadConversationComponent {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;
 
+
+
   constructor(private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
 
- }
+  }
 
   ngOnInit(): void {
+
+
+
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
 
+    console.log(this.selectedThread);
     this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
       this.selectedThread = thread;
@@ -78,8 +88,6 @@ export class ThreadConversationComponent {
   }
 
   onScroll() {
-    console.log('scrolling', this.selectedMessage, "hier der gesamte Array von den allThreadMesgs", this.allThreadMessages);
-
     const messageDaysArray = this.messageDays.toArray();
     for (let i = 0; i < messageDaysArray.length - 1; i++) {
       let currentDay = messageDaysArray[i].nativeElement;

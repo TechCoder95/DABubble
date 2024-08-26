@@ -13,6 +13,7 @@ import { ThreadMessage } from '../../shared/interfaces/threadmessage';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { ThreadService } from '../../shared/services/thread.service';
 import { DatabaseService } from '../../shared/services/database.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-thread',
@@ -48,12 +49,15 @@ export class ThreadComponent {
   @Input() selectedChannelFromChat: any;
   // @Output() message
 
+
+
   constructor(
     public ticketService: TicketService,
     public channelService: ChannelService,
     private userService: UserService,
     public threadService: ThreadService,
-    private databaseService: DatabaseService
+    private databaseService: DatabaseService,
+    private router : Router
   ) { }
 
   ngOnInit() {
@@ -63,11 +67,10 @@ export class ThreadComponent {
     this.threadService.findSenderByMessageID(this.databaseService.threadMessageID);
   }
 
-  getTitle() {
-    return this.selectedChannelFromChat.name;
-  }
 
   close() {
-    this.threadService.selectedThread = false;
+    sessionStorage.removeItem('selectedThread');
+    sessionStorage.removeItem('threadMessage');
+    this.router.navigate(['home/channel/' + JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
   }
 }

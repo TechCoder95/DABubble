@@ -81,15 +81,10 @@ export class ReceiveChatMessageReactionComponent {
     this.subService.updateActiveThread(thread);
 
     sessionStorage.setItem('threadMessage', JSON.stringify(this.messageForThread));
-    await this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
-
-    let newThread: ThreadChannel = {
-      ...thread,
-      id: thread.id
-    }
-
-    await this.threadService.setThread(newThread);
-
+    this.router.navigate(['home/channel/' + selectedChannel.id]);
+    setTimeout(() => {
+    this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
+    }, 0.1);
   }
 
   /* async updateEmojiText() {

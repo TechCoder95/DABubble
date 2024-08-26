@@ -223,7 +223,6 @@ export class InputfieldComponent implements OnInit {
   image!: string | ArrayBuffer;
   pdf: SafeResourceUrl | null = null;
   async send() {
-    debugger;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {

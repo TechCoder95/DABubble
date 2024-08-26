@@ -13,7 +13,7 @@ import { UserService } from '../../shared/services/user.service';
 import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { NavigationStart, Router } from '@angular/router';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
 import { DatabaseService } from '../../shared/services/database.service';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
@@ -30,7 +30,7 @@ import { ThreadConversationComponent } from "../../rabia/thread/thread-conversat
     ThreadComponent,
     MatProgressSpinnerModule,
     ThreadConversationComponent
-],
+  ],
   templateUrl: './chat.component.html',
   styleUrl: './chat.component.scss',
 })
@@ -60,8 +60,8 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   private userService = inject(UserService);
 
-  
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService,  private router: Router, public threadService: ThreadService) {
+
+  constructor(private databaseService: DatabaseService, private subService: GlobalsubService, private router: Router, public threadService: ThreadService) {
 
   }
 
@@ -74,15 +74,19 @@ export class ChatComponent implements OnInit, OnDestroy {
       this.selectedChannelFromChat.emit(channel);
     });
 
-    let selectedPerson = this.getsessionStorage('selectedThread');
 
-    this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
-      this.selectedUserFromChat.emit(user);
-      this.activeUser = user;
+    if (sessionStorage.getItem('selectedThread')) {
+
+      let selectedPerson = JSON.parse(sessionStorage.getItem('selectedThread')!);
+
+      this.userService.getOneUserbyId(selectedPerson.userID).then((user: DABubbleUser) => {
+        this.selectedUserFromChat.emit(user);
+        this.activeUser = user;
+      }
+      );
+
+      this.selectedThreadOwner.emit(JSON.parse(sessionStorage.getItem('selectedThread')!));
     }
-    );
-
-    this.selectedThreadOwner.emit(this.getsessionStorage('selectedThread')!);
   }
 
 
@@ -96,8 +100,13 @@ export class ChatComponent implements OnInit, OnDestroy {
   }
 
 
-
-  getsessionStorage(key: string) {
-    return JSON.parse(sessionStorage.getItem(key)!);
+  getStorage() {
+    if (sessionStorage.getItem('selectedThread')) {
+      return true;
+    }
+    return false;
   }
+
+
+
 }

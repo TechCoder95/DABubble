@@ -145,7 +145,7 @@ export class DatabaseService implements OnDestroy {
     return messages;
   }
 
-  public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
+  async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
     // console.log(threadsCollectionRef);
 
