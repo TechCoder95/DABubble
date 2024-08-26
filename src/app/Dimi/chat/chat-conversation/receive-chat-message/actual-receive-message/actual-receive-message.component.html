@@ -22,6 +22,6 @@
   </section>
   <div *ngIf="imageExists()">
     <img [src]="receivedImgMessage" />
-    <button>Herunterladen</button>
+    <button (click)="downloadImage(receivedImgMessage)">Herunterladen</button>
   </div>
 </main>
