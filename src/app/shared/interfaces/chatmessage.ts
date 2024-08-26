@@ -11,6 +11,7 @@ export interface ChatMessage {
   id?: string;
   edited?: boolean;
   deleted?: boolean;
-  imageUrl?: string;
+  fileUrl?: string;
+  fileName?: string;
   linkedUsers: string[];
 }

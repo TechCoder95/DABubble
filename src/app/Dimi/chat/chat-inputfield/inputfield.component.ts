@@ -30,6 +30,7 @@ import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 import { user } from '@angular/fire/auth';
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -190,13 +191,16 @@ export class InputfieldComponent implements OnInit {
   }
 
   image!: string | ArrayBuffer;
+  pdf: SafeResourceUrl | null = null;
   async send() {
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
       try {
-        if (this.image) {
-          message.imageUrl = await this.saveImageInStorage(message);
+        if (this.image || this.pdf) {
+          debugger;
+          message.fileUrl = await this.saveFileInStorage(message);
+          message.fileName = this.fileName;
         }
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
@@ -220,14 +224,15 @@ export class InputfieldComponent implements OnInit {
       senderId: this.activeUser.id || 'senderIdDefault',
       edited: false,
       deleted: false,
-      imageUrl: '',
+      fileUrl: '',
       linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
 
-  async saveImageInStorage(message: ChatMessage): Promise<string> {
-    // Bild in Firestore Storage hochladen
-    let imageBlob: Blob;
+  async saveFileInStorage(message: ChatMessage): Promise<string> {
+    // Bild/PDF in Firestore Storage hochladen
+    debugger;
+    let fileBlob: Blob;
     if (typeof this.image === 'string') {
       const byteString = atob(this.image.split(',')[1]);
       const mimeString = this.image.split(',')[0].split(':')[1].split(';')[0];
@@ -236,15 +241,16 @@ export class InputfieldComponent implements OnInit {
       for (let i = 0; i < byteString.length; i++) {
         ia[i] = byteString.charCodeAt(i);
       }
-      imageBlob = new Blob([ab], { type: mimeString });
+      fileBlob = new Blob([ab], { type: mimeString });
     } else {
-      imageBlob = new Blob([this.image]);
+      fileBlob = new Blob([this.image]);
     }
     let imageUrl: any = await this.storageService.uploadMessageImage(
       message.channelId,
-      imageBlob,
+      fileBlob,
       this.fileName,
     );
+    debugger;
     return imageUrl;
   }
 
@@ -256,8 +262,12 @@ export class InputfieldComponent implements OnInit {
   }
 
   getPlaceholderText(): string {
-    if (this.selectedFile) {
+    if (this.image) {
       return 'Bildunterschrift hinzufügen';
+    }
+
+    if (this.pdf) {
+      return 'PDF kommentieren';
     }
 
     if (this.messageType === MessageType.NewDirect) {
@@ -274,12 +284,22 @@ export class InputfieldComponent implements OnInit {
     this.textareaValue += transformedEmoji;
   }
 
-  selectedFile: string | ArrayBuffer | null = null;
+  selectedFile!: string; /* | SafeResourceUrl | ArrayBuffer | null = null; */
   fileName: string = '';
 
-  handleSelectedFile(event: string | ArrayBuffer) {
+  handleSelectedFile(event: string) {
+    debugger;
     this.selectedFile = event;
-    this.image = event;
+
+    if (this.selectedFile.includes('image/')) {
+      this.image = this.selectedFile;
+    } else if (this.selectedFile.includes('application/pdf')) {
+      this.pdf = this.selectedFile;
+    } else {
+      this.image = '';
+      this.pdf = '';
+    }
+
     this.getPlaceholderText();
   }
 

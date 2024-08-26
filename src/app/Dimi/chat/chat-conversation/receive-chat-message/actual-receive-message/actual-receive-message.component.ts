@@ -15,7 +15,29 @@ export class ActualReceiveMessageComponent {
   @Input() receivedImgMessage!: string;
   @Input() repeatedMessage!: boolean | undefined;
 
- /*  getLinkedUserNames(): string[] {
-    return this.receiveMessage.linkedUsers.map((username) => `@${username}`);
-  } */
+  imageExists() {
+    return (
+      this.receiveMessage.fileUrl && this.receiveMessage.fileUrl.trim() !== ''
+    );
+  }
+
+  /* downloadImage(imageUrl: string) {
+      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+      const targetUrl = proxyUrl + imageUrl;
+    
+      fetch(targetUrl)
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'downloaded-image.jpg'; // Sie können hier jeden beliebigen Dateinamen verwenden
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        })
+        .catch(error => console.error('Error downloading the image:', error));
+    } */
+
 }

@@ -3,21 +3,21 @@
   background: rgba(236, 238, 254, 1);
   padding: 15px;
   transition: background-color 0.3s ease-in-out;
-  > div {
+  > section {
     display: flex;
     gap: 5px;
     flex-wrap: wrap;
     align-items: center;
   }
-  > div p {
+  > section p {
     font-size: 18px;
     margin: 0;
-    > div span {
+    > section span {
       font-size: 10px;
       color: gray;
     }
   }
-  > img {
+  > div img {
     border-radius: 0 30px 30px 30px;
     min-height: 150px;
     min-width: 150px;
@@ -32,7 +32,7 @@
   gap: 5px;
   width: min-content;
   padding: 8px 8px !important;
-  > img {
+  > div img {
     border-radius: 0 30px 0 0 !important;
   }
 }

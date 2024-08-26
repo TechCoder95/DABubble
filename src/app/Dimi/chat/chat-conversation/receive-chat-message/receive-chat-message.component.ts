@@ -46,7 +46,7 @@ export class ReceiveChatMessageComponent {
 
   ngOnInit(): void {
     this.getUser();
-    if (this.receiveMessage.imageUrl) {
+    if (this.receiveMessage.fileUrl) {
       this.getImage();
     }
   }
@@ -77,7 +77,7 @@ export class ReceiveChatMessageComponent {
   receivedImgMessage = '';
   async getImage() {
     let imgSrc = await this.storageService.downloadMessageImage(
-      this.receiveMessage.imageUrl!,
+      this.receiveMessage.fileUrl!,
     );
 
     this.receivedImgMessage = imgSrc;

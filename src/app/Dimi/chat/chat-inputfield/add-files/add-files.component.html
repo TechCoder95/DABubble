@@ -7,10 +7,17 @@
     [src]="addFilesImg"
     [ngStyle]="filePreview ? { transform: 'rotate(45deg)' } : {}"
   />
-  
+
   <section class="file-preview-container" *ngIf="filePreview">
     <div class="file-preview">
-      <img [src]="filePreview" />
+      <img [src]="filePreview" *ngIf="fileIsImage" />
+      <iframe
+        *ngIf="fileIsPdf"
+        [src]="filePreview | safe"
+        type="application/pdf"
+        width="100%"
+        height="500px"
+      ></iframe>
     </div>
   </section>
 </main>
