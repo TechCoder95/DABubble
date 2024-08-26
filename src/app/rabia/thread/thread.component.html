@@ -1,10 +1,10 @@
-<mat-card class="h-full">
+
     <main>
         <div class="flex align-items-center justify-content-between w-full">
             <div class="flex align-items-center" style="gap: 5px;">
                 <mat-card-subtitle class="font-bold text-2xl">Thread</mat-card-subtitle>
                 <img src="./img/tag-hover-thin.svg" alt="">
-                <span class="purple">{{ getTitle | async }}</span>
+                <span class="purple">{{ getTitle() }}</span>
             </div>
 
             <div (click)="close()" class="close"></div>
@@ -14,10 +14,4 @@
     </div>
     <div class="h-full flex align-items-end">
 
-        <app-thread-send-chat class="w-full"></app-thread-send-chat>
-    </div>
-
-    <app-chat-inputfield [messageType]="messageType"></app-chat-inputfield>
-
-</mat-card>
 

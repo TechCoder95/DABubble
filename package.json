@@ -27,6 +27,7 @@
     "primeflex": "^3.3.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.6.3",
+    "typewriter-effect": "^2.21.0",
     "zone.js": "~0.14.3"
   },
   "devDependencies": {

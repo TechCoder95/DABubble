@@ -17,6 +17,8 @@ import { ThreadChannel } from '../interfaces/thread-channel';
 export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
   private unsubscribe!: (() => void);
+  threadMessageID!: string;
+  threadID!: string;
 
   constructor(private subService: GlobalsubService) {
     this.listenToEntityChanges('users');
@@ -131,11 +133,11 @@ export class DatabaseService implements OnDestroy {
    * @param {string} channelName - The name of the channel.
    * @returns {Promise<ChatMessage[]>} - A promise that resolves with the list of messages.
    */
-  public async getMessagesByChannel(channelName: string): Promise<ChatMessage[]> {
+  public async getMessagesByChannel(channelID: string): Promise<ChatMessage[]> {
     const messagesCollectionRef = await this.getDataRef('messages');
     const q = query(
       messagesCollectionRef,
-      where('channelId', '==', channelName)
+      where('channelId', '==', channelID)
     );
     const snapshot = await getDocs(q);
     const messages: ChatMessage[] = [];
@@ -145,22 +147,24 @@ export class DatabaseService implements OnDestroy {
 
   public async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
-    console.log(threadsCollectionRef);
+    // console.log(threadsCollectionRef);
 
     const q = query(
       threadsCollectionRef,
       where('messageID', '==', messageId)
     );
-    console.log(messageId);
-    console.log(q);
+    this.threadMessageID = messageId;
+    // console.log(messageId);
+    // console.log(q);
 
     const snapshot = await getDocs(q);
-    console.log(snapshot);
+    // console.log(snapshot);
 
     if (snapshot.size === 1) {
       const doc = snapshot.docs[0];
       const threadData = doc.data() as ThreadChannel;
       console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
+      this.threadID = JSON.stringify(threadData.id);      
       return threadData;
     } else {
       // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
@@ -357,7 +361,7 @@ export class DatabaseService implements OnDestroy {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateActiveThread(data as ThreadMessage);
+        this.subService.updateActiveThread(data as ThreadChannel);
       });
     });
   }

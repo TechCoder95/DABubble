@@ -50,20 +50,22 @@ export class ChatInformationComponent implements OnInit {
 
   selectedChannel!: TextChannel
 
-  @Input({ required: true }) activeUserFromChat: any;
-  @Input({ required: true }) activeChannelFromChat: any;
-  @Input() activeUserFromThread: any;
-  @Input() activeChannelFromThread: any;  
+  @Input() activeUserFromChat: any;
+  @Input() activeChannelFromChat: any;
+
+
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private subService: GlobalsubService
+    private subService: GlobalsubService,
   ) {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+
+    
   }
 
   ngOnInit(): void {
@@ -74,7 +76,6 @@ export class ChatInformationComponent implements OnInit {
         this.assignedUsers.push(user as unknown as DABubbleUser);
       });
     });
-
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;

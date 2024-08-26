@@ -7,6 +7,7 @@ import { TextChannel } from '../interfaces/textchannel';
 import { ThreadMessage } from '../interfaces/threadmessage';
 import { DatabaseService } from './database.service';
 import { Emoji } from '../interfaces/emoji';
+import { ThreadChannel } from '../interfaces/thread-channel';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class GlobalsubService {
   private allMessageSubject = new Subject<ChatMessage>();
   private activeChannelSubject = new Subject<TextChannel>();
   private createChannelSubject = new Subject<TextChannel>();
-  private activeThreadSubject = new Subject<ThreadMessage>();
+  private activeThreadSubject = new Subject<ThreadChannel>();
   private emjoiSubject = new Subject<Emoji>();
   private updateUserChangesSubject = new Subject<DABubbleUser>();
   private updateTreeSubject = new Subject<void>();
@@ -81,7 +82,7 @@ export class GlobalsubService {
     sessionStorage.setItem('selectedChannel', JSON.stringify(data));
   }
 
-  updateActiveThread(data: ThreadMessage) {
+  updateActiveThread(data: ThreadChannel) {
     this.activeThreadSubject.next(data);
     sessionStorage.setItem('selectedThread', JSON.stringify(data));
   }

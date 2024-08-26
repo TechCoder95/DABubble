@@ -10,6 +10,7 @@ import { DatabaseService } from '../../../../../shared/services/database.service
 import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
 import { ThreadService } from '../../../../../shared/services/thread.service';
 import { TextChannel } from '../../../../../shared/interfaces/textchannel';
+import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
 
 
 @Component({
@@ -23,6 +24,7 @@ export class ReceiveChatMessageReactionComponent {
   @Input({ required: true }) ticket: any;
   @Input() user!: DABubbleUser;
   @Input() isPrivate!: boolean | undefined;
+  @Input({ required: true }) messageForThread!: ChatMessage;
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
@@ -33,7 +35,7 @@ export class ReceiveChatMessageReactionComponent {
     private threadService: ThreadService,
     private chatService: ChatService,
     private router: Router,
-    private dataService: DatabaseService
+    private dataService: DatabaseService, private subService: GlobalsubService
   ) { }
 
   hoverReaction(type: string, hover: boolean) {
@@ -52,10 +54,14 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   async openThread() {
+  
+    this.threadService.selectedThread = true;
+
     let thread: ThreadChannel = {
       messageID: this.ticket.id!,
       channelID: this.ticket.channelId,
       userID: this.user.id!,
+      messages: [],
       id: ''
     }
 
@@ -66,12 +72,15 @@ export class ReceiveChatMessageReactionComponent {
       await this.dataService.addDataToDB('threads', thread).then((res) => {
         thread.id! = res;
       });
-      await sessionStorage.setItem('selectedThread', JSON.stringify(thread));
     }
     else {
       thread.id = threadFromDB.id;
     }
+    sessionStorage.setItem('selectedThread', JSON.stringify(thread));
 
+    this.subService.updateActiveThread(thread);
+
+    sessionStorage.setItem('threadMessage', JSON.stringify(this.messageForThread));
     await this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
 
     let newThread: ThreadChannel = {
@@ -80,6 +89,7 @@ export class ReceiveChatMessageReactionComponent {
     }
 
     await this.threadService.setThread(newThread);
+
   }
 
   /* async updateEmojiText() {

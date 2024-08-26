@@ -1,10 +1,13 @@
-<section class="absolute left-0 h-screen w-full">
-    <div class=" background h-full w-full flex align-items-center justify-content-center">
-
-        <img class="schrift" src="/img/big_logo2.svg" alt="">
+<section class="flex align-items-center justify-content-center h-screen w-screen">
+    <div class="bg-color h-full w-full"></div>
+    <div class="background">
+       <div class="animate-logo h-full w-full flex align-items-center justify-content-center">
         <img class="logo" src="/img/big_logo.svg" alt="">
-
+        <span>{{ displayedTextWithoutCursor }}</span><span class="cursor">{{ cursor }}</span>
+       </div>
     </div>
+
+    <!-- <app-header></app-header> -->
     <div class="logincard h-full w-full flex align-items-center justify-content-center">
 
         <div class="w-9 mobile-container">

@@ -1,11 +1,11 @@
-<main #scrollContainer (scroll)="onScroll()"
-  [ngStyle]="{   'justify-content': allMessages.length === 0 ? 'flex-end' : 'flex-start' }">
+<main #scrollContainer (click)="onScroll()"
+  [ngStyle]="{   'justify-content': allThreadMessages.length === 0 ? 'flex-end' : 'flex-start' }">
 
-  <div>
-    @for (message of allMessages; track $index) {
+   <div>
+    @for (message of allThreadMessages; track $index) {
 
 
-    @if($index === 0 || !isSameDay(message.timestamp, allMessages[$index -
+    @if($index === 0 || !isSameDay(message.timestamp, allThreadMessages[$index -
     1].timestamp)){
     <section class="message-day" #messageDay>
       <p></p>
@@ -14,22 +14,22 @@
     }
 
 
-    @if($index > 0 && message.senderId === allMessages[$index - 1].senderId &&
-    allMessages[$index].senderName === this.activeUser.username &&
-    isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
+    @if($index > 0 && message.senderId === allThreadMessages[$index - 1].senderId &&
+    allThreadMessages[$index].senderName === this.activeUser.username &&
+    isSameDay(message.timestamp, allThreadMessages[$index - 1].timestamp)){
     <app-send-chat-message [sendMessage]="message" [user]="activeUser" [index]="$index" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
-        repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
+        repeatedMessageInUnder5Minutes(message, allThreadMessages[$index - 1])
       "></app-send-chat-message>
     }
 
 
-    @else if($index > 0 && message.senderId === allMessages[$index -
+    @else if($index > 0 && message.senderId === allThreadMessages[$index -
     1].senderId && message.senderId !== this.activeUser.id &&
-    isSameDay(message.timestamp, allMessages[$index - 1].timestamp)){
+    isSameDay(message.timestamp, allThreadMessages[$index - 1].timestamp)){
     <app-receive-chat-message [receiveMessage]="message" [user]="activeUser" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
-        repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
+        repeatedMessageInUnder5Minutes(message, allThreadMessages[$index - 1])
       "></app-receive-chat-message>
     }
 
@@ -43,9 +43,7 @@
       [repeatedMessage]="false"></app-receive-chat-message>
     }
     }
-    @empty {
-    <app-pre-chat-message [activeChannelFromChatconv]="activeChannelFromChat"></app-pre-chat-message>
-    }
+  
 
-  </div>
+  </div> 
 </main>

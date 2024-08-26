@@ -14,4 +14,5 @@ export interface ChatMessage {
   fileUrl?: string;
   fileName?: string;
   linkedUsers: string[];
+  isThreadMsg?: boolean;
 }
