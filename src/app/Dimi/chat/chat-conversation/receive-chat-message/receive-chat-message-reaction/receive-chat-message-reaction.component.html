@@ -1,42 +1,49 @@
 <main>
-  <section
-    class="bg"
-    (mouseenter)="hoverReaction('checkMark', true)"
-    (mouseleave)="hoverReaction('checkMark', false)"
-    (click)="handleEmojis('checkMark')"
-  >
+  <section class="bg" (mouseenter)="hoverReaction('checkMark', true)" (mouseleave)="hoverReaction('checkMark', false)"
+    (click)="handleEmojis('checkMark')">
     <img [src]="checkMarkImg" />
   </section>
-  <section
-    class="bg"
-    (mouseenter)="hoverReaction('handsUp', true)"
-    (mouseleave)="hoverReaction('handsUp', false)"
-  >
+  <section class="bg" (mouseenter)="hoverReaction('handsUp', true)" (mouseleave)="hoverReaction('handsUp', false)">
     <img [src]="handsUpImg" (click)="handleEmojis('handsUp')" />
   </section>
-  <section
-    class="bg"
-    [ngStyle]="{ position: 'relative' }"
-    (mouseenter)="hoverReaction('addReaction', true)"
-    (mouseleave)="hoverReaction('addReaction', false)"
-    (click)="openAddReactions()"
-  >
+  <section class="bg" [ngStyle]="{ position: 'relative' }" (mouseenter)="hoverReaction('addReaction', true)"
+    (mouseleave)="hoverReaction('addReaction', false)" (click)="openAddReactions()">
     <img [src]="addReactionImg" />
     <div *ngIf="addReactionDiv" class="add-reactions-div">
       <div class="bg" (click)="handleEmojis('nerdFace')">
-        <img src="./img/message-reaction-nerd-face.svg" />
+        <img src="/img/message-reaction-nerd-face.svg" />
       </div>
-      <div class="bg" (click)="handleEmojis('rocket')">
-        <img src="./img/message-reaction-rocket.svg" />
+      <div class="bg" (click)="handleEmojis('demon')">
+        <img src="/img/emojis/demon.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('love')">
+        <img src="/img/emojis/love.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('happy')">
+        <img src="/img/emojis/laughing.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('sad')">
+        <img src="/img/emojis/sad.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('angry')">
+        <img src="/img/emojis/angry.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('cry')">
+        <img src="/img/emojis/cry.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('kiss')">
+        <img src="/img/emojis/kiss.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('sarcastic')">
+        <img src="/img/emojis/sarcastic.svg" />
+      </div>
+      <div class="bg" (click)="handleEmojis('money')">
+        <img src="/img/emojis/money.svg" />
       </div>
     </div>
   </section>
-  <section
-    class="bg"
-    (click)="openThread()"
-    (mouseenter)="hoverReaction('answer', true)"
-    (mouseleave)="hoverReaction('answer', false)"
-  >
+  <section class="bg" (click)="openThread()" (mouseenter)="hoverReaction('answer', true)"
+    (mouseleave)="hoverReaction('answer', false)">
     <img [src]="answerImg" />
   </section>
 </main>

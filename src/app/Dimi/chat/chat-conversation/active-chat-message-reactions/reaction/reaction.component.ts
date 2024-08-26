@@ -18,7 +18,7 @@ export class ReactionComponent implements OnInit {
   @Input() emoji!: Emoji;
   @Input() activeUser!: DABubbleUser;
   @Input() message!: any;
-  @Input() messageType!:string;
+  @Input() messageType!: string;
   emojiUsersText: string = '';
   private emojiSubscription!: Subscription;
 
@@ -26,13 +26,13 @@ export class ReactionComponent implements OnInit {
     private userService: UserService,
     private chatService: ChatService,
     private subService: GlobalsubService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.emojiSubscription = this.subService
       .getEmojiObservable()
       .subscribe((emoji: Emoji) => {
-        if(emoji.messageId === this.emoji.messageId && emoji.type === this.emoji.type){
+        if (emoji.messageId === this.emoji.messageId && emoji.type === this.emoji.type) {
           this.loadEmojiReactions(emoji);
         }
       });
@@ -47,16 +47,38 @@ export class ReactionComponent implements OnInit {
   }
 
   getEmojiImg(emoji: Emoji) {
-    if (emoji.type === 'checkMark') {
-      return './img/checkMarkEmoji.svg';
-    } else if (emoji.type === 'handsUp') {
-      return './img/reaction-handsUp.svg';
-    } else if (emoji.type === 'nerdFace') {
-      return './img/message-reaction-nerd-face.svg';
-    } else if (emoji.type === 'rocket') {
-      return './img/message-reaction-rocket.svg';
-    } else {
-      return;
+
+    switch (emoji.type) {
+      case 'checkMark':
+        return '/img/checkMarkEmoji.svg';
+      case 'handsUp':
+        return '/img/reaction-handsUp.svg';
+      case 'nerdFace':
+        return '/img/message-reaction-nerd-face.svg';
+      case 'rocket':
+        return '/img/message-reaction-rocket.svg';
+      case 'demon':
+        return '/img/emojis/demon.svg';
+      case 'love':
+        return '/img/emojis/love.svg';
+      case 'happy':
+        return '/img/emojis/laughing.svg';
+      case 'sad':
+        return '/img/emojis/sad.svg';
+      case 'angry':
+        return '/img/emojis/angry.svg';
+      case 'cute':
+        return '/img/emojis/cute.svg';
+      case 'cry':
+        return '/img/emojis/cry.svg';
+      case 'kiss':
+        return '/img/emojis/kiss.svg';
+      case 'sarcastic':
+        return '/img/emojis/sarcastic.svg';
+      case 'money':
+        return '/img/emojis/money.svg';
+      default:
+        return '';
     }
   }
 
