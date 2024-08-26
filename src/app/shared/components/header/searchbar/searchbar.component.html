@@ -1,7 +1,6 @@
 <div class="flex">
-    <input type="search" aria-label="awd" [(ngModel)]="searchInput" class="searchInput" (input)="onSearchInputChange(searchInput)"
-        placeholder="Devspace durchsuchen">
-    <img [ngClass]="{'d-none': searchInput !== ''}" src="/img/search.svg" alt="" class="search">
+    <input type="search" aria-label="awd" [(ngModel)]="searchInput" class="searchInput"
+        (input)="onSearchInputChange(searchInput)" placeholder="Devspace durchsuchen">
 </div>
 @if (searchInput.length > 1) {
 <div class="searchResultsCard">

@@ -29,7 +29,7 @@ export class StartscreenComponent {
           this.cursor = '|';
         } else {
           this.displayedTextWithoutCursor = text;
-          this.cursor = ''; // Entfernt den Cursor, wenn das Tippen fertig ist
+          this.cursor = '';
         }
       },
       (error) => console.error(error)
