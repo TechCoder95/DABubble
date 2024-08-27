@@ -22,6 +22,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { user } from '@angular/fire/auth';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
   selector: 'app-chat-information',
@@ -65,7 +66,7 @@ export class ChatInformationComponent implements OnInit {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
 
-    
+
   }
 
   ngOnInit(): void {
@@ -228,7 +229,21 @@ export class ChatInformationComponent implements OnInit {
     } else {
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
-        this.privatChatAvatar = this.userService.activeUser.avatar;
+      this.privatChatAvatar = this.userService.activeUser.avatar;
     }
+  }
+
+ async openUserInfo() {
+    const member = await this.getMember();
+    this.dialog.open(OpenUserInfoComponent, {
+      data: { member: member },
+    });
+  }
+
+ async getMember(): Promise <DABubbleUser> {
+    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+      (userID) => userID !== this.userService.activeUser.id
+    );
+      return await this.userService.getOneUserbyId(privateChatPartnerID!);
   }
 }
