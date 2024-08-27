@@ -22,6 +22,7 @@ import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { user } from '@angular/fire/auth';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
   selector: 'app-chat-information',
@@ -50,20 +51,22 @@ export class ChatInformationComponent implements OnInit {
 
   selectedChannel!: TextChannel
 
-  @Input({ required: true }) activeUserFromChat: any;
-  @Input({ required: true }) activeChannelFromChat: any;
-  @Input() activeUserFromThread: any;
-  @Input() activeChannelFromThread: any;  
+  @Input() activeUserFromChat: any;
+  @Input() activeChannelFromChat: any;
+
+
 
   constructor(
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private subService: GlobalsubService
+    private subService: GlobalsubService,
   ) {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+
+
   }
 
   ngOnInit(): void {
@@ -74,7 +77,6 @@ export class ChatInformationComponent implements OnInit {
         this.assignedUsers.push(user as unknown as DABubbleUser);
       });
     });
-
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
@@ -227,7 +229,21 @@ export class ChatInformationComponent implements OnInit {
     } else {
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
-        this.privatChatAvatar = this.userService.activeUser.avatar;
+      this.privatChatAvatar = this.userService.activeUser.avatar;
     }
+  }
+
+ async openUserInfo() {
+    const member = await this.getMember();
+    this.dialog.open(OpenUserInfoComponent, {
+      data: { member: member },
+    });
+  }
+
+ async getMember(): Promise <DABubbleUser> {
+    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+      (userID) => userID !== this.userService.activeUser.id
+    );
+      return await this.userService.getOneUserbyId(privateChatPartnerID!);
   }
 }

@@ -24,6 +24,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { initializeApp } from 'firebase/app';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
 
 
 interface Node {
@@ -58,9 +59,10 @@ interface FlattenedNode {
     ChatComponent,
     NewChatComponent,
     ThreadComponent,
+    SearchbarComponent,
     RouterModule,
     MatProgressSpinnerModule
-  ],
+],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })

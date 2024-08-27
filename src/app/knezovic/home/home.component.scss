@@ -15,3 +15,11 @@ main{
     height: 100%;
     gap: 30px;
 }
+
+@media (max-width: 910px) {
+    
+  .adjustments {
+    justify-content: center;
+    gap: 0;
+  }
+}

@@ -1,21 +1,20 @@
-@if (this.channelService.loading) {
-
-}
-@else {
-
 <div class="flex height">
-  <mat-card>
+  <mat-card style="width: 30vw;">
     <app-chat-information [activeUserFromChat]="selectedUserFromChat"
       [activeChannelFromChat]="selectedChannelFromChat"></app-chat-information>
+
+
     <app-chat-conversation [activeChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       #scrollContainer>
     </app-chat-conversation>
+
+
     <app-chat-inputfield [selectedChannelFromChat]="selectedChannelFromChat" [activeUserFromChat]="selectedUserFromChat"
       [messageType]="messageType">
     </app-chat-inputfield>
   </mat-card>
 
-  @if (getsessionStorage('selectedThread')) {
+  @if (getStorage()) {
 
   <!-- Todo Rabia 
         Hier wird auf die Threads umgestellt! Der Code ist noch nciht aufbereitet! Das gilt es noch zu machen! 
@@ -30,23 +29,29 @@
     
       -->
 
-  <mat-card>
-    <!-- <app-chat-information [activeUserFromThread]="selectedUserFromChat"
-          [activeChannelFromThread]="activeChannelFromThread"></app-chat-information> -->
-    <!-- <app-chat-conversation [activeChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
-          #scrollContainer>
-        </app-chat-conversation>
-        <app-chat-inputfield [selectedChannelFromChat]="selectedThreadFromChat" [activeUserFromChat]="selectedUserFromChat"
-          [messageType]="messageType">
-        </app-chat-inputfield> -->
+  <mat-card class="ml-4">
+    <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
+
+    <!-- <app-chat-conversation
+    [activeUserFromChat]="selectedUserFromChat" #scrollContainer>
+    </app-chat-conversation> -->
+
+    <app-thread-conversation [activeUserFromChat]="selectedUserFromChat" #scrollContainer> </app-thread-conversation>
+
+
+    <app-chat-inputfield [selectedThreadOwner]="selectedThreadOwner" [activeUserFromChat]="selectedUserFromChat"
+      [messageType]="messageTypeThreads">
+    </app-chat-inputfield>
   </mat-card>
 
-  <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread>
+
+
+  <!-- <app-thread [selectedChannelFromChat]="selectedChannelFromChat"></app-thread> -->
 
 
   }
+  
 
 </div>
 
 
-}

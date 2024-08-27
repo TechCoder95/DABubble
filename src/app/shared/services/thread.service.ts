@@ -1,40 +1,34 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable, Output } from '@angular/core';
 import { UserService } from './user.service';
 import { DatabaseService } from './database.service';
 import { ThreadChannel } from '../interfaces/thread-channel';
+import { ChatMessage } from '../interfaces/chatmessage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ThreadService {
-  private thread: ThreadChannel;
-  threadID!: string;
+  thread: ThreadChannel;
+  selectedThread: boolean = false;
+  message!: any;
 
-  constructor(private userService: UserService, private dataService: DatabaseService) {
+  @Output() selectedMessage: EventEmitter<ChatMessage> = new EventEmitter();
+
+
+  constructor(private databaseService: DatabaseService) {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
 
-  ngOnInit(): void {
-
+  findSenderByMessageID(messageID: string): void {
+    this.databaseService.readDataByField('messages', 'id', messageID).then((message) => {
+      // console.log(message, "das ist der geöffnete Thread");
+      this.message = message;
+      this.selectedMessage.emit(this.message);    
+    });
   }
-
-
-  setThread(thread: ThreadChannel) {
-    this.thread = thread;
-    
-
-    // die threadID ist die ID des Threads
-
-    this.dataService.readDataByID('threads', thread.channelID)
-
-  }
-
 
   getThread() {
     return this.thread;
   }
 
-  findUserById(id: number) {
-
-  }
 }

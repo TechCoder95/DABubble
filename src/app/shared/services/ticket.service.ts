@@ -3,23 +3,38 @@ import { ThreadMessage } from '../interfaces/threadmessage';
 import { DatabaseService } from './database.service';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
+
 export class TicketService {
   private _ticket: any;
 
-  constructor(private databaseService: DatabaseService) {}
+  constructor(private databaseService: DatabaseService) {
+  }
 
   setTicket(ticket: any) {
     this._ticket = ticket;
-    
   }
 
   getTicket() {
     return this._ticket;
   }
 
-  async sendThreads(thread: ThreadMessage) {
-    await this.databaseService.addDataToDB('threads', thread);
+  addConversationToThread(thread: ThreadMessage) {
+    this.databaseService.addChannelDataToDB('threads', thread);
+
+    // thread.allConversations = [];
+    // thread.allConversations.push(thread);
+
+    console.log(thread, "hele heke");
+    this.pushThreadsToChats(thread)
   }
+  
+  pushThreadsToChats(thread: ThreadMessage) {
+    this.databaseService.addChannelDataToDB('chats', thread);
+
+    console.log(this.databaseService.addChannelDataToDB('chats', thread), "hande");
+    
+  }
+
 }
