@@ -51,8 +51,7 @@ export class ThreadConversationComponent {
 
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-    
-    console.log(this.selectedThread);
+    console.log("das müsste hier auch schon klappen", this.selectedThread.messages);
     this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
       this.selectedThread = thread;
@@ -62,22 +61,29 @@ export class ThreadConversationComponent {
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
         this.subService.getAllMessageObservable()
-        .pipe(filter((message) => message.channelId === this.selectedThread.id))
-        .subscribe((message) => {
-          if (message.id) {
-            if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
-              return;
+          .pipe(filter((message) => message.channelId === this.selectedThread.id))
+          .subscribe((message) => {
+            if (message.id) {
+              if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
+                return;
+              }
+              this.allThreadMessages.push(message);
+              this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
+              this.selectedThread.messages.push(message);
+
+              const senderNames = this.selectedThread.messages.map(message => message.senderName);
+              console.log(senderNames, 'Antworten auf den Thread');
+
+              
             }
-            this.allThreadMessages.push(message);
-            this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-          }
-        });
+          });
       });
     });
 
+
+
     this.subService.updateActiveThread(this.selectedThread);
   }
-
 
 
   ngOnDestroy() {
