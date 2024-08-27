@@ -23,23 +23,64 @@ export class ActualReceiveMessageComponent {
     );
   }
 
-  /* downloadImage(imageUrl: string) {
-      const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-      const targetUrl = proxyUrl + imageUrl;
+  downloadImage(imageUrl: string) {
+    debugger;
+
+    let format!: string | undefined;
+
+    if (this.receiveMessage.fileName) {
+      format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
+    }
+    console.log(format);
     
-      fetch(targetUrl)
-        .then(response => response.blob())
-        .then(blob => {
-          const url = window.URL.createObjectURL(blob);
+
+    const newBlob = new Blob([imageUrl], { type: `image/${format}` });
+    const data = window.URL.createObjectURL(newBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    if (this.receiveMessage.fileName) {
+      link.download = this.receiveMessage.fileName;
+    }
+    link.click();
+  }
+
+  /*   downloadImage(imageUrl: string) {
+    debugger;
+    const mimeTypes: { [key: string]: string } = {
+      png: 'image/png',
+      jpg: 'image/jpeg',
+      jpeg: 'image/jpeg',
+      svg: 'image/svg+xml',
+    };
+
+    let format!: string | undefined;
+    // Extrahiere das Dateiformat aus der URL
+    if (this.receiveMessage.fileName) {
+      format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
+      if (!format || !(format in mimeTypes)) {
+        console.error('Unsupported image format');
+        return;
+      }
+    }
+
+    fetch(imageUrl)
+      .then((response) => response.blob())
+      .then((blob) => {
+        if (format) {
+          const newBlob = new Blob([blob], { type: mimeTypes[format] });
+          const data = window.URL.createObjectURL(newBlob);
           const link = document.createElement('a');
-          link.href = url;
-          link.download = 'downloaded-image.jpg'; // Sie können hier jeden beliebigen Dateinamen verwenden
+          link.href = data;
+          link.download = this.receiveMessage.fileName
+            ? `${this.receiveMessage.fileName}.${format}`
+            : `download.${format}`;
+          link.style.visibility = 'hidden';
           document.body.appendChild(link);
           link.click();
           document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
-        })
-        .catch(error => console.error('Error downloading the image:', error));
-    } */
-
+          window.URL.revokeObjectURL(data);
+        }
+      })
+      .catch((error) => console.error('Error downloading the image:', error));
+  } */
 }
