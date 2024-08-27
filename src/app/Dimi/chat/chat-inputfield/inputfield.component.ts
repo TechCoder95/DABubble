@@ -19,6 +19,7 @@ import { SafeHtml } from '@angular/platform-browser';
 import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
+import { VerlinkungPipe } from "../../../shared/pipes/verlinkung.pipe";
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -32,8 +33,9 @@ import { SafeResourceUrl } from '@angular/platform-browser';
     EmojiesComponent,
     AddFilesComponent,
     LinkChannelMemberComponent,
-    HtmlConverterPipe
-  ],
+    HtmlConverterPipe,
+    VerlinkungPipe
+],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
@@ -54,7 +56,7 @@ export class InputfieldComponent implements OnInit {
   threadOwner!: DABubbleUser;
   selectedMessage!: ChatMessage;
 
-  textareaValue: SafeHtml = '';
+  textareaValue: string = '';
 
   @Input() messageType: MessageType = MessageType.Directs;
   @Input() selectedChannelFromChat: any;
@@ -82,7 +84,7 @@ export class InputfieldComponent implements OnInit {
 
 
   ngOnInit(): void {
-    this.getPlaceholderText();
+    // this.getPlaceholderText();
     if (this.activeUserFromChat) {
       this.activeUserFromChat.subscribe((user: DABubbleUser) => {
         this.activeUser = user;
@@ -213,7 +215,6 @@ export class InputfieldComponent implements OnInit {
   pdf: SafeResourceUrl | null = null;
   async send() {
 
-    this.textareaValue = document.getElementById('textarea')!.innerHTML;
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -240,7 +241,7 @@ export class InputfieldComponent implements OnInit {
     return {
       channelId: this.selectedChannel!.id,
       channelName: this.selectedChannel!.name || this.activeUser.username,
-      message: this.textareaValue.toString(),
+      message: this.textareaValue,
       timestamp: new Date().getTime(),
       senderName: this.activeUser.username || 'guest',
       senderId: this.activeUser.id || 'senderIdDefault',
@@ -304,28 +305,25 @@ export class InputfieldComponent implements OnInit {
   }
 
 
-  getPlaceholderText(): void {
-    const setRef = document.getElementById('textarea');
-
-    if (setRef) {
+  getPlaceholderText(): string {
       if (this.image) {
-        setRef.innerHTML = '<div>Bildunterschrift hinzufügen</div>';
+        return 'Bildunterschrift hinzufügen';
       }
 
       if (this.pdf) {
-        setRef.innerHTML = 'PDF kommentieren';
+        return 'PDF kommentieren';
       }
 
       if (this.messageType === MessageType.NewDirect) {
         const selectedUser = this.userService.getSelectedUser();
-        setRef.innerHTML = selectedUser
-          ? `<textarea> style="color:gray">Nachricht an @${selectedUser.username}</textarea>`
-          : '<div style="color:gray">Starte eine neue Nachricht</div>';
+        return selectedUser
+          ? `Nachricht an @${selectedUser.username}`
+          : 'Starte eine neue Nachricht';
       }
       if (this.selectedChannel) {
-        setRef.innerHTML = `<div style="color:gray">Nachricht an #${this.selectedChannel?.name}</div>`;
+        return `Nachricht an #${this.selectedChannel?.name}`;
       }
-    }
+      return ''
   }
 
   selectedFile: string | ArrayBuffer | null = null;

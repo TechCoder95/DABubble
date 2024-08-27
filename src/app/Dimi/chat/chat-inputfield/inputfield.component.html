@@ -1,11 +1,12 @@
 <main class="inputfield">
-  <!-- <textarea
+  <textarea
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="getPlaceholderText()"
-    [value]="textareaValue | emojis"
-  ></textarea> -->
-    <div
+  ></textarea>
+    
+  <!-- Dieser Code funktioniert aber ist sehr sehr anstrengend zu verwalten bzw. es buggt rum und gefällt mir nicht! -->
+  <!-- <div
       id="textarea"
       class="textarea"
       (keydown)="handleEnterKey($event)"
@@ -14,7 +15,7 @@
       (blur)="handleBlur()"
     >
       {{ textareaValue.toString() | emojis | safeHTML }}
-    </div>
+    </div> -->
 
   <section class="arrange-input-options">
     <div class="chat-options">
