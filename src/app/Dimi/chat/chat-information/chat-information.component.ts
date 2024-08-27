@@ -233,17 +233,23 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
- async openUserInfo() {
-    const member = await this.getMember();
-    this.dialog.open(OpenUserInfoComponent, {
-      data: { member: member },
-    });
+  async openUserInfo() {
+    const member: DABubbleUser | null = await this.getMember();
+    if (member) {
+      this.dialog.open(OpenUserInfoComponent, {
+        data: { member: member },
+      });
+    }
   }
 
- async getMember(): Promise <DABubbleUser> {
-    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-      (userID) => userID !== this.userService.activeUser.id
-    );
+  async getMember(): Promise<DABubbleUser | null> {
+    if (this.selectedChannel.assignedUser.length > 1) {
+      const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+        (userID) => userID !== this.userService.activeUser.id
+      );
       return await this.userService.getOneUserbyId(privateChatPartnerID!);
+    }
+    else
+      return null;
   }
 }
