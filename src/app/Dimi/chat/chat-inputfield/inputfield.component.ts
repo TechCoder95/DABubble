@@ -287,29 +287,25 @@ export class InputfieldComponent implements OnInit {
 
   handleFocus() {
     const setRef = document.getElementById('textarea');
-    if (setRef) {
+    if (setRef)
       setRef.innerHTML = '';
-    }
   }
-
 
 
   handleBlur() {
     this.getPlaceholderText();
   }
 
+
+
+
   handleEmoji(event: any) {
     document.getElementById('textarea')!.innerHTML += event.data;
-
   }
 
 
   getPlaceholderText(): void {
     const setRef = document.getElementById('textarea');
-
-
-
-
 
     if (setRef) {
       if (this.image) {
@@ -331,11 +327,6 @@ export class InputfieldComponent implements OnInit {
       }
     }
   }
-
-  // handleSelectedEmoji(event: string) {
-  //   let transformedEmoji = this.emojiPipe.transform(event);
-  //   this.textareaValue += transformedEmoji;
-  // }
 
   selectedFile: string | ArrayBuffer | null = null;
   fileName: string = '';
