@@ -64,8 +64,4 @@ export class ThreadComponent {
     this.threadService.findSenderByMessageID(this.databaseService.threadMessageID);
   }
 
-
-  close() {
-    this.threadService.close();
-  }
 }

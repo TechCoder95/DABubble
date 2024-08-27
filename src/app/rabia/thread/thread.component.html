@@ -6,7 +6,7 @@
                 <span class="purple">{{ this.selectedChannelFromChat.name }}</span>
             </div>
 
-            <div (click)="close()" class="close"></div>
+            <div (click)="this.threadService.close()" class="close"></div>
         </div>
     </main>
     <div class="h-full flex align-items-end">
