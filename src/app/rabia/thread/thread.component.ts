@@ -32,9 +32,6 @@ export class ThreadComponent {
   showSingleThread!: boolean;
   messageType: MessageType = MessageType.Threads;
 
-
-
-
   activeUser!: DABubbleUser;
 
   threadChannel: TextChannel = {
@@ -69,8 +66,6 @@ export class ThreadComponent {
 
 
   close() {
-    sessionStorage.removeItem('selectedThread');
-    sessionStorage.removeItem('threadMessage');
-    this.router.navigate(['home/channel/' + JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
+    this.threadService.close();
   }
 }

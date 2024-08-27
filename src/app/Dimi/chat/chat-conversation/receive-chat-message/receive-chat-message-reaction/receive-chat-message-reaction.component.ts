@@ -54,7 +54,7 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   async openThread() {
-  
+    this.threadService.close();
     this.threadService.selectedThread = true;
 
     let thread: ThreadChannel = {
@@ -83,7 +83,7 @@ export class ReceiveChatMessageReactionComponent {
     sessionStorage.setItem('threadMessage', JSON.stringify(this.messageForThread));
     this.router.navigate(['home/channel/' + selectedChannel.id]);
     setTimeout(() => {
-    this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
+      this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
     }, 0.1);
   }
 
