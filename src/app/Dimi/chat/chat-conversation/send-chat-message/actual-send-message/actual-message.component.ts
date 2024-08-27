@@ -2,10 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
-import { DAStorageService } from '../../../../../shared/services/dastorage.service';
 import { HtmlConverterPipe } from '../../../../../shared/pipes/html-converter.pipe';
 import { VerlinkungPipe } from '../../../../../shared/pipes/verlinkung.pipe';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { SafePipe } from '../../../../../shared/pipes/safe.pipe';
 
 @Component({

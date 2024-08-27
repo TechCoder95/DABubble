@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
 import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
@@ -7,9 +7,7 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { Subscription } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
-import { TextChannel } from '../../shared/interfaces/textchannel';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { ChannelService } from '../../shared/services/channel.service';
+import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 
@@ -22,10 +20,7 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private globalSubService: GlobalsubService, private router: Router) {
-
-    
-  }
+  constructor(private globalSubService: GlobalsubService, private router: Router) { }
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
@@ -37,7 +32,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
-    
     let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
     if (googleUser) {
       let googleUserObj = JSON.parse(googleUser);

@@ -1,4 +1,4 @@
-import { Component, Inject, inject, Input, OnDestroy } from '@angular/core';
+import { Component, Inject, inject } from '@angular/core';
 import { UserService } from '../../shared/services/user.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ChannelService } from '../../shared/services/channel.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
-import { RouterModule, Router, ActivatedRoute, NavigationStart } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 
@@ -19,7 +19,7 @@ import { TextChannel } from '../../shared/interfaces/textchannel';
   templateUrl: './open-user-info.component.html',
   styleUrl: './open-user-info.component.scss'
 })
-export class OpenUserInfoComponent implements OnDestroy {
+export class OpenUserInfoComponent{
 
   readonly dialogRef = inject(MatDialogRef<OpenUserInfoComponent>);
   showChatComponent!: boolean;
@@ -29,9 +29,6 @@ export class OpenUserInfoComponent implements OnDestroy {
 
   private subscriptionService = inject(GlobalsubService);
 
-  ngOnDestroy(): void {
-
-  }
 
   async newMessage() {
     const user = this.getConvertedDABubbleUser();

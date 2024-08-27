@@ -31,7 +31,6 @@ export class ActualReceiveMessageComponent {
     if (this.receiveMessage.fileName) {
       format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
     }
-    console.log(format);
     
 
     const newBlob = new Blob([imageUrl], { type: `image/${format}` });

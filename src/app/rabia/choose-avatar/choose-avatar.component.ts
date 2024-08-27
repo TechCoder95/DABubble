@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { DAStorageService } from '../../shared/services/dastorage.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { DABubbleUser } from '../../shared/interfaces/user';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 
 

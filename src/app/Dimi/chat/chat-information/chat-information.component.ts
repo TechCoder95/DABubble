@@ -1,17 +1,7 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  ChangeDetectorRef,
-  Component,
-  Input,
-  input,
-  OnDestroy,
-  OnInit,
-  AfterViewChecked
-} from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
-import { ComponentType } from '@angular/cdk/portal';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
 import { ChannelService } from '../../../shared/services/channel.service';
@@ -19,7 +9,6 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
-import { user } from '@angular/fire/auth';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 

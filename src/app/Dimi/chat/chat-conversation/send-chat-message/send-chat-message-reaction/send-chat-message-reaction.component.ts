@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ChannelService } from '../../../../../shared/services/channel.service';
 import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Emoji } from '../../../../../shared/interfaces/emoji';

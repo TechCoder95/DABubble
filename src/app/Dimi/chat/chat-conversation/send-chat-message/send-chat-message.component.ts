@@ -3,20 +3,16 @@ import {
   ElementRef,
   Input,
   OnInit,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
-import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { SendChatMessageReactionComponent } from './send-chat-message-reaction/send-chat-message-reaction.component';
 import { FormsModule } from '@angular/forms';
 import { DatabaseService } from '../../../../shared/services/database.service';
-import { Emoji } from '../../../../shared/interfaces/emoji';
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
-import { Subscription } from 'rxjs';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { ActualMessageComponent } from './actual-send-message/actual-message.component';
@@ -51,7 +47,6 @@ export class SendChatMessageComponent implements OnInit {
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
 
   constructor(
-    private userService: UserService,
     private databaseService: DatabaseService,
     private storageService: DAStorageService,
     private chatService: ChatService,

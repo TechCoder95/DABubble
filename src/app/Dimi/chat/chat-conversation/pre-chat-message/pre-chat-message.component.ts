@@ -1,10 +1,8 @@
 import { Component, Input } from '@angular/core';
-import { ChatService } from '../../../../shared/services/chat.service';
 import { UserService } from '../../../../shared/services/user.service';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
-import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
 
 @Component({
@@ -26,7 +24,6 @@ export class PreChatMessageComponent {
   selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
 
   constructor(
-    private chatService: ChatService,
     private userService: UserService,
     private channelService: ChannelService
   ) {    

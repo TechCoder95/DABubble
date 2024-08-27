@@ -12,10 +12,8 @@ import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { UserService } from '../../shared/services/user.service';
 import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
-import { NavigationStart, Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
-import { DatabaseService } from '../../shared/services/database.service';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ThreadConversationComponent } from "../../rabia/thread/thread-conversation/thread-conversation.component";
 
@@ -61,9 +59,7 @@ export class ChatComponent implements OnInit, OnDestroy {
   private userService = inject(UserService);
 
 
-  constructor(private databaseService: DatabaseService, private subService: GlobalsubService, private router: Router, public threadService: ThreadService) {
-
-  }
+  constructor(private subService: GlobalsubService, public threadService: ThreadService) { }
 
   async ngOnInit() {
     this.selectedUserFromChat.emit(JSON.parse(sessionStorage.getItem('userLogin')!));

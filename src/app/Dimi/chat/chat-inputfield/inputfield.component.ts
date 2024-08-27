@@ -1,6 +1,5 @@
-import { Component, Input, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { async, map, Observable, pipe, Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../shared/services/user.service';
@@ -9,7 +8,6 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/enums/messagetype';
-import { ThreadMessage } from '../../../shared/interfaces/threadmessage';
 import { TicketService } from '../../../shared/services/ticket.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
@@ -19,7 +17,6 @@ import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 import { SafeHtml } from '@angular/platform-browser';
 import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
-import { user } from '@angular/fire/auth';
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 
@@ -77,10 +74,7 @@ export class InputfieldComponent implements OnInit {
     private ticketService: TicketService,
     private router: Router,
     private storageService: DAStorageService,
-    private emojiPipe: EmojisPipe,
     private threadService: ThreadService,
-    private cdr: ChangeDetectorRef,
-
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);

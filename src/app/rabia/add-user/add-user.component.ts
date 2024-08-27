@@ -8,7 +8,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import { UserService } from '../../shared/services/user.service';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthenticationService } from '../../shared/services/authentication.service';
@@ -32,7 +31,7 @@ export class AddUserComponent {
   readonly dialog = inject(MatDialog);
 
 
-  constructor(private UserService: UserService, private router: Router, private authService : AuthenticationService) { }
+  constructor(private router: Router, private authService : AuthenticationService) { }
 
 
   register(mail: string, password: string, username: string) {

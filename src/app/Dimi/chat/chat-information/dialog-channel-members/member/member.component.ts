@@ -1,11 +1,11 @@
-import { Component, Input, OnDestroy, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { DialogChannelMembersComponent } from '../dialog-channel-members.component';
 import { OpenUserInfoComponent } from '../../../../../rabia/open-user-info/open-user-info.component';
 import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { UserService } from '../../../../../shared/services/user.service';
-import { distinctUntilChanged, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
 
 DialogChannelMembersComponent;

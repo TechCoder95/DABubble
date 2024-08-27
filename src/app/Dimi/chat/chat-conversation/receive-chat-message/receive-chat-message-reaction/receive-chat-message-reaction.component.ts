@@ -4,12 +4,10 @@ import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
-import { ChannelService } from '../../../../../shared/services/channel.service';
 import { Router } from '@angular/router';
 import { DatabaseService } from '../../../../../shared/services/database.service';
 import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
 import { ThreadService } from '../../../../../shared/services/thread.service';
-import { TextChannel } from '../../../../../shared/interfaces/textchannel';
 import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
 
 
@@ -31,7 +29,6 @@ export class ReceiveChatMessageReactionComponent {
   answerImg = './img/message-reaction-answer.svg';
 
   constructor(
-    private channelService: ChannelService,
     private threadService: ThreadService,
     private chatService: ChatService,
     private router: Router,
@@ -42,10 +39,6 @@ export class ReceiveChatMessageReactionComponent {
     const basePath = './img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
 
-    // if (type === 'checkMark') {
-    //   this.checkMarkImg = `${basePath}check-mark${hoverSuffix}.png`;
-    // } else if (type === 'handsUp') {
-    //   this.handsUpImg = `${basePath}hands-up${hoverSuffix}.png`;
     if (type === 'addReaction') {
       this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {

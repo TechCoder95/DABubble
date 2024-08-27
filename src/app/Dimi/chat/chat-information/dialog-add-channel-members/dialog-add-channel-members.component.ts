@@ -1,21 +1,13 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { UserService } from '../../../../shared/services/user.service';
-import { FormsModule, ReactiveFormsModule, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
-import {
-  debounceTime
-} from 'rxjs/operators';
-import { firstValueFrom, fromEvent, Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
+import { fromEvent } from 'rxjs';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
 import { DialogUserAlreadyInChannelComponent } from './dialog-user-already-in-channel/dialog-user-already-in-channel.component';
 

@@ -4,9 +4,7 @@ import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
 import { GlobalsubService } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
-import { ThreadMessage } from '../interfaces/threadmessage';
 import { Emoji } from '../interfaces/emoji';
-import { Subscription } from 'rxjs';
 import { ThreadChannel } from '../interfaces/thread-channel';
 
 
@@ -29,18 +27,16 @@ export class DatabaseService implements OnDestroy {
     this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added') {
-          //  console.log('Neues Dokument hinzugefügt:', change.doc.data());
         }
         if (change.type === 'modified') {
           this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
-          //  console.log('Dokument geändert:', change.doc.data());
         }
         if (change.type === 'removed') {
-          //  console.log('Dokument entfernt:', change.doc.data());
         }
       });
     });
   }
+  
 
   ngOnDestroy() {
     if (this.unsubscribe) {

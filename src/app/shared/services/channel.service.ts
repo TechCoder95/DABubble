@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { TextChannel } from '../interfaces/textchannel';
 import { DatabaseService } from './database.service';
-import { ChatService } from './chat.service';
 import { UserService } from './user.service';
 import { DABubbleUser } from '../interfaces/user';
 import { GlobalsubService } from './globalsub.service';
@@ -23,7 +22,7 @@ export class ChannelService {
 
   loading: boolean = false;
 
-  constructor(private databaseService: DatabaseService, private chatService: ChatService, private userService: UserService, private subService: GlobalsubService) {
+  constructor(private databaseService: DatabaseService, private userService: UserService, private subService: GlobalsubService) {
 
     this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
     this.subService.updateActiveChannel(this.channel);
