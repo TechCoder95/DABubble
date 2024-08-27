@@ -42,43 +42,45 @@ export class ActualReceiveMessageComponent {
     link.click();
   }
 
-  /*   downloadImage(imageUrl: string) {
-    debugger;
-    const mimeTypes: { [key: string]: string } = {
-      png: 'image/png',
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      svg: 'image/svg+xml',
-    };
+   /*  downloadImage(imageUrl: string) {
+      let format!: string | undefined;
 
-    let format!: string | undefined;
-    // Extrahiere das Dateiformat aus der URL
-    if (this.receiveMessage.fileName) {
-      format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
-      if (!format || !(format in mimeTypes)) {
+      if (this.receiveMessage.fileName) {
+        format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
+      }
+      console.log(format);
+
+      if (!format) {
         console.error('Unsupported image format');
         return;
       }
-    }
-
-    fetch(imageUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        if (format) {
-          const newBlob = new Blob([blob], { type: mimeTypes[format] });
-          const data = window.URL.createObjectURL(newBlob);
-          const link = document.createElement('a');
-          link.href = data;
-          link.download = this.receiveMessage.fileName
-            ? `${this.receiveMessage.fileName}.${format}`
-            : `download.${format}`;
-          link.style.visibility = 'hidden';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(data);
+  
+    fetch(imageUrl, { mode: 'no-cors' })
+      .then((response) => {
+        debugger;
+        console.log(response);
+        
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        return response.blob();
+      })
+      .then((blob) => {
+        const newBlob = new Blob([blob], { type: `image/${format}` });
+        const data = window.URL.createObjectURL(newBlob);
+        const link = document.createElement('a');
+        link.href = data;
+        link.download = this.receiveMessage.fileName
+          ? this.receiveMessage.fileName
+          : `download.${format}`;
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(data);
       })
       .catch((error) => console.error('Error downloading the image:', error));
   } */
+
+ 
 }
