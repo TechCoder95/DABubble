@@ -55,11 +55,11 @@ app-chat{
 
 @media (max-width: 910px) {
 
-  mat-drawer {
+  mat-card {
     width: 100vw;
     left: 0;
     right: 0;
-    top: 0;
+    top: 0; 
     border-radius: 0 !important;
   }
 }
