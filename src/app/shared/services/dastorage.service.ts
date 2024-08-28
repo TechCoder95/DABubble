@@ -12,7 +12,6 @@ import {
 } from 'firebase/storage';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { HttpClient } from '@angular/common/http';
-import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root',
@@ -53,12 +52,6 @@ export class DAStorageService {
     getDownloadURL(storageRef)
       .then((url) => {
         console.log(url);
-
-        // `url` is the download URL for 'images/stars.jpg'
-
-        this.http.get(url, { responseType: 'blob' }).subscribe((blob) => {
-          saveAs(blob, fileName);
-        });
 
         // This can be downloaded directly:
         /* const xhr = new XMLHttpRequest();
