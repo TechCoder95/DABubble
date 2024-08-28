@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -42,7 +42,7 @@ import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
 })
-export class InputfieldComponent implements OnInit {
+export class InputfieldComponent implements OnInit, AfterViewInit {
   addFilesImg = './img/add-files-default.svg';
   addEmojiImg = './img/add-emoji-default.svg';
   addLinkImg = './img/add-link-default.svg';
@@ -68,6 +68,8 @@ export class InputfieldComponent implements OnInit {
 
   @Input() selectedThreadOwner: any;
 
+  @ViewChild('chatTextarea') chatTextarea!: ElementRef;
+
   storage: any;
 
   constructor(
@@ -83,6 +85,10 @@ export class InputfieldComponent implements OnInit {
     this.selectedChannel = JSON.parse(
       sessionStorage.getItem('selectedChannel')!,
     );
+  }
+
+  ngAfterViewInit(): void {
+    this.chatTextarea.nativeElement.focus();
   }
 
   ngOnInit(): void {
