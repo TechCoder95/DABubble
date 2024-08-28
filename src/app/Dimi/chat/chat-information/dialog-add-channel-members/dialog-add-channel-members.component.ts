@@ -88,7 +88,7 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   putUserToInputfield(user: DABubbleUser) {
     this.searchResults = [];
     this.inputName.nativeElement.value = '';
-    this.inputName.nativeElement.placeholder = '';
+   /*  this.inputName.nativeElement.placeholder = ''; */
     this.selectedUser.push(user);
   }
 
