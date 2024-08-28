@@ -365,18 +365,21 @@ export class DatabaseService implements OnDestroy {
   async getChannelsByName(searchText: string): Promise<TextChannel[]> {
     const channelsRef = collection(this.firestore, 'channels');
     const lowerCaseSearchText = searchText.toLowerCase();
-
+  
     const querySnapshot = await getDocs(channelsRef);
     const channels: TextChannel[] = [];
-
+  
     querySnapshot.forEach(doc => {
       const data = doc.data() as TextChannel;
       data.id = doc.id;
-      if (data.name.toLowerCase().includes(lowerCaseSearchText)) {
+      
+      // Überprüfe, ob 'name' definiert ist und ein String ist
+      if (data.name && typeof data.name === 'string' && data.name.toLowerCase().includes(lowerCaseSearchText)) {
         channels.push(data);
       }
     });
-
+  
     return channels;
   }
+  
 }

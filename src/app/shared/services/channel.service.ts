@@ -334,8 +334,8 @@ export class ChannelService {
     });
   }
 
-  searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
-    return this.databaseService.getChannelsByName(searchText).then(channels => {
+  async searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
+    return await this.databaseService.getChannelsByName(searchText).then(channels => {
       return channels.filter(channel => channel.assignedUser.includes(activeUserId));
     });
   }

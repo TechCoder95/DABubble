@@ -176,13 +176,15 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         await this.send();
         break;
       case MessageType.Threads:
-        this.selectedChannel = JSON.parse(
-          sessionStorage.getItem('selectedThread')!,
-        );
+        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedThread')!,);
         await this.send();
         break;
       case MessageType.NewDirect:
-        await this.send();
+        if (this.isSelectingChannel) {
+          await this.sendMessageToChannel();
+        } else if (this.isSelectingUser) {
+          await this.sendMessageToUser();
+        }
         break;
       default:
         break;
@@ -210,6 +212,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
 
   image!: string | ArrayBuffer;
   pdf: SafeResourceUrl | null = null;
+
   async send() {
     let message: ChatMessage = this.returnCurrentMessage();
 

@@ -38,14 +38,14 @@ export class NewChatComponent implements OnInit {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged(),
-      switchMap(value => {
-        if (this.hasSelection) { 
+      switchMap(async value => {
+        if (this.hasSelection) {
           this.hasSelection = false;
-          return [];
+          return { users: [], channels: [] };
         }
         return Promise.all([
-          this.userService.searchUsersByNameOrEmail(value),
-          this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
+          await this.userService.searchUsersByNameOrEmail(value),
+          await this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
         ]).then(([users, channels]) => ({ users, channels }));
       })
     ).subscribe(results => {
