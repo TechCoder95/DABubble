@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
   selector: 'app-chat-information',
@@ -54,7 +55,7 @@ export class ChatInformationComponent implements OnInit {
 
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
 
-    
+
   }
 
   ngOnInit(): void {
@@ -217,7 +218,27 @@ export class ChatInformationComponent implements OnInit {
     } else {
       this.privateChatPartnerName =
         this.userService.activeUser.username + ' (Du)';
-        this.privatChatAvatar = this.userService.activeUser.avatar;
+      this.privatChatAvatar = this.userService.activeUser.avatar;
     }
+  }
+
+  async openUserInfo() {
+    const member: DABubbleUser | null = await this.getMember();
+    if (member) {
+      this.dialog.open(OpenUserInfoComponent, {
+        data: { member: member },
+      });
+    }
+  }
+
+  async getMember(): Promise<DABubbleUser | null> {
+    if (this.selectedChannel.assignedUser.length > 1) {
+      const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+        (userID) => userID !== this.userService.activeUser.id
+      );
+      return await this.userService.getOneUserbyId(privateChatPartnerID!);
+    }
+    else
+      return null;
   }
 }
