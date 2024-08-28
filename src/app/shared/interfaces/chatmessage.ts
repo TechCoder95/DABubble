@@ -14,6 +14,5 @@ export interface ChatMessage {
   deleted?: boolean;
   fileUrl?: string;
   fileName?: string;
-  linkedUsers: string[];
   isThreadMsg?: boolean;
 }

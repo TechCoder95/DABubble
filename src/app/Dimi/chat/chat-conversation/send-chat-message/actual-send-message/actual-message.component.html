@@ -6,11 +6,6 @@
   }"
 >
   <div *ngIf="messageExists()">
-    <aside class="linked-user-style" *ngIf="linkedUsersExists()">
-      @for (username of sendMessage.linkedUsers; track $index) {
-        <h5>{{ username }}</h5>
-      }
-    </aside>
     <div class="message" [innerHTML]="sendMessage.message | emojis | verlinkung"></div>
       <span *ngIf="sendMessage.edited">bearbeitet</span>
   </div>

@@ -3,6 +3,7 @@
     (keydown)="handleEnterKey($event)"
     [(ngModel)]="textareaValue"
     [placeholder]="getPlaceholderText()"
+    [value]="textareaValue | emojiInput"
   ></textarea>
     
   <!-- Dieser Code funktioniert aber ist sehr sehr anstrengend zu verwalten bzw. es buggt rum und gefällt mir nicht! -->
@@ -33,11 +34,12 @@
         <img src="/img/line.svg" />
       </div>
 
-      <!-- (selectedEmoji)="handleSelectedEmoji($event)" -->
+      
       <app-emojies
         (mouseenter)="changeAddEmojiImg(true)"
         (mouseleave)="changeAddEmojiImg(false)"
         [addEmojiImg]="addEmojiImg"
+        (selectedEmoji)="handleSelectedEmoji($event)"
       ></app-emojies>
 
       <app-link-channel-member

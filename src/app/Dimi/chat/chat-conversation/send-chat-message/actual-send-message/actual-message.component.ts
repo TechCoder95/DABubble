@@ -42,8 +42,4 @@ export class ActualMessageComponent implements OnInit {
   messageExists() {
     return this.sendMessage.message && this.sendMessage.message.trim() !== '';
   }
-
-  linkedUsersExists() {
-    return this.sendMessage.linkedUsers.length > 0;
-  }
 }

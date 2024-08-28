@@ -20,6 +20,7 @@ import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { VerlinkungPipe } from "../../../shared/pipes/verlinkung.pipe";
+import { EmojiInputPipe } from "../../../shared/pipes/emoji-input.pipe";
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -34,8 +35,9 @@ import { VerlinkungPipe } from "../../../shared/pipes/verlinkung.pipe";
     AddFilesComponent,
     LinkChannelMemberComponent,
     HtmlConverterPipe,
-    VerlinkungPipe
-],
+    VerlinkungPipe,
+    EmojiInputPipe
+  ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
   styleUrl: './inputfield.component.scss',
@@ -176,10 +178,7 @@ export class InputfieldComponent implements OnInit {
         await this.send();
         break;
       case MessageType.NewDirect:
-        if (this.isSelectingChannel)
-          await this.sendMessageToChannel()
-        else if (this.isSelectingUser)
-          await this.sendMessageToUser();
+        await this.send();
         break;
       default:
         break;
@@ -250,7 +249,6 @@ export class InputfieldComponent implements OnInit {
       imageUrl: '',
       isThreadMsg: this.messageType === MessageType.Threads,
       fileUrl: '',
-      linkedUsers: this.linkedUsers.map((user) => `@${user.username}`),
     };
   }
 
@@ -306,24 +304,24 @@ export class InputfieldComponent implements OnInit {
 
 
   getPlaceholderText(): string {
-      if (this.image) {
-        return 'Bildunterschrift hinzufügen';
-      }
+    if (this.image) {
+      return 'Bildunterschrift hinzufügen';
+    }
 
-      if (this.pdf) {
-        return 'PDF kommentieren';
-      }
+    if (this.pdf) {
+      return 'PDF kommentieren';
+    }
 
-      if (this.messageType === MessageType.NewDirect) {
-        const selectedUser = this.userService.getSelectedUser();
-        return selectedUser
-          ? `Nachricht an @${selectedUser.username}`
-          : 'Starte eine neue Nachricht';
-      }
-      if (this.selectedChannel) {
-        return `Nachricht an #${this.selectedChannel?.name}`;
-      }
-      return ''
+    if (this.messageType === MessageType.NewDirect) {
+      const selectedUser = this.userService.getSelectedUser();
+      return selectedUser
+        ? `Nachricht an @${selectedUser.username}`
+        : 'Starte eine neue Nachricht';
+    }
+    if (this.selectedChannel) {
+      return `Nachricht an #${this.selectedChannel?.name}`;
+    }
+    return ''
   }
 
   selectedFile: string | ArrayBuffer | null = null;
@@ -352,7 +350,16 @@ export class InputfieldComponent implements OnInit {
     return this.linkedUsers.length > 0;
   }
 
+
   handleLinkedUsernames(users: DABubbleUser[]) {
-    this.linkedUsers = users;
+    users.forEach((user) => {
+      if (!this.textareaValue.includes(`@${user.username}' `)) {
+        this.textareaValue += `@${user.username}' `;
+      }
+    });
+  }
+
+  handleSelectedEmoji(event: string) {
+    this.textareaValue += event + ' ';
   }
 }
