@@ -61,7 +61,7 @@
     (mouseenter)="hoverReaction('answer', true)"
     (mouseleave)="hoverReaction('answer', false)"
   >
-    <img [src]="answerImg" />
+    <img (click)="openThread()" [src]="answerImg" />
   </section>
   <section class="edit-message-section">
     <div
