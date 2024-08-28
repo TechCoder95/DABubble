@@ -11,13 +11,11 @@ import {
   StorageReference,
 } from 'firebase/storage';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DAStorageService {
-  private http = inject(HttpClient);
 
   constructor() {}
   firebaseApp = getApp();
