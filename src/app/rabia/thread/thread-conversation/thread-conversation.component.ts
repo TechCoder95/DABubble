@@ -71,10 +71,9 @@ export class ThreadConversationComponent {
               this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
               this.selectedThread.messages.push(message);
 
-              const senderNames = this.selectedThread.messages.map(message => message.senderName);
-              console.log(senderNames, 'Antworten auf den Thread');
+              const answersToMsg = this.selectedThread.messages.map(message => message.message);
+              console.log(answersToMsg.length, 'Antworten auf den Thread');
 
-              
             }
           });
       });
