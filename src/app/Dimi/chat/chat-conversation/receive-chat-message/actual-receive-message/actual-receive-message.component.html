@@ -12,8 +12,9 @@
     <div class="message" [innerHTML]="receiveMessage.message | emojis | verlinkung"></div>
     <span *ngIf="receiveMessage.edited">bearbeitet</span>
   </section>
-  <div *ngIf="imageExists()">
+  <div *ngIf="imageExists()" (click)="openImageInDialog()">
     <img [src]="receivedImgMessage" />
-    <button (click)="downloadFile()">Herunterladen</button>
   </div>
 </main>
+
+

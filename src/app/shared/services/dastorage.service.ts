@@ -9,6 +9,7 @@ import {
   deleteObject,
   listAll,
   StorageReference,
+  getBlob,
 } from 'firebase/storage';
 import { ChatMessage } from '../interfaces/chatmessage';
 
@@ -17,7 +18,7 @@ import { ChatMessage } from '../interfaces/chatmessage';
 })
 export class DAStorageService {
 
-  constructor() {}
+  constructor() { }
   firebaseApp = getApp();
   /* firestore: Firestore = inject(Firestore); */
 
@@ -33,7 +34,7 @@ export class DAStorageService {
       'gs://dabubble-da785.appspot.com',
     );
     const mountainsRef = ref(storage, name);
-    uploadBytes(mountainsRef, file).then((snapshot) => {});
+    uploadBytes(mountainsRef, file).then((snapshot) => { });
     const metadata = {
       contentType: 'image/jpeg',
     };
@@ -45,9 +46,12 @@ export class DAStorageService {
    * @returns A Promise that resolves when the file is downloaded successfully.
    */
   async downloadFile(url: string, fileName: string) {
-    let storage = getStorage();
-    const storageRef = ref(storage, url);
-    getDownloadURL(storageRef)
+    // Create a reference to the file we want to download
+    const storage = getStorage();
+    const starsRef = ref(storage, url);
+
+    // Get the download URL
+    getDownloadURL(starsRef)
       .then((url) => {
         console.log(url);
 
@@ -66,9 +70,30 @@ export class DAStorageService {
         // img.setAttribute('src', url);
       })
       .catch((error) => {
-        // Handle any errors
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+
+          // ...
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            break;
+        }
       });
   }
+
+
+
 
   /**
    * Deletes a file from the specified storage location.
