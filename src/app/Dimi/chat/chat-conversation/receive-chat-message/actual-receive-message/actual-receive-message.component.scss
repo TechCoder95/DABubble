@@ -59,3 +59,11 @@
     cursor: default;
   }
 }
+
+.message{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
