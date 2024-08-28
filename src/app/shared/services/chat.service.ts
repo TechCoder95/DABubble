@@ -1,9 +1,6 @@
-import { EventEmitter, Injectable, OnDestroy, OnInit } from '@angular/core';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { Injectable } from '@angular/core';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { DatabaseService } from './database.service';
-import { TextChannel } from '../interfaces/textchannel';
-import { UserService } from './user.service';
 import { Emoji } from '../interfaces/emoji';
 import { DABubbleUser } from '../interfaces/user';
 import { GlobalsubService } from './globalsub.service';
@@ -17,7 +14,6 @@ export class ChatService {
 
   constructor(
     private databaseService: DatabaseService,
-    private userService: UserService,
     private subService: GlobalsubService
   ) {}
 

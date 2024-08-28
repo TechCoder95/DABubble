@@ -3,8 +3,7 @@
 
 
 * {
-    font-family: 'Nunito' !important;
-    
+    font-family: 'Nunito' !important;    
 }
 
 
@@ -33,4 +32,29 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     cursor: pointer;
     background: #444DF2;
+}
+
+
+.emoji{
+    width: 25px;
+    height: 25px;
+    margin-bottom: -3px;
+}
+
+
+.user-verlinkung{
+    color: orange;
+    background-color: #583bf4;
+    padding: 7px;
+    border-radius: 25px;
+    border: 2px  black;
+    cursor: pointer;
+}
+
+.channel-verlinkung{
+    color: rgb(0, 255, 0);
+    background-color: #583bf4;
+    padding : 7px;
+    border-radius: 25px;
+    cursor: pointer;
 }

@@ -1,3 +1,4 @@
+import { SafeHtml } from '@angular/platform-browser';
 import { DABubbleUser } from './user';
 
 export interface ChatMessage {
@@ -13,6 +14,5 @@ export interface ChatMessage {
   deleted?: boolean;
   fileUrl?: string;
   fileName?: string;
-  linkedUsers: string[];
   isThreadMsg?: boolean;
 }

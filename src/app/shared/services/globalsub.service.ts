@@ -4,8 +4,6 @@ import { DABubbleUser } from '../interfaces/user';
 import { User } from 'firebase/auth';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
-import { ThreadMessage } from '../interfaces/threadmessage';
-import { DatabaseService } from './database.service';
 import { Emoji } from '../interfaces/emoji';
 import { ThreadChannel } from '../interfaces/thread-channel';
 
@@ -23,10 +21,6 @@ export class GlobalsubService {
   private emjoiSubject = new Subject<Emoji>();
   private updateUserChangesSubject = new Subject<DABubbleUser>();
   private updateTreeSubject = new Subject<void>();
-
-  constructor() {
-
-  }
 
   getUserObservable() {
     return this.userSubject.asObservable();

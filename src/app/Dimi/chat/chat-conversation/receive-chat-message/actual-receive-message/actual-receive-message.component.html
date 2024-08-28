@@ -7,21 +7,14 @@
 >
   <section
     [ngClass]="{ 'mw-70': repeatedMessage }"
-    *ngIf="receiveMessage.message && receiveMessage.message.trim() !== ''"
+    *ngIf="receiveMessage.message && receiveMessage.message.toString().trim() !== ''"
   >
-    <aside
-      class="linked-user-style"
-      *ngIf="receiveMessage.linkedUsers.length > 0"
-    >
-      @for (username of receiveMessage.linkedUsers; track $index) {
-        <h5>{{ username }}</h5>
-      }
-    </aside>
-    <p>{{ receiveMessage.message | emojis }}</p>
+    <div class="message" [innerHTML]="receiveMessage.message | emojis | verlinkung"></div>
     <span *ngIf="receiveMessage.edited">bearbeitet</span>
   </section>
-  <div *ngIf="imageExists()">
+  <div *ngIf="imageExists()" (click)="openImageInDialog()">
     <img [src]="receivedImgMessage" />
-    <button (click)="downloadImage(receivedImgMessage)">Herunterladen</button>
   </div>
 </main>
+
+

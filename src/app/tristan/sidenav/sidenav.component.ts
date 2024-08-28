@@ -6,7 +6,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
-import { DatabaseService } from '../../shared/services/database.service';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelComponent } from '../add-channel/add-channel.component';
@@ -22,7 +21,6 @@ import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
-import { initializeApp } from 'firebase/app';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
 
@@ -108,7 +106,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private databaseService: DatabaseService,
     private dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,

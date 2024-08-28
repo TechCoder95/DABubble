@@ -2,10 +2,10 @@
 <main>
   <section class="channel-information">
     <div *ngIf="isChannel" class="chat-details-channel" (mouseenter)="changeTagImg(true)"
-      (mouseleave)="changeTagImg(false)" (click)="
-         openDialogChannelInformation($event)
-      " [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }">
+      (mouseleave)="changeTagImg(false)"  (click)="selectedChannel.isPrivate ? openUserInfo() : openDialogChannelInformation($event)"  [ngClass]="{ 'dialog-is-open': dialogChannelInfoIsOpen }">
+      
       <img [src]="tagImg" class="tag-img" *ngIf="! selectedChannel.isPrivate" />
+
       <span *ngIf=" selectedChannel.isPrivate" class="private-chat-avatar">
         <img [src]="privatChatAvatar" class="privat-chat-avatar" />
         <p [ngClass]="privateChatPartner?.isLoggedIn ? 'green' : 'grey'" class="online-status"></p>
@@ -13,10 +13,12 @@
 
       <h2 *ngIf="! selectedChannel.isPrivate">
         {{ selectedChannel.name }}
+        {{ selectedChannel.name }}
       </h2>
       <h2 *ngIf=" selectedChannel.isPrivate">
         {{ privateChatPartnerName }}
       </h2>
+      <img class="arrow-down" [src]="arrowImg" />
       <img class="arrow-down" [src]="arrowImg" />
     </div>
 
@@ -30,6 +32,7 @@
           +{{ getExtraUserCount() }}
         </p>
         <p *ngIf="getExtraUserCount() < 6">
+          {{ selectedChannel.assignedUser.length }}
           {{ selectedChannel.assignedUser.length }}
         </p>
       </div>

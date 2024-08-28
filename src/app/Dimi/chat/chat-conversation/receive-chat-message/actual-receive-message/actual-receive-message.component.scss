@@ -18,6 +18,7 @@
     }
   }
   > div img {
+    cursor: pointer;
     border-radius: 0 30px 30px 30px;
     min-height: 150px;
     min-width: 150px;
@@ -58,4 +59,12 @@
     width: max-content;
     cursor: default;
   }
+}
+
+.message{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
 }

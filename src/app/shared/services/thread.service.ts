@@ -1,5 +1,4 @@
 import { EventEmitter, Injectable, Output } from '@angular/core';
-import { UserService } from './user.service';
 import { DatabaseService } from './database.service';
 import { ThreadChannel } from '../interfaces/thread-channel';
 import { ChatMessage } from '../interfaces/chatmessage';
@@ -22,7 +21,6 @@ export class ThreadService {
 
   findSenderByMessageID(messageID: string): void {
     this.databaseService.readDataByField('messages', 'id', messageID).then((message) => {
-      // console.log(message, "das ist der geöffnete Thread");
       this.message = message;
       this.selectedMessage.emit(this.message);
     });

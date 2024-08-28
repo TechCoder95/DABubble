@@ -8,7 +8,6 @@ import {
   signInWithPopup,
   getRedirectResult,
   setPersistence,
-  browserLocalPersistence,
   browserSessionPersistence,
   signInAnonymously
 } from "firebase/auth";

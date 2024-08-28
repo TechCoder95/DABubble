@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { Emoji } from '../../../../shared/interfaces/emoji';
-import { UserService } from '../../../../shared/services/user.service';
 import { DatabaseService } from '../../../../shared/services/database.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { Subscription } from 'rxjs';
 import { ReactionComponent } from './reaction/reaction.component';
-import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
-import { tick } from '@angular/core/testing';
 import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({
@@ -23,12 +20,10 @@ export class ActiveChatMessageReactionsComponent implements OnInit, OnDestroy {
   @Input() user!: DABubbleUser;
   @Input() messageType!:string;
   activeUser!: DABubbleUser;
-  private emojiSubscription!: Subscription;
   private databaseSubscription!: Subscription;
   currentEmoji!: Emoji;
 
   constructor(
-    private userService: UserService,
     private databaseService: DatabaseService,
     public chatService: ChatService,
     private subService: GlobalsubService

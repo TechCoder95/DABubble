@@ -11,7 +11,6 @@ import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
 import { Router } from '@angular/router';
-import { SidenavComponent } from '../../../../tristan/sidenav/sidenav.component';
 import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({

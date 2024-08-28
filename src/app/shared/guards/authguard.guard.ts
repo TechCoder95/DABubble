@@ -1,8 +1,6 @@
-import { ActivatedRouteSnapshot, CanActivateFn, mapToCanActivate, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivateFn, RouterStateSnapshot } from '@angular/router';
 
-export const isLoggedIn: CanActivateFn = (route, state) => {
-  route: ActivatedRouteSnapshot;
-  state: RouterStateSnapshot;
+export const isLoggedIn: CanActivateFn = () => {
   if (sessionStorage.getItem('userLogin')) {
     return true
   }

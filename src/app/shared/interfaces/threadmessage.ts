@@ -1,3 +1,5 @@
+import { SafeHtml } from "@angular/platform-browser";
+
 export interface ThreadMessage {
   ticketId?: string;
   messageId: string;

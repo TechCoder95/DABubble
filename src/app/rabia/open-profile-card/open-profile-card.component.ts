@@ -1,6 +1,5 @@
-import { Component, inject, ViewChild, ElementRef } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { UserService } from '../../shared/services/user.service';
-import { AuthenticationService } from '../../shared/services/authentication.service';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -21,7 +20,7 @@ export class OpenProfileCardComponent {
   emailInput: string = "";
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
 
-  constructor(private AuthService: AuthenticationService, public userService: UserService, private daStorage: DAStorageService, private emailService: EmailService) {
+  constructor(public userService: UserService, private daStorage: DAStorageService, private emailService: EmailService) {
   }
 
   saveProfile() {

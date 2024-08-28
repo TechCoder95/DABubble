@@ -18,25 +18,3 @@
     }
   </section>
 </main>
-<section class="linked-users" *ngIf="linkedUsers.length > 0">
-  <h4>Verlinkungen:</h4>
-  @if (linkedUsers.length === usersInChannel.length) {
-    <p
-      class="style"
-      (click)="removeLinkedUser(12345)"
-      [title]="'Entferne Alle'"
-    >
-      Alle
-    </p>
-  } @else {
-    @for (user of linkedUsers; track $index) {
-      <p
-        class="style"
-        (click)="removeLinkedUser($index)"
-        [title]="'Entferne ' + user.username"
-      >
-        {{ "@" + user.username }}
-      </p>
-    }
-  }
-</section>

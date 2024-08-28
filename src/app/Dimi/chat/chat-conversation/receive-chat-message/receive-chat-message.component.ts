@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
 import { ReceiveChatMessageReactionComponent } from './receive-chat-message-reaction/receive-chat-message-reaction.component';
 import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reactions/active-chat-message-reactions.component';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
-import { DatabaseService } from '../../../../shared/services/database.service';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { ActualReceiveMessageComponent } from './actual-receive-message/actual-receive-message.component';
@@ -39,7 +38,6 @@ export class ReceiveChatMessageComponent {
   };
 
   constructor(
-    private databaseService: DatabaseService,
     private userService: UserService,
     private storageService: DAStorageService,
   ) {}
@@ -49,9 +47,6 @@ export class ReceiveChatMessageComponent {
     if (this.receiveMessage.fileUrl) {
       this.getImage();
     }
-
-    // console.log(this.receiveMessage, "gt3 RS");
-    
   }
 
   async getUser() {

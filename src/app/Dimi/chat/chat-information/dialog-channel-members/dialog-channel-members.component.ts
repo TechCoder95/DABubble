@@ -1,26 +1,11 @@
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  inject,
-  Inject,
-  Injector,
-  Input,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, inject, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import {
-  MAT_DIALOG_DATA,
-  MatDialog,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { ChannelService } from '../../../../shared/services/channel.service';
-import { user } from '@angular/fire/auth';
 import { DialogAddChannelMembersComponent } from '../dialog-add-channel-members/dialog-add-channel-members.component';
 import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 import { DatabaseService } from '../../../../shared/services/database.service';
