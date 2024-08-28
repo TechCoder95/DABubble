@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
 import { HtmlConverterPipe } from "../../../../../shared/pipes/html-converter.pipe";
 import { VerlinkungPipe } from "../../../../../shared/pipes/verlinkung.pipe";
+import { DAStorageService } from '../../../../../shared/services/dastorage.service';
+import express from 'express';
+import cors from 'cors';
 
 @Component({
   selector: 'app-actual-receive-message',
@@ -17,69 +20,69 @@ export class ActualReceiveMessageComponent {
   @Input() receivedImgMessage!: string;
   @Input() repeatedMessage!: boolean | undefined;
 
+  constructor(private storage: DAStorageService) {}
+
   imageExists() {
     return (
       this.receiveMessage.fileUrl && this.receiveMessage.fileUrl.trim() !== ''
     );
   }
 
-  downloadImage(imageUrl: string) {
-    debugger;
-
-    let format!: string | undefined;
-
-    if (this.receiveMessage.fileName) {
-      format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
-    }
-    
-
-    const newBlob = new Blob([imageUrl], { type: `image/${format}` });
-    const data = window.URL.createObjectURL(newBlob);
-    const link = document.createElement('a');
-    link.href = data;
-    if (this.receiveMessage.fileName) {
-      link.download = this.receiveMessage.fileName;
-    }
-    link.click();
-  }
-
-  /*   downloadImage(imageUrl: string) {
-    debugger;
-    const mimeTypes: { [key: string]: string } = {
-      png: 'image/png',
-      jpg: 'image/jpeg',
-      jpeg: 'image/jpeg',
-      svg: 'image/svg+xml',
-    };
-
-    let format!: string | undefined;
-    // Extrahiere das Dateiformat aus der URL
-    if (this.receiveMessage.fileName) {
-      format = this.receiveMessage.fileName.split('.').pop()?.toLowerCase();
-      if (!format || !(format in mimeTypes)) {
-        console.error('Unsupported image format');
-        return;
-      }
-    }
-
-    fetch(imageUrl)
-      .then((response) => response.blob())
-      .then((blob) => {
-        if (format) {
-          const newBlob = new Blob([blob], { type: mimeTypes[format] });
-          const data = window.URL.createObjectURL(newBlob);
-          const link = document.createElement('a');
-          link.href = data;
-          link.download = this.receiveMessage.fileName
-            ? `${this.receiveMessage.fileName}.${format}`
-            : `download.${format}`;
-          link.style.visibility = 'hidden';
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(data);
-        }
+  /* async downloadFile() {
+    await this.storage
+      .getDownloadURL(this.receiveMessage.fileUrl!)
+      .then((url) => {
+        debugger;
+        console.log(url);
+        
+        const xhr = new XMLHttpRequest();
+        xhr.responseType = 'blob';
+        xhr.onload = (event) => {
+          let blob = xhr.response;
+        };
+        xhr.open('GET', url);
+        xhr.send();
       })
-      .catch((error) => console.error('Error downloading the image:', error));
+      .catch((error) => {
+        console.error(error);
+      });
   } */
+
+
+
+
+  async downloadFile() {
+
+    this.storage.downloadFile(this.receiveMessage.fileUrl!, this.receiveMessage.fileName!)
+
+
+    /* try {
+      const url = await this.storage.getDownloadURL(
+        this.receiveMessage.fileUrl!,
+      );
+      console.log(url);
+
+      const response = await fetch(url);
+      debugger;
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const blob = await response.blob();
+
+      const link = document.createElement('a');
+      const objectURL = URL.createObjectURL(blob);
+      link.href = objectURL;
+      link.download = this.receiveMessage.fileName || 'downloaded-file';
+      link.click();
+      URL.revokeObjectURL(objectURL); // Bereinige das Objekt-URL
+    } catch (error) {
+      console.error('Error downloading the file:', error);
+    } */
+  }
 }
+/* function cors(arg0: {}): any {
+  throw new Error('Function not implemented.');
+} */
+
