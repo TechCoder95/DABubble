@@ -112,15 +112,20 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
 
   async addUserToChannel(allUser: DABubbleUser[]) {
     if (this.selectedChannel) {
+      let usersToPush: string[] = [];
       for (const user of allUser) {
         if (!this.selectedChannel.assignedUser.includes(user.id!)) {
-          this.selectedChannel.assignedUser.push(user.id!);
-          await this.channelService.updateChannel(this.selectedChannel);
+          usersToPush.push(user.id!);
         } else {
+          usersToPush = [];
           this.dialog.open(DialogUserAlreadyInChannelComponent, {
             data: { username: user.username },
           });
           return;
+        }
+        for (const userId of usersToPush) {
+          this.selectedChannel.assignedUser.push(userId);
+          await this.channelService.updateChannel(this.selectedChannel);
         }
       }
     }

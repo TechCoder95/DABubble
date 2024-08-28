@@ -16,11 +16,11 @@ import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 import { SafeHtml } from '@angular/platform-browser';
-import { HtmlConverterPipe } from "../../../shared/pipes/html-converter.pipe";
+import { HtmlConverterPipe } from '../../../shared/pipes/html-converter.pipe';
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
-import { VerlinkungPipe } from "../../../shared/pipes/verlinkung.pipe";
-import { EmojiInputPipe } from "../../../shared/pipes/emoji-input.pipe";
+import { VerlinkungPipe } from '../../../shared/pipes/verlinkung.pipe';
+import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -36,7 +36,7 @@ import { EmojiInputPipe } from "../../../shared/pipes/emoji-input.pipe";
     LinkChannelMemberComponent,
     HtmlConverterPipe,
     VerlinkungPipe,
-    EmojiInputPipe
+    EmojiInputPipe,
   ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
@@ -50,7 +50,6 @@ export class InputfieldComponent implements OnInit {
   selectedThread: boolean = false;
   ticket: any;
   selectedChannel: TextChannel | null = null;
-
 
   activeUser!: DABubbleUser;
   usersInChannel: DABubbleUser[] = [];
@@ -81,9 +80,10 @@ export class InputfieldComponent implements OnInit {
     private threadService: ThreadService,
   ) {
     this.activeUser = this.userService.activeUser;
-    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+    this.selectedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel')!,
+    );
   }
-
 
   ngOnInit(): void {
     // this.getPlaceholderText();
@@ -114,7 +114,6 @@ export class InputfieldComponent implements OnInit {
     this.getUsersInChannel();
   }
 
-
   async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
@@ -124,7 +123,6 @@ export class InputfieldComponent implements OnInit {
       });
     });
   }
-
 
   changeAddFilesImg(hover: boolean) {
     if (hover) {
@@ -136,7 +134,6 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
       this.addEmojiImg = './img/add-emoji-hover.svg';
@@ -146,7 +143,6 @@ export class InputfieldComponent implements OnInit {
       this.setDefaultImages();
     }
   }
-
 
   changeAddLinkImg(hover: boolean) {
     if (hover) {
@@ -158,23 +154,25 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
     this.addEmojiImg = './img/add-emoji-default.svg';
     this.addLinkImg = './img/add-link-default.svg';
   }
 
-
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
       case MessageType.Directs:
-        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+        this.selectedChannel = JSON.parse(
+          sessionStorage.getItem('selectedChannel')!,
+        );
         await this.send();
         break;
       case MessageType.Threads:
-        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedThread')!);
+        this.selectedChannel = JSON.parse(
+          sessionStorage.getItem('selectedThread')!,
+        );
         await this.send();
         break;
       case MessageType.NewDirect:
@@ -185,7 +183,6 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   async sendMessageToChannel() {
     const selectedChannel = this.channelService.getSelectedChannel();
     if (selectedChannel) {
@@ -194,7 +191,6 @@ export class InputfieldComponent implements OnInit {
       await this.send();
     }
   }
-
 
   async sendMessageToUser() {
     const channel = await this.channelService.findOrCreateChannelByUserID();
@@ -206,14 +202,9 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
-
-
-
   image!: string | ArrayBuffer;
   pdf: SafeResourceUrl | null = null;
   async send() {
-
     let message: ChatMessage = this.returnCurrentMessage();
 
     if (message.message !== '' || this.image) {
@@ -225,6 +216,7 @@ export class InputfieldComponent implements OnInit {
         this.databaseService.addChannelDataToDB('messages', message);
         this.textareaValue = '';
         this.selectedFile = '';
+        this.image = '';
         this.getPlaceholderText();
         this.linkedUsers = [];
       } catch (error) {
@@ -234,7 +226,6 @@ export class InputfieldComponent implements OnInit {
       alert('Du musst eine Nachricht eingeben');
     }
   }
-
 
   returnCurrentMessage() {
     return {
@@ -275,7 +266,6 @@ export class InputfieldComponent implements OnInit {
     return imageUrl;
   }
 
-
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -283,25 +273,18 @@ export class InputfieldComponent implements OnInit {
     }
   }
 
-
   handleFocus() {
     const setRef = document.getElementById('textarea');
-    if (setRef)
-      setRef.innerHTML = '';
+    if (setRef) setRef.innerHTML = '';
   }
-
 
   handleBlur() {
     this.getPlaceholderText();
   }
 
-
-
-
   handleEmoji(event: any) {
     document.getElementById('textarea')!.innerHTML += event.data;
   }
-
 
   getPlaceholderText(): string {
     if (this.image) {
@@ -321,7 +304,7 @@ export class InputfieldComponent implements OnInit {
     if (this.selectedChannel) {
       return `Nachricht an #${this.selectedChannel?.name}`;
     }
-    return ''
+    return '';
   }
 
   selectedFile: string | ArrayBuffer | null = null;
@@ -349,7 +332,6 @@ export class InputfieldComponent implements OnInit {
   hasLinkedUsers(): boolean {
     return this.linkedUsers.length > 0;
   }
-
 
   handleLinkedUsernames(users: DABubbleUser[]) {
     users.forEach((user) => {
