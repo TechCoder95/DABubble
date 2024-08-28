@@ -9,10 +9,10 @@ import {
   deleteObject,
   listAll,
   StorageReference,
+  getBlob,
 } from 'firebase/storage';
 import { ChatMessage } from '../interfaces/chatmessage';
-import { HttpClient } from '@angular/common/http';
-import { saveAs } from 'file-saver';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ import { saveAs } from 'file-saver';
 export class DAStorageService {
   private http = inject(HttpClient);
 
-  constructor() {}
+  constructor() { }
   firebaseApp = getApp();
   /* firestore: Firestore = inject(Firestore); */
 
@@ -36,7 +36,7 @@ export class DAStorageService {
       'gs://dabubble-da785.appspot.com',
     );
     const mountainsRef = ref(storage, name);
-    uploadBytes(mountainsRef, file).then((snapshot) => {});
+    uploadBytes(mountainsRef, file).then((snapshot) => { });
     const metadata = {
       contentType: 'image/jpeg',
     };
@@ -48,36 +48,40 @@ export class DAStorageService {
    * @returns A Promise that resolves when the file is downloaded successfully.
    */
   async downloadFile(url: string, fileName: string) {
-    let storage = getStorage();
-    const storageRef = ref(storage, url);
-    getDownloadURL(storageRef)
+    // Create a reference to the file we want to download
+    const storage = getStorage();
+    const starsRef = ref(storage, url);
+
+    // Get the download URL
+    getDownloadURL(starsRef)
       .then((url) => {
-        console.log(url);
-
-        // `url` is the download URL for 'images/stars.jpg'
-
-        this.http.get(url, { responseType: 'blob' }).subscribe((blob) => {
-          saveAs(blob, fileName);
-        });
-
-        // This can be downloaded directly:
-        /* const xhr = new XMLHttpRequest();
-
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-        };
-        xhr.open('GET', url);
-        xhr.send(); */
-
-        // Or inserted into an <img> element
-        // const img = document.getElementById('myimg');
-        // img.setAttribute('src', url);
+        window.open(url, '_blank');
       })
       .catch((error) => {
-        // Handle any errors
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/object-not-found':
+            // File doesn't exist
+            break;
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+
+          // ...
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect the server response
+            break;
+        }
       });
   }
+
+
+
 
   /**
    * Deletes a file from the specified storage location.
