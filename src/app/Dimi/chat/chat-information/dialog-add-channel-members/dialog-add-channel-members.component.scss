@@ -155,24 +155,18 @@ button {
 
 .remove-selected-user-img {
   cursor: pointer;
+  width: 40px;
 }
 
 .arrange-selected-user {
+  flex-direction: column;
+  gap: 5px;
   display: flex;
-  background-color: aqua;
+  max-height: 205px;
+  /* background-color: whitesmoke; */
+  width: max-content;
   border-radius: 30px;
-  width: 100%;
   overflow: auto;
   font-size: 18px;
-  border: 1px solid #ccc;
-  /*  cursor: pointer;
-  outline: none; */
-
-  /*  &:hover {
-    border: 1px solid #adb0d9;
-  }
-
-  &:focus {
-    border: 1px solid rgba(68, 77, 242, 1);
-  } */
+  /*  border: 1px solid #ccc; */
 }

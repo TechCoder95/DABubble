@@ -17,50 +17,52 @@
   </section>
 
   <section class="inputfield">
-    <input
-      type="text"
-      class="inputfield-name"
-      placeholder="Name eingeben"
-      #inputName
-    />
-    <div
-      class="arrange-selected-user"
-      *ngIf="selectedUser.length > 0"
-    >
-        @for (user of selectedUser; track $index) {
-          <div class="selected-user">
-            <img [src]="user.avatar" class="user-avatar-img" />
-            <p>{{ user.username }}</p>
-            <img
-              (mouseenter)="changeRemoveSelectedUserImg(true)"
-              (mouseleave)="changeRemoveSelectedUserImg(false)"
-              [src]="removeSelectedUserImg"
-              (click)="removeSelectedUser()"
-              class="remove-selected-user-img"
-            />
-          </div>
-        }
+    <div>
+      <input
+        type="text"
+        class="inputfield-name"
+        placeholder="Name eingeben"
+        #inputName
+      />
+      <div class="input-results" *ngIf="searchResults.length > 0">
+        <ul>
+          @for (result of searchResults; track $index) {
+            <li (click)="putUserToInputfield(result)">
+              <img [src]="result.avatar" />
+              <span>
+                <h4>{{ result.username }}</h4>
+                <p>{{ result.mail }}</p>
+              </span>
+            </li>
+          }
+        </ul>
+      </div>
     </div>
-
-    <div class="input-results" *ngIf="searchResults.length > 0">
-      <ul>
-        @for (result of searchResults; track $index) {
-          <li (click)="putUserToInputfield(result)">
-            <img [src]="result.avatar" />
-            <span>
-              <h4>{{ result.username }}</h4>
-              <p>{{ result.mail }}</p>
-            </span>
-          </li>
-        }
-      </ul>
+    <div class="arrange-selected-user" *ngIf="selectedUser.length > 0">
+      @for (user of selectedUser; track $index) {
+        <div class="selected-user">
+          <img [src]="user.avatar" class="user-avatar-img" />
+          <p>{{ user.username }}</p>
+          <img
+            (mouseenter)="changeRemoveSelectedUserImg($index, true)"
+            (mouseleave)="changeRemoveSelectedUserImg($index, false)"
+            [src]="
+              hoverStates[$index]
+                ? './img/close-hover.png'
+                : './img/close-default.png'
+            "
+            (click)="removeSelectedUser($index)"
+            class="remove-selected-user-img"
+          />
+        </div>
+      }
     </div>
   </section>
 
   <button
     [ngClass]="{ 'active-btn': selectedUser.length > 0 }"
     [disabled]="selectedUser.length === 0"
-    (click)="addUserToChannel(selectedUser[0])"
+    (click)="addUserToChannel(selectedUser)"
   >
     hinzufügen
   </button>

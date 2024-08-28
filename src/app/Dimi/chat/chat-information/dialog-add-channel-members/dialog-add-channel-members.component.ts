@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatCardModule } from '@angular/material/card';
 import { ChannelService } from '../../../../shared/services/channel.service';
 import { UserService } from '../../../../shared/services/user.service';
@@ -20,7 +24,7 @@ import { DialogUserAlreadyInChannelComponent } from './dialog-user-already-in-ch
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
-    DialogUserAlreadyInChannelComponent
+    DialogUserAlreadyInChannelComponent,
   ],
   templateUrl: './dialog-add-channel-members.component.html',
   styleUrls: ['./dialog-add-channel-members.component.scss'],
@@ -32,26 +36,23 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   searchResults: DABubbleUser[] = [];
   selectedUser: DABubbleUser[] = [];
   removeSelectedUserImg = './img/remove-selected-user.svg';
-  selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+  selectedChannel: TextChannel = JSON.parse(
+    sessionStorage.getItem('selectedChannel')!,
+  );
 
   constructor(
     public dialogRef: MatDialogRef<DialogAddChannelMembersComponent>,
     public channelService: ChannelService,
     public userService: UserService,
     public dialog: MatDialog,
-  ) {
+  ) {}
 
-  }
-
-  
   ngAfterViewInit(): void {
     setTimeout(() => this.inputName.nativeElement.blur(), 200);
     const keyup$ = fromEvent<KeyboardEvent>(
       this.inputName.nativeElement,
-      'keyup'
-    ).pipe(
-      debounceTime(500)
-    );
+      'keyup',
+    ).pipe(debounceTime(500));
 
     keyup$.subscribe((event: KeyboardEvent) => this.searchUser(event));
   }
@@ -80,13 +81,16 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   putUserToInputfield(user: DABubbleUser) {
     this.searchResults = [];
     this.inputName.nativeElement.value = '';
-   /*  this.inputName.nativeElement.placeholder = ''; */
-    this.selectedUser.push(user);
+
+    if (!this.selectedUser.find((u) => u.id === user.id)) {
+      this.selectedUser.push(user);
+    } else {
+      alert('Benutzer wurde schon zur Auswahl hinzugefügt');
+    }
   }
 
-  removeSelectedUser() {
-    this.selectedUser = [];
-    this.inputName.nativeElement.placeholder = 'Name eingeben';
+  removeSelectedUser(index: number) {
+    this.selectedUser.splice(index, 1);
   }
 
   changeCloseImg(hover: boolean) {
@@ -97,26 +101,27 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     }
   }
 
-  changeRemoveSelectedUserImg(hover: boolean) {
-    if (hover) {
-      this.removeSelectedUserImg = './img/remove-selected-user-hover.svg';
-    } else {
-      this.removeSelectedUserImg = './img/remove-selected-user.svg';
-    }
+  hoverStates: boolean[] = [];
+  changeRemoveSelectedUserImg(index: number, hover: boolean) {
+    this.hoverStates[index] = hover;
   }
 
   closeDialog() {
     this.dialogRef.close(false);
   }
 
-  async addUserToChannel(user: DABubbleUser) {
+  async addUserToChannel(allUser: DABubbleUser[]) {
     if (this.selectedChannel) {
-      if (!this.selectedChannel.assignedUser.includes(user.id!)) {
-        this.selectedChannel.assignedUser.push(user.id!);
-        await this.channelService.updateChannel(this.selectedChannel);
-       this.closeDialog();
-      } else {
-       this.dialog.open(DialogUserAlreadyInChannelComponent);
+      for (const user of allUser) {
+        if (!this.selectedChannel.assignedUser.includes(user.id!)) {
+          this.selectedChannel.assignedUser.push(user.id!);
+          await this.channelService.updateChannel(this.selectedChannel);
+        } else {
+          this.dialog.open(DialogUserAlreadyInChannelComponent, {
+            data: { username: user.username },
+          });
+          return;
+        }
       }
     }
   }
