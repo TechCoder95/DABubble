@@ -1,13 +1,25 @@
 import { inject, Injectable } from '@angular/core';
 import { getApp } from 'firebase/app';
 import { Firestore } from 'firebase/firestore';
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject, listAll, StorageReference } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+  listAll,
+  StorageReference,
+} from 'firebase/storage';
 import { ChatMessage } from '../interfaces/chatmessage';
+import { HttpClient } from '@angular/common/http';
+import { saveAs } from 'file-saver';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DAStorageService {
+  private http = inject(HttpClient);
+
   constructor() {}
   firebaseApp = getApp();
   /* firestore: Firestore = inject(Firestore); */
@@ -35,24 +47,28 @@ export class DAStorageService {
    * @param url - The URL of the file to download.
    * @returns A Promise that resolves when the file is downloaded successfully.
    */
-  async downloadFile(url: string) {
-    let storage = getStorage(
-      this.firebaseApp,
-      'gs://dabubble-da785.appspot.com',
-    );
-    const storageRef = ref(storage, url); 
+  async downloadFile(url: string, fileName: string) {
+    let storage = getStorage();
+    const storageRef = ref(storage, url);
     getDownloadURL(storageRef)
       .then((url) => {
+        console.log(url);
+
         // `url` is the download URL for 'images/stars.jpg'
 
+        this.http.get(url, { responseType: 'blob' }).subscribe((blob) => {
+          saveAs(blob, fileName);
+        });
+
         // This can be downloaded directly:
-        const xhr = new XMLHttpRequest();
+        /* const xhr = new XMLHttpRequest();
+
         xhr.responseType = 'blob';
         xhr.onload = (event) => {
           const blob = xhr.response;
         };
         xhr.open('GET', url);
-        xhr.send();
+        xhr.send(); */
 
         // Or inserted into an <img> element
         // const img = document.getElementById('myimg');

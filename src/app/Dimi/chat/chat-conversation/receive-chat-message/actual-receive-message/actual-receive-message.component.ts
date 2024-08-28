@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../../shared/services/dastorage.service';
 import express from 'express';
-/* import cors from 'cors'; */
+import cors from 'cors';
 
 @Component({
   selector: 'app-actual-receive-message',
@@ -50,18 +50,11 @@ export class ActualReceiveMessageComponent {
 
 
   async downloadFile() {
-    /* const express = require("express");
-    const app = express();
-    app.use(
-      cors({
-        origin: 'http://localhost:54159',
-      }),
-    ); */
 
-    this.storage.downloadFile(this.receiveMessage.fileUrl!)
+    this.storage.downloadFile(this.receiveMessage.fileUrl!, this.receiveMessage.fileName!)
 
-/* 
-    try {
+
+    /* try {
       const url = await this.storage.getDownloadURL(
         this.receiveMessage.fileUrl!,
       );
@@ -87,7 +80,7 @@ export class ActualReceiveMessageComponent {
     } */
   }
 }
-function cors(arg0: {}): any {
+/* function cors(arg0: {}): any {
   throw new Error('Function not implemented.');
-}
+} */
 
