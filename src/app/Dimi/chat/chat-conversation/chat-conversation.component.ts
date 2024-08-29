@@ -94,9 +94,7 @@ export class ChatConversationComponent
             return;
           }
           this.allMessages.push(message);
-          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
-          console.log('allMessages', this.allMessages);
-          
+          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);          
         }
       });
   }

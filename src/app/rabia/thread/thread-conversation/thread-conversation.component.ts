@@ -50,7 +50,6 @@ export class ThreadConversationComponent {
 
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-    console.log("das müsste hier auch schon klappen", this.selectedThread.messages);
     this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
       this.selectedThread = thread;
