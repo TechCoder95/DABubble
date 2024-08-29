@@ -23,13 +23,6 @@ export class ThreadService {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
 
-  findSenderByMessageID(messageID: string): void {
-    this.databaseService.readDataByField('messages', 'id', messageID).then((message) => {
-      this.message = message;
-      this.selectedMessage.emit(this.message);
-    });
-  }
-
   getThread() {
     return this.thread;
   }

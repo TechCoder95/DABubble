@@ -106,12 +106,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.threadOwner = threadOwner;
       });
     }
-
-    if (this.threadService.selectedMessage) {
-      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-        this.selectedMessage = selectedMessage[0];
-      });
-    }
     this.getUsersInChannel();
   }
 
