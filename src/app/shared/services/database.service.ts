@@ -235,6 +235,15 @@ export class DatabaseService implements OnDestroy {
     snapshot.forEach((doc) => deleteDoc(doc.ref));
   }
 
+  async deleteDatafromArray(collectionName: string, field: string, value: string) {
+    const q = query(
+      collection(this.firestore, collectionName),
+      where(field, 'array-contains', value)
+    );
+    const snapshot = await getDocs(q);
+    snapshot.forEach((doc) => deleteDoc(doc.ref));
+  }
+
 
   /**
    * Adds channel data to the database.
@@ -263,19 +272,41 @@ export class DatabaseService implements OnDestroy {
    * @param userId - The ID of the user to subscribe to.
    * @returns A function to unsubscribe from the subscription.
    */
-  async subscribeToUserData(userId: string) {
+  async subscribeToOnlineData() {
     const q = query(
-      collection(this.firestore, 'users'),
-      where('id', '==', userId)
+      collection(this.firestore, 'onlinestatus'),
+      where('id', '==', 'VZxZWTcEoLUUZGgItgwS')
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        this.subService.updateUser(data as DABubbleUser);
+        console.log(data);
+        this.subService.updateOnlineStatus(data);
       });
     });
   }
+
+
+    /**
+   * Subscribes to user data based on the provided user ID.
+   * 
+   * @param userId - The ID of the user to subscribe to.
+   * @returns A function to unsubscribe from the subscription.
+   */
+    async subscribeToUserData(userId: string) {
+      const q = query(
+        collection(this.firestore, 'users'),
+        where('id', '==', userId)
+      );
+  
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          let data = change.doc.data();
+          this.subService.updateUser(data as DABubbleUser);
+        });
+      });
+    }
 
 
   /**

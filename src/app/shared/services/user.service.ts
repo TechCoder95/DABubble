@@ -52,6 +52,7 @@ export class UserService {
           this.globalSubService.updateGoogleUser(this.googleUser);
         }
       });
+      this.DatabaseService.subscribeToOnlineData();
     }
   }
 
@@ -161,6 +162,14 @@ export class UserService {
       this.activeUser.mail = loginUser!.mail;
     }
     this.activeUser.isLoggedIn = true;
+    this.DatabaseService.readDataByField('onlinestatus', 'id', 'VZxZWTcEoLUUZGgItgwS').then((data) => {
+      if (data) {
+        let onlineUser = data[0].onlineUser;
+        onlineUser.push(this.activeUser.id);
+        this.DatabaseService.updateDataInDB('onlinestatus', 'VZxZWTcEoLUUZGgItgwS', { onlineUser: onlineUser });
+      }
+    }
+    );
     this.updateUser(this.activeUser);
   }
 
@@ -175,6 +184,17 @@ export class UserService {
   async logout() {
     if (sessionStorage.getItem('userLogin')) {
       let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
+
+      this.DatabaseService.readDataByArray('onlinestatus', 'onlineUser', id).then((data) => {
+        if (data.length > 0) {
+          let onlineUser = data[0].onlineUser;
+          let index = onlineUser.indexOf(id);
+          onlineUser.splice(index, 1);
+          this.DatabaseService.updateDataInDB('onlinestatus', 'VZxZWTcEoLUUZGgItgwS', { onlineUser: onlineUser });
+        }
+      }
+      );
+
       this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
         .then(() => {
           sessionStorage.removeItem('userLogin');
