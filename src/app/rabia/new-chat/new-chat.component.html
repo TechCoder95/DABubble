@@ -4,7 +4,7 @@
     <input type="text" placeholder="An: #channel, oder @jemand oder E-Mail Adresse" [formControl]="searchControl">
 
     <div class="members">
-      <!-- Benutzer anzeigen -->
+      
       <p class="font-bold text-2xl" *ngIf="searchResults.users.length > 0">Benutzer</p>
       <div *ngFor="let member of searchResults.users; let i = index" class="member" (click)="selectUser(member)">
         <div class="relative img-container">
@@ -14,7 +14,6 @@
         <p>{{ member.username }} - ({{member.mail}})</p>
       </div>
 
-      <!-- Channels anzeigen -->
       <br>
       <p class="font-bold text-2xl" *ngIf="searchResults.channels.length > 0">Channels</p>
       <div *ngFor="let channel of searchResults.channels; let i = index" class="channel"

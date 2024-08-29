@@ -46,12 +46,16 @@ export class NewChatComponent implements OnInit {
         return Promise.all([
           await this.userService.searchUsersByNameOrEmail(value),
           await this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
-        ]).then(([users, channels]) => ({ users, channels }));
+        ]).then(([users, channels]) => {
+          const filteredChannels = channels.filter(channel => !channel.isPrivate);
+          return { users, channels: filteredChannels };
+        });
       })
     ).subscribe(results => {
       this.searchResults = results;
     });
   }
+  
 
   selectUser(user: DABubbleUser) {
     this.isSelectingUser = true;
