@@ -2,7 +2,7 @@ import { Injectable, OnDestroy, inject } from '@angular/core';
 import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
-import { GlobalsubService } from './globalsub.service';
+import { GlobalsubService, OnlineStatus } from './globalsub.service';
 import { DABubbleUser } from '../interfaces/user';
 import { Emoji } from '../interfaces/emoji';
 import { ThreadChannel } from '../interfaces/thread-channel';
@@ -282,7 +282,7 @@ export class DatabaseService implements OnDestroy {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
         console.log(data);
-        this.subService.updateOnlineStatus(data);
+        this.subService.updateOnlineStatus(data as OnlineStatus);
       });
     });
   }
