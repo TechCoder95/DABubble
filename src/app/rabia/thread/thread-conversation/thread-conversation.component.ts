@@ -70,14 +70,10 @@ export class ThreadConversationComponent {
               }
               this.allThreadMessages.push(message);
               this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-
-
             }
           });
       });
     });
-
-
 
     this.subService.updateActiveThread(this.selectedThread);
   }

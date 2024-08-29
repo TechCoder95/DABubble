@@ -89,7 +89,7 @@ export class GlobalsubService {
 
 
   updateMessage(data: ChatMessage) {
-    this.activeMessageSubject.next(data);
+    this.allMessageSubject.next(data);
     sessionStorage.setItem('threadMessage', JSON.stringify(data));
   }
 

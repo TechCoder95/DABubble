@@ -82,24 +82,12 @@ export class ChatConversationComponent
     this.allMessages = [];
 
     this.subService.getAllMessageObservable()
-      .pipe(filter((message) => message.channelId === this.selectedChannel.id), tap(console.log))
+      .pipe(filter((message) => message.channelId === this.selectedChannel.id))
       .subscribe((message) => {
         if (message.id) {
-          // try {
-          //   this.databaseService.readDataByField('threads', 'messageID', message.id).then((threads) => {
-          //     console.log('Threads', threads[0].id);
-
-          //     this.databaseService.readDataByField('messages', 'channelId', threads[0].id).then((messages) => {
-          //       console.log('Messages', messages);
-
-          //       message.replyNumber = messages.length;
-          //       this.subService.updateMessage(message);
-          //     });
-          //   });
-          // } catch (error) {
-          //   }
+          
           this.allMessages.push(message);
-        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
         }
       });
   }
