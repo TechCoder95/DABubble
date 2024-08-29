@@ -44,7 +44,7 @@ h5 {
   transition: background-color 0.3s ease-in-out;
   > img {
     height: 50px;
-    width: 50px;
+    min-width: 50px;
     border-radius: 50%;
     object-fit: cover;
   }

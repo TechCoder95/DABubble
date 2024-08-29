@@ -55,6 +55,7 @@ export class ThreadConversationComponent {
       this.selectedThread = thread;
       this.allThreadMessages = [];
       this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
+       this.selectedMessage.replyNumer = 0;
       this.allThreadMessages.push(this.selectedMessage)
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
