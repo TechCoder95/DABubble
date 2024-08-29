@@ -13,12 +13,10 @@
 
       <h2 *ngIf="! selectedChannel.isPrivate">
         {{ selectedChannel.name }}
-        {{ selectedChannel.name }}
       </h2>
       <h2 *ngIf=" selectedChannel.isPrivate">
         {{ privateChatPartnerName }}
       </h2>
-      <img class="arrow-down" [src]="arrowImg" />
       <img class="arrow-down" [src]="arrowImg" />
     </div>
 
