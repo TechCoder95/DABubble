@@ -13,7 +13,16 @@
           [activeGoogleUserChange]="activeGoogleUserChange"
         ></app-sidenav>
         <div class="flex w-full">
-          <router-outlet />
+          
+          @if (this.channelService.loading) {
+            <div class="spinner">
+              <mat-spinner></mat-spinner>
+            </div>
+            }
+            @else {
+              
+            <router-outlet />
+            }
         </div>
       </section>
     </main>
@@ -32,8 +41,18 @@
       <section
         class="absolute flex w-full align-items-center justify-content-center"
       >
+      @if (this.channelService.loading) {
+        <div class="spinner">
+          <mat-spinner></mat-spinner>
+        </div>
+        }
+        @else {
+          
         <router-outlet />
+        }
       </section>
     </main>
   </div>
 }
+
+

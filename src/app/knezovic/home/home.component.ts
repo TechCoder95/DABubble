@@ -9,18 +9,20 @@ import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
 import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ChannelService } from '../../shared/services/channel.service';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet, CommonModule],
+  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet, CommonModule, MatProgressSpinnerModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit, OnDestroy {
 
-  constructor(private globalSubService: GlobalsubService, private router: Router) { }
+  constructor(private globalSubService: GlobalsubService, private router: Router, public channelService:ChannelService) { }
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
