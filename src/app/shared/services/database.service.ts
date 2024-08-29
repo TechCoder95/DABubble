@@ -101,7 +101,8 @@ export class DatabaseService implements OnDestroy {
    * @returns {Promise<void>} - A promise that resolves when the data is updated.
    */
   async updateDataInDB(collectionName: string, docId: string, data: any) {
-    await updateDoc(doc(this.firestore, collectionName, docId), data).catch(
+    await updateDoc(doc(this.firestore, collectionName, docId), data)
+    .catch(
       (err) => {
         console.error('Error updating Data', err);
       }

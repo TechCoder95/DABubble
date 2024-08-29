@@ -55,8 +55,10 @@ export class ThreadConversationComponent {
       this.selectedThread = thread;
       this.allThreadMessages = [];
       this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
-       this.selectedMessage.replyNumber = 0;
+      this.selectedMessage.replyNumber = 0;
       this.allThreadMessages.push(this.selectedMessage)
+      console.log(this.allThreadMessages[0]);
+
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
         this.subService.getAllMessageObservable()
@@ -68,15 +70,6 @@ export class ThreadConversationComponent {
               }
               this.allThreadMessages.push(message);
               this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-              this.selectedThread.messages.push(message);
-
-
-              const answersToMsg = this.selectedThread.messages.map(message => message.message);
-
-              const lastanswerToMsgTime = this.selectedThread.messages.map(message => message.timestamp).sort((a, b) => a - b).pop()!;
-
-
-              this.chatService.setNumberOfReplies(this.selectedMessage, answersToMsg.length, lastanswerToMsgTime);
 
 
             }

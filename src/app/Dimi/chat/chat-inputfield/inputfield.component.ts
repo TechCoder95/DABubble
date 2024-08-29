@@ -19,6 +19,7 @@ import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { VerlinkungPipe } from '../../../shared/pipes/verlinkung.pipe';
 import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -70,6 +71,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   storage: any;
 
   constructor(
+    private subService: GlobalsubService,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
@@ -211,7 +213,15 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
           message.fileUrl = await this.saveFileInStorage(message);
           message.fileName = this.fileName;
         }
+
         this.databaseService.addChannelDataToDB('messages', message);
+
+        if (this.messageType === MessageType.Threads) {
+
+          this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
+          this.selectedMessage.replyNumber = this.selectedMessage.replyNumber + 1;
+          this.subService.updateAllMessages(this.selectedMessage);
+        }
         this.textareaValue = '';
         this.selectedFile = '';
         this.image = '';

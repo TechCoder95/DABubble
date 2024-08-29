@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { DABubbleUser } from '../interfaces/user';
 import { User } from 'firebase/auth';
@@ -6,6 +6,7 @@ import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
 import { Emoji } from '../interfaces/emoji';
 import { ThreadChannel } from '../interfaces/thread-channel';
+import { DatabaseService } from './database.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,7 @@ export class GlobalsubService {
   private emjoiSubject = new Subject<Emoji>();
   private updateUserChangesSubject = new Subject<DABubbleUser>();
   private updateTreeSubject = new Subject<void>();
+  private activeMessageSubject = new Subject<ChatMessage>();
 
   getUserObservable() {
     return this.userSubject.asObservable();
@@ -58,6 +60,10 @@ export class GlobalsubService {
     return this.updateTreeSubject.asObservable();
   }
 
+  getActiveMessageObservable() {
+    return this.activeMessageSubject.asObservable();
+  }
+
   updateUser(data: DABubbleUser) {
     this.userSubject.next(data);
     sessionStorage.setItem('userLogin', JSON.stringify(data));
@@ -80,6 +86,13 @@ export class GlobalsubService {
     this.activeThreadSubject.next(data);
     sessionStorage.setItem('selectedThread', JSON.stringify(data));
   }
+
+
+  updateMessage(data: ChatMessage) {
+    this.activeMessageSubject.next(data);
+    sessionStorage.setItem('threadMessage', JSON.stringify(data));
+  }
+
 
   updateEmoji(data: Emoji) {
     this.emjoiSubject.next(data);

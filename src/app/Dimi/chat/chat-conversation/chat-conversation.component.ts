@@ -19,7 +19,7 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { UserService } from '../../../shared/services/user.service';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, tap } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
@@ -47,7 +47,6 @@ export class ChatConversationComponent
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
-  allThreadMessages: ChatMessage[] = [];
   selectedMessage!: DABubbleUser;
 
   @Input() activeChannelFromChat: any;
@@ -82,19 +81,25 @@ export class ChatConversationComponent
 
     this.allMessages = [];
 
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
-
-    this.allMessages = [];
-
     this.subService.getAllMessageObservable()
-      .pipe(filter((message) => message.channelId === this.selectedChannel.id))
+      .pipe(filter((message) => message.channelId === this.selectedChannel.id), tap(console.log))
       .subscribe((message) => {
         if (message.id) {
-          if (this.allMessages.some((msg) => msg.id === message.id)) {
-            return;
-          }
+          // try {
+          //   this.databaseService.readDataByField('threads', 'messageID', message.id).then((threads) => {
+          //     console.log('Threads', threads[0].id);
+
+          //     this.databaseService.readDataByField('messages', 'channelId', threads[0].id).then((messages) => {
+          //       console.log('Messages', messages);
+
+          //       message.replyNumber = messages.length;
+          //       this.subService.updateMessage(message);
+          //     });
+          //   });
+          // } catch (error) {
+          //   }
           this.allMessages.push(message);
-          this.allMessages.sort((a, b) => a.timestamp - b.timestamp);          
+        this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
         }
       });
   }
