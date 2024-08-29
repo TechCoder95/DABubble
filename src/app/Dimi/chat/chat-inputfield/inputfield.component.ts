@@ -8,14 +8,12 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/enums/messagetype';
-import { TicketService } from '../../../shared/services/ticket.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
-import { SafeHtml } from '@angular/platform-browser';
 import { HtmlConverterPipe } from '../../../shared/pipes/html-converter.pipe';
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
@@ -48,7 +46,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   addLinkImg = './img/add-link-default.svg';
 
   selectedThread: boolean = false;
-  ticket: any;
   selectedChannel: TextChannel | null = null;
 
   activeUser!: DABubbleUser;
@@ -76,7 +73,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private ticketService: TicketService,
     private router: Router,
     private storageService: DAStorageService,
     private threadService: ThreadService,
@@ -116,7 +112,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.selectedMessage = selectedMessage[0];
       });
     }
-    // this.ticket = this.ticketService.getTicket();
     this.getUsersInChannel();
   }
 

@@ -55,12 +55,6 @@ export class ReceiveChatMessageReactionComponent {
     await this.threadService.openThread();
   }
 
-  /* async updateEmojiText() {
-    this.emojiUsersText = await this.chatService.loadEmojiUsers(
-      this.emoji,
-      this.activeUser
-    );
-  } */
 
   handleEmojis(emojiType: string) {
     let emoji: Emoji = {

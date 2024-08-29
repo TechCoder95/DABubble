@@ -43,7 +43,6 @@ export class ChatConversationComponent
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
-  @Output() ebbes = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
