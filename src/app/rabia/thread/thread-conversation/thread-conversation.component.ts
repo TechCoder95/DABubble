@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, input, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/s
 import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 import { filter, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { ChatService } from '../../../shared/services/chat.service';
 
 @Component({
   selector: 'app-thread-conversation',
@@ -41,37 +42,35 @@ export class ThreadConversationComponent {
 
 
 
-  constructor(private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
+  constructor(public chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
 
   }
 
   ngOnInit(): void {
 
-
-
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
-    
-    console.log(this.selectedThread);
     this.threadSub = this.subService.getActiveThreadObservable().subscribe((thread) => {
 
       this.selectedThread = thread;
       this.allThreadMessages = [];
       this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
+      this.selectedMessage.replyNumber = 0;
       this.allThreadMessages.push(this.selectedMessage)
+
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
         this.subService.getAllMessageObservable()
-        .pipe(filter((message) => message.channelId === this.selectedThread.id))
-        .subscribe((message) => {
-          if (message.id) {
-            if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
-              return;
+          .pipe(filter((message) => message.channelId === this.selectedThread.id))
+          .subscribe((message) => {
+            if (message.id) {
+              if (this.allThreadMessages.some((msg) => msg.id === message.id)) {
+                return;
+              }
+              this.allThreadMessages.push(message);
+              this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
             }
-            this.allThreadMessages.push(message);
-            this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-          }
-        });
+          });
       });
     });
 
@@ -79,9 +78,7 @@ export class ThreadConversationComponent {
   }
 
 
-
   ngOnDestroy() {
-    console.log('Chat Conversation Destroyed');
     if (this.channelService.channelSub) {
       this.channelService.channelSub.unsubscribe();
     }

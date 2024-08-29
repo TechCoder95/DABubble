@@ -3,5 +3,5 @@ export interface ThreadChannel {
     id: string;
     channelID: string;
     userID: string;
-    messages: string[];
+    messages: any[];
 }

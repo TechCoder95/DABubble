@@ -19,7 +19,7 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { UserService } from '../../../shared/services/user.service';
 import { ChannelService } from '../../../shared/services/channel.service';
-import { filter, Subscription } from 'rxjs';
+import { filter, Subscription, tap } from 'rxjs';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
@@ -43,12 +43,10 @@ export class ChatConversationComponent
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
-  @Output() ebbes = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
-  allThreadMessages: ChatMessage[] = [];
   selectedMessage!: DABubbleUser;
 
   @Input() activeChannelFromChat: any;
@@ -67,20 +65,10 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
-
-
-    // if (sessionStorage.getItem('selectedThread')) {
-    //   this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-    //     this.selectedMessage = selectedMessage;
-    //     console.log(selectedMessage, "jutta");
-    //   });
-
-    //   this.allThreadMessages = [];
-    //   this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
-    // }
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {
@@ -92,36 +80,22 @@ export class ChatConversationComponent
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
     this.allMessages = [];
-    // this.allThreadMessages = [];
-
-    this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
-
-    this.allMessages = [];
-    // this.allThreadMessages = [];
-
-    
-    /*  ;
-    console.log(this.activeChannelFromChat); */
-
-
 
     this.subService.getAllMessageObservable()
-    .pipe(filter((message) => message.channelId === this.selectedChannel.id))
-    .subscribe((message) => {
-      if (message.id) {
-        if (this.allMessages.some((msg) => msg.id === message.id)) {
-          return;
-        }
-        if (message.isThreadMsg) {
-          this.allThreadMessages.push(message);
-          this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-        }
-        else {
+      .pipe(filter((message) => message.channelId === this.selectedChannel.id))
+      .subscribe((message) => {
+        if (message.id) {
+
+          if (this.allMessages.some((msg) => msg.id === message.id)) {
+            const messageArray: ChatMessage[] = this.allMessages.filter((msg:ChatMessage) => msg.id === message.id);
+            const x = this.allMessages.indexOf(messageArray[0]);
+            this.allMessages.splice(x, 1);
+          }
+          
           this.allMessages.push(message);
           this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

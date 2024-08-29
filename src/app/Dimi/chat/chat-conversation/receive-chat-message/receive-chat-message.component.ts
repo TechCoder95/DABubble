@@ -8,6 +8,8 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { ActualReceiveMessageComponent } from './actual-receive-message/actual-receive-message.component';
+import { ChatService } from '../../../../shared/services/chat.service';
+import { ThreadService } from '../../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -40,9 +42,13 @@ export class ReceiveChatMessageComponent {
   constructor(
     private userService: UserService,
     private storageService: DAStorageService,
-  ) {}
+    public chatService: ChatService,
+    public threadService: ThreadService
+  ) { }
 
   ngOnInit(): void {
+
+
     this.getUser();
     if (this.receiveMessage.fileUrl) {
       this.getImage();

@@ -8,19 +8,18 @@ import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { DatabaseService } from '../../../shared/services/database.service';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { MessageType } from '../../../shared/enums/messagetype';
-import { TicketService } from '../../../shared/services/ticket.service';
 import { Router, RouterModule } from '@angular/router';
 import { EmojisPipe } from '../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../shared/services/dastorage.service';
 import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
-import { SafeHtml } from '@angular/platform-browser';
 import { HtmlConverterPipe } from '../../../shared/pipes/html-converter.pipe';
 import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { VerlinkungPipe } from '../../../shared/pipes/verlinkung.pipe';
 import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -48,7 +47,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   addLinkImg = './img/add-link-default.svg';
 
   selectedThread: boolean = false;
-  ticket: any;
   selectedChannel: TextChannel | null = null;
 
   activeUser!: DABubbleUser;
@@ -73,10 +71,10 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   storage: any;
 
   constructor(
+    private subService: GlobalsubService,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
-    private ticketService: TicketService,
     private router: Router,
     private storageService: DAStorageService,
     private threadService: ThreadService,
@@ -110,13 +108,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.threadOwner = threadOwner;
       });
     }
-
-    if (this.threadService.selectedMessage) {
-      this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-        this.selectedMessage = selectedMessage[0];
-      });
-    }
-    this.ticket = this.ticketService.getTicket();
     this.getUsersInChannel();
   }
 
@@ -222,7 +213,16 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
           message.fileUrl = await this.saveFileInStorage(message);
           message.fileName = this.fileName;
         }
+
         this.databaseService.addChannelDataToDB('messages', message);
+
+        if (this.messageType === MessageType.Threads) {
+
+          this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
+          this.selectedMessage.replyNumber = this.selectedMessage.replyNumber + 1;
+          this.databaseService.updateDataInDB('messages', this.selectedMessage.id!, this.selectedMessage);
+          sessionStorage.setItem('threadMessage', JSON.stringify(this.selectedMessage));
+        }
         this.textareaValue = '';
         this.selectedFile = '';
         this.image = '';
@@ -249,6 +249,8 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       imageUrl: '',
       isThreadMsg: this.messageType === MessageType.Threads,
       fileUrl: '',
+      replyNumber: 0,
+      lastRepliedTime: new Date().getTime(),
     };
   }
 

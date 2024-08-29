@@ -1,9 +1,5 @@
 <main [ngClass]="{ 'pt-none': repeatedMessage }">
-  <section
-    class="message"
-    id="{{ receiveMessage.id }}"
-    [ngClass]="{ 'adjust-padding-left': repeatedMessage }"
-  >
+  <section class="message" id="{{ receiveMessage.id }}" [ngClass]="{ 'adjust-padding-left': repeatedMessage }">
     <img [src]="senderUser.avatar" *ngIf="!repeatedMessage" />
     <div class="message-information">
       <div class="sender-and-time" [ngClass]="{ 'jc-end': repeatedMessage }">
@@ -12,29 +8,37 @@
           {{ receiveMessage.timestamp | date: "HH:mm" }} Uhr
         </p>
       </div>
-      <app-actual-receive-message
-        [receiveMessage]="receiveMessage"
-        [receivedImgMessage]="receivedImgMessage"
-        [repeatedMessage]="repeatedMessage"
-      ></app-actual-receive-message>
+      <app-actual-receive-message [receiveMessage]="receiveMessage" [receivedImgMessage]="receivedImgMessage"
+        [repeatedMessage]="repeatedMessage"></app-actual-receive-message>
+
+      @if (receiveMessage.replyNumber != 0) {
+      <div class="style-thread-answers">
+        <div class="flex text-lg purple">
+          <p>{{receiveMessage.replyNumber}}</p>
+          @if (receiveMessage.replyNumber < 2) {
+            <p> Antwort</p>
+            } @else {
+            <p> Antworten</p>
+            }
+
+        </div>
+        <div class="flex text-sm grey">
+          <p>Letzte Antwort</p>
+          <p>{{receiveMessage.lastRepliedTime | date: "HH:mm" }}</p>
+          <p>Uhr</p>
+        </div>
+      </div>}
+
       <p *ngIf="receiveMessage.deleted" class="message-deleted-notification">
         Diese Nachricht wurde gelöscht
       </p>
       <div>
-        <app-active-chat-message-reactions
-          [messageType]="'receive'"
-          [message]="receiveMessage"
-          [user]="user"
-        ></app-active-chat-message-reactions>
+        <app-active-chat-message-reactions [messageType]="'receive'" [message]="receiveMessage"
+          [user]="user"></app-active-chat-message-reactions>
       </div>
     </div>
-    <app-receive-chat-message-reaction
-      [user]="user"
-      [ticket]="receiveMessage"
-      [messageForThread]="receiveMessage"
-      *ngIf="!receiveMessage.deleted"
-      class="slide-in"
-      [ngClass]="{ 'position-component': repeatedMessage }"
-    ></app-receive-chat-message-reaction>
+    <app-receive-chat-message-reaction [user]="user" [ticket]="receiveMessage" [messageForThread]="receiveMessage"
+      *ngIf="!receiveMessage.deleted" class="slide-in"
+      [ngClass]="{ 'position-component': repeatedMessage }"></app-receive-chat-message-reaction>
   </section>
 </main>

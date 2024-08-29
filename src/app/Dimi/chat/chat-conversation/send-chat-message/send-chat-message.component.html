@@ -1,41 +1,45 @@
 <main #mainContainer>
-  <section
-    class="message"
-    *ngIf="!inEditMessageMode"
-    id="{{ sendMessage.id }}"
-    [ngClass]="{ 'adjust-padding-right': repeatedMessage }"
-  >
-    <app-send-chat-message-reaction
-      [ticket]="sendMessage"
-      *ngIf="!sendMessage.deleted"
-      [ngClass]="{ 'position-component': repeatedMessage }"
-      (editModeChange)="onEditModeChange($event)"
-      (deleteStatusChange)="onDelete($event)"
-      class="slide-in"
-      [sendMessage]="sendMessage"
-      [user]="user"
-    ></app-send-chat-message-reaction>
+  <section class="message" *ngIf="!inEditMessageMode" id="{{ sendMessage.id }}"
+    [ngClass]="{ 'adjust-padding-right': repeatedMessage }">
+    <app-send-chat-message-reaction [ticket]="sendMessage" *ngIf="!sendMessage.deleted"
+      [ngClass]="{ 'position-component': repeatedMessage }" (editModeChange)="onEditModeChange($event)"
+      (deleteStatusChange)="onDelete($event)" class="slide-in" [sendMessage]="sendMessage"
+      [messageForThread]="sendMessage" [user]="user"></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
         <h5 *ngIf="!repeatedMessage">{{ user.username }}</h5>
-        <p
-          *ngIf="
+        <p *ngIf="
             !repeatedMessage ||
             (repeatedMessage && !repeatedMessageInUnder5Minutes)
-          "
-        >
+          ">
           {{ sendMessage.timestamp | date: "HH:mm" }} Uhr
         </p>
       </div>
-      <app-actual-message
-        [sendMessage]="sendMessage"
-        [sentFile]="sentImage"
-      ></app-actual-message>
-      <app-active-chat-message-reactions
-        [messageType]="'send'"
-        [message]="sendMessage"
-        [user]="user"
-      ></app-active-chat-message-reactions>
+      <app-actual-message [sendMessage]="sendMessage" [sentFile]="sentImage"></app-actual-message>
+      <app-active-chat-message-reactions [messageType]="'send'" [message]="sendMessage"
+        [user]="user"></app-active-chat-message-reactions>
+
+      @if (sendMessage.replyNumber != 0) {
+      <div class="style-thread-answers">
+        <div class="flex text-lg purple">
+          <p>{{sendMessage.replyNumber}}</p>
+          @if (sendMessage.replyNumber < 2) { 
+            <p> Antwort</p>
+            } @else {
+            <p> Antworten</p>
+          }
+
+        </div>
+        <div class="flex text-sm grey">
+          <p>Letzte Antwort</p>
+          <p>{{sendMessage.lastRepliedTime | date: "HH:mm" }}</p>
+          <p>Uhr</p>
+        </div>
+      </div>
+      }
+
+
+
     </div>
     <!-- </div> -->
     <img [src]="user.avatar" *ngIf="!repeatedMessage" />

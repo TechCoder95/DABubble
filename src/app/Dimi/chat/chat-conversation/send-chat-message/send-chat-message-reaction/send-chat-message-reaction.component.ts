@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ChannelService } from '../../../../../shared/services/channel.service';
-import { TicketService } from '../../../../../shared/services/ticket.service';
 import { Emoji } from '../../../../../shared/interfaces/emoji';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
-
+import { ThreadService } from '../../../../../shared/services/thread.service';
 @Component({
   selector: 'app-send-chat-message-reaction',
   standalone: true,
@@ -30,12 +28,12 @@ export class SendChatMessageReactionComponent {
   @Input() user!: DABubbleUser;
   @Input() ticket: any;
   @Input() isPrivate!: boolean | undefined;
+  @Input({ required: true }) messageForThread!: ChatMessage;
 
   constructor(
-    private channelService: ChannelService,
-    private ticketService: TicketService,
-    private chatService: ChatService
-  ) {}
+    private threadService: ThreadService,
+    private chatService: ChatService,
+  ) { }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
@@ -75,9 +73,13 @@ export class SendChatMessageReactionComponent {
     this.deleteStatusChange.emit(this.messageDeleted);
   }
 
-  openMessage() {
-    this.channelService.showSingleThread = true;
-    this.ticketService.setTicket(this.ticket);
+  async openThread() {
+
+    this.threadService.setTicket(this.ticket);
+    this.threadService.setMessageThread(this.messageForThread);
+
+    await this.threadService.openThread();
+
   }
 
   handleEmojis(emojiType: string) {

@@ -1,6 +1,3 @@
-import { SafeHtml } from '@angular/platform-browser';
-import { DABubbleUser } from './user';
-
 export interface ChatMessage {
   channelId: string;
   channelName?: string;
@@ -8,11 +5,12 @@ export interface ChatMessage {
   timestamp: number;
   senderName: string;
   senderId: string;
-  threadConversationId?: string[];
   id?: string;
   edited?: boolean;
   deleted?: boolean;
   fileUrl?: string;
   fileName?: string;
   isThreadMsg?: boolean;
+  replyNumber: number;
+  lastRepliedTime: number;
 }

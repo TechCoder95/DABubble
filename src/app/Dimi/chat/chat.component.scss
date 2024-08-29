@@ -14,6 +14,10 @@ mat-card {
   max-height: 81.5vh;
 }
 
+.thread-card {
+  margin-left: 24px !important
+}
+
 .height{
   height: 100%;
 }
@@ -55,11 +59,15 @@ app-chat{
 
 @media (max-width: 910px) {
 
-  mat-drawer {
+  mat-card {
     width: 100vw;
     left: 0;
     right: 0;
-    top: 0;
+    top: 0; 
     border-radius: 0 !important;
+  }
+
+  .thread-card {
+    margin-left: 0 !important
   }
 }

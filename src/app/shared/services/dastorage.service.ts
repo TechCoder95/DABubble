@@ -53,7 +53,6 @@ export class DAStorageService {
     // Get the download URL
     getDownloadURL(starsRef)
       .then((url) => {
-        console.log(url);
 
         // This can be downloaded directly:
         /* const xhr = new XMLHttpRequest();
@@ -189,7 +188,7 @@ export class DAStorageService {
 
     deleteObject(fullpath)
       .then(() => {
-        console.log('FILE DELETED SUCCESSFULLY');
+         ('FILE DELETED SUCCESSFULLY');
       })
       .catch((error) => {
         console.error('Error deleting file:', error);

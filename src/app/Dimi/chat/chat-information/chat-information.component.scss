@@ -29,18 +29,22 @@ h2 {
   padding: 6px 10px;
   cursor: pointer;
   transition: background 0.3s ease;
-  > h2 {
+
+  >h2 {
     font-size: 24px;
     transition: color 0.3s ease;
   }
-  > .arrow-div {
+
+  >.arrow-div {
     padding: 10px 7px;
   }
+
   &:hover {
     /*  padding: 6px 10px; */
     gap: 10px;
     background: rgba(236, 238, 254, 1);
-    > h2 {
+
+    >h2 {
       color: rgba(83, 90, 241, 1);
     }
   }
@@ -51,30 +55,36 @@ h2 {
   display: flex;
   align-items: center;
   gap: 10px;
-  > img {
+
+  >img {
     cursor: pointer;
   }
-  > .channel-member-amount {
+
+  >.channel-member-amount {
     display: flex;
     align-items: center;
     gap: 5px;
     padding: 3px 10px;
     cursor: pointer;
     border-radius: 100px;
-    > img:not(:first-child) {
+
+    >img:not(:first-child) {
       margin-left: -15px;
     }
-    > img {
+
+    >img {
       width: 35px;
       height: 35px;
       border-radius: 50%;
       border: 2px solid white;
       object-fit: cover;
     }
+
     &:hover {
       cursor: pointer;
       background: rgba(236, 238, 254, 1);
-      > p {
+
+      >p {
         color: rgba(83, 90, 241, 1);
       }
     }
@@ -94,7 +104,8 @@ h2 {
 
 .dialog-is-open {
   background: rgba(236, 238, 254, 1);
-  > h2,
+
+  >h2,
   p {
     color: rgba(83, 90, 241, 1);
   }
@@ -132,4 +143,19 @@ figure {
   width: 50px;
   height: 50px;
   position: relative;
+}
+
+.just-mobile-view {
+  display: none;
+}
+
+@media (max-width: 910px) {
+
+  .just-desktop-view {
+    display: none !important;
+  }
+
+  .just-mobile-view {
+    display: block;
+  }
 }

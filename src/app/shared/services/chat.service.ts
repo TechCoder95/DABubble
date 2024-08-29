@@ -21,7 +21,11 @@ export class ChatService {
     await this.databaseService.addDataToDB('messages', message);
   }
 
-
+  setNumberOfReplies(message: ChatMessage, number: number, lastanswerToMsgTime: number) {
+    message.replyNumber = number;
+    message.lastRepliedTime = lastanswerToMsgTime;
+    this.databaseService.updateDataInDB('messages', message.id!, message);
+  }
 
   /* ==================================================================== */
   async sendEmoji(

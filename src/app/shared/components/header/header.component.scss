@@ -1,4 +1,4 @@
-:host{
+:host {
     display: block;
     width: 100%;
     position: relative;
@@ -61,10 +61,43 @@ img {
     display: none;
 }
 
+.logo-if-channel-open {
+    display: none;
+}
+
 @media (max-width: 910px) {
+
+    .mobile-p {
+        padding: 30px;
+    }
+
     .search {
         display: none;
     }
+
+    .logo-if-channel-open {
+        display: flex;
+        align-items: center;
+
+        img {
+            width: 160px;
+        }
+
+        .arrow-back {
+            width: 40px;
+            height: 40px;
+            background-position: center;
+            background-repeat: no-repeat;
+            rotate: 90deg;
+            background-image: url(/img/arrow-down.svg);
+
+            &:hover {
+                background-image: url(/img/arrow-down-hover.svg);
+            }
+        }
+    }
+
+
 }
 
 @media (max-width: 650px) {
@@ -116,7 +149,9 @@ img {
 @media (max-width: 380px) {
 
     .register-mobile {
-        p, a {
+
+        p,
+        a {
             font-size: 16px;
         }
     }

@@ -1,6 +1,12 @@
 @if (activeUser && getUrl() !== '/user/login' && getUrl() !== '/user/register' && getUrl() !== '/user/chooseAvatar') {
-<div class="flex justify-content-between align-items-center">
-    <img src="/img/logo.svg" alt="">
+<div class="mobile-p flex justify-content-between align-items-center">
+
+    <img src="/img/logo.svg" alt="dabubble-logo">
+
+    <!-- <div class="logo-if-channel-open"> das hier mal drin lassen, werde ich zum responsiveness brauchen 
+        <div class="arrow-back"></div>
+        <img src="img/logo-devspace.svg" alt="devspace-logo">
+    </div> -->
 
 
     <div class="search">
@@ -8,7 +14,7 @@
     </div>
 
     <div (click)="openMenu()" class="flex align-items-center cursor-pointer">
-        <p class="userName register-desktop">{{activeUser.username}}</p> 
+        <p class="userName register-desktop">{{activeUser.username}}</p>
         <div class="ml-2 mr-2 relative img-container">
             <img class="profileimg" src="{{activeUser.avatar}}" alt="">
             <div class="online-status"></div>

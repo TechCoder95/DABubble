@@ -47,45 +47,14 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   async openThread() {
-  
-    this.threadService.selectedThread = true;
 
-    let thread: ThreadChannel = {
-      messageID: this.ticket.id!,
-      channelID: this.ticket.channelId,
-      userID: this.user.id!,
-      messages: [],
-      id: ''
-    }
 
-    const selectedChannel = await JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
-    const threadFromDB = await this.dataService.getThreadByMessage(thread.messageID);
+    this.threadService.setTicket(this.ticket);
+    this.threadService.setMessageThread(this.messageForThread);
 
-    if (threadFromDB === null) {
-      await this.dataService.addDataToDB('threads', thread).then((res) => {
-        thread.id! = res;
-      });
-    }
-    else {
-      thread.id = threadFromDB.id;
-    }
-    sessionStorage.setItem('selectedThread', JSON.stringify(thread));
-
-    this.subService.updateActiveThread(thread);
-
-    sessionStorage.setItem('threadMessage', JSON.stringify(this.messageForThread));
-    this.router.navigate(['home/channel/' + selectedChannel.id]);
-    setTimeout(() => {
-    this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
-    }, 0.1);
+    await this.threadService.openThread();
   }
 
-  /* async updateEmojiText() {
-    this.emojiUsersText = await this.chatService.loadEmojiUsers(
-      this.emoji,
-      this.activeUser
-    );
-  } */
 
   handleEmojis(emojiType: string) {
     let emoji: Emoji = {
