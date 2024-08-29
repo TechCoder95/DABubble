@@ -57,7 +57,6 @@ export class ThreadConversationComponent {
       this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
       this.selectedMessage.replyNumber = 0;
       this.allThreadMessages.push(this.selectedMessage)
-      console.log(this.allThreadMessages[0]);
 
 
       this.databaseService.subscribeToMessageDatainChannel(this.selectedThread.id).then(() => {
@@ -80,7 +79,6 @@ export class ThreadConversationComponent {
 
 
   ngOnDestroy() {
-    console.log('Chat Conversation Destroyed');
     if (this.channelService.channelSub) {
       this.channelService.channelSub.unsubscribe();
     }

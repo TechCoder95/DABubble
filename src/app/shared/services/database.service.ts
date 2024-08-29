@@ -144,27 +144,21 @@ export class DatabaseService implements OnDestroy {
 
   async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
-    // console.log(threadsCollectionRef);
 
     const q = query(
       threadsCollectionRef,
       where('messageID', '==', messageId)
     );
     this.threadMessageID = messageId;
-    // console.log(messageId);
-    // console.log(q);
 
     const snapshot = await getDocs(q);
-    // console.log(snapshot);
 
     if (snapshot.size === 1) {
       const doc = snapshot.docs[0];
       const threadData = doc.data() as ThreadChannel;
-      console.log(JSON.stringify(threadData, null, 2)); // Thread als lesbares Objekt ausgeben
       this.threadID = JSON.stringify(threadData.id);      
       return threadData;
     } else {
-      // Es wurde entweder kein Eintrag oder mehr als ein Eintrag gefunden
       return null;
     }
   }

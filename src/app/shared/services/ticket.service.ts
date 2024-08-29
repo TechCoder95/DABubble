@@ -21,15 +21,6 @@ export class TicketService {
     return this._ticket;
   }
 
-  // addConversationToThread(thread: ThreadMessage) {
-  //   this.databaseService.addChannelDataToDB('threads', thread);
-  //   this.pushThreadsToChats(thread)
-  // }
-  
-  // pushThreadsToChats(thread: ThreadMessage) {
-  //   this.databaseService.addChannelDataToDB('chats', thread);
-
-  //   console.log(this.databaseService.addChannelDataToDB('chats', thread), "hande");
     
   // }
 

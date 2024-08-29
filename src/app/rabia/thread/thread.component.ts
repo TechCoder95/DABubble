@@ -50,7 +50,6 @@ export class ThreadComponent {
   ) { }
 
   ngOnInit() {
-    console.log('ThreadComponent initialized');
     this.selectedChannelFromChat = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
   }
 
