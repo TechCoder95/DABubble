@@ -85,6 +85,12 @@ export class ChatConversationComponent
       .pipe(filter((message) => message.channelId === this.selectedChannel.id))
       .subscribe((message) => {
         if (message.id) {
+
+          if (this.allMessages.some((msg) => msg.id === message.id)) {
+            const messageArray: ChatMessage[] = this.allMessages.filter((msg:ChatMessage) => msg.id === message.id);
+            const x = this.allMessages.indexOf(messageArray[0]);
+            this.allMessages.splice(x, 1);
+          }
           
           this.allMessages.push(message);
           this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
