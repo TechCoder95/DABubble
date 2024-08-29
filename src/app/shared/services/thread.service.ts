@@ -64,7 +64,6 @@ export class ThreadService {
     }
 
     const selectedChannel = await JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
-
     const threadFromDB = await this.databaseService.getThreadByMessage(thread.messageID);
 
     if (threadFromDB === null) {
@@ -87,6 +86,7 @@ export class ThreadService {
   }
 
   close() {
+    this.selectedThread = false;
     sessionStorage.removeItem('selectedThread');
     sessionStorage.removeItem('threadMessage');
     this.router.navigate(['home/channel/' + JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);

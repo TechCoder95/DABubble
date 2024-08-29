@@ -38,7 +38,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
   @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
-  @Output() ebbes = new EventEmitter<ChatMessage>();
 
   @Output() activeUser!: any;
 

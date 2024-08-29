@@ -67,20 +67,10 @@ export class ChatConversationComponent
   messagesub!: Subscription;
 
   ngOnInit() {
+
     this.activeUserFromChat.subscribe((user: any) => {
       this.activeUser = user;
     });
-
-
-    // if (sessionStorage.getItem('selectedThread')) {
-    //   this.threadService.selectedMessage.subscribe((selectedMessage: any) => {
-    //     this.selectedMessage = selectedMessage;
-    //     console.log(selectedMessage, "jutta");
-    //   });
-
-    //   this.allThreadMessages = [];
-    //   this.databaseService.subscribeToMessageDatainChannel(JSON.parse(sessionStorage.getItem('selectedThread')!).id);
-    // }
 
 
     this.activeChannelFromChat.subscribe((channel: TextChannel) => {
@@ -92,36 +82,24 @@ export class ChatConversationComponent
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
     this.allMessages = [];
-    // this.allThreadMessages = [];
 
     this.databaseService.subscribeToMessageDatainChannel(this.selectedChannel.id);
 
     this.allMessages = [];
-    // this.allThreadMessages = [];
-
-    
-    /*  ;
-    console.log(this.activeChannelFromChat); */
-
-
 
     this.subService.getAllMessageObservable()
-    .pipe(filter((message) => message.channelId === this.selectedChannel.id))
-    .subscribe((message) => {
-      if (message.id) {
-        if (this.allMessages.some((msg) => msg.id === message.id)) {
-          return;
-        }
-        if (message.isThreadMsg) {
-          this.allThreadMessages.push(message);
-          this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
-        }
-        else {
+      .pipe(filter((message) => message.channelId === this.selectedChannel.id))
+      .subscribe((message) => {
+        if (message.id) {
+          if (this.allMessages.some((msg) => msg.id === message.id)) {
+            return;
+          }
           this.allMessages.push(message);
           this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
+          console.log('allMessages', this.allMessages);
+          
         }
-      }
-    });
+      });
   }
 
   ngOnDestroy() {

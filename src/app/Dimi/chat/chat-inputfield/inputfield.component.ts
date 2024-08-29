@@ -116,7 +116,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.selectedMessage = selectedMessage[0];
       });
     }
-    this.ticket = this.ticketService.getTicket();
+    // this.ticket = this.ticketService.getTicket();
     this.getUsersInChannel();
   }
 
@@ -249,6 +249,8 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       imageUrl: '',
       isThreadMsg: this.messageType === MessageType.Threads,
       fileUrl: '',
+      replyNumer: 0,
+      lastRepliedTime: new Date().getTime(),
     };
   }
 

@@ -1,4 +1,4 @@
-import { Component, ElementRef, EventEmitter, inject, input, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, inject, Input, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { ChatMessage } from '../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
@@ -13,6 +13,7 @@ import { SendChatMessageComponent } from "../../../Dimi/chat/chat-conversation/s
 import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 import { filter, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { ChatService } from '../../../shared/services/chat.service';
 
 @Component({
   selector: 'app-thread-conversation',
@@ -41,13 +42,11 @@ export class ThreadConversationComponent {
 
 
 
-  constructor(private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
+  constructor(public chatService: ChatService, private userService: UserService, private channelService: ChannelService, private databaseService: DatabaseService, private subService: GlobalsubService, public threadService: ThreadService) {
 
   }
 
   ngOnInit(): void {
-
-
 
     this.activeUser = this.userService.activeUser;
     this.selectedThread = JSON.parse(sessionStorage.getItem('selectedThread')!);
@@ -71,8 +70,14 @@ export class ThreadConversationComponent {
               this.allThreadMessages.sort((a, b) => a.timestamp - b.timestamp);
               this.selectedThread.messages.push(message);
 
+
               const answersToMsg = this.selectedThread.messages.map(message => message.message);
-              console.log(answersToMsg.length, 'Antworten auf den Thread');
+
+              const lastanswerToMsgTime = this.selectedThread.messages.map(message => message.timestamp).sort((a, b) => a - b).pop()!;
+
+
+              this.chatService.setNumberOfReplies(this.selectedMessage, answersToMsg.length, lastanswerToMsgTime);
+
 
             }
           });

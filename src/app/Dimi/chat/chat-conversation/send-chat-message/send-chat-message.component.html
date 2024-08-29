@@ -37,6 +37,23 @@
         [message]="sendMessage"
         [user]="user"
       ></app-active-chat-message-reactions>
+
+      @if (!this.threadService.selectedThread  && sendMessage.replyNumer != 0) {
+        <div class="style-thread-answers">
+          <div class="flex text-lg purple">
+            <p>{{sendMessage.replyNumer}}</p>
+            <p> Antworten</p>
+          </div>
+          <div class="flex text-sm grey">
+            <p>Letzte Antwort</p>
+            <p>{{sendMessage.lastRepliedTime | date: "HH:mm" }}</p>
+            <p>Uhr</p>
+          </div>
+        </div>
+      }
+
+      
+
     </div>
     <!-- </div> -->
     <img [src]="user.avatar" *ngIf="!repeatedMessage" />

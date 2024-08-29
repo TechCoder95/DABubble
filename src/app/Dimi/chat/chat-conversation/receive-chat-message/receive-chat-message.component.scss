@@ -78,26 +78,6 @@ h5 {
       color: rgba(104, 104, 104, 1);
     }
   }
-   /* .actual-message {
-    border-radius: 0 30px 30px 30px;
-    background: rgba(236, 238, 254, 1);
-    padding: 15px;
-    transition: background-color 0.3s ease-in-out;
-    > p {
-      font-size: 18px;
-      > span {
-        font-size: 10px;
-        color: gray;
-      }
-    }
-    >img{
-      border-radius: 0 30px 30px 30px;
-      min-height: 150px;
-      min-width: 150px;
-      max-width: 250px;
-      max-height: 250px;
-    }
-  } */
 }
 
 @keyframes slideIn {
@@ -133,20 +113,25 @@ h5 {
   justify-content: flex-end;
 }
 
-/* .mw-70 {
-  min-width: 70px;
-} */
 
 .position-component {
   top: 0px !important;
 }
 
-/* .file-and-text{
-  flex-direction: column-reverse;
-  gap: 5px;
-  width: min-content;
-  padding: 8px 8px !important;
-  >img{
-    border-radius: 0 30px 0 0 !important;
-    }
-} */
+.style-thread-answers {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  div {
+    gap: 4px
+  }
+}
+
+.purple {
+  color: #535AF1;
+}
+
+.grey {
+  color: #686868;
+}

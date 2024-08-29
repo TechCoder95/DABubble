@@ -16,6 +16,7 @@ import { ActiveChatMessageReactionsComponent } from '../active-chat-message-reac
 import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { ActualMessageComponent } from './actual-send-message/actual-message.component';
+import { ThreadService } from '../../../../shared/services/thread.service';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -50,6 +51,7 @@ export class SendChatMessageComponent implements OnInit {
     private databaseService: DatabaseService,
     private storageService: DAStorageService,
     private chatService: ChatService,
+    public threadService: ThreadService
   ) {
     this.user = JSON.parse(sessionStorage.getItem('userLogin')!);
   }
