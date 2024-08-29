@@ -22,7 +22,7 @@ export class ChatService {
   }
 
   setNumberOfReplies(message: ChatMessage, number: number, lastanswerToMsgTime: number) {
-    message.replyNumer = number;
+    message.replyNumber = number;
     message.lastRepliedTime = lastanswerToMsgTime;
     this.databaseService.updateDataInDB('messages', message.id!, message);
   }

@@ -19,11 +19,11 @@
       <app-active-chat-message-reactions [messageType]="'send'" [message]="sendMessage"
         [user]="user"></app-active-chat-message-reactions>
 
-      @if (sendMessage.replyNumer != 0) {
+      @if (sendMessage.replyNumber != 0) {
       <div class="style-thread-answers">
         <div class="flex text-lg purple">
-          <p>{{sendMessage.replyNumer}}</p>
-          @if (sendMessage.replyNumer < 2) { 
+          <p>{{sendMessage.replyNumber}}</p>
+          @if (sendMessage.replyNumber < 2) { 
             <p> Antwort</p>
             } @else {
             <p> Antworten</p>

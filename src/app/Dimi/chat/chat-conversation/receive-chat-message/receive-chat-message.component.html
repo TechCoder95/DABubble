@@ -11,11 +11,11 @@
       <app-actual-receive-message [receiveMessage]="receiveMessage" [receivedImgMessage]="receivedImgMessage"
         [repeatedMessage]="repeatedMessage"></app-actual-receive-message>
 
-      @if (receiveMessage.replyNumer != 0) {
+      @if (receiveMessage.replyNumber != 0) {
       <div class="style-thread-answers">
         <div class="flex text-lg purple">
-          <p>{{receiveMessage.replyNumer}}</p>
-          @if (receiveMessage.replyNumer < 2) {
+          <p>{{receiveMessage.replyNumber}}</p>
+          @if (receiveMessage.replyNumber < 2) {
             <p> Antwort</p>
             } @else {
             <p> Antworten</p>

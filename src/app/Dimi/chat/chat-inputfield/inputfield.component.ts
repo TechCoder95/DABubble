@@ -244,7 +244,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       imageUrl: '',
       isThreadMsg: this.messageType === MessageType.Threads,
       fileUrl: '',
-      replyNumer: 0,
+      replyNumber: 0,
       lastRepliedTime: new Date().getTime(),
     };
   }

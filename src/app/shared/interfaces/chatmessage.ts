@@ -11,6 +11,6 @@ export interface ChatMessage {
   fileUrl?: string;
   fileName?: string;
   isThreadMsg?: boolean;
-  replyNumer: number;
+  replyNumber: number;
   lastRepliedTime: number;
 }
