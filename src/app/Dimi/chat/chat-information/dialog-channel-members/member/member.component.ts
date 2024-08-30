@@ -5,8 +5,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { UserService } from '../../../../../shared/services/user.service';
-import { Subscription } from 'rxjs';
-import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
+import { Subscription, takeUntil } from 'rxjs';
+import { GlobalsubService, OnlineStatus } from '../../../../../shared/services/globalsub.service';
+import { DatabaseService } from '../../../../../shared/services/database.service';
 
 DialogChannelMembersComponent;
 
@@ -20,21 +21,34 @@ DialogChannelMembersComponent;
 })
 export class MemberComponent implements OnDestroy {
   activeUser!: DABubbleUser;
-  @Input({required:true}) member!: DABubbleUser;
+  @Input({ required: true }) member!: DABubbleUser;
   isLoggedIn: boolean | undefined;
   private userSubscription: Subscription | undefined;
+  private onlineSub: Subscription | undefined
 
-  constructor(public dialog: MatDialog, private userService: UserService,private subService: GlobalsubService) {
-   
+  constructor(public dialog: MatDialog, private userService: UserService, private subService: GlobalsubService, private databaseService: DatabaseService) {
+
   }
 
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
+
+    this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
+      this.member.isLoggedIn = data.includes(this.member.id!);
+    });
+    if (!this.onlineSub) {
+      this.onlineSub = this.subService.getOnlineStatusObservable().subscribe((data) => {
+        this.member.isLoggedIn = data.onlineUser.includes(this.member.id!);
+      });
+    }
   }
 
   ngOnDestroy() {
     if (this.userSubscription) {
       this.userSubscription.unsubscribe();
+    }
+    if (this.onlineSub) {
+      this.onlineSub.unsubscribe();
     }
   }
 
