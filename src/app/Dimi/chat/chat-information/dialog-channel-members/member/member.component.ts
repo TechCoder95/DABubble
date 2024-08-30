@@ -33,15 +33,12 @@ export class MemberComponent implements OnDestroy {
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
 
+
     this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
-      this.member.isLoggedIn = data.includes(this.member.id!);
-      this.subService.updateOnlineStatus(data as unknown as OnlineStatus);
+      this.member.isLoggedIn = data[0].onlineUser.includes(this.member.id!);
+      console.log(this.member);
+      
     });
-    if (!this.onlineSub) {
-      this.onlineSub = this.subService.getOnlineStatusObservable().subscribe((data) => {
-        this.member.isLoggedIn = data.onlineUser.includes(this.member.id!);
-      });
-    }
   }
 
   ngOnDestroy() {

@@ -39,6 +39,7 @@ export class DialogChannelMembersComponent implements OnInit {
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
+    this.activeUser.isLoggedIn = true;
     JSON.parse(sessionStorage.getItem('selectedChannel')!).assignedUser.forEach((userID: string) => {
       this.databaseService.readDataByField('users', 'id', userID).then((user) => {
         user.forEach((x: DABubbleUser) => {
