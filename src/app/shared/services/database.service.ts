@@ -281,7 +281,6 @@ export class DatabaseService implements OnDestroy {
     const unsubscribe = onSnapshot(q, (snapshot) => {
       snapshot.docChanges().forEach((change) => {
         let data = change.doc.data();
-        console.log(data);
         this.subService.updateOnlineStatus(data as OnlineStatus);
       });
     });

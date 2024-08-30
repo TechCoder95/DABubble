@@ -35,6 +35,7 @@ export class ChatInformationComponent implements OnInit {
   privateChatPartnerName!: string | undefined;
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
+  statusSub!: Subscription;
 
 
 
@@ -65,6 +66,15 @@ export class ChatInformationComponent implements OnInit {
       this.userService.getOneUserbyId(userID).then((user) => {
         this.assignedUsers.push(user as unknown as DABubbleUser);
       });
+    });
+
+    this.statusSub = this.subService.getOnlineStatusObservable().subscribe((data) => {
+      console.log(data.onlineUser);
+      if (this.privateChatPartner)
+        if (data.onlineUser.includes(this.privateChatPartner?.id!))
+          this.privateChatPartner.isLoggedIn = true;
+        else
+          this.privateChatPartner.isLoggedIn = false;
     });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {

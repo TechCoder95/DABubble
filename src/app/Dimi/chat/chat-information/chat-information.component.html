@@ -8,6 +8,7 @@
 
       <span *ngIf=" selectedChannel.isPrivate" class="private-chat-avatar">
         <img [src]="privatChatAvatar" class="privat-chat-avatar" />
+        <!-- Todo: Onlinestatus einfügen -->
         <p [ngClass]="privateChatPartner?.isLoggedIn ? 'green' : 'grey'" class="online-status"></p>
       </span>
 

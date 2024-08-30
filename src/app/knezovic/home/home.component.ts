@@ -3,8 +3,8 @@ import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
 import { VariableContentComponent } from "./variable-content/variable-content.component";
-import { GlobalsubService } from '../../shared/services/globalsub.service';
-import { Subscription } from 'rxjs';
+import { GlobalsubService, OnlineStatus } from '../../shared/services/globalsub.service';
+import { filter, Subscription, tap } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
 import { Router, RouterOutlet } from '@angular/router';
@@ -26,11 +26,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
-  activeThreadSub!: Subscription;
+  onlineStatusSub!: Subscription;
+
+  activeUser!: DABubbleUser;
 
 
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
+  onlineStatusChange = new EventEmitter<String[]>();
 
 
   ngOnInit() {
@@ -44,12 +47,20 @@ export class HomeComponent implements OnInit, OnDestroy {
       this.userSub = this.globalSubService.getUserObservable()
         .pipe()
         .subscribe(data => {
+          this.activeUser = data;
           this.activeUserChange.emit(data);
         });
     if (!this.googleUserSub)
       this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
         this.activeGoogleUserChange.emit(data);
       });
+
+    if (!this.onlineStatusSub)
+      this.onlineStatusSub = this.globalSubService.getOnlineStatusObservable()
+    .subscribe(data => {
+        this.onlineStatusChange.emit(data.onlineUser);
+      });
+
   }
 
 
@@ -60,9 +71,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.googleUserSub)
       this.googleUserSub.unsubscribe();
 
-
-    if (this.activeThreadSub)
-      this.activeThreadSub.unsubscribe();
+    if (this.onlineStatusSub)
+      this.onlineStatusSub.unsubscribe();
   }
 
 
