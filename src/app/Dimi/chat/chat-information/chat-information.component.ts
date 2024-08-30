@@ -10,7 +10,7 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { DatabaseService } from '../../../shared/services/database.service';
-import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { GlobalsubService, OnlineStatus } from '../../../shared/services/globalsub.service';
 import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
@@ -35,6 +35,7 @@ export class ChatInformationComponent implements OnInit {
   privateChatPartnerName!: string | undefined;
   /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
+  statusSub!: Subscription;
 
 
 
@@ -59,6 +60,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    if (this.selectedChannel.isPrivate)
     this.getPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
@@ -66,6 +68,8 @@ export class ChatInformationComponent implements OnInit {
         this.assignedUsers.push(user as unknown as DABubbleUser);
       });
     });
+
+
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
@@ -214,6 +218,16 @@ export class ChatInformationComponent implements OnInit {
         .then((privateChatPartner) => {
           this.privateChatPartnerName = privateChatPartner?.username;
           this.privatChatAvatar = privateChatPartner?.avatar;
+
+          this.privateChatPartner = privateChatPartner;
+          if (this.privateChatPartner) {
+            this.databaseService.readDataByArray('onlinestatus', 'onlineUser', this.privateChatPartner.id!).then((data) => {
+              if (data) {
+                this.privateChatPartner!.isLoggedIn = data[0].onlineUser.includes(this.privateChatPartner!.id!);
+              }
+            });
+          }
+
         });
     } else {
       this.privateChatPartnerName =

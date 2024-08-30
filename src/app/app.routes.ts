@@ -38,7 +38,6 @@ export const routes: Routes = [
         path: 'channel/:channelId', component: ChatComponent,
         children: [
           {
-            //Todo Rabia: Add a route for the thread component
             path: 'thread/:threadId', component: ThreadComponent,
           },
         ]

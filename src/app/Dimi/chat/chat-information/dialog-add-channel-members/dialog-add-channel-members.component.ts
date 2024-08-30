@@ -69,7 +69,7 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     this.searchResults = [];
 
     this.userService
-      .searchUsersByNameOrEmail(inputValue)
+      .searchUsersByNameOrEmailTest(inputValue, this.selectedUser)
       .then((results: DABubbleUser[]) => {
         this.searchResults.push(...results);
       })
