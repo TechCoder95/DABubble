@@ -67,6 +67,25 @@ img {
 
 @media (max-width: 910px) {
 
+    .logo {
+        width: 160px;
+
+    }
+
+    .userName {
+        font-size: 24px;
+    }
+
+    .img-container {
+        width: 50px;
+        height: 50px;
+
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
     .mobile-p {
         padding: 30px;
     }

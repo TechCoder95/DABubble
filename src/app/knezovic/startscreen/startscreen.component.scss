@@ -144,6 +144,14 @@ a {
 
 }
 
+@media (max-width: 910px) {
+    span {
+        display: none !important;
+    }
+
+    
+}
+
 @media (max-width: 650px) {
     .mobile-container {
         width: 100% !important;
