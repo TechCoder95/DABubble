@@ -1,12 +1,11 @@
 .card {
-    margin: 20px;
+    margin: clamp(0rem, -0.2205rem + 1.176vw, 1.25rem);
     margin-top: 0;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 25px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: white;
-    min-width: 570px;
 }
 
 a {

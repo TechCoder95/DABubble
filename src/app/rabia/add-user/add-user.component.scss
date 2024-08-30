@@ -1,13 +1,13 @@
 .container {
     max-width: 606px;
-    padding: 40px;
+    padding: clamp(1rem, -2.70594rem + 3.765vw, 5rem) clamp(0.5rem, 0.14713rem + 1.882vw, 2.5rem);
     box-sizing: border-box;
 }
 
 mat-card-title {
     color: #444DF2;
-    font-size: 46px;
     font-weight: 700;
+    font-size: clamp(1.5rem, 3.7206vw + 1.2574rem, 3rem);
 }
 
 mat-card-subtitle {
@@ -17,7 +17,7 @@ mat-card-subtitle {
 
 .arrow-back {
     position: absolute;
-    top: 48px;
+    top: clamp(1.875rem, 1.21409rem + 1.429vw, 3rem);
     left: 0;
     width: 40px;
     height: 40px;
@@ -95,49 +95,12 @@ input {
     margin: 5px;
 }
 
-@media (max-width: 650px) {
 
-    .container {
-        padding: 40px 8px;
-    }
-
-}
-
-@media (max-width: 500px) {
-
-    .container {
-        padding: 16px 8px;
-    }
-
-    .arrow-back {
-        top: 24px;
-    }
-
-    mat-card-title {
-        font-size: 40px;
-    }
-}
-
-@media (max-width: 450px) {
-
-    .arrow-back {
-        top: 16px;
-    }
-
-    mat-card-title {
-        font-size: 32px;
-    }
-}
 
 @media (max-width: 400px) {
 
     .arrow-back {
-        top: 11px;
         left: -8px;
-    }
-
-    mat-card-title {
-        font-size: 24px;
     }
 
     mat-checkbox {

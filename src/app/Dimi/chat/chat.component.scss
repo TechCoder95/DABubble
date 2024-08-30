@@ -11,7 +11,7 @@ mat-card {
 
 :host{
   width: 100%;
-  max-height: 81.5vh;
+  height: 100%;
 }
 
 .thread-card {
@@ -28,9 +28,6 @@ mat-card {
   border-radius: 30px !important;
 }
 
-// chat-information {
-//   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.08);
-// }
 
 app-chat-conversation {
   flex-grow: 1;
@@ -45,17 +42,6 @@ app-thread-conversation {
 app-chat{
   width: 100% !important;
 }
-
-// app-chat-inputfield {
-//   position: absolute;
-//   bottom: 0;
-//   left: 0;
-//   right: 0;
-//   background: rgb(253, 251, 255);
-//   border-radius: 0px 0px 30px 30px;
-// }
-
-
 
 @media (max-width: 910px) {
 
