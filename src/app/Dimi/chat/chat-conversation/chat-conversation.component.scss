@@ -11,12 +11,15 @@ main {
   position: relative;
   -ms-overflow-style: none; /* IE und Edge */
   scrollbar-width: none; /* Firefox */
+  > div {
+    max-height: 50vh;
+  }
 }
 
 .message-day {
   z-index: 5;
   position: sticky;
- /*  top: 10px; */
+  /*  top: 10px; */
   padding: 5px;
   display: flex;
   justify-content: center;
