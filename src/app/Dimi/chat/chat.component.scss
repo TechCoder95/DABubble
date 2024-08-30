@@ -34,7 +34,7 @@ mat-card {
 
 app-chat-conversation {
   flex-grow: 1;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 app-thread-conversation {
