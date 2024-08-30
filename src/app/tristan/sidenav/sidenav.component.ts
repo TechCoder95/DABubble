@@ -15,7 +15,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { Subscription, take } from 'rxjs';
+import { Subscription, take, tap } from 'rxjs';
 import { ThreadComponent } from "../../rabia/thread/thread.component";
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
@@ -23,6 +23,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
+import { DatabaseService } from '../../shared/services/database.service';
 
 
 interface Node {
@@ -91,6 +92,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   @Input({ required: true }) activeUserChange!: any;
   @Input({ required: true }) activeGoogleUserChange!: any;
+  @Input({ required: true }) onlineStatusChange!: any;
   activeChannelChange = new EventEmitter<TextChannel>();
 
   activeUser!: DABubbleUser;
@@ -111,7 +113,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private userService: UserService,
     private subscriptionService: GlobalsubService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private databaseService: DatabaseService,
   ) { }
 
 
@@ -202,6 +205,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.updateTreeData();
     });
 
+    this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
+      this.userIsLoggedIn = data.includes(this.activeUser.id!);
+    });
+
+    this.onlineStatusChange.subscribe(async (onlineUser: string[]) => {
+      this.userIsLoggedIn = onlineUser.includes(this.activeUser.id!);
+    });
   }
 
   private async initializeChannels() {

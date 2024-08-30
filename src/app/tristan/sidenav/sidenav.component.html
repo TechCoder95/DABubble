@@ -1,9 +1,4 @@
-@if (this.channelService.loading) {
-<div class="spinner">
-  <mat-spinner></mat-spinner>
-</div>
-}
-@else {
+@if (!this.channelService.loading) {
 @if (activeUser) {
 <mat-drawer-container class="h-full relative" autosize>
   <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">

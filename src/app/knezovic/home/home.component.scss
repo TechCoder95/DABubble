@@ -15,6 +15,12 @@ main {
   height: 100%;
   gap: 30px;
 }
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 @media (max-width: 910px) {
 
@@ -32,4 +38,7 @@ main {
     height: 100vh;
      padding: 0;
   }
+
+
+
 }

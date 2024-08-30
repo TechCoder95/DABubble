@@ -62,7 +62,7 @@ export class AuthenticationService {
         this.registerProcess = true;
       })
       .catch((error) => {
-        window.location.reload(); //Todo: Muss noch richtig gemacht werden
+        window.location.reload();
         const errorCode = error.code;
         const errorMessage = error.message;
         // ..

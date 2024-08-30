@@ -8,6 +8,13 @@ import { Emoji } from '../interfaces/emoji';
 import { ThreadChannel } from '../interfaces/thread-channel';
 import { DatabaseService } from './database.service';
 
+export interface OnlineStatus {
+  uid: string;
+  onlineUser: string[];
+}
+
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +30,7 @@ export class GlobalsubService {
   private updateUserChangesSubject = new Subject<DABubbleUser>();
   private updateTreeSubject = new Subject<void>();
   private activeMessageSubject = new Subject<ChatMessage>();
+  private statusSubject = new Subject<OnlineStatus>();
 
   getUserObservable() {
     return this.userSubject.asObservable();
@@ -64,9 +72,18 @@ export class GlobalsubService {
     return this.activeMessageSubject.asObservable();
   }
 
+  //Todo - Add online status observable
+  getOnlineStatusObservable() {
+    return this.statusSubject.asObservable();
+  }
+
   updateUser(data: DABubbleUser) {
     this.userSubject.next(data);
     sessionStorage.setItem('userLogin', JSON.stringify(data));
+  }
+
+  updateOnlineStatus(data: OnlineStatus) {
+    this.statusSubject.next(data);
   }
 
   updateGoogleUser(data: User) {
