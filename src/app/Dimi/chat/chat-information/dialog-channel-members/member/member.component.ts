@@ -35,6 +35,7 @@ export class MemberComponent implements OnDestroy {
 
     this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
       this.member.isLoggedIn = data.includes(this.member.id!);
+      this.subService.updateOnlineStatus(data as unknown as OnlineStatus);
     });
     if (!this.onlineSub) {
       this.onlineSub = this.subService.getOnlineStatusObservable().subscribe((data) => {
