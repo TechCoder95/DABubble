@@ -192,10 +192,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private async initializeChannels() {
     await this.channelService.initializeDefaultData();
     await this.loadUserChannels();
-    const ownDirectChannel = await this.channelService.createOwnDirectChannel(
-      this.activeUser,
-      this.channels,
-    );
+    const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
     if (!this.channels.some((channel) => channel.id === ownDirectChannel.id)) {
       this.channels.push(ownDirectChannel);
     }
