@@ -43,6 +43,7 @@ export class ChatInformationComponent implements OnInit {
 
   @Input() activeUserFromChat: any;
   @Input() activeChannelFromChat: any;
+  userStatusSubscription!: Subscription;
 
 
 
@@ -61,7 +62,7 @@ export class ChatInformationComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.selectedChannel.isPrivate)
-    this.getPrivateChatPartner();
+      this.getPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
@@ -69,7 +70,9 @@ export class ChatInformationComponent implements OnInit {
       });
     });
 
-
+    this.userStatusSubscription = this.subService.getUserUpdateFromDatabaseObservable().subscribe(async (user) => {
+      this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
+    });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
@@ -86,6 +89,7 @@ export class ChatInformationComponent implements OnInit {
 
   ngOnDestroy() {
     this.channelSub.unsubscribe();
+    this.userStatusSubscription.unsubscribe();
   }
 
   changeTagImg(hover: boolean) {
@@ -218,16 +222,7 @@ export class ChatInformationComponent implements OnInit {
         .then((privateChatPartner) => {
           this.privateChatPartnerName = privateChatPartner?.username;
           this.privatChatAvatar = privateChatPartner?.avatar;
-
           this.privateChatPartner = privateChatPartner;
-          if (this.privateChatPartner) {
-            this.databaseService.readDataByArray('onlinestatus', 'onlineUser', this.privateChatPartner.id!).then((data) => {
-              if (data) {
-                this.privateChatPartner!.isLoggedIn = data[0].onlineUser.includes(this.privateChatPartner!.id!);
-              }
-            });
-          }
-
         });
     } else {
       this.privateChatPartnerName =

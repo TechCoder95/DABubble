@@ -7,4 +7,5 @@ export interface TextChannel {
   owner: string;
   assignedUser: string[];
   isPrivate: boolean;
+  uid?: string;
 }

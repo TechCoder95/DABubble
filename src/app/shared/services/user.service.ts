@@ -393,6 +393,10 @@ export class UserService {
     return this.selectedUserSubject.value;
   }
 
+  async getAllUsersFromDB() {
+    return await this.DatabaseService.readDataFromDB('users');
+  }
+
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(
       this.DatabaseService.firestore,
@@ -424,8 +428,7 @@ export class UserService {
     }
   }
 
-  async createDefaultUsers(): Promise<{ [key: string]: string }> {
-    const userIdMap: { [key: string]: string } = {};
+  async createDefaultUsers(): Promise<DABubbleUser[]> {
     const defaultUsers: DABubbleUser[] = [
       {
         id: '',
@@ -452,20 +455,20 @@ export class UserService {
         uid: 'Mia-uid',
       },
     ];
-
-    for (const user of defaultUsers) {
+  
+    for (let i = 0; i < defaultUsers.length; i++) {
+      const user = defaultUsers[i];
       const existingUser = await this.getDefaultUserByUid(user.uid!);
+      
       if (!existingUser) {
         const userId = await this.addDefaultUserToDatabase(user);
-        userIdMap[user.username] = userId;
+        defaultUsers[i].id = userId;
       } else {
-        userIdMap[user.username] = existingUser.id!;
+        defaultUsers[i] = existingUser;
       }
     }
-    return userIdMap;
+  
+    return defaultUsers;
   }
-
-  async getAllUsersFromDB() {
-    return await this.DatabaseService.readDataFromDB('users');
-  }
+  
 }

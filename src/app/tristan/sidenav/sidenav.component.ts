@@ -114,7 +114,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute,
-    private databaseService: DatabaseService,
   ) { }
 
 
@@ -203,14 +202,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
       this.selectedChannel = channel;
       await this.updateTreeData();
-    });
-
-    this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
-      this.userIsLoggedIn = data.includes(this.activeUser.id!);
-    });
-
-    this.onlineStatusChange.subscribe(async (onlineUser: string[]) => {
-      this.userIsLoggedIn = onlineUser.includes(this.activeUser.id!);
     });
   }
 
