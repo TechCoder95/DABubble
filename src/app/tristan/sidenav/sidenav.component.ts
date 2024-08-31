@@ -366,12 +366,25 @@ export class SidenavComponent implements OnInit, OnDestroy {
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
+        this.updateHoverStates();
         await this.navToSelectedChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
       this.openAddChannelDialog();
     }
   }
+
+  updateHoverStates() {
+    Object.keys(this.hoverStates).forEach(id => {
+      this.hoverStates[id] = id === this.selectedChannel.id;
+    });
+  }
+
+  hoverStates: { [key: string]: boolean } = {};
+  hoverTreeNode(hover: boolean, nodeId: string) {
+    this.hoverStates[nodeId] = hover;
+  }
+
 
   /**
    * @public
@@ -596,9 +609,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  hoverStates: { [key: string]: boolean } = {};
-
-  hoverTreeNode(hover: boolean, nodeId: string) {
-    this.hoverStates[nodeId] = hover;
-  }
 }
