@@ -16,17 +16,13 @@
   font-weight: bolder;
 }
 
-// .blue-filter:hover {
-//   filter: brightness(0) saturate(100%) invert(38%) sepia(49%) saturate(6186%) hue-rotate(228deg) brightness(97%) contrast(95%);
-// }
-
 .content {
   background-color: #eceefe;
 }
 
 // testen
 mat-tree {
-//  overflow-y: auto; 
+  //  overflow-y: auto; 
 }
 
 
@@ -34,17 +30,17 @@ mat-tree-node {
   margin-top: 8px;
   cursor: pointer;
   border-radius: 30px;
+
   &:hover {
     background: rgba(236, 238, 254, 1);
-    >div span{
+
+    >div span {
       color: #535af1;
     }
   }
 }
 
 mat-drawer-container {
-  /*  padding: 40px;
-  background: initial; */
   border-radius: 30px;
 }
 
@@ -54,18 +50,12 @@ mat-drawer-container {
   border-radius: 30px;
   padding-left: 2rem;
 
-  > app-chat {
+  >app-chat {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
   }
 }
-
-/* .sidenav-style {
-  border-radius: 30px;
-  top: 40px;
-  bottom: 40px;
-} */
 
 .img-container {
   width: 50px;
@@ -125,14 +115,6 @@ mat-drawer-container {
   }
 }
 
-// .hover {
-//   &:hover {
-//     background-color: white !important;
-//     border-radius: 100%;
-//     // filter: invert(98%) sepia(94%) saturate(4479%) hue-rotate(180deg) brightness(106%) contrast(104%);
-//   }
-// }
-
 .online-status {
   width: 10px;
   height: 10px;
@@ -150,6 +132,7 @@ mat-drawer-container {
 .grey {
   background-color: #686868;
 }
+
 /* 
 section{
   overflow: auto;
@@ -215,4 +198,23 @@ section{
 
 .pl-48 {
   padding-left: 48px;
+}
+
+.test {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+  top: 65%;
+  padding: 16px;
+  gap: 10px;
+  border-radius: 0px 0px 30px 30px;
+  box-shadow: 0px 6px 10px 0px #00000033;
+  border: 1px solid ghostwhite;
+  margin-left: -105px;
+
+  &:hover {
+    background: rgb(236, 238, 254);
+  }
 }
