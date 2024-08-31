@@ -46,14 +46,15 @@ export class UserService {
 
       //Hier sind die User abonniert
       this.DatabaseService.subscribeToUserData(this.activeUser.id!);
-      this.globalSubService.getGoogleUserObservable()
-      .pipe(distinctUntilChanged())
-      .subscribe(googleUser => {
-        if (googleUser) {
-          this.googleUser = googleUser;
-          this.globalSubService.updateGoogleUser(this.googleUser);
-        }
-      });
+      this.globalSubService
+        .getGoogleUserObservable()
+        .pipe(distinctUntilChanged())
+        .subscribe((googleUser) => {
+          if (googleUser) {
+            this.googleUser = googleUser;
+            this.globalSubService.updateGoogleUser(this.googleUser);
+          }
+        });
       this.DatabaseService.subscribeToOnlineData();
     }
   }
@@ -186,14 +187,21 @@ export class UserService {
       this.activeUser.mail = loginUser!.mail;
     }
     this.activeUser.isLoggedIn = true;
-    this.DatabaseService.readDataByField('onlinestatus', 'id', 'VZxZWTcEoLUUZGgItgwS').then((data) => {
+    this.DatabaseService.readDataByField(
+      'onlinestatus',
+      'id',
+      'VZxZWTcEoLUUZGgItgwS',
+    ).then((data) => {
       if (data) {
         let onlineUser = data[0].onlineUser;
         onlineUser.push(this.activeUser.id);
-        this.DatabaseService.updateDataInDB('onlinestatus', 'VZxZWTcEoLUUZGgItgwS', { onlineUser: onlineUser });
+        this.DatabaseService.updateDataInDB(
+          'onlinestatus',
+          'VZxZWTcEoLUUZGgItgwS',
+          { onlineUser: onlineUser },
+        );
       }
-    }
-    );
+    });
     this.updateUser(this.activeUser);
   }
 
@@ -208,25 +216,33 @@ export class UserService {
     if (sessionStorage.getItem('userLogin')) {
       let id = JSON.parse(sessionStorage.getItem('userLogin')!).id;
 
-      this.DatabaseService.readDataByArray('onlinestatus', 'onlineUser', id).then((data) => {
+      this.DatabaseService.readDataByArray(
+        'onlinestatus',
+        'onlineUser',
+        id,
+      ).then((data) => {
         if (data.length > 0) {
           let onlineUser = data[0].onlineUser;
           let index = onlineUser.indexOf(id);
           onlineUser.splice(index, 1);
-          this.DatabaseService.updateDataInDB('onlinestatus', 'VZxZWTcEoLUUZGgItgwS', { onlineUser: onlineUser });
+          this.DatabaseService.updateDataInDB(
+            'onlinestatus',
+            'VZxZWTcEoLUUZGgItgwS',
+            { onlineUser: onlineUser },
+          );
         }
-      }
-      );
+      });
 
-      this.DatabaseService.updateDataInDB(this.collectionName, id, { isLoggedIn: false })
-        .then(() => {
-          sessionStorage.removeItem('userLogin');
-          sessionStorage.removeItem('uId');
-          sessionStorage.removeItem('userLogin');
-          sessionStorage.removeItem('selectedChannel');
-          sessionStorage.removeItem('selectedThread');
-          this.router.navigate(['/user/login']);
-        });
+      this.DatabaseService.updateDataInDB(this.collectionName, id, {
+        isLoggedIn: false,
+      }).then(() => {
+        sessionStorage.removeItem('userLogin');
+        sessionStorage.removeItem('uId');
+        sessionStorage.removeItem('userLogin');
+        sessionStorage.removeItem('selectedChannel');
+        sessionStorage.removeItem('selectedThread');
+        this.router.navigate(['/user/login']);
+      });
     }
   }
 
@@ -336,7 +352,7 @@ export class UserService {
     return users;
   }
 
-  async searchUsersByNameOrEmailTest(
+  async searchUsersExcludingSelected(
     searchText: string,
     selectedUsers: DABubbleUser[],
   ): Promise<DABubbleUser[]> {
@@ -361,7 +377,6 @@ export class UserService {
     return users;
   }
 
-
   usernameOrEmailMatchText(data: any, lowerCaseSearchText: string) {
     return (
       (data.username &&
@@ -376,6 +391,10 @@ export class UserService {
 
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
+  }
+
+  async getAllUsersFromDB() {
+    return await this.DatabaseService.readDataFromDB('users');
   }
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
@@ -409,8 +428,7 @@ export class UserService {
     }
   }
 
-  async createDefaultUsers(): Promise<{ [key: string]: string }> {
-    const userIdMap: { [key: string]: string } = {};
+  async createDefaultUsers(): Promise<DABubbleUser[]> {
     const defaultUsers: DABubbleUser[] = [
       {
         id: '',
@@ -437,20 +455,20 @@ export class UserService {
         uid: 'Mia-uid',
       },
     ];
-
-    for (const user of defaultUsers) {
+  
+    for (let i = 0; i < defaultUsers.length; i++) {
+      const user = defaultUsers[i];
       const existingUser = await this.getDefaultUserByUid(user.uid!);
+      
       if (!existingUser) {
         const userId = await this.addDefaultUserToDatabase(user);
-        userIdMap[user.username] = userId;
+        defaultUsers[i].id = userId;
       } else {
-        userIdMap[user.username] = existingUser.id!;
+        defaultUsers[i] = existingUser;
       }
     }
-    return userIdMap;
+  
+    return defaultUsers;
   }
-
-  async getAllUsersFromDB() {
-    return await this.DatabaseService.readDataFromDB('users');
-  }
+  
 }

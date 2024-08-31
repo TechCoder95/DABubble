@@ -1,3 +1,32 @@
+
+/**
+ * @module SidenavComponent
+ * @description
+ * This component provides a sidebar (Sidenav) for use in an Angular application.
+ * It enables navigation between different channels and direct messages in a chat application.
+ * 
+ * @requires @angular/common
+ * @requires @angular/core
+ * @requires @angular/material/sidenav
+ * @requires @angular/material/icon
+ * @requires @angular/material/button
+ * @requires @angular/material/tree
+ * @requires @angular/material/dialog
+ * @requires @angular/router
+ * @requires rxjs
+ * @requires ../../shared/interfaces/textchannel
+ * @requires ../../shared/interfaces/chatmessage
+ * @requires ../../shared/interfaces/user
+ * @requires ../../shared/services/channel.service
+ * @requires ../../shared/services/user.service
+ * @requires ../../shared/services/globalsub.service
+ * @requires ../../shared/services/database.service
+ * @requires ../add-channel/add-channel.component
+ * @requires ../../Dimi/chat/chat.component
+ * @requires ../../rabia/new-chat/new-chat.component
+ * @requires ../../rabia/thread/thread.component
+ * @requires ../../shared/components/header/searchbar/searchbar.component
+ */
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy, Input, EventEmitter } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -23,7 +52,6 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
-import { DatabaseService } from '../../shared/services/database.service';
 
 
 interface Node {
@@ -67,6 +95,14 @@ interface FlattenedNode {
 })
 export class SidenavComponent implements OnInit, OnDestroy {
 
+    /**
+   * @private
+   * @description
+   * Function to transform nodes into a flattened node model.
+   * @param {Node} node - The node to transform.
+   * @param {number} level - The depth of the node in the tree.
+   * @returns {FlattenedNode} The transformed node.
+   */
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
@@ -79,10 +115,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   treeControl = new FlatTreeControl<FlattenedNode>((node) => node.level, (node) => node.expandable);
   treeFlattener = new MatTreeFlattener(this.transformer, (node) => node.level, (node) => node.expandable, (node) => node.children);
-
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   channels: TextChannel[] = [];
-  private TREE_DATA: Node[] = [];
+  TREE_DATA: Node[] = [];
   selectedChannel!: TextChannel;
   messages: ChatMessage[] = [];
   isLoggedIn: boolean | undefined;
@@ -106,7 +142,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private updateTreeSubscription!: Subscription;
   private activeChannelSubscription!: Subscription;
 
+  hasChild = (_: number, node: FlattenedNode) => node.expandable;
 
+  /**
+   * @constructor
+   * @param {MatDialog} dialog - Dialog service to open modal dialogs.
+   * @param {ChannelService} channelService - Service to manage channels.
+   * @param {UserService} userService - Service to manage user data.
+   * @param {GlobalsubService} subscriptionService - Service for managing global subscriptions.
+   * @param {Router} router - Angular Router to navigate between routes.
+   * @param {ActivatedRoute} route - Provides access to information about a route associated with a component.
+   */
   constructor(
     private dialog: MatDialog,
     public channelService: ChannelService,
@@ -114,52 +160,312 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute,
-    private databaseService: DatabaseService,
   ) { }
 
-
-  hasChild = (_: number, node: FlattenedNode) => node.expandable;
-
-
-  async ngOnDestroy() {
-    if (this.createdChannelSubscription) {
-      this.createdChannelSubscription.unsubscribe();
-    }
-
-    if (this.activeUserChangeSubscription) {
-      this.activeUserChangeSubscription.unsubscribe();
-    }
-
-    if (this.routeSubscription) {
-      this.routeSubscription.unsubscribe();
-    }
-
-    if (this.channelService.channelSub)
-      this.channelService.channelSub.unsubscribe();
-
-    if (this.userStatusSubscription) {
-      this.userStatusSubscription.unsubscribe();
-    }
-
-    if (this.updateTreeSubscription) {
-      this.updateTreeSubscription.unsubscribe();
-    }
-
-    if (this.activeChannelSubscription) {
-      this.activeChannelSubscription.unsubscribe();
-    }
-  }
-
+   /**
+   * @public
+   * @description
+   * Angular lifecycle hook that is called after data-bound properties of a directive are initialized.
+   * It initializes the active user and channels, and sets up the necessary subscriptions.
+   */
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
     if (this.activeUser) {
-      this.isLoggedIn = this.activeUser?.isLoggedIn;
       await this.initializeChannels();
       this.initializeSubscriptions();
     }
   }
 
+   /**
+   * @private
+   * @description
+   * Initializes the channels for the sidebar.
+   * It loads user channels and updates the tree data.
+   */
+  private async initializeChannels() {
+    await this.channelService.initializeDefaultData();
+    await this.loadUserChannels();
+    const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
+    if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
+      this.channels.push(ownDirectChannel)
+    }
+    await this.updateTreeData();
+  }
 
+    /**
+   * @private
+   * @description
+   * Loads user channels from the session storage.
+   */
+  private async loadUserChannels() {
+    this.channels = JSON.parse(sessionStorage.getItem('channels')!);
+  }
+
+    /**
+   * @private
+   * @description
+   * Creates group channel nodes for the tree structure.
+   * @returns {Node[]} The list of group channel nodes.
+   */
+  private createGroupChannelNodes(): Node[] {
+    const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
+      id: channel.id,
+      name: channel.name,
+      type: 'groupChannel' as const,
+    }));
+
+    return groupChannelNodes;
+  }
+
+   /**
+   * @private
+   * @description
+   * Creates a node for the user's own direct channel.
+   * @param {DABubbleUser} currentUser - The current active user.
+   * @returns {Promise<Node | null>} The node representing the user's direct channel, or null if not found.
+   */
+  private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
+    for (const channel of this.channels) {
+      if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
+        const ownDirectChannelNode: Node = {
+          id: channel.id,
+          name: `${currentUser.username} (Du)`,
+          type: 'directChannel' as const,
+          children: [],
+          avatar: currentUser.avatar,
+          isLoggedIn: true
+        };
+        return ownDirectChannelNode;
+      }
+    }
+    return null;
+  }
+
+    /**
+   * @private
+   * @description
+   * Creates nodes for direct channels other than the user's own.
+   * @param {DABubbleUser} currentUser - The current active user.
+   * @returns {Promise<Node[]>} The list of nodes representing other direct channels.
+   */
+  private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
+    const directChannelNodes: Node[] = [];
+    for (const channel of this.channels) {
+      if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
+        const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
+        if (otherUserId) {
+          await this.userService.getOneUserbyId(otherUserId).then((newUser) => {
+            if (newUser) {
+              const node: Node = {
+                id: channel.id,
+                name: newUser.username,
+                type: 'directChannel' as const,
+                children: [],
+                avatar: newUser.avatar,
+                isLoggedIn: newUser.isLoggedIn
+              };
+              directChannelNodes.push(node);
+              this.assignedUserMap[channel.id] = newUser;
+            }
+          });
+        }
+      }
+    }
+    return directChannelNodes;
+  }
+
+   /**
+   * @private
+   * @description
+   * Creates nodes for all direct channels including the user's own and others.
+   * @returns {Promise<Node[]>} The list of nodes representing all direct channels.
+   */
+  private async createDirectChannelNodes(): Promise<Node[]> {
+    const directChannelNodes: Node[] = [];
+    const currentUser = this.userService.activeUser;
+    const ownNode = await this.createOwnDirectChannelNode(currentUser);
+    if (ownNode)
+      directChannelNodes.push(ownNode);
+    await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
+      directChannelNodes.push(...otherNodes);
+    });
+    return directChannelNodes;
+  }
+
+    /**
+   * @private
+   * @description
+   * Updates the tree data structure used in the sidebar.
+   */
+  private async updateTreeData(): Promise<void> {
+    const groupChannelNodes = this.createGroupChannelNodes();
+    const directChannelNodes = await this.createDirectChannelNodes();
+
+    const groupChannelsStructure: Node = {
+      id: 'channels',
+      name: 'Channels',
+      type: 'groupChannel',
+      children: [
+        ...groupChannelNodes,
+        { id: 'add-channel', name: 'Channel hinzufügen', type: 'action' as const },
+      ],
+    };
+
+    const directChannelStructure: Node = {
+      id: 'direct-channels',
+      name: 'Direktnachrichten',
+      type: 'directChannel',
+      children: directChannelNodes,
+    };
+
+    this.TREE_DATA = [groupChannelsStructure, directChannelStructure];
+    this.dataSource.data = this.TREE_DATA;
+    this.treeControl.expandAll();
+  }
+
+  /**
+   * @public
+   * @description
+   * Handles node click events in the sidebar tree. It navigates to the selected channel or opens the add channel dialog.
+   * @param {FlattenedNode} node - The node that was clicked.
+   */
+  async onNode(node: FlattenedNode) {
+    if (node.expandable) {
+      this.treeControl.toggle(node);
+    }
+    else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
+      const selectedChannel = this.channels.find(
+        (channel) => channel.id === node.id
+      );
+      if (selectedChannel) {
+        this.selectedChannel = selectedChannel;
+        await this.navToSelectedChannel(selectedChannel);
+      }
+    } else if (node.type === 'action') {
+      this.openAddChannelDialog();
+    }
+  }
+
+    /**
+   * @public
+   * @description
+   * Opens the dialog to add a new channel.
+   */
+  async openAddChannelDialog() {
+    const dialogRef = this.dialog.open(AddChannelComponent);
+    dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
+      if (channel) {
+        const nameExists = await this.channelService.doesChannelNameAlreadyExist(channel.name);
+        if (nameExists) {
+          // todo fehlermeldung zurück geben eventuell
+          alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
+          return;
+        }
+        const newChannel = await this.channelService.createGroupChannel(channel);
+        if (newChannel) {
+          this.channels.push(newChannel);
+          await this.navToSelectedChannel(newChannel);
+          await this.updateTreeData();
+        }
+      }
+    });
+  }
+
+    /**
+   * @public
+   * @description
+   * Navigates to the selected channel.
+   * @param {TextChannel} selectedChannel - The channel to navigate to.
+   */
+  async navToSelectedChannel(selectedChannel: TextChannel) {
+    sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
+    await this.router.navigate(['/home']);
+    setTimeout(async () => {
+      this.router.navigate(['/home/channel', selectedChannel.id]);
+    }, 0.1);
+    this.subscriptionService.updateActiveChannel(selectedChannel);
+  }
+
+   /**
+   * @public
+   * @description
+   * Navigates to the "Create New Chat" screen.
+   */
+  async navToCreateNewChat() {
+    await this.router.navigate(['/home/new-chat']);
+  }
+
+   /**
+   * @public
+   * @description
+   * Determines if the node is a group channel.
+   * @param {FlattenedNode} channel - The node to check.
+   * @returns {boolean} True if the node is a group channel, otherwise false.
+   */
+  isGroupChannel = (channel: FlattenedNode): boolean => {
+    return (!channel.expandable && channel.type === 'groupChannel' && channel.name !== 'Channel hinzufügen');
+  }
+
+    /**
+   * @public
+   * @description
+   * Determines if the node is a direct channel.
+   * @param {FlattenedNode} channel - The node to check.
+   * @returns {boolean} True if the node is a direct channel, otherwise false.
+   */
+  isDirectChannel(channel: FlattenedNode): boolean {
+    return channel.type === 'directChannel';
+  }
+
+    /**
+   * @public
+   * @description
+   * Determines if the node is a category node.
+   * @param {FlattenedNode} channel - The node to check.
+   * @returns {boolean} True if the node is a category node, otherwise false.
+   */
+  isCategoryNode(channel: FlattenedNode): boolean {
+    return channel.type === 'groupChannel' || channel.type === 'directChannel';
+  }
+
+   /**
+   * @public
+   * @description
+   * Determines if the node is an action node.
+   * @param {FlattenedNode} channel - The node to check.
+   * @returns {boolean} True if the node is an action node, otherwise false.
+   */
+  isActionNode(channel: FlattenedNode): boolean {
+    return channel.type === 'action';
+  }
+
+   /**
+   * @public
+   * @description
+   * Determines if the node is the currently selected channel.
+   * @param {FlattenedNode} node - The node to check.
+   * @returns {boolean} True if the node is the selected channel, otherwise false.
+   */
+  isSelectedChannel(node: FlattenedNode): boolean {
+    return this.selectedChannel?.id === node.id;
+  }
+
+   /**
+   * @private
+   * @description
+   * Checks if the channel is defined and has a name.
+   * @param {TextChannel} channel - The channel to check.
+   * @returns {boolean} True if the channel is defined and has a name, otherwise false.
+   */
+  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+    return channel.name !== undefined;
+  }
+
+    /**
+   * @private
+   * @description
+   * Sets up various subscriptions used in the component.
+   */
   initializeSubscriptions() {
     this.routeSubscription = this.route.paramMap.subscribe(params => {
       const channelId = params.get('channel/channelId');
@@ -204,192 +510,40 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.selectedChannel = channel;
       await this.updateTreeData();
     });
-
-    this.databaseService.readDataByArray('onlinestatus','onlineUser',this.activeUser.id!).then((data) => {
-      this.userIsLoggedIn = data.includes(this.activeUser.id!);
-    });
-
-    this.onlineStatusChange.subscribe(async (onlineUser: string[]) => {
-      this.userIsLoggedIn = onlineUser.includes(this.activeUser.id!);
-    });
   }
 
-  private async initializeChannels() {
-    await this.channelService.initializeSidenavData();
-    await this.loadUserChannels();
-    const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
-    if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
-      this.channels.push(ownDirectChannel)
+    /**
+   * @public
+   * @description
+   * Angular lifecycle hook that is called when a directive, pipe, or service is destroyed.
+   * It unsubscribes from all active subscriptions to prevent memory leaks.
+   */
+  async ngOnDestroy() {
+    if (this.createdChannelSubscription) {
+      this.createdChannelSubscription.unsubscribe();
     }
-    await this.updateTreeData();
-  }
 
-  private async loadUserChannels() {
-    this.channels = JSON.parse(sessionStorage.getItem('channels')!);
-  }
-
-  private createGroupChannelNodes(): Node[] {
-    const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
-      id: channel.id,
-      name: channel.name,
-      type: 'groupChannel' as const,
-    }));
-
-    return groupChannelNodes;
-  }
-
-  private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
-    for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
-        const ownDirectChannelNode: Node = {
-          id: channel.id,
-          name: `${currentUser.username} (Du)`,
-          type: 'directChannel' as const,
-          children: [],
-          avatar: currentUser.avatar,
-          isLoggedIn: true
-        };
-        return ownDirectChannelNode;
-      }
+    if (this.activeUserChangeSubscription) {
+      this.activeUserChangeSubscription.unsubscribe();
     }
-    return null;
-  }
 
-  private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
-    const directChannelNodes: Node[] = [];
-    for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
-        const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
-        if (otherUserId) {
-          await this.userService.getOneUserbyId(otherUserId).then((newUser) => {
-            if (newUser) {
-              const node: Node = {
-                id: channel.id,
-                name: newUser.username,
-                type: 'directChannel' as const,
-                children: [],
-                avatar: newUser.avatar,
-                isLoggedIn: newUser.isLoggedIn
-              };
-              directChannelNodes.push(node);
-              this.assignedUserMap[channel.id] = newUser;
-            }
-          });
-        }
-      }
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
     }
-    return directChannelNodes;
-  }
 
-  private async createDirectChannelNodes(): Promise<Node[]> {
-    const directChannelNodes: Node[] = [];
-    const currentUser = this.userService.activeUser;
-    const ownNode = await this.createOwnDirectChannelNode(currentUser);
-    if (ownNode)
-      directChannelNodes.push(ownNode);
-    await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
-      directChannelNodes.push(...otherNodes);
-    });
-    return directChannelNodes;
-  }
+    if (this.channelService.channelSub)
+      this.channelService.channelSub.unsubscribe();
 
-  private async updateTreeData(): Promise<void> {
-    const groupChannelNodes = this.createGroupChannelNodes();
-    const directChannelNodes = await this.createDirectChannelNodes();
-
-    const groupChannelsStructure: Node = {
-      id: 'channels',
-      name: 'Channels',
-      type: 'groupChannel',
-      children: [
-        ...groupChannelNodes,
-        { id: 'add-channel', name: 'Channel hinzufügen', type: 'action' as const },
-      ],
-    };
-
-    const directChannelStructure: Node = {
-      id: 'direct-channels',
-      name: 'Direktnachrichten',
-      type: 'directChannel',
-      children: directChannelNodes,
-    };
-
-    this.TREE_DATA = [groupChannelsStructure, directChannelStructure];
-    this.dataSource.data = this.TREE_DATA;
-    this.treeControl.expandAll();
-  }
-
-  async onNode(node: FlattenedNode) {
-    if (node.expandable) {
-      this.treeControl.toggle(node);
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
     }
-    else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
-      const selectedChannel = this.channels.find(
-        (channel) => channel.id === node.id
-      );
-      if (selectedChannel) {
-        this.selectedChannel = selectedChannel;
-        await this.navToSelectedChannel(selectedChannel);
-      }
-    } else if (node.type === 'action') {
-      this.openAddChannelDialog();
+
+    if (this.updateTreeSubscription) {
+      this.updateTreeSubscription.unsubscribe();
     }
-  }
 
-  async openAddChannelDialog() {
-    const dialogRef = this.dialog.open(AddChannelComponent);
-    dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
-      if (channel) {
-        const nameExists = await this.channelService.doesChannelNameAlreadyExist(channel.name);
-        if (nameExists) {
-          // todo fehlermeldung zurück geben eventuell
-          alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
-          return;
-        }
-        const newChannel = await this.channelService.createGroupChannel(channel);
-        if (newChannel) {
-          this.channels.push(newChannel);
-          await this.navToSelectedChannel(newChannel);
-          await this.updateTreeData();
-        }
-      }
-    });
-  }
-
-  async navToSelectedChannel(selectedChannel: TextChannel) {
-    sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-    await this.router.navigate(['/home']);
-    setTimeout(async () => {
-      this.router.navigate(['/home/channel', selectedChannel.id]);
-    }, 0.1);
-    this.subscriptionService.updateActiveChannel(selectedChannel);
-  }
-
-  async navToCreateNewChat() {
-    await this.router.navigate(['/home/new-chat']);
-  }
-
-  isGroupChannel = (channel: FlattenedNode): boolean => {
-    return (!channel.expandable && channel.type === 'groupChannel' && channel.name !== 'Channel hinzufügen');
-  }
-
-  isDirectChannel(channel: FlattenedNode): boolean {
-    return channel.type === 'directChannel';
-  }
-
-  isCategoryNode(channel: FlattenedNode): boolean {
-    return channel.type === 'groupChannel' || channel.type === 'directChannel';
-  }
-
-  isActionNode(channel: FlattenedNode): boolean {
-    return channel.type === 'action';
-  }
-
-  isSelectedChannel(node: FlattenedNode): boolean {
-    return this.selectedChannel?.id === node.id;
-  }
-
-  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
-    return channel.name !== undefined;
+    if (this.activeChannelSubscription) {
+      this.activeChannelSubscription.unsubscribe();
+    }
   }
 }

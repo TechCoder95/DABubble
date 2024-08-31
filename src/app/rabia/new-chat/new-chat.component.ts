@@ -11,6 +11,12 @@ import { MessageType } from '../../shared/enums/messagetype';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { ChannelService } from '../../shared/services/channel.service';
 
+/**
+ * @component NewChatComponent
+ * @description
+ * This component allows the user to start a new chat by searching for users or channels.
+ * It includes search functionality and the ability to select either a user or a channel to start a conversation.
+ */
 @Component({
   selector: 'app-new-chat',
   standalone: true,
@@ -26,14 +32,23 @@ export class NewChatComponent implements OnInit {
   isSelectingUser!: boolean;
   isSelectingChannel!: boolean;
   hasSelection: boolean = false;
-
   messageType: MessageType = MessageType.NewDirect;
 
   @Input() selectedChannelFromSidenav: any;
   @Input() activeUserFromSidenav: any;
 
+    /**
+   * @constructor
+   * @param {UserService} userService - Service for managing user-related operations.
+   * @param {ChannelService} channelService - Service for managing channel-related operations.
+   */
   constructor(private userService: UserService, private channelService: ChannelService) { }
 
+    /**
+   * @public
+   * @description Angular lifecycle hook that runs after the component's view has been initialized.
+   * Sets up the search functionality with debounce and distinct until changed logic.
+   */
   ngOnInit() {
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
@@ -56,7 +71,11 @@ export class NewChatComponent implements OnInit {
     });
   }
   
-
+ /**
+   * Selects a user and updates the search results to reflect this selection.
+   * 
+   * @param {DABubbleUser} user - The user selected from the search results.
+   */
   selectUser(user: DABubbleUser) {
     this.isSelectingUser = true;
     this.isSelectingChannel = false;
@@ -67,6 +86,11 @@ export class NewChatComponent implements OnInit {
     this.userService.setSelectedUser(user);
   }
 
+   /**
+   * Selects a channel and updates the search results to reflect this selection.
+   * 
+   * @param {TextChannel} channel - The channel selected from the search results.
+   */
   selectChannel(channel: TextChannel) {
     this.isSelectingChannel = true;
     this.isSelectingUser = false;
