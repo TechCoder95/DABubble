@@ -51,13 +51,9 @@ export class ChatInformationComponent implements OnInit {
     public dialog: MatDialog,
     public channelService: ChannelService,
     private userService: UserService,
-    private databaseService: DatabaseService,
     private subService: GlobalsubService,
   ) {
-
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
-
-
   }
 
   ngOnInit(): void {
@@ -71,7 +67,9 @@ export class ChatInformationComponent implements OnInit {
     });
 
     this.userStatusSubscription = this.subService.getUserUpdateFromDatabaseObservable().subscribe(async (user) => {
-      this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
+      if (user && this.privateChatPartner) {
+        this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
+      }
     });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
@@ -88,8 +86,12 @@ export class ChatInformationComponent implements OnInit {
   }
 
   ngOnDestroy() {
-    this.channelSub.unsubscribe();
-    this.userStatusSubscription.unsubscribe();
+    if (this.channelSub) {
+      this.channelSub.unsubscribe();
+    }
+    if (this.userStatusSubscription) {
+      this.userStatusSubscription.unsubscribe();
+    }
   }
 
   changeTagImg(hover: boolean) {
