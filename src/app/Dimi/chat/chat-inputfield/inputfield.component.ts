@@ -213,7 +213,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.databaseService.addChannelDataToDB('messages', message);
 
         if (this.messageType === MessageType.Threads) {
-
           this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
           this.selectedMessage.replyNumber = this.selectedMessage.replyNumber + 1;
           this.selectedMessage.lastRepliedTime = message.timestamp;          
@@ -228,9 +227,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
-    } else {
-      alert('Du musst eine Nachricht eingeben');
-    }
+    } 
   }
 
   returnCurrentMessage() {

@@ -88,14 +88,13 @@ interface FlattenedNode {
     ThreadComponent,
     SearchbarComponent,
     RouterModule,
-    MatProgressSpinnerModule
-],
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
-
-    /**
+  /**
    * @private
    * @description
    * Function to transform nodes into a flattened node model.
@@ -110,11 +109,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     level: level,
     type: node.type,
     avatar: node.avatar,
-    isLoggedIn: node.isLoggedIn
+    isLoggedIn: node.isLoggedIn,
   });
 
-  treeControl = new FlatTreeControl<FlattenedNode>((node) => node.level, (node) => node.expandable);
-  treeFlattener = new MatTreeFlattener(this.transformer, (node) => node.level, (node) => node.expandable, (node) => node.children);
+  treeControl = new FlatTreeControl<FlattenedNode>(
+    (node) => node.level,
+    (node) => node.expandable,
+  );
+  treeFlattener = new MatTreeFlattener(
+    this.transformer,
+    (node) => node.level,
+    (node) => node.expandable,
+    (node) => node.children,
+  );
   dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
   channels: TextChannel[] = [];
@@ -162,7 +169,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
   ) { }
 
-   /**
+  /**
    * @public
    * @description
    * Angular lifecycle hook that is called after data-bound properties of a directive are initialized.
@@ -176,7 +183,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-   /**
+  /**
    * @private
    * @description
    * Initializes the channels for the sidebar.
@@ -186,13 +193,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.channelService.initializeDefaultData();
     await this.loadUserChannels();
     const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
-    if (!this.channels.some(channel => channel.id === ownDirectChannel.id)) {
-      this.channels.push(ownDirectChannel)
+    if (!this.channels.some((channel) => channel.id === ownDirectChannel.id)) {
+      this.channels.push(ownDirectChannel);
     }
     await this.updateTreeData();
   }
 
-    /**
+  /**
    * @private
    * @description
    * Loads user channels from the session storage.
@@ -201,39 +208,48 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.channels = JSON.parse(sessionStorage.getItem('channels')!);
   }
 
-    /**
+  /**
    * @private
    * @description
    * Creates group channel nodes for the tree structure.
    * @returns {Node[]} The list of group channel nodes.
    */
   private createGroupChannelNodes(): Node[] {
-    const groupChannelNodes = this.channels.filter(channel => !channel.isPrivate && this.isDefined(channel)).map(channel => ({
-      id: channel.id,
-      name: channel.name,
-      type: 'groupChannel' as const,
-    }));
+    const groupChannelNodes = this.channels
+      .filter((channel) => !channel.isPrivate && this.isDefined(channel))
+      .map((channel) => ({
+        id: channel.id,
+        name: channel.name,
+        type: 'groupChannel' as const,
+      }));
 
     return groupChannelNodes;
   }
 
-   /**
+  /**
    * @private
    * @description
    * Creates a node for the user's own direct channel.
    * @param {DABubbleUser} currentUser - The current active user.
    * @returns {Promise<Node | null>} The node representing the user's direct channel, or null if not found.
    */
-  private async createOwnDirectChannelNode(currentUser: DABubbleUser): Promise<Node | null> {
+  private async createOwnDirectChannelNode(
+    currentUser: DABubbleUser,
+  ): Promise<Node | null> {
     for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel) && channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id) {
+      if (
+        channel.isPrivate &&
+        this.isDefined(channel) &&
+        channel.assignedUser.length === 1 &&
+        channel.assignedUser[0] === currentUser.id
+      ) {
         const ownDirectChannelNode: Node = {
           id: channel.id,
           name: `${currentUser.username} (Du)`,
           type: 'directChannel' as const,
           children: [],
           avatar: currentUser.avatar,
-          isLoggedIn: true
+          isLoggedIn: true,
         };
         return ownDirectChannelNode;
       }
@@ -241,7 +257,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return null;
   }
 
-    /**
+  /**
    * @private
    * @description
    * Creates nodes for direct channels other than the user's own.
@@ -251,8 +267,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private async createOtherDirectChannelNodes(currentUser: DABubbleUser) {
     const directChannelNodes: Node[] = [];
     for (const channel of this.channels) {
-      if (channel.isPrivate && this.isDefined(channel) && !(channel.assignedUser.length === 1 && channel.assignedUser[0] === currentUser.id)) {
-        const otherUserId = channel.assignedUser.find(id => id !== currentUser.id);
+      if (
+        channel.isPrivate &&
+        this.isDefined(channel) &&
+        !(
+          channel.assignedUser.length === 1 &&
+          channel.assignedUser[0] === currentUser.id
+        )
+      ) {
+        const otherUserId = channel.assignedUser.find(
+          (id) => id !== currentUser.id,
+        );
         if (otherUserId) {
           await this.userService.getOneUserbyId(otherUserId).then((newUser) => {
             if (newUser) {
@@ -262,7 +287,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
                 type: 'directChannel' as const,
                 children: [],
                 avatar: newUser.avatar,
-                isLoggedIn: newUser.isLoggedIn
+                isLoggedIn: newUser.isLoggedIn,
               };
               directChannelNodes.push(node);
               this.assignedUserMap[channel.id] = newUser;
@@ -274,7 +299,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return directChannelNodes;
   }
 
-   /**
+  /**
    * @private
    * @description
    * Creates nodes for all direct channels including the user's own and others.
@@ -284,15 +309,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const directChannelNodes: Node[] = [];
     const currentUser = this.userService.activeUser;
     const ownNode = await this.createOwnDirectChannelNode(currentUser);
-    if (ownNode)
-      directChannelNodes.push(ownNode);
+    if (ownNode) directChannelNodes.push(ownNode);
     await this.createOtherDirectChannelNodes(currentUser).then((otherNodes) => {
       directChannelNodes.push(...otherNodes);
     });
     return directChannelNodes;
   }
 
-    /**
+  /**
    * @private
    * @description
    * Updates the tree data structure used in the sidebar.
@@ -307,7 +331,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
       type: 'groupChannel',
       children: [
         ...groupChannelNodes,
-        { id: 'add-channel', name: 'Channel hinzufügen', type: 'action' as const },
+        {
+          id: 'add-channel',
+          name: 'Channel hinzufügen',
+          type: 'action' as const,
+        },
       ],
     };
 
@@ -332,10 +360,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async onNode(node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
-    }
-    else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
+    } else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
       const selectedChannel = this.channels.find(
-        (channel) => channel.id === node.id
+        (channel) => channel.id === node.id,
       );
       if (selectedChannel) {
         this.selectedChannel = selectedChannel;
@@ -346,7 +373,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-    /**
+  /**
    * @public
    * @description
    * Opens the dialog to add a new channel.
@@ -355,13 +382,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
       if (channel) {
-        const nameExists = await this.channelService.doesChannelNameAlreadyExist(channel.name);
+        const nameExists =
+          await this.channelService.doesChannelNameAlreadyExist(channel.name);
         if (nameExists) {
           // todo fehlermeldung zurück geben eventuell
           alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
           return;
         }
-        const newChannel = await this.channelService.createGroupChannel(channel);
+        const newChannel =
+          await this.channelService.createGroupChannel(channel);
         if (newChannel) {
           this.channels.push(newChannel);
           await this.navToSelectedChannel(newChannel);
@@ -371,7 +400,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     });
   }
 
-    /**
+  /**
    * @public
    * @description
    * Navigates to the selected channel.
@@ -386,7 +415,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.subscriptionService.updateActiveChannel(selectedChannel);
   }
 
-   /**
+  /**
    * @public
    * @description
    * Navigates to the "Create New Chat" screen.
@@ -395,7 +424,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     await this.router.navigate(['/home/new-chat']);
   }
 
-   /**
+  /**
    * @public
    * @description
    * Determines if the node is a group channel.
@@ -403,10 +432,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
    * @returns {boolean} True if the node is a group channel, otherwise false.
    */
   isGroupChannel = (channel: FlattenedNode): boolean => {
-    return (!channel.expandable && channel.type === 'groupChannel' && channel.name !== 'Channel hinzufügen');
-  }
+    return (
+      !channel.expandable &&
+      channel.type === 'groupChannel' &&
+      channel.name !== 'Channel hinzufügen'
+    );
+  };
 
-    /**
+  /**
    * @public
    * @description
    * Determines if the node is a direct channel.
@@ -417,7 +450,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return channel.type === 'directChannel';
   }
 
-    /**
+  /**
    * @public
    * @description
    * Determines if the node is a category node.
@@ -428,7 +461,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return channel.type === 'groupChannel' || channel.type === 'directChannel';
   }
 
-   /**
+  /**
    * @public
    * @description
    * Determines if the node is an action node.
@@ -439,7 +472,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return channel.type === 'action';
   }
 
-   /**
+  /**
    * @public
    * @description
    * Determines if the node is the currently selected channel.
@@ -450,27 +483,31 @@ export class SidenavComponent implements OnInit, OnDestroy {
     return this.selectedChannel?.id === node.id;
   }
 
-   /**
+  /**
    * @private
    * @description
    * Checks if the channel is defined and has a name.
    * @param {TextChannel} channel - The channel to check.
    * @returns {boolean} True if the channel is defined and has a name, otherwise false.
    */
-  private isDefined(channel: TextChannel): channel is TextChannel & { name: string } {
+  private isDefined(
+    channel: TextChannel,
+  ): channel is TextChannel & { name: string } {
     return channel.name !== undefined;
   }
 
-    /**
+  /**
    * @private
    * @description
    * Sets up various subscriptions used in the component.
    */
   initializeSubscriptions() {
-    this.routeSubscription = this.route.paramMap.subscribe(params => {
+    this.routeSubscription = this.route.paramMap.subscribe((params) => {
       const channelId = params.get('channel/channelId');
       if (channelId) {
-        const selectedChannel = this.channels.find(channel => channel.id === channelId);
+        const selectedChannel = this.channels.find(
+          (channel) => channel.id === channelId,
+        );
         if (selectedChannel) {
           this.selectedChannel = selectedChannel;
           this.channelService.selectChannel(selectedChannel);
@@ -478,41 +515,53 @@ export class SidenavComponent implements OnInit, OnDestroy {
       }
     });
 
-    this.activeUserChangeSubscription = this.activeUserChange.subscribe(async (user: DABubbleUser) => {
-      this.activeUser = user;
-    });
+    this.activeUserChangeSubscription = this.activeUserChange.subscribe(
+      async (user: DABubbleUser) => {
+        this.activeUser = user;
+      },
+    );
 
-    this.createdChannelSubscription = this.subscriptionService.getChannelCreatedObservable().subscribe(async (channel) => {
-      const exists = this.channels.some(createdChannel => createdChannel.id === channel.id);
-      if (!exists) {
-        this.channels.push(channel);
+    this.createdChannelSubscription = this.subscriptionService
+      .getChannelCreatedObservable()
+      .subscribe(async (channel) => {
+        const exists = this.channels.some(
+          (createdChannel) => createdChannel.id === channel.id,
+        );
+        if (!exists) {
+          this.channels.push(channel);
+          await this.updateTreeData();
+        }
+      });
+
+    this.userStatusSubscription = this.subscriptionService
+      .getUserUpdateFromDatabaseObservable()
+      .subscribe(async () => {
         await this.updateTreeData();
-      }
-    });
+      });
 
-    this.userStatusSubscription = this.subscriptionService.getUserUpdateFromDatabaseObservable().subscribe(async () => {
-      await this.updateTreeData();
-    });
+    this.updateTreeSubscription = this.subscriptionService
+      .getSidenavTreeObservable()
+      .subscribe(async () => {
+        await this.loadUserChannels();
+        await this.updateTreeData();
+      });
 
-    this.updateTreeSubscription = this.subscriptionService.getSidenavTreeObservable().subscribe(async () => {
-      await this.loadUserChannels();
-      await this.updateTreeData();
-    });
+    this.activeChannelSubscription = this.subscriptionService
+      .getActiveChannelObservable()
+      .subscribe(async (channel: TextChannel) => {
+        const index = this.channels.findIndex((c) => c.id === channel.id);
+        if (index !== -1) {
+          this.channels[index] = channel;
+        } else {
+          this.channels.push(channel);
+        }
 
-    this.activeChannelSubscription = this.subscriptionService.getActiveChannelObservable().subscribe(async (channel: TextChannel) => {
-      const index = this.channels.findIndex(c => c.id === channel.id);
-      if (index !== -1) {
-        this.channels[index] = channel;
-      } else {
-        this.channels.push(channel);
-      }
-
-      this.selectedChannel = channel;
-      await this.updateTreeData();
-    });
+        this.selectedChannel = channel;
+        await this.updateTreeData();
+      });
   }
 
-    /**
+  /**
    * @public
    * @description
    * Angular lifecycle hook that is called when a directive, pipe, or service is destroyed.
@@ -545,5 +594,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.activeChannelSubscription) {
       this.activeChannelSubscription.unsubscribe();
     }
+  }
+
+  hoverStates: { [key: string]: boolean } = {};
+
+  hoverTreeNode(hover: boolean, nodeId: string) {
+    this.hoverStates[nodeId] = hover;
   }
 }
