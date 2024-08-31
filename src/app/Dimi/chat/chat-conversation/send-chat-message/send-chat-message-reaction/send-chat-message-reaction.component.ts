@@ -23,6 +23,7 @@ export class SendChatMessageReactionComponent {
   isInEditMode: boolean = false;
   messageDeleted: boolean = false;
   emojiType!: string;
+  privateChat!: boolean;
   @Output() editModeChange = new EventEmitter<boolean>();
   @Output() deleteStatusChange = new EventEmitter<boolean>();
   @Input() sendMessage!: ChatMessage;
@@ -32,10 +33,9 @@ export class SendChatMessageReactionComponent {
   @Input({ required: true }) messageForThread!: ChatMessage;
   @Input() chatType: ChatType = ChatType.Channel;
 
-  constructor(
-    private threadService: ThreadService,
-    private chatService: ChatService,
-  ) { }
+  constructor(private threadService: ThreadService, private chatService: ChatService) {
+    this.privateChat = JSON.parse(sessionStorage.getItem('selectedChannel')!).isPrivate;
+  }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';

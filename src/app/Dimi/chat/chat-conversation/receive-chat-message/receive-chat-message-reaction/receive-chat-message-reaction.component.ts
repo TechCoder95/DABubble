@@ -27,10 +27,12 @@ export class ReceiveChatMessageReactionComponent {
   addReactionImg = './img/message-reaction-add-reaction.svg';
   answerImg = './img/message-reaction-answer.svg';
 
-  constructor(
-    private threadService: ThreadService,
-    private chatService: ChatService
-  ) { }
+  privateChat!: boolean;
+
+  constructor(private threadService: ThreadService, private chatService: ChatService) {
+    this.privateChat = JSON.parse(sessionStorage.getItem('selectedChannel')!).isPrivate;
+
+  }
 
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';

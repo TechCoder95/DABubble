@@ -46,10 +46,11 @@
     </div>
   </section>
   @if (chatType == 'channel') {
+  @if ( !privateChat ) {
   <section class="bg" (mouseenter)="hoverReaction('answer', true)" (mouseleave)="hoverReaction('answer', false)">
     <img (click)="openThread()" [src]="answerImg" />
   </section>
-  }
+  }}
   <section class="edit-message-section">
     <div class="bg" (mouseenter)="hoverReaction('edit', true)" (mouseleave)="hoverReaction('edit', false)">
       <img [src]="editMessageImg" (click)="editMessageDialog()" />
