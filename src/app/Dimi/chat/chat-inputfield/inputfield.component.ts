@@ -216,6 +216,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
 
           this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
           this.selectedMessage.replyNumber = this.selectedMessage.replyNumber + 1;
+          this.selectedMessage.lastRepliedTime = message.timestamp;          
           this.databaseService.updateDataInDB('messages', this.selectedMessage.id!, this.selectedMessage);
           sessionStorage.setItem('threadMessage', JSON.stringify(this.selectedMessage));
         }
