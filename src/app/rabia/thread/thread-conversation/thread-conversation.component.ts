@@ -14,6 +14,7 @@ import { ThreadChannel } from '../../../shared/interfaces/thread-channel';
 import { filter, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { ChatService } from '../../../shared/services/chat.service';
+import { ChatType } from '../../../shared/enums/chattype';
 
 @Component({
   selector: 'app-thread-conversation',
@@ -30,7 +31,8 @@ export class ThreadConversationComponent {
   allThreadMessages: ChatMessage[] = [];
   selectedMessage!: ChatMessage;
   selectedThread!: ThreadChannel;
-  threadSub!: Subscription
+  threadSub!: Subscription;
+  chatTypeThreads: ChatType = ChatType.Threads;
 
   @Output() receiveChatMessage = new EventEmitter<ChatMessage>();
   @Output() sendChatMessage = new EventEmitter<ChatMessage>();

@@ -10,6 +10,7 @@ import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { ActualReceiveMessageComponent } from './actual-receive-message/actual-receive-message.component';
 import { ChatService } from '../../../../shared/services/chat.service';
 import { ThreadService } from '../../../../shared/services/thread.service';
+import { ChatType } from '../../../../shared/enums/chattype';
 
 @Component({
   selector: 'app-receive-chat-message',
@@ -31,6 +32,7 @@ export class ReceiveChatMessageComponent {
   @Input() repeatedMessage!: boolean | undefined;
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
   @Input() sender!: DABubbleUser;
+  @Input() chatType: ChatType = ChatType.Channel;
 
   senderUser: DABubbleUser = {
     username: 'dummy',
@@ -47,8 +49,6 @@ export class ReceiveChatMessageComponent {
   ) { }
 
   ngOnInit(): void {
-
-
     this.getUser();
     if (this.receiveMessage.fileUrl) {
       this.getImage();

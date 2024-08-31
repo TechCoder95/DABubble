@@ -5,6 +5,7 @@ import { ChatService } from '../../../../../shared/services/chat.service';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ThreadService } from '../../../../../shared/services/thread.service';
+import { ChatType } from '../../../../../shared/enums/chattype';
 @Component({
   selector: 'app-send-chat-message-reaction',
   standalone: true,
@@ -29,6 +30,7 @@ export class SendChatMessageReactionComponent {
   @Input() ticket: any;
   @Input() isPrivate!: boolean | undefined;
   @Input({ required: true }) messageForThread!: ChatMessage;
+  @Input() chatType: ChatType = ChatType.Channel;
 
   constructor(
     private threadService: ThreadService,

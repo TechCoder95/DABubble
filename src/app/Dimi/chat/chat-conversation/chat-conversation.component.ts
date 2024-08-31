@@ -25,6 +25,7 @@ import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { PreChatMessageComponent } from './pre-chat-message/pre-chat-message.component';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { ThreadService } from '../../../shared/services/thread.service';
+import { ChatType } from '../../../shared/enums/chattype';
 
 @Component({
   selector: 'app-chat-conversation',
@@ -48,9 +49,11 @@ export class ChatConversationComponent
   allMessages: ChatMessage[] = [];
   selectedChannel!: TextChannel;
   selectedMessage!: DABubbleUser;
+  chatTypeChannel: ChatType = ChatType.Channel;
 
   @Input() activeChannelFromChat: any;
   @Input() activeUserFromChat: any;
+ 
 
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChildren('messageDay') messageDays!: QueryList<ElementRef>;

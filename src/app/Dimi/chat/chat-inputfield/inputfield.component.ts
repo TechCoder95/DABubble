@@ -15,11 +15,9 @@ import { AddFilesComponent } from './add-files/add-files.component';
 import { EmojiesComponent } from './emojies/emojies.component';
 import { LinkChannelMemberComponent } from './link-channel-member/link-channel-member.component';
 import { HtmlConverterPipe } from '../../../shared/pipes/html-converter.pipe';
-import { ThreadService } from '../../../shared/services/thread.service';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { VerlinkungPipe } from '../../../shared/pipes/verlinkung.pipe';
 import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
-import { GlobalsubService } from '../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -71,13 +69,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   storage: any;
 
   constructor(
-    private subService: GlobalsubService,
     public channelService: ChannelService,
     private userService: UserService,
     private databaseService: DatabaseService,
     private router: Router,
     private storageService: DAStorageService,
-    private threadService: ThreadService,
   ) {
     this.activeUser = this.userService.activeUser;
     this.selectedChannel = JSON.parse(

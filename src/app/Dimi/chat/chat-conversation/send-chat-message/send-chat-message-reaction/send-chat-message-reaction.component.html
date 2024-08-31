@@ -1,27 +1,16 @@
 <main>
+  @if (chatType == 'channel') {
   <section class="bg">
-    <img
-      [src]="checkMarkImg"
-      (mouseenter)="hoverReaction('checkMark', true)"
-      (mouseleave)="hoverReaction('checkMark', false)"
-      (click)="handleEmojis('checkMark')"
-    />
+    <img [src]="checkMarkImg" (mouseenter)="hoverReaction('checkMark', true)"
+      (mouseleave)="hoverReaction('checkMark', false)" (click)="handleEmojis('checkMark')" />
   </section>
   <section class="bg">
-    <img
-      [src]="handsUpImg"
-      (mouseenter)="hoverReaction('handsUp', true)"
-      (mouseleave)="hoverReaction('handsUp', false)"
-      (click)="handleEmojis('handsUp')"
-    />
+    <img [src]="handsUpImg" (mouseenter)="hoverReaction('handsUp', true)" (mouseleave)="hoverReaction('handsUp', false)"
+      (click)="handleEmojis('handsUp')" />
   </section>
-  <section
-    class="bg"
-    [ngStyle]="{ position: 'relative' }"
-    (mouseenter)="hoverReaction('addReaction', true)"
-    (mouseleave)="hoverReaction('addReaction', false)"
-    (click)="openAddReactions()"
-  >
+  }
+  <section class="bg" [ngStyle]="{ position: 'relative' }" (mouseenter)="hoverReaction('addReaction', true)"
+    (mouseleave)="hoverReaction('addReaction', false)" (click)="openAddReactions()">
     <img [src]="addReactionImg" />
     <div *ngIf="addReactionDiv" class="add-reactions-div">
       <div class="bg" (click)="handleEmojis('nerdFace')">
@@ -56,19 +45,13 @@
       </div>
     </div>
   </section>
-  <section
-    class="bg"
-    (mouseenter)="hoverReaction('answer', true)"
-    (mouseleave)="hoverReaction('answer', false)"
-  >
+  @if (chatType == 'channel') {
+  <section class="bg" (mouseenter)="hoverReaction('answer', true)" (mouseleave)="hoverReaction('answer', false)">
     <img (click)="openThread()" [src]="answerImg" />
   </section>
+  }
   <section class="edit-message-section">
-    <div
-      class="bg"
-      (mouseenter)="hoverReaction('edit', true)"
-      (mouseleave)="hoverReaction('edit', false)"
-    >
+    <div class="bg" (mouseenter)="hoverReaction('edit', true)" (mouseleave)="hoverReaction('edit', false)">
       <img [src]="editMessageImg" (click)="editMessageDialog()" />
     </div>
     <div class="edit-message-dialog" *ngIf="showEditMessageDialog">

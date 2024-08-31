@@ -20,7 +20,7 @@
     <app-send-chat-message [sendMessage]="message" [user]="activeUser" [index]="$index" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
         repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
-      "></app-send-chat-message>
+      " [chatType]="chatTypeChannel"></app-send-chat-message>
     }
 
 
@@ -30,17 +30,17 @@
     <app-receive-chat-message [receiveMessage]="message" [user]="activeUser" [repeatedMessage]="true"
       [repeatedMessageInUnder5Minutes]="
         repeatedMessageInUnder5Minutes(message, allMessages[$index - 1])
-      "></app-receive-chat-message>
+      " [chatType]="chatTypeChannel"></app-receive-chat-message>
     }
 
     @else if (message.senderId === this.activeUser.id) {
     <app-send-chat-message [sendMessage]="message" [user]="activeUser" [index]="$index"
-      [repeatedMessage]="false"></app-send-chat-message>
+      [repeatedMessage]="false" [chatType]="chatTypeChannel"></app-send-chat-message>
     }
 
     @else {
     <app-receive-chat-message [receiveMessage]="message" [user]="activeUser"
-      [repeatedMessage]="false"></app-receive-chat-message>
+      [repeatedMessage]="false" [chatType]="chatTypeChannel"></app-receive-chat-message>
     }
     }
     @empty {

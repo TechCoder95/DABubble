@@ -17,6 +17,7 @@ import { EmojisPipe } from '../../../../shared/pipes/emojis.pipe';
 import { DAStorageService } from '../../../../shared/services/dastorage.service';
 import { ActualMessageComponent } from './actual-send-message/actual-message.component';
 import { ThreadService } from '../../../../shared/services/thread.service';
+import { ChatType } from '../../../../shared/enums/chattype';
 
 @Component({
   selector: 'app-send-chat-message',
@@ -46,6 +47,7 @@ export class SendChatMessageComponent implements OnInit {
   activeChatMessageReactionsComponent: any;
   @Input() repeatedMessage!: boolean | undefined;
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
+  @Input() chatType: ChatType = ChatType.Channel;
 
   constructor(
     private databaseService: DatabaseService,

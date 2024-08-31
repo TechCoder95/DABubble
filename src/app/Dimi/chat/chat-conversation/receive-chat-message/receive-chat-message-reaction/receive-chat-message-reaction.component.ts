@@ -4,11 +4,8 @@ import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { DABubbleUser } from '../../../../../shared/interfaces/user';
 import { ChatService } from '../../../../../shared/services/chat.service';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
-import { DatabaseService } from '../../../../../shared/services/database.service';
-import { ThreadChannel } from '../../../../../shared/interfaces/thread-channel';
 import { ThreadService } from '../../../../../shared/services/thread.service';
-import { GlobalsubService } from '../../../../../shared/services/globalsub.service';
+import { ChatType } from '../../../../../shared/enums/chattype';
 
 
 @Component({
@@ -23,6 +20,8 @@ export class ReceiveChatMessageReactionComponent {
   @Input() user!: DABubbleUser;
   @Input() isPrivate!: boolean | undefined;
   @Input({ required: true }) messageForThread!: ChatMessage;
+  @Input() chatType: ChatType = ChatType.Channel;
+
   checkMarkImg = './img/message-reaction-check-mark.svg';
   handsUpImg = './img/message-reaction-hands-up.svg';
   addReactionImg = './img/message-reaction-add-reaction.svg';
@@ -30,9 +29,7 @@ export class ReceiveChatMessageReactionComponent {
 
   constructor(
     private threadService: ThreadService,
-    private chatService: ChatService,
-    private router: Router,
-    private dataService: DatabaseService, private subService: GlobalsubService
+    private chatService: ChatService
   ) { }
 
   hoverReaction(type: string, hover: boolean) {
@@ -47,11 +44,8 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   async openThread() {
-
-
     this.threadService.setTicket(this.ticket);
     this.threadService.setMessageThread(this.messageForThread);
-
     await this.threadService.openThread();
   }
 

@@ -4,7 +4,7 @@
     <app-send-chat-message-reaction [ticket]="sendMessage" *ngIf="!sendMessage.deleted"
       [ngClass]="{ 'position-component': repeatedMessage }" (editModeChange)="onEditModeChange($event)"
       (deleteStatusChange)="onDelete($event)" class="slide-in" [sendMessage]="sendMessage"
-      [messageForThread]="sendMessage" [user]="user"></app-send-chat-message-reaction>
+      [messageForThread]="sendMessage" [user]="user" [chatType]="chatType"></app-send-chat-message-reaction>
     <div class="message-information">
       <div class="sender-and-time">
         <h5 *ngIf="!repeatedMessage">{{ user.username }}</h5>

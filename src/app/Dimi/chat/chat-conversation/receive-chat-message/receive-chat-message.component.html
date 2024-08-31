@@ -37,7 +37,7 @@
           [user]="user"></app-active-chat-message-reactions>
       </div>
     </div>
-    <app-receive-chat-message-reaction [user]="user" [ticket]="receiveMessage" [messageForThread]="receiveMessage"
+    <app-receive-chat-message-reaction [user]="user" [ticket]="receiveMessage" [messageForThread]="receiveMessage" [chatType]="chatType"
       *ngIf="!receiveMessage.deleted" class="slide-in"
       [ngClass]="{ 'position-component': repeatedMessage }"></app-receive-chat-message-reaction>
   </section>
