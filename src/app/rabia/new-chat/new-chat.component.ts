@@ -49,27 +49,40 @@ export class NewChatComponent implements OnInit {
    * @description Angular lifecycle hook that runs after the component's view has been initialized.
    * Sets up the search functionality with debounce and distinct until changed logic.
    */
-  ngOnInit() {
-    this.searchControl.valueChanges.pipe(
-      debounceTime(300),
-      distinctUntilChanged(),
-      switchMap(async value => {
-        if (this.hasSelection) {
-          this.hasSelection = false;
-          return { users: [], channels: [] };
-        }
-        return Promise.all([
-          await this.userService.searchUsersByNameOrEmail(value),
-          await this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
-        ]).then(([users, channels]) => {
-          const filteredChannels = channels.filter(channel => !channel.isPrivate);
-          return { users, channels: filteredChannels };
-        });
-      })
-    ).subscribe(results => {
-      this.searchResults = results;
-    });
-  }
+    ngOnInit() {
+      this.searchControl.valueChanges.pipe(
+        debounceTime(300),
+        distinctUntilChanged(),
+        switchMap(async value => await this.performSearch(value))
+      ).subscribe(results => {
+        this.searchResults = results;
+      });
+    }
+    
+    private async performSearch(value: string): Promise<{ users: DABubbleUser[], channels: TextChannel[] }> {
+      if (this.hasSelection) {
+        this.hasSelection = false;
+        return { users: [], channels: [] };
+      }
+    
+      if (value.startsWith('#')) {
+        const searchQuery = value.substring(1);
+        const channels = await this.channelService.searchChannelsByName(searchQuery, this.userService.activeUser.id!);
+        const groupChannels = channels.filter(channel => !channel.isPrivate);
+        return { users: [], channels: groupChannels };
+      } else if (value.startsWith('@')) {
+        const searchQuery = value.substring(1);
+        const users = await this.userService.searchUsersByNameOrEmail(searchQuery);
+        return { users, channels: [] };
+      } else {
+        const [users, channels] = await Promise.all([
+          this.userService.searchUsersByNameOrEmail(value),
+          this.channelService.searchChannelsByName(value, this.userService.activeUser.id!)
+        ]);
+        const groupChannels = channels.filter(channel => !channel.isPrivate);
+        return { users, channels: groupChannels };
+      }
+    }    
   
  /**
    * Selects a user and updates the search results to reflect this selection.
