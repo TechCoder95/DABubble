@@ -167,7 +167,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute,
-  ) {}
+  ) { }
 
   /**
    * @public
@@ -599,12 +599,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
-  tagImgDefault: string = './img/sidenav-tag-default.svg';
-  hoverTreeNode(hover: boolean) {
-    if(hover){
-      this.tagImgDefault = './img/tag-hover.svg';
-    }else{
-      this.tagImgDefault = './img/sidenav-tag-default.svg';
-    }
+  hoverStates: { [key: string]: boolean } = {};
+
+  hoverTreeNode(hover: boolean, nodeId: string) {
+    this.hoverStates[nodeId] = hover;
   }
 }

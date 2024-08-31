@@ -19,22 +19,22 @@
           [dataSource]="dataSource"
           [treeControl]="treeControl"
         >
-          <mat-tree-node
-            *matTreeNodeDef="let channelNode"
-            (mouseenter)="hoverTreeNode(true)"
-            (mouseleave)="hoverTreeNode(false)"
-            (click)="onNode(channelNode)"
-          >
+        <mat-tree-node
+        *matTreeNodeDef="let channelNode"
+        (mouseenter)="hoverTreeNode(true, channelNode.id)"
+        (mouseleave)="hoverTreeNode(false, channelNode.id)"
+        (click)="onNode(channelNode)"
+      >
             <div class="flex align-items-center cursor-pointer pl-48">
               <!-- <button mat-icon-button></button> -->
-
               <ng-container *ngIf="channelNode">
                 <img
-                  *ngIf="isGroupChannel(channelNode)"
-                  class="mr-3"
-                  [src]="tagImgDefault"
-                  alt="channel"
-                />
+                *ngIf="isGroupChannel(channelNode)"
+                class="mr-3"
+                [src]="hoverStates[channelNode.id] ? './img/tag-hover.svg' : './img/sidenav-tag-default.svg'"
+                alt="channel"
+              />
+              
                 <img
                   *ngIf="isActionNode(channelNode)"
                   class="mr-3"
