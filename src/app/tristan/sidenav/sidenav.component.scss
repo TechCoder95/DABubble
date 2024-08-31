@@ -24,8 +24,20 @@
   background-color: #eceefe;
 }
 
+mat-tree {
+  overflow: auto;
+}
+
 mat-tree-node {
   margin-top: 8px;
+  cursor: pointer;
+  border-radius: 30px;
+  &:hover {
+    background: rgba(236, 238, 254, 1);
+    >div span{
+      color: #535af1;
+    }
+  }
 }
 
 mat-drawer-container {
@@ -40,7 +52,7 @@ mat-drawer-container {
   border-radius: 30px;
   padding-left: 2rem;
 
-  >app-chat {
+  > app-chat {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -73,7 +85,7 @@ mat-drawer-container {
 
   &:hover {
     cursor: pointer;
-    background-color: #ECEEFE;
+    background-color: #eceefe;
     border-radius: 100%;
     transition: 75ms;
     background-image: url(/img/new-message-hover.svg);
@@ -85,7 +97,7 @@ mat-drawer-container {
   bottom: 32px;
   right: 16px;
   border-radius: 100%;
-  background-color: #444DF2;
+  background-color: #444df2;
   width: 60px;
   height: 60px;
   background-repeat: no-repeat;
@@ -130,24 +142,22 @@ mat-drawer-container {
 }
 
 .green {
-  background-color: #92C83E;
+  background-color: #92c83e;
 }
 
 .grey {
   background-color: #686868;
 }
-
-
+/* 
+section{
+  overflow: auto;
+} */
 
 .show-if-mobile {
   display: none;
 }
 
-
-
 @media (max-width: 910px) {
-
-
   .hide-if-mobile {
     display: none !important;
   }
@@ -174,7 +184,6 @@ mat-drawer-container {
     left: 0;
     right: 0;
     top: 0 !important;
-
   }
 
   .style-mobile-channel-btn {
@@ -182,24 +191,26 @@ mat-drawer-container {
     right: 40px;
     bottom: 40px;
   }
-  
+
   .new-channel-mobile {
     width: 40px;
     height: 40px;
-    background-color: #444DF2;
+    background-color: #444df2;
     border-radius: 100%;
     background-repeat: no-repeat;
     background-position: center;
     background-image: url(/img/new-message-white.svg);
-  
+
     padding: 8px;
-  
+
     &:hover {
       cursor: pointer;
       box-shadow: 0px 6px 10px 0px #00000033;
       transition: 75ms;
-  
     }
   }
+}
 
+.pl-48 {
+  padding-left: 48px;
 }
