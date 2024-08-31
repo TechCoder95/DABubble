@@ -12,6 +12,10 @@ body {
     height: 100%;
 }
 
+ .cdk-global-scrollblock {
+    overflow: hidden !important;
+}
+
 body {
     margin: 0;
     background-color: #ECEEFE;
@@ -19,7 +23,7 @@ body {
 
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
+    width: 8px;
 }
 
 /* Handle */
@@ -58,3 +62,4 @@ body {
     border-radius: 25px;
     cursor: pointer;
 }
+

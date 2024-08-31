@@ -1,15 +1,17 @@
 <main>
   <div class="wrapper">
     <section class="edit-channel-header">
-      <div class="channel-name">
-        <img src="./img/tag.png" class="headline-tag" />
-        <h3>{{ selectedChannel.name }}</h3>
+      <div class="edit-channel-header-child">
+        <div class="channel-name">
+          <img src="./img/tag.png" class="headline-tag" />
+          <h3>{{ selectedChannel.name }}</h3>
+        </div>
+        <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
+          (click)="closeDialog()" />
       </div>
-      <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
-        (click)="closeDialog()" />
     </section>
 
-    <section #editChannelNameSection class="channel-info">
+    <section #editChannelNameSection class="channel-info edit-channel-name">
       <div class="arrange-sub-div">
         <h4 #title1 class="transition">Channel-Name</h4>
         <p *ngIf="!selectedChannel.isPrivate" (click)="editChannelName()" class="transition" #editName>
@@ -48,6 +50,12 @@
       <h4>Erstellt von</h4>
       <p #channelCreator class="channel-creator">{{ channelCreatorName }}</p>
     </section>
+
+
+    <section class="channel-info only-mobile-view">
+      <app-dialog-channel-members></app-dialog-channel-members>
+    </section>
+
   </div>
 
   <section>

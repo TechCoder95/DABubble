@@ -12,6 +12,7 @@ import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
 import { Router } from '@angular/router';
 import { GlobalsubService } from '../../../../shared/services/globalsub.service';
+import { DialogChannelMembersComponent } from "../dialog-channel-members/dialog-channel-members.component";
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -24,7 +25,8 @@ import { GlobalsubService } from '../../../../shared/services/globalsub.service'
     MatDialogModule,
     FormsModule,
     CommonModule,
-  ],
+    DialogChannelMembersComponent
+],
   templateUrl: './dialog-channel-information.component.html',
   styleUrl: './dialog-channel-information.component.scss',
 })
