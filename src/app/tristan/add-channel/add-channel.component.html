@@ -11,16 +11,17 @@
 
   <div>
     <p class="font-bold text-color text-lg">Channel-Name</p>
-    <input [(ngModel)]="data.name" class="channel" type="text" placeholder="z.B. Kooperationsprojekte">
+    <input [(ngModel)]="channel.name" class="channel" type="text" placeholder="z.B. Kooperationsprojekte">
   </div>
 
   <div>
     <p class="font-bold text-color text-lg">Beschreibung <span class="font-normal"
         style="color: #686868;">(optional)</span></p>
-    <input [(ngModel)]="data.description" type="text" placeholder="Dein Text hier">
+    <input [(ngModel)]="channel.description" type="text" placeholder="Dein Text hier">
   </div>
 
 
   <mat-dialog-actions class="pb-6">
-    <button mat-flat-button (click)="onOkClick()" cdkFocusInitial>Erstellen</button>
+    <button mat-flat-button (click)="onCreateClick()" cdkFocusInitial>Erstellen</button>
   </mat-dialog-actions>
+</mat-dialog-content>

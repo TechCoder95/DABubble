@@ -393,9 +393,11 @@ export class UserService {
     return this.selectedUserSubject.value;
   }
 
-  async getAllUsersFromDB() {
-    return await this.DatabaseService.readDataFromDB('users');
+  async getAllUsersFromDB(): Promise<DABubbleUser[]> {
+    const users = await this.DatabaseService.readDataFromDB('users');
+    return users as DABubbleUser[];
   }
+  
 
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(

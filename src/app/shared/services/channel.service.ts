@@ -193,7 +193,8 @@ export class ChannelService {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
       ...channel,
-      assignedUser: [this.userService.activeUser.id!],
+      description: channel.description,
+      assignedUser: channel.assignedUser,
       isPrivate: false,
       owner: currentUser.id!
     };
