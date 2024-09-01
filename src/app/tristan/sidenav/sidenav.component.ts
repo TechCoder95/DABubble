@@ -126,7 +126,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
 
   channels: TextChannel[] = [];
   TREE_DATA: Node[] = [];
-  selectedChannel!: TextChannel;
+  selectedChannel: Partial<TextChannel> = {};
+
+
   messages: ChatMessage[] = [];
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
