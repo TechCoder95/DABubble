@@ -1,10 +1,9 @@
-
 /**
  * @module SidenavComponent
  * @description
  * This component provides a sidebar (Sidenav) for use in an Angular application.
  * It enables navigation between different channels and direct messages in a chat application.
- * 
+ *
  * @requires @angular/common
  * @requires @angular/core
  * @requires @angular/material/sidenav
@@ -28,13 +27,22 @@
  * @requires ../../shared/components/header/searchbar/searchbar.component
  */
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, OnDestroy, Input, EventEmitter } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  EventEmitter,
+} from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTreeModule } from '@angular/material/tree';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
+import {
+  MatTreeFlatDataSource,
+  MatTreeFlattener,
+} from '@angular/material/tree';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { AddChannelComponent } from '../add-channel/add-channel.component';
@@ -45,14 +53,13 @@ import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
 import { Subscription, take, tap } from 'rxjs';
-import { ThreadComponent } from "../../rabia/thread/thread.component";
+import { ThreadComponent } from '../../rabia/thread/thread.component';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
 import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
-
 
 interface Node {
   id: string;
@@ -69,7 +76,7 @@ interface FlattenedNode {
   id: string;
   level: number;
   type: 'groupChannel' | 'directChannel' | 'action';
-  avatar?: string
+  avatar?: string;
   isLoggedIn?: boolean;
 }
 
@@ -94,6 +101,8 @@ interface FlattenedNode {
   styleUrls: ['./sidenav.component.scss'],
 })
 export class SidenavComponent implements OnInit, OnDestroy {
+  workspaceMenuOpen: boolean = true;
+
   /**
    * @private
    * @description
@@ -128,7 +137,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   TREE_DATA: Node[] = [];
   selectedChannel: Partial<TextChannel> = {};
 
-
   messages: ChatMessage[] = [];
   isLoggedIn: boolean | undefined;
   isCurrentUserActivated: boolean | undefined;
@@ -152,6 +160,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private activeChannelSubscription!: Subscription;
 
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
+  drawer: any;
 
   /**
    * @constructor
@@ -169,7 +178,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute,
-  ) { }
+  ) {}
 
   /**
    * @public
@@ -194,7 +203,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   private async initializeChannels() {
     await this.channelService.initializeDefaultData();
     await this.loadUserChannels();
-    const ownDirectChannel = await this.channelService.createOwnDirectChannel(this.activeUser, this.channels);
+    const ownDirectChannel = await this.channelService.createOwnDirectChannel(
+      this.activeUser,
+      this.channels,
+    );
     if (!this.channels.some((channel) => channel.id === ownDirectChannel.id)) {
       this.channels.push(ownDirectChannel);
     }
@@ -377,7 +389,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   updateHoverStates() {
-    Object.keys(this.hoverStates).forEach(id => {
+    Object.keys(this.hoverStates).forEach((id) => {
       this.hoverStates[id] = id === this.selectedChannel.id;
     });
   }
@@ -387,6 +399,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.hoverStates[nodeId] = hover;
   }
 
+  imgWorkspaceOpen: string = './img/default-workspace-open.svg';
+  imgworkspaceClosed: string = './img/default-workspace-closed.svg';
+  changeWorkspaceImg(hover: boolean) {
+    if (hover && this.workspaceMenuOpen) {
+      this.imgWorkspaceOpen = './img/hover-workspace-open.svg';
+    } else if (!hover && this.workspaceMenuOpen) {
+      this.imgWorkspaceOpen = './img/default-workspace-open.svg';
+    } else if (hover && !this.workspaceMenuOpen) {
+      this.imgworkspaceClosed = './img/hover-workspace-closed.svg';
+    } else {
+      this.imgworkspaceClosed = './img/default-workspace-closed.svg';
+    }
+  }
 
   /**
    * @public
@@ -610,5 +635,4 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.activeChannelSubscription.unsubscribe();
     }
   }
-
 }

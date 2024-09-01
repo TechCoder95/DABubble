@@ -22,9 +22,8 @@
 
 // testen
 mat-tree {
-  //  overflow-y: auto; 
+  //  overflow-y: auto;
 }
-
 
 mat-tree-node {
   margin-top: 8px;
@@ -34,7 +33,7 @@ mat-tree-node {
   &:hover {
     background: rgba(236, 238, 254, 1);
 
-    >div span {
+    > div span {
       color: #535af1;
     }
   }
@@ -50,7 +49,7 @@ mat-drawer-container {
   border-radius: 30px;
   padding-left: 2rem;
 
-  >app-chat {
+  > app-chat {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -200,7 +199,7 @@ section{
   padding-left: 48px;
 }
 
-.test {
+.button {
   display: flex;
   align-items: center;
   font-size: 16px;
@@ -213,8 +212,13 @@ section{
   box-shadow: 0px 6px 10px 0px #00000033;
   border: 1px solid ghostwhite;
   margin-left: -105px;
+  background-color: white;
+  left: 0;
 
   &:hover {
     background: rgb(236, 238, 254);
+    > span {
+      color: #535af1;
+    }
   }
 }
