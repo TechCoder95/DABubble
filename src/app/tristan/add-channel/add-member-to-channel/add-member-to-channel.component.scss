@@ -73,3 +73,19 @@ input {
         border-radius: 100%;
     }
 }
+
+.close {
+
+    border-radius: 100%;
+    min-width: 40px;
+    height: 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-image: url(/img/close.svg);
+
+    &:hover {
+        cursor: pointer;
+        background-image: url(/img/close-hover.svg);
+        background-color: #ECEEFE;
+    }
+}
