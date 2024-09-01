@@ -228,11 +228,17 @@ export class ChannelService {
    * @param {any[]} arr2 - The second array.
    * @returns {boolean} True if the arrays are equal, false otherwise.
    */
-  arrayEquals(arr1: any[], arr2: any[]): boolean {
-    if (!arr1 || !arr2) return false;
-    if (arr1.length !== arr2.length) return false;
-    return arr1.every((value, index) => value === arr2[index]);
+    arrayEquals(arr1: any[], arr2: any[]): boolean {
+      if (!arr1 || !arr2) return false;
+      if (arr1.length !== arr2.length) return false;
+      
+      // Sortiere die Arrays vor dem Vergleich
+      const sortedArr1 = [...arr1].sort();
+      const sortedArr2 = [...arr2].sort();
+  
+      return sortedArr1.every((value, index) => value === sortedArr2[index]);
   }
+  
 
  /**
    * Creates the default group channels for the user.

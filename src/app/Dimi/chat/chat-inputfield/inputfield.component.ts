@@ -168,7 +168,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         break;
       case MessageType.NewDirect:
         if (this.isSelectingChannel) {
-          await this.sendMessageToChannel();
+          await this.sendMessageToGroupChannel();
         } else if (this.isSelectingUser) {
           await this.sendMessageToUser();
         }
@@ -178,7 +178,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
-  async sendMessageToChannel() {
+  async sendMessageToGroupChannel() {
     const selectedChannel = this.channelService.getSelectedChannel();
     if (selectedChannel) {
       this.selectedChannel = selectedChannel;
