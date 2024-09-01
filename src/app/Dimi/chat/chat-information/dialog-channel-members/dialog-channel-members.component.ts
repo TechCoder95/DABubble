@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, inject, Inject, OnInit, ViewChild } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
@@ -61,19 +61,17 @@ export class DialogChannelMembersComponent implements OnInit {
       if (channel) {
         this.channelMembers = [];
         channel.assignedUser.forEach((userID) => {
-            this.userService.getOneUserbyId(userID).then((user) => {
-              let x = user as DABubbleUser;
-              if (x && x.id !== this.activeUser.id) {
-                this.channelMembers.push(x);
-              }
-            });
-          }
+          this.userService.getOneUserbyId(userID).then((user) => {
+            let x = user as DABubbleUser;
+            if (x && x.id !== this.activeUser.id) {
+              this.channelMembers.push(x);
+            }
+          });
+        }
         );
       }
     });
   }
-
-
 
 
   addMembers() {
@@ -86,6 +84,16 @@ export class DialogChannelMembersComponent implements OnInit {
         left: `${rect.left + window.scrollX - 135}px`,
       },
     });
+
+  }
+
+
+  @HostListener("window:resize", ["$event"])
+  onResize(): void {
+    if (window.innerWidth >= 910) {
+      console.log('Viel Spaß beim Resizen ;-)');
+      this.closeDialog();
+    }
   }
 
   changeAddMembersImg(hover: boolean) {

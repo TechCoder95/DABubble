@@ -11,14 +11,22 @@
     box-sizing: border-box;
 }
 
+.font {
+    font-size: 32px;
+}
+
 .editable {
     height: 700px !important;
+}
+
+.icon {
+    width: 20px;
 }
 
 .close {
 
     border-radius: 100%;
-    width: 40px;
+    min-width: 40px;
     height: 40px;
     background-repeat: no-repeat;
     background-position: center;
@@ -135,9 +143,17 @@ input {
         height: clamp(100px, 50vw, 200px);
     }
 
+    .font {
+        font-size: clamp(1.3125rem, 0.4875rem + 4.4vw, 2rem);
+    }
+
 }
 
 @media (max-width: 390px) {
+    ::ng-deep .mdc-button {
+        padding: 12px !important;
+    }
+
     .mail {
         img {
             display: none;

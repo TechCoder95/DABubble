@@ -11,7 +11,7 @@
 
         <div class="flex flex-column w-full" style="gap: 15px;">
             <div class="flex justify-content-between align-items-center w-full">
-                <span class="font-bold text-4xl">{{this.userService.activeUser.username}}</span>
+                <span class="font-bold font">{{this.userService.activeUser.username}}</span>
                 <span class="font-semibold text-lg purple only-desktop-view" (click)="editProfile()">Bearbeiten</span>
                 <div class="edit" (click)="editProfile()"></div>
             </div>
@@ -62,7 +62,7 @@
 
         <div class="flex flex-column w-full" style="gap: 10px;">
             <div class="flex" style="gap: 20px;">
-                <img src="img/account_circle.svg" alt="">
+                <img class="icon" src="img/account_circle.svg" alt="">
                 <span class="font-bold text-xl">Vollständiger Name</span>
             </div>
             <input type="text" name="username" [(ngModel)]="this.userService.activeUser.username">
@@ -70,7 +70,7 @@
 
         <div class="flex flex-column w-full" style="gap: 10px;">
             <div class="flex" style="gap: 20px;">
-                <img src="img/mail-focus.svg" alt="">
+                <img class="icon" src="img/mail-focus.svg" alt="">
                 <span class="font-bold text-xl">E-Mail-Adresse</span>
             </div>
             <input type="text" name="mail" [(ngModel)]="emailInput" placeholder="{{this.userService.activeUser.mail}}">

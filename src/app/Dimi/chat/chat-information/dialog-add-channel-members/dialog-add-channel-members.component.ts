@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, ViewChild } from '@angular/core';
 import {
   MatDialog,
   MatDialogModule,
@@ -55,6 +55,14 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     ).pipe(debounceTime(500));
 
     keyup$.subscribe((event: KeyboardEvent) => this.searchUser(event));
+  }
+
+  @HostListener("window:resize", ["$event"])
+  onResize(): void {
+    if (window.innerWidth >= 910) {
+      console.log('Viel Spaß beim Resizen ;-)');
+      this.closeDialog();
+    }
   }
 
   searchUser(event: KeyboardEvent) {

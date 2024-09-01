@@ -2,9 +2,9 @@
     position: fixed;
     top: 50%;
     right: 50%;
-    transform: translate(50%,-50%);
-    width: clamp(280px, 50vw, 500px);
-    height: clamp(550px, 50vh, 700px);
+    transform: translate(50%, -50%);
+    width: 500px;
+    height: 600px;
     background-color: white;
     border-radius: 30px;
     box-shadow: 0px 6px 10px 0px #00000033;
@@ -14,6 +14,10 @@
 
 .editable {
     height: 700px !important;
+}
+
+.font {
+    font-size: 32px;
 }
 
 .close {
@@ -33,8 +37,8 @@
 }
 
 .avatar {
-    width: clamp(100px, 20vw, 200px);
-    height: clamp(100px, 20vw, 200px);
+    width: 200px;
+    height: 200px;
     border-radius: 100%;
     object-fit: cover;
 }
@@ -94,4 +98,39 @@ input {
     gap: 10px;
     font-size: 18px;
     font-weight: 700;
+}
+
+@media (max-width: 550px) {
+    .card {
+        width: clamp(16.25rem, -6.25rem + 120vw, 31.25rem);
+    }
+
+
+    .avatar {
+        width: clamp(100px, 50vw, 200px);
+        height: clamp(100px, 50vw, 200px);
+    }
+
+    .font {
+        font-size: clamp(1.3125rem, 0.4875rem + 4.4vw, 2rem);
+    }
+
+}
+
+@media (max-width: 390px) {
+    .mail {
+        img {
+            display: none;
+        }
+    }
+
+    .own-mail {
+        padding-left: 0;
+        font-size: 16px;
+    }
+
+    .jc {
+        justify-content: center;
+    }
+
 }

@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TextChannel } from '../../shared/interfaces/textchannel';
+import { AddMemberToChannelComponent } from './add-member-to-channel/add-member-to-channel.component';
 
 /**
  * @component AddChannelComponent
@@ -32,6 +33,8 @@ export class AddChannelComponent {
 
   };
 
+  readonly neuerDialog = inject(MatDialog);
+
     /**
    * @constructor
    * @param {MatDialogRef<AddChannelComponent>} dialogRef - Reference to the dialog opened to create a new channel.
@@ -47,13 +50,10 @@ export class AddChannelComponent {
     this.dialogRef.close();
   }
 
-   /**
-   * Returns the data object representing the new channel.
-   * Called when the user clicks the "OK" button to confirm the creation of the channel.
-   * 
-   * @returns {TextChannel} The data object containing the new channel information.
-   */
-  onOkClick(): TextChannel {
-    return this.data;
+
+  onOkClick() {
+    this.dialogRef.close();
+    const neuerDialogRef = this.neuerDialog.open(AddMemberToChannelComponent);
+
   }
 }
