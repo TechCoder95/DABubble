@@ -16,9 +16,9 @@
         <div class="flex text-lg purple">
           <p>{{receiveMessage.replyNumber}}</p>
           @if (receiveMessage.replyNumber < 2) {
-            <p> Antwort</p>
+            <p (click)="onOpenThread()" class="cursor-pointer"> Antwort</p>
             } @else {
-            <p> Antworten</p>
+            <p (click)="onOpenThread()" class="cursor-pointer"> Antworten</p>
             }
 
         </div>

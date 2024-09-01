@@ -76,12 +76,9 @@ export class SendChatMessageReactionComponent {
   }
 
   async openThread() {
-
     this.threadService.setTicket(this.ticket);
     this.threadService.setMessageThread(this.messageForThread);
-
     await this.threadService.openThread();
-
   }
 
   handleEmojis(emojiType: string) {

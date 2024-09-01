@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { ChatMessage } from '../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../../shared/services/user.service';
@@ -34,6 +34,9 @@ export class ReceiveChatMessageComponent {
   @Input() sender!: DABubbleUser;
   @Input() chatType: ChatType = ChatType.Channel;
 
+  @ViewChild(ReceiveChatMessageReactionComponent) receiveChatMessageReactionComponent!: ReceiveChatMessageReactionComponent;
+
+
   senderUser: DABubbleUser = {
     username: 'dummy',
     avatar: './img/avatar.svg',
@@ -52,6 +55,12 @@ export class ReceiveChatMessageComponent {
     this.getUser();
     if (this.receiveMessage.fileUrl) {
       this.getImage();
+    }
+  }
+
+  onOpenThread() {
+    if (this.receiveChatMessageReactionComponent) {
+      this.receiveChatMessageReactionComponent.openThread();
     }
   }
 

@@ -49,6 +49,9 @@ export class SendChatMessageComponent implements OnInit {
   @Input() repeatedMessageInUnder5Minutes!: boolean | undefined;
   @Input() chatType: ChatType = ChatType.Channel;
 
+  @ViewChild(SendChatMessageReactionComponent) sendChatMessageReactionComponent!: SendChatMessageReactionComponent;
+
+
   constructor(
     private databaseService: DatabaseService,
     private storageService: DAStorageService,
@@ -66,6 +69,12 @@ export class SendChatMessageComponent implements OnInit {
     this.originalMessage = this.sendMessage.message;
     if (this.sendMessage.fileUrl) {
       this.getImage();
+    }
+  }
+
+  onOpenThread() {
+    if (this.sendChatMessageReactionComponent) {
+      this.sendChatMessageReactionComponent.openThread();
     }
   }
 
