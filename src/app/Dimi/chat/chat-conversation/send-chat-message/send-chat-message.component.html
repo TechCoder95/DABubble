@@ -21,12 +21,12 @@
 
       @if (sendMessage.replyNumber != 0) {
       <div class="style-thread-answers">
-        <div class="flex text-lg purple">
+        <div  (click)="onOpenThread()" class="flex text-lg purple cursor-pointer">
           <p>{{sendMessage.replyNumber}}</p>
           @if (sendMessage.replyNumber < 2) { 
-            <p (click)="onOpenThread()" class="cursor-pointer"> Antwort</p>
+            <p> Antwort</p>
             } @else {
-            <p (click)="onOpenThread()" class="cursor-pointer"> Antworten</p>
+            <p> Antworten</p>
           }
 
         </div>
