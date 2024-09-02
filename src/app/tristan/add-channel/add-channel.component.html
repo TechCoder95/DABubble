@@ -22,6 +22,6 @@
 
 
   <mat-dialog-actions class="pb-6">
-    <button mat-flat-button (click)="onCreateClick()" cdkFocusInitial>Erstellen</button>
+    <button mat-flat-button (click)="onCreateClick()" [disabled]="!channel.name">Erstellen</button>
   </mat-dialog-actions>
 </mat-dialog-content>

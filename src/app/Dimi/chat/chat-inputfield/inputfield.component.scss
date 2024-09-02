@@ -37,6 +37,12 @@
   }
 }
 
+.send-message-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+
 .chat-options {
   display: flex;
   align-items: center;

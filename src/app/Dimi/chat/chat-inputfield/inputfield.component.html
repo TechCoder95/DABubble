@@ -55,6 +55,7 @@
       src="./img/send-message.svg"
       class="send-message-btn"
       (click)="sendMessage(messageType)"
+      [ngClass]="{'disabled': !textareaValue.trim() && !selectedFile}"
     />
   </section>
 </main>
