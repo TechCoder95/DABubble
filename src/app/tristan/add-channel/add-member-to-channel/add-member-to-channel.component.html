@@ -1,29 +1,104 @@
-<div class="flex justify-content-between align-items-center p-4">
-    <h2 class="flex align-items-center text-2xl font-bold text-color m-0 p-0" mat-dialog-title>Leute hinzufügen</h2>
-    <div class="close"></div>
-</div>
+<main>
+  <div class="flex justify-content-between align-items-center p-4">
+    <h2
+      class="flex align-items-center text-2xl font-bold text-color m-0 p-0"
+      mat-dialog-title
+    >
+      Leute hinzufügen
+    </h2>
+    <div (click)="closeDialog()" class="close"></div>
+  </div>
 
-<mat-dialog-content class="flex flex-column text-color">
-    <mat-radio-group class="flex flex-column text-color" aria-label="Select an option" [(ngModel)]="selectedOption">
-        <mat-radio-button value="1">Alle Mitglieder von <span class="color">{{ channel.name }}</span>
-            hinzufügen</mat-radio-button>
-        <mat-radio-button value="2">Bestimmte Leute hinzufügen</mat-radio-button>
+  <mat-dialog-content class="flex flex-column text-color">
+    <mat-radio-group
+      class="flex flex-column text-color"
+      aria-label="Select an option"
+      [(ngModel)]="selectedOption"
+    >
+      <mat-radio-button value="1"
+        >Alle Mitglieder von
+        <span class="color">{{ channel.name }}</span>
+        hinzufügen</mat-radio-button
+      >
+      <mat-radio-button value="2">Bestimmte Leute hinzufügen</mat-radio-button>
     </mat-radio-group>
 
-    <div *ngIf="selectedOption === '2'" appearance="fill">
-        <input type="text" placeholder="Name eingeben" [formControl]="searchControl">
-
-        <p class="font-bold text-2xl" *ngIf="searchResults.users.length > 0">Mitglieder</p>
-        <div *ngFor="let member of searchResults.users; let i = index" class="member" (click)="selectUser(member)">
-            <div class="relative img-container">
-                <img [src]="member.avatar" />
-                <div class="online-status" [ngClass]="member.isLoggedIn ? 'green' : 'grey'"></div>
-            </div>
-            <p>{{ member.username }} - ({{member.mail}})</p>
+    <section
+      class="inputfield"
+      [ngClass]="{ 'visibility-hidden': selectedOption === '1' }"
+    >
+      <div>
+        <input
+          type="text"
+          class="inputfield-name"
+          placeholder="Name eingeben"
+          #inputName
+        />
+        <div class="input-results" *ngIf="searchResults.length > 0">
+          <ul>
+            @for (result of searchResults; track $index) {
+              <li (click)="putUserToInputfield(result)">
+                <img [src]="result.avatar" />
+                <span>
+                  <h4>{{ result.username }}</h4>
+                  <p>{{ result.mail }}</p>
+                </span>
+              </li>
+            }
+          </ul>
         </div>
-    </div>
+      </div>
+      <div class="arrange-selected-user" *ngIf="selectedUser.length > 0">
+        @for (user of selectedUser; track $index) {
+          <div class="selected-user">
+            <img [src]="user.avatar" class="user-avatar-img" />
+            <p>{{ user.username }}</p>
+            <img
+              (mouseenter)="changeRemoveSelectedUserImg($index, true)"
+              (mouseleave)="changeRemoveSelectedUserImg($index, false)"
+              [src]="
+                hoverStates[$index]
+                  ? './img/close-hover.png'
+                  : './img/close-default.png'
+              "
+              (click)="removeSelectedUser($index)"
+              class="remove-selected-user-img"
+            />
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- <div *ngIf="selectedOption === '2'" appearance="fill">
+      <input
+        type="text"
+        placeholder="Name eingeben"
+        [formControl]="searchControl"
+      />
+
+      <p class="font-bold text-2xl" *ngIf="searchResults.users.length > 0">
+        Mitglieder
+      </p>
+      <div
+        *ngFor="let member of searchResults.users; let i = index"
+        class="member"
+        (click)="selectUser(member)"
+      >
+        <div class="relative img-container">
+          <img [src]="member.avatar" />
+          <div
+            class="online-status"
+            [ngClass]="member.isLoggedIn ? 'green' : 'grey'"
+          ></div>
+        </div>
+        <p>{{ member.username }} - ({{ member.mail }})</p>
+      </div>
+    </div> -->
 
     <mat-dialog-actions class="pb-6">
-        <button mat-flat-button cdkFocusInitial (click)="onCreateClick()">Erstellen</button>
+      <button mat-flat-button cdkFocusInitial (click)="onCreateClick()">
+        Erstellen
+      </button>
     </mat-dialog-actions>
-</mat-dialog-content>
+  </mat-dialog-content>
+</main>
