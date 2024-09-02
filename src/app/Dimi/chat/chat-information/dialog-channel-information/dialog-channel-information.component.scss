@@ -54,12 +54,12 @@ h3 {
   align-items: center;
   gap: 5px;
 
-  >p {
+  > p {
     font-size: 18px;
   }
 
-  >h3 {
-    font-size: 24px;
+  > h3 {
+    font-size: clamp(20px, 3vw, 24px);
   }
 }
 
@@ -87,7 +87,7 @@ h3 {
   display: flex;
   justify-content: space-between;
 
-  >p:last-child {
+  > p:last-child {
     color: rgba(83, 90, 241, 1);
     transition: font-weight 0.3s ease-in-out;
     cursor: pointer;
@@ -103,7 +103,7 @@ h3 {
   align-items: center;
   gap: 10px;
 
-  >img {
+  > img {
     height: 20px;
     width: 20px;
   }
