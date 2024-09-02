@@ -22,8 +22,8 @@ import { AddMemberToChannelComponent } from './add-member-to-channel/add-member-
 })
 
 export class AddChannelComponent {
-  
-  data: TextChannel = {
+
+  channel: TextChannel = {
     id: "",
     name: "",
     description: "",
@@ -33,12 +33,12 @@ export class AddChannelComponent {
 
   };
 
-  readonly neuerDialog = inject(MatDialog);
+  readonly newDialog = inject(MatDialog);
 
-    /**
-   * @constructor
-   * @param {MatDialogRef<AddChannelComponent>} dialogRef - Reference to the dialog opened to create a new channel.
-   */
+  /**
+ * @constructor
+ * @param {MatDialogRef<AddChannelComponent>} dialogRef - Reference to the dialog opened to create a new channel.
+ */
   constructor(private dialogRef: MatDialogRef<AddChannelComponent>) {
   }
 
@@ -51,9 +51,16 @@ export class AddChannelComponent {
   }
 
 
-  onOkClick() {
-    this.dialogRef.close();
-    const neuerDialogRef = this.neuerDialog.open(AddMemberToChannelComponent);
+  onCreateClick() {
+    const newDialogRef = this.newDialog.open(AddMemberToChannelComponent, {
+      data: this.channel
+    });
 
+    newDialogRef.afterClosed().subscribe((channel: TextChannel | undefined) => {
+      if (channel) {
+        this.dialogRef.close(channel);
+      }
+    });
   }
+
 }

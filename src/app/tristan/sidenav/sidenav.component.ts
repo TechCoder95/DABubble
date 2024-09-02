@@ -421,16 +421,14 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async openAddChannelDialog() {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
-      if (channel) {
-        const nameExists =
-          await this.channelService.doesChannelNameAlreadyExist(channel.name);
+      if (channel) {                
+        const nameExists = await this.channelService.doesChannelNameAlreadyExist(channel.name);
         if (nameExists) {
           // todo fehlermeldung zurück geben eventuell
           alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
           return;
         }
-        const newChannel =
-          await this.channelService.createGroupChannel(channel);
+        const newChannel = await this.channelService.createGroupChannel(channel);
         if (newChannel) {
           this.channels.push(newChannel);
           await this.navToSelectedChannel(newChannel);
