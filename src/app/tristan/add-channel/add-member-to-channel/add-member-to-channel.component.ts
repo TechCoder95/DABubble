@@ -30,53 +30,8 @@ import { UserService } from '../../../shared/services/user.service';
   styleUrl: './add-member-to-channel.component.scss',
 })
 export class AddMemberToChannelComponent {
-  /* searchControl = new FormControl(); */
+
   selectedOption: string = '1';
-  /*  searchResults: { users: DABubbleUser[] } = { users: [] };
-  searchQuery: string | undefined;
-  hasSelection: boolean = false;
-  selectedUsers: DABubbleUser[] = [];
-
-  constructor(
-    public dialogRef: MatDialogRef<AddMemberToChannelComponent>,
-    @Inject(MAT_DIALOG_DATA) public channel: TextChannel,
-    private channelService: ChannelService,
-    private userService: UserService,
-  ) {} */
-
-  /* ngOnInit() {
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged(),
-        switchMap(async (value) => await this.performSearch(value)),
-      )
-      .subscribe((results) => {
-        this.searchResults = results;
-      });
-  } */
-
-  /*  private async performSearch(
-    value: string,
-  ): Promise<{ users: DABubbleUser[] }> {
-    if (this.hasSelection) {
-      this.hasSelection = false;
-      return { users: [] };
-    }
-    const [users] = await Promise.all([
-      this.userService.searchUsersByNameOrEmail(value),
-      this.channelService.searchChannelsByName(
-        value,
-        this.userService.activeUser.id!,
-      ),
-    ]);
-    return { users };
-  }
-
-  selectUser(user: DABubbleUser) {
-    this.selectedUsers.push(user);
-  } */
-
   @ViewChild('inputName') inputName!: ElementRef;
   searchResults: DABubbleUser[] = [];
   selectedUser: DABubbleUser[] = [];
