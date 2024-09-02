@@ -33,6 +33,7 @@ import {
   OnDestroy,
   Input,
   EventEmitter,
+  HostListener,
 } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -60,6 +61,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
+import { MobileService } from '../../shared/services/mobile.service';
 
 interface Node {
   id: string;
@@ -102,6 +104,19 @@ interface FlattenedNode {
 })
 export class SidenavComponent implements OnInit, OnDestroy {
   workspaceMenuOpen: boolean = true;
+  isChat: boolean = false;
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    if (window.innerWidth <= 910) {
+      console.log('Viel Spaß beim Resizen ;-)');
+      console.log(this.router.url);
+
+      if (this.router.url.includes('channel')) {
+        this.mobileService.isMobile = true;
+      }
+    }
+  }
 
   /**
    * @private
@@ -178,6 +193,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private subscriptionService: GlobalsubService,
     private router: Router,
     private route: ActivatedRoute,
+    public mobileService: MobileService,
   ) {}
 
   /**
@@ -422,14 +438,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
     event.stopPropagation();
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
-      if (channel) {                
-        const nameExists = await this.channelService.doesChannelNameAlreadyExist(channel.name);
+      if (channel) {
+        const nameExists =
+          await this.channelService.doesChannelNameAlreadyExist(channel.name);
         if (nameExists) {
           // todo fehlermeldung zurück geben eventuell
           alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
           return;
         }
-        const newChannel = await this.channelService.createGroupChannel(channel);
+        const newChannel =
+          await this.channelService.createGroupChannel(channel);
         if (newChannel) {
           this.channels.push(newChannel);
           await this.navToSelectedChannel(newChannel);
