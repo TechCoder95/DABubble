@@ -41,7 +41,7 @@ export class StartscreenComponent {
     else {
       setTimeout(() => {
         this.router.navigate(['/user/login']);
-      }, 5500);
+      }, 5550);
     }
   }
 }

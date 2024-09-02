@@ -87,7 +87,7 @@ img {
     }
 
     .mobile-p {
-        padding: 30px;
+        padding: 15px;
     }
 
     .search {
@@ -173,5 +173,15 @@ img {
         a {
             font-size: 13px;
         }
+    }
+}
+
+
+@media (max-height: 1000px) {
+
+
+    .register-mobile {
+
+        bottom: 4%;
     }
 }

@@ -11,6 +11,7 @@ mat-card-title {
 }
 
 mat-card-subtitle {
+
     font-size: 20px;
     font-weight: 400;
 }
@@ -105,5 +106,28 @@ input {
 
     mat-checkbox {
         padding-bottom: 8px;
+    }
+}
+
+@media (max-height: 1000px) {
+
+    .mobile-style-header {
+        padding-bottom: 1.25rem !important;
+        gap: 1.5rem !important;
+    }
+
+    mat-card-subtitle {
+        font-size: 16px
+    }
+
+    input {
+        height: 40px;
+    }
+}
+
+@media (max-height: 600px) {
+
+    input {
+        height: 32px;
     }
 }
