@@ -1,5 +1,5 @@
 <main>
-  <div class="flex justify-content-between align-items-center p-4">
+  <div class="flex justify-content-between align-items-center">
     <h2
       class="flex align-items-center text-2xl font-bold text-color m-0 p-0"
       mat-dialog-title
@@ -9,7 +9,7 @@
     <div (click)="closeDialog()" class="close"></div>
   </div>
 
-  <mat-dialog-content class="flex flex-column text-color">
+  <div class="content-wrapper">
     <mat-radio-group
       class="flex flex-column text-color"
       aria-label="Select an option"
@@ -95,10 +95,10 @@
       </div>
     </div> -->
 
-    <mat-dialog-actions class="pb-6">
+    <mat-dialog-actions>
       <button mat-flat-button cdkFocusInitial (click)="onCreateClick()">
         Erstellen
       </button>
     </mat-dialog-actions>
-  </mat-dialog-content>
+  </div>
 </main>
