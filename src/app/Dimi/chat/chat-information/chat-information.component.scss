@@ -30,12 +30,12 @@ h2 {
   cursor: pointer;
   transition: background 0.3s ease;
 
-  >h2 {
-    font-size: 24px;
+  > h2 {
+    font-size: clamp(20px, 3vw, 24px);
     transition: color 0.3s ease;
   }
 
-  >.arrow-div {
+  > .arrow-div {
     padding: 10px 7px;
   }
 
@@ -44,7 +44,7 @@ h2 {
     gap: 10px;
     background: rgba(236, 238, 254, 1);
 
-    >h2 {
+    > h2 {
       color: rgba(83, 90, 241, 1);
     }
   }
@@ -56,11 +56,11 @@ h2 {
   align-items: center;
   gap: 10px;
 
-  >img {
+  > img {
     cursor: pointer;
   }
 
-  >.channel-member-amount {
+  > .channel-member-amount {
     display: flex;
     align-items: center;
     gap: 5px;
@@ -68,11 +68,11 @@ h2 {
     cursor: pointer;
     border-radius: 100px;
 
-    >img:not(:first-child) {
+    > img:not(:first-child) {
       margin-left: -15px;
     }
 
-    >img {
+    > img {
       width: 35px;
       height: 35px;
       border-radius: 50%;
@@ -84,7 +84,7 @@ h2 {
       cursor: pointer;
       background: rgba(236, 238, 254, 1);
 
-      >p {
+      > p {
         color: rgba(83, 90, 241, 1);
       }
     }
@@ -105,7 +105,7 @@ h2 {
 .dialog-is-open {
   background: rgba(236, 238, 254, 1);
 
-  >h2,
+  > h2,
   p {
     color: rgba(83, 90, 241, 1);
   }
@@ -152,10 +152,6 @@ figure {
 }
 
 @media (max-width: 1000px) {
-
-
-
-
   .just-desktop-view {
     display: none !important;
   }
