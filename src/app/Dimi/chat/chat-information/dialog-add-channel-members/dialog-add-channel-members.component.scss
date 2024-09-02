@@ -131,13 +131,6 @@ button {
   }
 }
 
-/* .selected-users {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-} */
-
 .selected-user {
   display: flex;
   align-items: center;
@@ -155,7 +148,8 @@ button {
 
 .remove-selected-user-img {
   cursor: pointer;
-  width: 40px;
+  width: 30px;
+  height: 30px;
 }
 
 .arrange-selected-user {
@@ -163,10 +157,7 @@ button {
   gap: 5px;
   display: flex;
   max-height: 205px;
-  /* background-color: whitesmoke; */
   width: max-content;
-  border-radius: 30px;
   overflow: auto;
   font-size: 18px;
-  /*  border: 1px solid #ccc; */
 }
