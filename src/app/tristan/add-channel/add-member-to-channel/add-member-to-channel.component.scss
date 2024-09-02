@@ -9,7 +9,17 @@ p {
 }
 
 main {
-  width: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 480px;
+  padding: 40px;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .inputfield {
@@ -109,6 +119,14 @@ input {
 .visibility-hidden {
   /* visibility: hidden; */
   display: none;
+}
+
+mat-dialog-content {
+  padding: unset !important;
+}
+
+mat-dialog-actions {
+  padding: unset !important;
 }
 
 /* ======================================================================= */
