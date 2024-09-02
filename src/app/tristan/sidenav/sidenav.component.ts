@@ -371,7 +371,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
    * Handles node click events in the sidebar tree. It navigates to the selected channel or opens the add channel dialog.
    * @param {FlattenedNode} node - The node that was clicked.
    */
-  async onNode(node: FlattenedNode) {
+  async onNode(event: Event, node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
     } else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
@@ -384,7 +384,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         await this.navToSelectedChannel(selectedChannel);
       }
     } else if (node.type === 'action') {
-      this.openAddChannelDialog();
+      this.openAddChannelDialog(event);
     }
   }
 
@@ -418,7 +418,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
    * @description
    * Opens the dialog to add a new channel.
    */
-  async openAddChannelDialog() {
+  async openAddChannelDialog(event: Event) {
+    event.stopPropagation();
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
       if (channel) {                
