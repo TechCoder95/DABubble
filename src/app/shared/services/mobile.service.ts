@@ -5,5 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class MobileService {
 
+  isMobile = false;
+
   constructor() { }
 }
