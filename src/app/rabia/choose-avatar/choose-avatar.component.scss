@@ -52,7 +52,8 @@ mat-card-subtitle {
 .cycle-avatar {
     img {
         width: clamp(2.5rem, 2.06463rem + 1.548vw, 4rem);
-        height: clamp(2.5rem, 2.06463rem + 1.548vw, 4rem);;
+        height: clamp(2.5rem, 2.06463rem + 1.548vw, 4rem);
+        ;
         object-fit: cover;
         border-radius: 100%;
         border: 4px solid transparent;
@@ -114,5 +115,29 @@ mat-spinner {
             font-size: 12px;
             text-align: center;
         }
+    }
+}
+
+@media (max-height: 1000px) {
+
+    mat-card-title {
+        font-size: 32px;
+    }
+
+    .selected-avatar {
+        width: 120px;
+        height: 120px;
+    }
+
+    .mobile-view {
+        display: flex !important;
+    }
+
+    .own-img {
+        margin: 8px 0;
+    }
+
+    p {
+        margin: 8px;
     }
 }
