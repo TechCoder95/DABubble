@@ -188,5 +188,55 @@ a {
 
     .google-mobile {
         font-size: 0.75rem !important;
+        gap: 12px !important;
+
+        img {
+            width: 30px;
+        }
+    }
+}
+
+@media (max-height: 1000px) {
+
+    h1 {
+        font-size: 32px;
+    }
+
+    p {
+        margin: 8px;
+        font-size: 16px
+    }
+
+    input {
+        height: 40px;
+        margin: 4px;
+        padding: 0 12px;
+        font-size: 14px;
+    }
+
+    hr {
+        margin: 14px;
+    }
+
+    .mobile-mt {
+        margin-top: 0.75rem !important;
+    }
+
+    .mobile-m {
+        margin: 1rem !important;
+    }
+
+    .googleButton {
+        height: 40px;
+        margin: 0;
+    }
+
+    .mobile-btns {
+        button {
+            margin: 8px;
+            width: 125px;
+            height: 40px;
+            font-size: 12px;
+        }
     }
 }

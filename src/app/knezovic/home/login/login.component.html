@@ -24,12 +24,12 @@
         </div>
     }
 
-    <div class="mt-5">
+    <div class="mt-5 mobile-mt">
         <a (click)="forgotPW()">Passwort vergessen?</a>
     </div>
 
 
-    <div class="flex w-full align-items-center justify-content-center m-5">
+    <div class="flex w-full align-items-center justify-content-center m-5 mobile-m">
         <hr>ODER
         <hr>
     </div>
@@ -41,7 +41,7 @@
             </div>
         </button>
     </div>
-    <div class="flex w-full h-full justify-content-center align-items-center">
+    <div class="flex w-full h-full justify-content-center align-items-center mobile-btns">
         <button [disabled]="this.authService.loginSuccess" type="submit" [ngClass]="{'test': !mail.valid || !password.valid}" title="login"
             name="registrieren">Anmelden</button>
         <button type="reset" class="gast" [ngClass]="{'test2': !mail.valid || !password.valid}"

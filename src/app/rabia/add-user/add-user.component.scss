@@ -113,15 +113,20 @@ input {
 
     .mobile-style-header {
         padding-bottom: 1.25rem !important;
-        gap: 1.5rem !important;
+        gap: 1rem !important;
     }
 
     mat-card-subtitle {
-        font-size: 16px
+        font-size: 14px
     }
 
     input {
         height: 40px;
+        font-size: 12px;
+    }
+
+    .gap-4 {
+        gap: 1rem !important;
     }
 }
 
