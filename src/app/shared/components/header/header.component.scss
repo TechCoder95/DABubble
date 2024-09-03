@@ -24,7 +24,9 @@
 
 .userName {
     margin: 0;
-    font-size: 32px;
+    text-wrap: nowrap;
+    text-align: end;
+    font-size: clamp(1.3125rem, 0.7385rem + 1.0092vw, 2rem);
     font-weight: bold;
 }
 
@@ -72,9 +74,9 @@ img {
 
     }
 
-    .userName {
-        font-size: 24px;
-    }
+    // .userName {
+    //     font-size: 24px;
+    // }
 
     .img-container {
         width: 50px;
