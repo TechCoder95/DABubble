@@ -14,6 +14,7 @@ import { debounceTime } from 'rxjs/operators';
 import { fromEvent } from 'rxjs';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
 import { DialogUserAlreadyInChannelComponent } from './dialog-user-already-in-channel/dialog-user-already-in-channel.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dialog-add-channel-members',
@@ -45,7 +46,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     public channelService: ChannelService,
     public userService: UserService,
     public dialog: MatDialog,
-  ) {}
+    public router: Router
+  ) { }
 
   ngAfterViewInit(): void {
     setTimeout(() => this.inputName.nativeElement.blur(), 200);
@@ -135,6 +137,11 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
           this.selectedChannel.assignedUser.push(userId);
           await this.channelService.updateChannel(this.selectedChannel);
         }
+        this.dialogRef.close();
+        await this.router.navigate(['/home']);
+        setTimeout(async () => {
+          this.router.navigate(['/home/channel', this.selectedChannel.id]);
+        }, 0.1);
       }
     }
   }

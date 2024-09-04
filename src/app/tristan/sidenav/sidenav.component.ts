@@ -626,6 +626,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.activeChannelSubscription = this.subscriptionService
       .getActiveChannelObservable()
       .subscribe(async (channel: TextChannel) => {
+        console.log("hallo");
+        
         const index = this.channels.findIndex((c) => c.id === channel.id);
         if (index !== -1) {
           this.channels[index] = channel;
