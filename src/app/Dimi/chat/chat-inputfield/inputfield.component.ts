@@ -179,7 +179,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   }
 
   async sendMessageToGroupChannel() {
-    const selectedChannel = this.channelService.getSelectedChannel();
+    const selectedChannel = this.channelService.getSelectedChannel();    
     if (selectedChannel) {
       this.selectedChannel = selectedChannel;
       await this.router.navigate(['/home/channel/' + selectedChannel.id]);
@@ -189,6 +189,8 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
 
   async sendMessageToUser() {
     const channel = await this.channelService.findOrCreateChannelByUserID();
+    console.log(channel);
+    
     if (channel) {
       this.selectedChannel = channel;
       this.channelService.selectChannel(channel);

@@ -121,13 +121,13 @@ export class ChannelService {
     return updates;
   }
 
-     /**
-   * Creates a direct channel for the current user if it doesn't already exist.
-   * 
-   * @param {DABubbleUser} currentUser - The current user.
-   * @param {TextChannel[]} channels - List of existing channels.
-   * @returns {Promise<TextChannel>} The existing or newly created direct channel.
-   */
+  /**
+* Creates a direct channel for the current user if it doesn't already exist.
+* 
+* @param {DABubbleUser} currentUser - The current user.
+* @param {TextChannel[]} channels - List of existing channels.
+* @returns {Promise<TextChannel>} The existing or newly created direct channel.
+*/
   async createOwnDirectChannel(currentUser: DABubbleUser, channels: TextChannel[]): Promise<TextChannel> {
     let directChannelExists = channels.find((channel: TextChannel) => {
       return channel.isPrivate && channel.assignedUser.length === 1 && channel.assignedUser.includes(currentUser.id!)
@@ -183,12 +183,12 @@ export class ChannelService {
     return existingChannel;
   }
 
-    /**
-   * Creates a new group channel.
-   * 
-   * @param {TextChannel} channel - The channel to be created.
-   * @returns {Promise<TextChannel | null>} The newly created group channel or null if not created.
-   */
+  /**
+ * Creates a new group channel.
+ * 
+ * @param {TextChannel} channel - The channel to be created.
+ * @returns {Promise<TextChannel | null>} The newly created group channel or null if not created.
+ */
   async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
@@ -222,31 +222,31 @@ export class ChannelService {
     });
   }
 
-    /**
-   * Compares two arrays for equality.
-   * 
-   * @param {any[]} arr1 - The first array.
-   * @param {any[]} arr2 - The second array.
-   * @returns {boolean} True if the arrays are equal, false otherwise.
-   */
-    arrayEquals(arr1: any[], arr2: any[]): boolean {
-      if (!arr1 || !arr2) return false;
-      if (arr1.length !== arr2.length) return false;
-      
-      // Sortiere die Arrays vor dem Vergleich
-      const sortedArr1 = [...arr1].sort();
-      const sortedArr2 = [...arr2].sort();
-  
-      return sortedArr1.every((value, index) => value === sortedArr2[index]);
-  }
-  
+  /**
+ * Compares two arrays for equality.
+ * 
+ * @param {any[]} arr1 - The first array.
+ * @param {any[]} arr2 - The second array.
+ * @returns {boolean} True if the arrays are equal, false otherwise.
+ */
+  arrayEquals(arr1: any[], arr2: any[]): boolean {
+    if (!arr1 || !arr2) return false;
+    if (arr1.length !== arr2.length) return false;
 
- /**
-   * Creates the default group channels for the user.
-   * 
-   * @param {DABubbleUser} activeUser - The active user for whom the default channels are created.
-   * @returns {Promise<TextChannel[]>} The list of default group channels.
-   */
+    // Sortiere die Arrays vor dem Vergleich
+    const sortedArr1 = [...arr1].sort();
+    const sortedArr2 = [...arr2].sort();
+
+    return sortedArr1.every((value, index) => value === sortedArr2[index]);
+  }
+
+
+  /**
+    * Creates the default group channels for the user.
+    * 
+    * @param {DABubbleUser} activeUser - The active user for whom the default channels are created.
+    * @returns {Promise<TextChannel[]>} The list of default group channels.
+    */
   async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
     const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
     const allUserIds = users.map(user => user!.id!);
@@ -292,13 +292,13 @@ export class ChannelService {
     return updatedChannels;
   }
 
-    /**
-   * Creates the default direct channels between the active user and a list of users.
-   * 
-   * @param {DABubbleUser[]} defaultUsers - The list of users to create direct channels with.
-   * @param {DABubbleUser} activeUser - The active user.
-   * @returns {Promise<TextChannel[]>} The list of created direct channels.
-   */
+  /**
+ * Creates the default direct channels between the active user and a list of users.
+ * 
+ * @param {DABubbleUser[]} defaultUsers - The list of users to create direct channels with.
+ * @param {DABubbleUser} activeUser - The active user.
+ * @returns {Promise<TextChannel[]>} The list of created direct channels.
+ */
   async createDefaultDirectChannels(defaultUsers: DABubbleUser[], activeUser: DABubbleUser): Promise<TextChannel[]> {
     const directChannels: TextChannel[] = [];
 
@@ -329,40 +329,27 @@ export class ChannelService {
     return directChannels;
   }
 
-    /**
-   * Fetches a channel by its unique identifier (UID).
-   * 
-   * @param {string} uid - The unique identifier of the channel.
-   * @returns {Promise<TextChannel | undefined>} The channel with the specified UID, or undefined if not found.
-   */
+  /**
+ * Fetches a channel by its unique identifier (UID).
+ * 
+ * @param {string} uid - The unique identifier of the channel.
+ * @returns {Promise<TextChannel | undefined>} The channel with the specified UID, or undefined if not found.
+ */
   async getChannelByUid(uid: string): Promise<TextChannel | undefined> {
     const channels = await this.databaseService.readDataByField('channels', 'uid', uid);
     return channels.length > 0 ? channels[0] : undefined;
   }
 
-    /**
-   * Retrieves all channels from the database.
-   * 
-   * @returns {Promise<TextChannel[]>} A promise that resolves to the list of all channels.
-   */
+  /**
+ * Retrieves all channels from the database.
+ * 
+ * @returns {Promise<TextChannel[]>} A promise that resolves to the list of all channels.
+ */
   async getAllChannels(): Promise<TextChannel[]> {
     return await this.databaseService.readDataFromDB<TextChannel>('channels');
   }
 
-    /**
-   * Checks if a channel already exists based on its assigned users.
-   * 
-   * @param {TextChannel} channel - The channel to check.
-   * @returns {Promise<boolean>} True if the channel exists, false otherwise.
-   */
-  async isChannelAlreadyExists(channel: TextChannel): Promise<boolean> {
-    const allChannels = await this.getAllChannels();
-    return allChannels.some((existingChannel: TextChannel) =>
-      this.arrayEquals(existingChannel.assignedUser, channel.assignedUser)
-    );
-  }
-
-    /**
+  /**
    * Finds or creates a direct channel between the current user and a selected user.
    * 
    * @returns {Promise<TextChannel | null>} The found or newly created direct channel, or null if not found.
@@ -379,10 +366,14 @@ export class ChannelService {
           description: '',
           owner: this.userService.activeUser.id!
         };
-        const channelExists = await this.isChannelAlreadyExists(textChannel);
-        if (channelExists) {
-          const allChannels = await this.getAllChannels();
-          return allChannels.find(channel => this.arrayEquals(channel.assignedUser, textChannel.assignedUser))!;
+
+        const allChannels = await this.getAllChannels();
+        const existingChannel = allChannels.find(channel =>
+          this.arrayEquals(channel.assignedUser, textChannel.assignedUser) && channel.isPrivate
+        );
+
+        if (existingChannel) {
+          return existingChannel;
         } else {
           return await this.createDirectChannel(selectedUser);
         }
@@ -393,9 +384,10 @@ export class ChannelService {
     }
   }
 
-   /**
-   * Removes the current user from the selected channel, and deletes the channel if it becomes empty.
-   */
+
+  /**
+  * Removes the current user from the selected channel, and deletes the channel if it becomes empty.
+  */
   async leaveChannel() {
     const currentUser: DABubbleUser = this.userService.activeUser;
     const channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
@@ -415,9 +407,9 @@ export class ChannelService {
     sessionStorage.removeItem('selectedChannel');
   }
 
-    /**
-   * Initializes default data, including creating default channels and loading user channels.
-   */
+  /**
+ * Initializes default data, including creating default channels and loading user channels.
+ */
   async initializeDefaultData() {
     this.loading = true;
     await this.createDefaultData();
@@ -425,9 +417,9 @@ export class ChannelService {
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
   }
 
-    /**
-   * Creates default data, including users and channels.
-   */
+  /**
+ * Creates default data, including users and channels.
+ */
   async createDefaultData() {
     const defaultUsers = await this.userService.createDefaultUsers();
     await this.createDefaultGroupChannels(this.userService.activeUser);
@@ -435,13 +427,13 @@ export class ChannelService {
     this.loading = false;
   }
 
-    /**
-   * Searches for channels by name and filters them by the active user's ID.
-   * 
-   * @param {string} searchText - The text to search for in channel names.
-   * @param {string} activeUserId - The ID of the active user.
-   * @returns {Promise<TextChannel[]>} The list of channels that match the search criteria.
-   */
+  /**
+ * Searches for channels by name and filters them by the active user's ID.
+ * 
+ * @param {string} searchText - The text to search for in channel names.
+ * @param {string} activeUserId - The ID of the active user.
+ * @returns {Promise<TextChannel[]>} The list of channels that match the search criteria.
+ */
   async searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
     return await this.databaseService.getChannelsByName(searchText).then(channels => {
       return channels.filter(channel => channel.assignedUser.includes(activeUserId));
