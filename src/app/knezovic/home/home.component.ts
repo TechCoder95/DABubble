@@ -11,6 +11,7 @@ import { Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
+import { MobileService } from '../../shared/services/mobile.service';
 
 
 @Component({
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private globalSubService: GlobalsubService,
     private router: Router,
     public channelService: ChannelService,
+    public mobileService: MobileService
   ) {}
 
   userSub!: Subscription;

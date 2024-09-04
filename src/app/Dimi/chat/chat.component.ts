@@ -70,11 +70,11 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
-    if (window.innerWidth <= 910) {
-      console.log('Viel Spaß beim Resizen ;-)');
-      this.router.navigate(['home']);
-    }
-  }
+  //    if (this.mobileService.isMobile) {
+  //      console.log('Viel Spaß beim Resizen ;-)');
+  //      this.router.navigate(['home']);
+  //    }
+   }
 
   async ngOnInit() {
     this.selectedUserFromChat.emit(

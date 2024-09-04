@@ -1,59 +1,54 @@
+@if ( !this.mobileService.isMobile) {
 @if (getStorage() && getLocation() !== "/user/chooseAvatar") {
-  <div class="wrapper">
-    <main>
-      <section>
-        <app-header
-          [activeUserChange]="activeUserChange"
-          [activeGoogleUserChange]="activeGoogleUserChange"
-        ></app-header>
-      </section>
-      <section class="h-full flex w-full" class="adjustments">
-        <app-sidenav
-          [activeUserChange]="activeUserChange"
-          [activeGoogleUserChange]="activeGoogleUserChange"
-          [onlineStatusChange]="onlineStatusChange"
-        ></app-sidenav>
-        <div class="flex w-full">
-          
-          @if (this.channelService.loading) {
-            <div class="spinner">
-              <mat-spinner></mat-spinner>
-            </div>
-            }
-            @else {
-              
-            <router-outlet />
-            }
-        </div>
-      </section>
-    </main>
-  </div>
-} @else {
-  <div>
-    <main>
-      <section>
-        @if (getRoute()) {
-          <app-header
-            [activeUserChange]="activeUserChange"
-            [activeGoogleUserChange]="activeGoogleUserChange"
-          ></app-header>
-        }
-      </section>
-      <section
-        class="absolute flex w-full align-items-center justify-content-center"
-      >
-      @if (this.channelService.loading) {
+<div class="wrapper">
+  <main>
+    <section>
+      <app-header [activeUserChange]="activeUserChange" [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+    </section>
+    <section class="h-full flex w-full" class="adjustments">
+      <app-sidenav [activeUserChange]="activeUserChange" [activeGoogleUserChange]="activeGoogleUserChange"
+        [onlineStatusChange]="onlineStatusChange"></app-sidenav>
+      <div class="flex w-full">
+
+        @if (this.channelService.loading) {
         <div class="spinner">
           <mat-spinner></mat-spinner>
         </div>
         }
         @else {
-          
+
         <router-outlet />
         }
-      </section>
-    </main>
-  </div>
+      </div>
+    </section>
+  </main>
+</div>
+} @else {
+<div>
+  <main>
+    <section>
+      @if (getRoute()) {
+      <app-header [activeUserChange]="activeUserChange" [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+      }
+    </section>
+    <section class="absolute flex w-full align-items-center justify-content-center">
+      @if (this.channelService.loading) {
+      <div class="spinner">
+        <mat-spinner></mat-spinner>
+      </div>
+      }
+      @else {
+
+      <router-outlet />
+      }
+    </section>
+  </main>
+</div>
 }
 
 
+}
+@else {
+<app-header [activeUserChange]="activeUserChange" [activeGoogleUserChange]="activeGoogleUserChange"></app-header>
+<router-outlet></router-outlet>
+}
