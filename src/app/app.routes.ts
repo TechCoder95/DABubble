@@ -51,10 +51,12 @@ export const routes: Routes = [
   {
     path: 'channel/:channelId', component: ChatComponent,
     children: [
-     
+      {
+        path: 'thread/:threadId', component: ThreadComponent,
+      },
     ]
   }, {
-    path: 'thread/:threadId', component: ThreadComponent,
+    path: 'thread/:threadId', component: ChatComponent,
   },
   {
     path: "**", redirectTo: "home"

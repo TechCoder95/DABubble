@@ -64,34 +64,49 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-
-
-
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth <= 910) {
       /* console.log('Viel Spaß beim Resizen ;-)');
       console.log(this.router.url); */
 
-
-      this.mobileService.isMobile = true;
-      this.router.navigate(['channel', JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
-      console.log("hier");
-
-
+      if (this.router.url.includes('thread')) {
+        this.mobileService.isMobile = true;
+        this.router.navigate([
+          'thread',
+          JSON.parse(sessionStorage.getItem('selectedThread')!).id,
+        ]);
+        console.log('hier1');
+      } else if (this.router.url.includes('channel')) {
+        this.mobileService.isMobile = true;
+        this.router.navigate([
+          'channel',
+          JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+        ]);
+        console.log('hier2');
+      }
     } else {
-      this.mobileService.isMobile = false;
-      this.router.navigate(['home', 'channel', JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
-      console.log('da');
-
+      if (this.router.url.includes('thread')) {
+        this.mobileService.isMobile = false;
+        this.router.navigate([
+          'home',
+          'channel',
+          JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+          'thread',
+          JSON.parse(sessionStorage.getItem('selectedThread')!).id,
+        ]);
+        console.log('da1');
+      } else if (this.router.url.includes('channel')) {
+        this.mobileService.isMobile = false;
+        this.router.navigate([
+          'home',
+          'channel',
+          JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+        ]);
+        console.log('da2');
+      }
     }
   }
-
-
-
-
-
-
 
   openMenu() {
     this.dialog.open(OpenProfileInfoComponent);

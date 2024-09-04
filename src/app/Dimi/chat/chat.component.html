@@ -1,5 +1,8 @@
 <!-- @if (mobileService.isChat) { -->
+ 
+@if (!this.mobileService.isMobile) {
   <div class="flex height">
+    
     <mat-card style="width: 30vw">
       <app-chat-information
         [activeUserFromChat]="selectedUserFromChat"
@@ -38,4 +41,47 @@
       </mat-card>
     }
   </div>
-<!-- } -->
+  
+}
+
+@else {
+  @if (getUrl().includes('channel')) {
+    <mat-card>
+      <app-chat-information
+        [activeUserFromChat]="selectedUserFromChat"
+        [activeChannelFromChat]="selectedChannelFromChat"
+      ></app-chat-information>
+      <app-chat-conversation
+        [activeChannelFromChat]="selectedChannelFromChat"
+        [activeUserFromChat]="selectedUserFromChat"
+        #scrollContainer
+      >
+      </app-chat-conversation>
+      <app-chat-inputfield
+        [selectedChannelFromChat]="selectedChannelFromChat"
+        [activeUserFromChat]="selectedUserFromChat"
+        [messageType]="messageType"
+      >
+      </app-chat-inputfield>
+    </mat-card>
+  }
+  @if (getUrl().includes('thread')) {
+    <mat-card class="thread-card">
+      <app-thread
+        [selectedChannelFromChat]="selectedChannelFromChat"
+      ></app-thread>
+      <app-thread-conversation
+        [activeUserFromChat]="selectedUserFromChat"
+        #scrollContainer
+      >
+      </app-thread-conversation>
+      <app-chat-inputfield
+        [selectedThreadOwner]="selectedThreadOwner"
+        [activeUserFromChat]="selectedUserFromChat"
+        [messageType]="messageTypeThreads"
+      >
+      </app-chat-inputfield>
+    </mat-card>
+
+  }
+}

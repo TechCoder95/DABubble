@@ -124,6 +124,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  getUrl() {
+    return this.router.url;
+  }
+
   windowIsSmall() {
     return window.innerWidth <= 910;
   }
