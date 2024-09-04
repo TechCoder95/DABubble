@@ -65,7 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private subService: GlobalsubService,
     public threadService: ThreadService,
     private router: Router,
-    public mobileService:MobileService,
+    public mobileService: MobileService,
   ) {}
 
   @HostListener('window:resize', ['$event'])
@@ -122,5 +122,9 @@ export class ChatComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  windowIsSmall() {
+    return window.innerWidth <= 910;
   }
 }
