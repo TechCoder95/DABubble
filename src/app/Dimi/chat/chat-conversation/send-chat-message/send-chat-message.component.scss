@@ -100,6 +100,7 @@ h5 {
     >p {
       font-size: 14px;
       color: rgba(104, 104, 104, 1);
+      text-wrap: nowrap;
     }
   }
 }
@@ -163,7 +164,7 @@ h5 {
 }
 
 .adjust-padding-right {
-  padding-inline: 50px 120px;
+  padding-inline: 50px clamp(5.5rem, 4.5164rem + 5.2459vw, 7.5rem) !important;
   margin-top: unset !important;
 }
 
@@ -187,4 +188,23 @@ h5 {
 
 .grey {
   color: #686868;
+}
+
+@media (max-width: 910px) {
+  .message {
+    padding: 10px clamp(1rem, -0.0451rem + 5.5738vw, 3.125rem);
+  }
+
+  .text-sm {
+    font-size: clamp(0.75rem, 0.652rem + 0.3922vw, 0.875rem) !important;
+    text-wrap: nowrap;
+  }
+
+  .text-lg {
+    font-size: clamp(1rem, 0.902rem + 0.3922vw, 1.125rem) !important;
+  }
+
+  .style-thread-answers {
+    gap: clamp(0.75rem, 0.3578rem + 1.5686vw, 1.25rem);
+  }
 }

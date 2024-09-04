@@ -17,12 +17,15 @@ h5 {
   display: flex;
   justify-content: center;
   align-items: center;
-  > p {
+
+  >p {
     background: rgba(173, 176, 217, 1);
     height: 1px;
     width: 90%;
+
   }
-  > h4 {
+
+  >h4 {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -44,20 +47,24 @@ h5 {
   padding-block: 10px;
   gap: 20px;
   transition: background-color 0.3s ease-in-out;
-  > img {
+
+  >img {
     height: 50px;
     min-width: 50px;
     border-radius: 50%;
     object-fit: cover;
   }
+
   &:hover .slide-in {
     animation: slideIn 0.1s forwards;
     top: -12px;
     right: 10%;
   }
+
   &:hover {
     background-color: rgba(236, 238, 254, 1);
-    & > .message-information > app-actual-receive-message ::ng-deep .actual-message {
+
+    &>.message-information>app-actual-receive-message ::ng-deep .actual-message {
       background-color: white;
     }
   }
@@ -68,16 +75,20 @@ h5 {
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  > .sender-and-time {
+
+  >.sender-and-time {
     display: flex;
     gap: 20px;
     align-items: center;
-    > h5 {
+
+    >h5 {
       font-size: 18px;
     }
-    > p {
+
+    >p {
       font-size: 14px;
       color: rgba(104, 104, 104, 1);
+      text-wrap: nowrap;
     }
   }
 }
@@ -86,6 +97,7 @@ h5 {
   from {
     transform: translateX(100%);
   }
+
   to {
     transform: translateX(0);
   }
@@ -103,8 +115,7 @@ h5 {
 }
 
 .adjust-padding-left {
-  padding-inline: 120px 50px;
-  /* padding-block: unset; */
+  padding-inline: clamp(5.5rem, 4.5164rem + 5.2459vw, 7.5rem) 50px !important;
 }
 
 .pt-none {
@@ -136,4 +147,23 @@ h5 {
 
 .grey {
   color: #686868;
+}
+
+@media (max-width: 910px) {
+  .message {
+    padding: 10px clamp(1rem, -0.0451rem + 5.5738vw, 3.125rem);
+  }
+
+  .text-sm {
+    font-size: clamp(0.75rem, 0.652rem + 0.3922vw, 0.875rem) !important;
+    text-wrap: nowrap;
+  }
+
+  .text-lg {
+    font-size: clamp(1rem, 0.902rem + 0.3922vw, 1.125rem) !important;
+  }
+
+  .style-thread-answers {
+    gap: clamp(0.75rem, 0.3578rem + 1.5686vw, 1.25rem);
+  }
 }
