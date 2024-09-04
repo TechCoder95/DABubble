@@ -72,6 +72,7 @@ export class DialogChannelInformationComponent {
     //Add 'implements OnInit' to the class.
     this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
     this.getChannelCreator();
+    this.channelCreatorName = this.selectedChannel.owner;
     //Todo: Channelinfos werden nicht sauber aktualisiert. So lassen?
     this.subscriptionService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannel = channel;
