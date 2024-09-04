@@ -32,8 +32,7 @@ input {
   border-radius: 30px;
   padding: 15px 20px;
   font-size: 18px;
-  /* width: 420px; */
-  width: clamp(17.5rem, 13.1967rem + 22.9508vw, 26.25rem);
+  width: 420px;
   border: 1px solid #ccc;
   cursor: pointer;
   outline: none;
@@ -57,14 +56,16 @@ input {
   z-index: 1000;
   max-height: 25vh;
   overflow: auto;
-  > ul {
+
+  >ul {
     display: flex;
     flex-direction: column;
     gap: 10px;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    > li {
+
+    >li {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -72,11 +73,13 @@ input {
       padding: 4px 20px;
       border-radius: 30px;
       cursor: pointer;
-      > img {
+
+      >img {
         height: 50px;
         width: 50px;
         border-radius: 50%;
       }
+
       &:hover {
         background: rgba(236, 238, 254, 1);
       }
@@ -208,5 +211,50 @@ mat-dialog-actions {
   ::ng-deep .custom-dialog-container .mat-mdc-dialog-surface {
     border-radius: 30px !important;
     width: 100vw !important;
+  }
+
+  input {
+    padding: 0 16px;
+    height: 40px;
+    font-size: 14px;
+    width: -webkit-fill-available;
+  }
+
+  .input-results {
+    border-radius: 20px;
+    height: 100%;
+    max-height: 40vh;
+    box-shadow: 0px 2px 10px 0px #00000014;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 14px 8px;
+
+    ul {
+      text-wrap: nowrap;
+      font-weight: 400;
+      font-size: 14px;
+    }
+
+    .ng-star-inserted {
+
+      img {
+        height: 40px !important;
+        width: 40px !important;
+      }
+
+      p {
+        display: none;
+      }
+    }
+  }
+
+  .remove-selected-user-img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .selected-user {
+    padding: 4px 8px;
   }
 }
