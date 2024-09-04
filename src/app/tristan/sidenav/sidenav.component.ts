@@ -379,6 +379,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
         (channel) => channel.id === node.id,
       );
       if (selectedChannel) {
+        if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
+          sessionStorage.removeItem('threadMessage');
+          sessionStorage.removeItem('selectedThread');
+        }
         this.selectedChannel = selectedChannel;
         this.updateHoverStates();
         await this.navToSelectedChannel(selectedChannel);

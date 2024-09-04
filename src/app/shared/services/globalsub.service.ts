@@ -72,7 +72,6 @@ export class GlobalsubService {
     return this.activeMessageSubject.asObservable();
   }
 
-  //Todo - Add online status observable
   getOnlineStatusObservable() {
     return this.statusSubject.asObservable();
   }

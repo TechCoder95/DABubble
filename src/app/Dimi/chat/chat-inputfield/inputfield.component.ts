@@ -306,8 +306,22 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         ? `Nachricht an @${selectedUser.username}`
         : 'Starte eine neue Nachricht';
     }
-    if (this.selectedChannel) {
-      return `Nachricht an #${this.selectedChannel?.name}`;
+
+
+    if (this.messageType === MessageType.Groups) {
+      if (this.selectedChannel) {
+        return `Nachricht an #${this.selectedChannel?.name}`;
+      }
+      return 'Starte eine neue Nachricht';
+    }
+
+    if (this.messageType === MessageType.Threads) {
+      const channelname = JSON.parse(sessionStorage.getItem('threadMessage')!).message;
+      if (this.selectedChannel) {
+        return `Antworten an Thread #${channelname}`;
+      }
+      return 'Starte eine neue Nachricht';
+      
     }
     return '';
   }

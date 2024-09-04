@@ -70,6 +70,8 @@ export class DialogChannelInformationComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+    //Todo: Channelinfos werden nicht sauber aktualisiert. So lassen?
     this.subscriptionService.getActiveChannelObservable().subscribe((channel: TextChannel) => {
       this.selectedChannel = channel;
     });
