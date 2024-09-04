@@ -25,6 +25,7 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ThreadConversationComponent } from '../../rabia/thread/thread-conversation/thread-conversation.component';
 import { Router } from '@angular/router';
+import { MobileService } from '../../shared/services/mobile.service';
 
 @Component({
   selector: 'app-chat',
@@ -64,6 +65,7 @@ export class ChatComponent implements OnInit, OnDestroy {
     private subService: GlobalsubService,
     public threadService: ThreadService,
     private router: Router,
+    public mobileService:MobileService,
   ) {}
 
   @HostListener('window:resize', ['$event'])

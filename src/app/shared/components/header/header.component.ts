@@ -7,9 +7,10 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DABubbleUser } from '../../interfaces/user';
 import { User } from 'firebase/auth';
-import { SearchbarComponent } from "./searchbar/searchbar.component";
+import { SearchbarComponent } from './searchbar/searchbar.component';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
+import { MobileService } from '../../services/mobile.service';
 
 @Component({
   selector: 'app-header',
@@ -17,10 +18,9 @@ import { UserService } from '../../services/user.service';
   imports: [CommonModule, FormsModule, SearchbarComponent],
   providers: [],
   templateUrl: './header.component.html',
-  styleUrl: './header.component.scss'
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent implements OnInit {
-
   public dialog = inject(MatDialog);
 
   searchInput: string = '';
@@ -28,22 +28,23 @@ export class HeaderComponent implements OnInit {
   url: string = window.location.pathname;
   route: string = this.url.split('/')[1];
 
-
   userSub!: Subscription;
   googleUserSub!: Subscription;
 
-  constructor(public AuthService: AuthenticationService, private router: Router, private userService:UserService) { }
+  constructor(
+    public AuthService: AuthenticationService,
+    private router: Router,
+    private userService: UserService,
+    private mobileService: MobileService,
+  ) {}
 
   activeUser!: DABubbleUser;
   activeGoogleUser!: User;
-
-
 
   @Input() activeUserChange!: any;
   @Input() activeGoogleUserChange!: any;
 
   ngOnInit() {
-
     if (window.location.pathname != '/user/login') {
       this.activeUser = this.userService.activeUser;
       this.activeUserChange.subscribe((user: DABubbleUser) => {
@@ -54,20 +55,17 @@ export class HeaderComponent implements OnInit {
       this.activeGoogleUserChange.subscribe((user: User) => {
         this.activeGoogleUser = user;
       });
-
     }
   }
 
   openMenu() {
-    this.dialog.open(OpenProfileInfoComponent)
+    this.dialog.open(OpenProfileInfoComponent);
   }
-
 
   goToRegister() {
     this.AuthService.registerProcess = true;
     this.router.navigate(['/user/register']);
   }
-
 
   checkGuest() {
     if (sessionStorage.getItem('userLoginGuest')) {
@@ -82,9 +80,16 @@ export class HeaderComponent implements OnInit {
     this.userService.logout();
   }
 
-
   getUrl() {
     return this.router.url;
   }
 
+  windowIsSmall() {
+    return window.innerWidth <= 910;
+  }
+
+  backToSidenav() {
+    this.mobileService.isChat = false;
+    this.router.navigate(['/home']); 
+  }
 }

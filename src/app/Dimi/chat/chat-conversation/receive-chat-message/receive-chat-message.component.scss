@@ -31,10 +31,9 @@ h5 {
     border-radius: 30px;
     padding: 5px 15px;
     border: 1px solid rgba(173, 176, 217, 1);
-    font-size: clamp(.75rem, .3971vw + .6838rem, 1.125rem);
+    font-size: clamp(0.75rem, 0.3971vw + 0.6838rem, 1.125rem);
     text-align: center;
   }
-
 }
 
 .message {
@@ -57,7 +56,11 @@ h5 {
   }
   &:hover {
     background-color: rgba(236, 238, 254, 1);
-    & > .message-information > app-actual-receive-message ::ng-deep .actual-message {
+    &
+      > .message-information
+      > app-actual-receive-message
+      ::ng-deep
+      .actual-message {
       background-color: white;
     }
   }
@@ -115,7 +118,6 @@ h5 {
   justify-content: flex-end;
 }
 
-
 .position-component {
   top: 0px !important;
 }
@@ -126,14 +128,20 @@ h5 {
   gap: 20px;
 
   div {
-    gap: 4px
+    gap: 4px;
   }
 }
 
 .purple {
-  color: #535AF1;
+  color: #535af1;
 }
 
 .grey {
   color: #686868;
+}
+
+@media (max-width: 910px) {
+  .sender-and-time {
+    width: max-content;
+  }
 }

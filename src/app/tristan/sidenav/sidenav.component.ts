@@ -53,11 +53,11 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { Subscription, take, tap } from 'rxjs';
+import { filter, Subscription, take, tap } from 'rxjs';
 import { ThreadComponent } from '../../rabia/thread/thread.component';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
@@ -104,13 +104,12 @@ interface FlattenedNode {
 })
 export class SidenavComponent implements OnInit, OnDestroy {
   workspaceMenuOpen: boolean = true;
-  isChat: boolean = false;
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth <= 910) {
-      console.log('Viel Spaß beim Resizen ;-)');
-      console.log(this.router.url);
+      /* console.log('Viel Spaß beim Resizen ;-)');
+      console.log(this.router.url); */
 
       if (this.router.url.includes('channel')) {
         this.mobileService.isMobile = true;
@@ -208,6 +207,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.initializeChannels();
       this.initializeSubscriptions();
     }
+
+    /*  this.settings(); */
   }
 
   /**
@@ -406,6 +407,21 @@ export class SidenavComponent implements OnInit, OnDestroy {
     } else if (node.type === 'action') {
       this.openAddChannelDialog(event);
     }
+
+    this.settings();
+  }
+
+  settings() {
+    setTimeout(() => {
+      if (window.innerWidth <= 910 && this.router.url.includes('channel')) {
+        this.mobileService.isMobile = true;
+        this.mobileService.isChat = true;
+        console.log(this.activeUser);
+      } else {
+        this.mobileService.isMobile = false;
+        this.mobileService.isChat = false;
+      }
+    }, 250);
   }
 
   updateHoverStates() {
