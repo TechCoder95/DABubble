@@ -105,18 +105,6 @@ interface FlattenedNode {
 export class SidenavComponent implements OnInit, OnDestroy {
   workspaceMenuOpen: boolean = true;
 
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    if (window.innerWidth <= 910) {
-      /* console.log('Viel Spaß beim Resizen ;-)');
-      console.log(this.router.url); */
-
-      if (this.router.url.includes('channel')) {
-        this.mobileService.isMobile = true;
-      }
-    }
-  }
-
   /**
    * @private
    * @description
@@ -193,7 +181,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public mobileService: MobileService,
-  ) {}
+  ) { }
 
   /**
    * @public
@@ -206,6 +194,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (this.activeUser) {
       await this.initializeChannels();
       this.initializeSubscriptions();
+    }
+
+    // todo channel id eventuell ändern
+    if (!this.router.url.includes('channel')) {
+      const defaultNode: Node = {
+        id: 'WySZLkL6ofOWVboysfcO',
+        name: 'allgemein',
+        type: 'groupChannel'
+      };
+      await this.selectChannel(defaultNode);
+      this.router.navigateByUrl('home/channel/WySZLkL6ofOWVboysfcO');
     }
 
     /*  this.settings(); */
@@ -392,24 +391,30 @@ export class SidenavComponent implements OnInit, OnDestroy {
     if (node.expandable) {
       this.treeControl.toggle(node);
     } else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
-      const selectedChannel = this.channels.find(
-        (channel) => channel.id === node.id,
-      );
-      if (selectedChannel) {
-        if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
-          sessionStorage.removeItem('threadMessage');
-          sessionStorage.removeItem('selectedThread');
-        }
-        this.selectedChannel = selectedChannel;
-        this.updateHoverStates();
-        await this.navToSelectedChannel(selectedChannel);
-      }
+      await this.selectChannel(node);
     } else if (node.type === 'action') {
       this.openAddChannelDialog(event);
     }
 
     this.settings();
   }
+
+
+  async selectChannel(node: Node) {
+    const selectedChannel = this.channels.find(
+      (channel) => channel.id === node.id,
+    );
+    if (selectedChannel) {
+      if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
+        sessionStorage.removeItem('threadMessage');
+        sessionStorage.removeItem('selectedThread');
+      }
+      this.selectedChannel = selectedChannel;
+      this.updateHoverStates();
+      await this.navToSelectedChannel(selectedChannel);
+    }
+  }
+
 
   settings() {
     setTimeout(() => {

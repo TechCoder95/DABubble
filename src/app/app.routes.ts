@@ -48,5 +48,16 @@ export const routes: Routes = [
     ]
   },
   { path: 'verfiyEmail', component: VariableContentComponent },
+  {
+    path: 'channel/:channelId', component: ChatComponent,
+    children: [
+     
+    ]
+  }, {
+    path: 'thread/:threadId', component: ThreadComponent,
+  },
+  {
+    path: "**", redirectTo: "home"
+  }
 ];
 

@@ -64,6 +64,35 @@ export class HeaderComponent implements OnInit {
       });
   }
 
+
+
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    if (window.innerWidth <= 910) {
+      /* console.log('Viel Spaß beim Resizen ;-)');
+      console.log(this.router.url); */
+
+
+      this.mobileService.isMobile = true;
+      this.router.navigate(['channel', JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
+      console.log("hier");
+
+
+    } else {
+      this.mobileService.isMobile = false;
+      this.router.navigate(['home', 'channel', JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
+      console.log('da');
+
+    }
+  }
+
+
+
+
+
+
+
   openMenu() {
     this.dialog.open(OpenProfileInfoComponent);
   }
