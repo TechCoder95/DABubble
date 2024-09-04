@@ -60,6 +60,7 @@ export class AddChannelComponent {
   onCreateClick() {
     const newDialogRef = this.newDialog.open(AddMemberToChannelComponent, {
       data: this.channel,
+      panelClass: 'custom-dialog-container',
     });
 
     if (window.innerWidth >= 910) {
