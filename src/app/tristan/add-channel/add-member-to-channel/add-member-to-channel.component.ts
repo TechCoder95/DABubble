@@ -1,7 +1,20 @@
-import { Component, ElementRef, Inject, inject, Input, input, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  Inject,
+  inject,
+  Input,
+  input,
+  ViewChild,
+} from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
@@ -30,7 +43,6 @@ import { UserService } from '../../../shared/services/user.service';
   styleUrl: './add-member-to-channel.component.scss',
 })
 export class AddMemberToChannelComponent {
-
   selectedOption: string = '1';
   @ViewChild('inputName') inputName!: ElementRef;
   searchResults: DABubbleUser[] = [];
@@ -44,7 +56,6 @@ export class AddMemberToChannelComponent {
     public dialog: MatDialog,
   ) {
     console.log(channel);
-    
   }
 
   ngAfterViewInit(): void {
