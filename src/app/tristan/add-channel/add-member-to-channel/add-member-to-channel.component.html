@@ -69,32 +69,6 @@
       </div>
     </section>
 
-    <!-- <div *ngIf="selectedOption === '2'" appearance="fill">
-      <input
-        type="text"
-        placeholder="Name eingeben"
-        [formControl]="searchControl"
-      />
-
-      <p class="font-bold text-2xl" *ngIf="searchResults.users.length > 0">
-        Mitglieder
-      </p>
-      <div
-        *ngFor="let member of searchResults.users; let i = index"
-        class="member"
-        (click)="selectUser(member)"
-      >
-        <div class="relative img-container">
-          <img [src]="member.avatar" />
-          <div
-            class="online-status"
-            [ngClass]="member.isLoggedIn ? 'green' : 'grey'"
-          ></div>
-        </div>
-        <p>{{ member.username }} - ({{ member.mail }})</p>
-      </div>
-    </div> -->
-
     <mat-dialog-actions>
       <button mat-flat-button cdkFocusInitial (click)="onCreateClick()">
         Erstellen

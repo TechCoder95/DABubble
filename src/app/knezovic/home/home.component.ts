@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { LoginComponent } from "./login/login.component";
 import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
 import { HeaderComponent } from "../../shared/components/header/header.component";
@@ -16,13 +16,24 @@ import { ChannelService } from '../../shared/services/channel.service';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [LoginComponent, SidenavComponent, HeaderComponent, VariableContentComponent, RouterOutlet, CommonModule, MatProgressSpinnerModule],
+  imports: [
+    LoginComponent,
+    SidenavComponent,
+    HeaderComponent,
+    VariableContentComponent,
+    RouterOutlet,
+    CommonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
-
-  constructor(private globalSubService: GlobalsubService, private router: Router, public channelService:ChannelService) { }
+  constructor(
+    private globalSubService: GlobalsubService,
+    private router: Router,
+    public channelService: ChannelService,
+  ) {}
 
   userSub!: Subscription;
   googleUserSub!: Subscription;
@@ -30,51 +41,50 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   activeUser!: DABubbleUser;
 
-
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
   onlineStatusChange = new EventEmitter<String[]>();
 
 
   ngOnInit() {
-    let googleUser = sessionStorage.getItem('firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]')
+    let googleUser = sessionStorage.getItem(
+      'firebase:authUser:AIzaSyATFKQ4Vj02MYPl-YDAHzuLb-LYeBwORiE:[DEFAULT]',
+    );
     if (googleUser) {
       let googleUserObj = JSON.parse(googleUser);
       this.globalSubService.updateGoogleUser(googleUserObj);
     }
 
     if (!this.userSub)
-      this.userSub = this.globalSubService.getUserObservable()
+      this.userSub = this.globalSubService
+        .getUserObservable()
         .pipe()
-        .subscribe(data => {
+        .subscribe((data) => {
           this.activeUser = data;
           this.activeUserChange.emit(data);
         });
     if (!this.googleUserSub)
-      this.googleUserSub = this.globalSubService.getGoogleUserObservable().subscribe(data => {
-        this.activeGoogleUserChange.emit(data);
-      });
+      this.googleUserSub = this.globalSubService
+        .getGoogleUserObservable()
+        .subscribe((data) => {
+          this.activeGoogleUserChange.emit(data);
+        });
 
     if (!this.onlineStatusSub)
-      this.onlineStatusSub = this.globalSubService.getOnlineStatusObservable()
-    .subscribe(data => {
-        this.onlineStatusChange.emit(data.onlineUser);
-      });
-
+      this.onlineStatusSub = this.globalSubService
+        .getOnlineStatusObservable()
+        .subscribe((data) => {
+          this.onlineStatusChange.emit(data.onlineUser);
+        });
   }
-
 
   ngOnDestroy(): void {
-    if (this.userSub)
-      this.userSub.unsubscribe();
+    if (this.userSub) this.userSub.unsubscribe();
 
-    if (this.googleUserSub)
-      this.googleUserSub.unsubscribe();
+    if (this.googleUserSub) this.googleUserSub.unsubscribe();
 
-    if (this.onlineStatusSub)
-      this.onlineStatusSub.unsubscribe();
+    if (this.onlineStatusSub) this.onlineStatusSub.unsubscribe();
   }
-
 
   getStorage() {
     if (sessionStorage.getItem('userLogin')) {
@@ -90,8 +100,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   getRoute() {
     if (this.router.url === '/') {
       return false;
-    }
-    else {
+    } else {
       return true;
     }
   }
