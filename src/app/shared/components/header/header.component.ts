@@ -4,11 +4,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { OpenProfileInfoComponent } from '../../../rabia/open-profile-info/open-profile-info.component';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { DABubbleUser } from '../../interfaces/user';
 import { User } from 'firebase/auth';
 import { SearchbarComponent } from './searchbar/searchbar.component';
-import { Subscription } from 'rxjs';
+import { filter, Subscription } from 'rxjs';
 import { UserService } from '../../services/user.service';
 import { MobileService } from '../../services/mobile.service';
 
@@ -56,6 +56,12 @@ export class HeaderComponent implements OnInit {
         this.activeGoogleUser = user;
       });
     }
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkConditions();
+      });
   }
 
   openMenu() {
@@ -88,8 +94,21 @@ export class HeaderComponent implements OnInit {
     return window.innerWidth <= 910;
   }
 
+  inChat(): boolean {
+    return this.router.url.includes('channel');
+  }
+
+  inChannel: boolean = false;
+  checkConditions(): void {
+    if (this.windowIsSmall() && this.inChat()) {
+      this.inChannel = true;
+    } else {
+      this.inChannel = false;
+    }
+  }
+
   backToSidenav() {
     this.mobileService.isChat = false;
-    this.router.navigate(['/home']); 
+    this.router.navigate(['/home']);
   }
 }

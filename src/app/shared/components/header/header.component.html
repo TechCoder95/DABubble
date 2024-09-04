@@ -5,11 +5,19 @@
   getUrl() !== "/user/chooseAvatar"
 ) {
   <div class="mobile-p flex justify-content-between align-items-center">
-    @if (windowIsSmall()) {
-      <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()"/>
+    @if (inChannel) {
+      <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
     }
 
-    <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
+    @if (inChannel) {
+      <img
+        class="logo"
+        src="/img/devspace-small-screen.svg"
+        alt="dabubble-logo"
+      />
+    } @else {
+      <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
+    }
 
     <!-- <div class="logo-if-channel-open"> das hier mal drin lassen, werde ich zum responsiveness brauchen 
         <div class="arrow-back"></div>
