@@ -5,5 +5,6 @@ import { Injectable } from '@angular/core';
 })
 export class MobileService {
   isMobile: boolean = false;
+  isChat: boolean = false;
   constructor() {}
 }

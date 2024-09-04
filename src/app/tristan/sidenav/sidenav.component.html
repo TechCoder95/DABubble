@@ -1,5 +1,5 @@
 @if (!this.channelService.loading) {
-  @if (activeUser && !mobileService.isMobile) {
+  @if (activeUser && !(mobileService.isMobile && mobileService.isChat)) {
     <mat-drawer-container class="h-full relative" autosize>
       <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
         <app-searchbar class="show-if-mobile"></app-searchbar>

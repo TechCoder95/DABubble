@@ -188,3 +188,9 @@ h5 {
 .grey {
   color: #686868;
 }
+
+@media (max-width: 910px) {
+  .sender-and-time {
+    width: max-content;
+  }
+}

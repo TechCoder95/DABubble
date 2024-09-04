@@ -169,7 +169,6 @@ export class ChatConversationComponent
     const messageDate = new Date(timestamp);
     const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
-      year: 'numeric',
       month: 'long',
       day: 'numeric',
       timeZone: 'Europe/Berlin',
