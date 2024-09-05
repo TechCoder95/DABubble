@@ -63,11 +63,6 @@ export class AddChannelComponent {
       panelClass: 'custom-dialog-container',
     });
 
-    // todo damit lässt sich kein gruppen channel mehr erstellen
-    // if (window.innerWidth >= 910) {
-    //   this.onNoClick();
-    // }
-
     newDialogRef.afterClosed().subscribe((channel: TextChannel | undefined) => {
       if (channel) {
         this.dialogRef.close(channel);
