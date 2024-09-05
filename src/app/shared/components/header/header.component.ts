@@ -105,6 +105,11 @@ export class HeaderComponent implements OnInit {
         ]);
         console.log('da2');
       }
+      else {
+        this.mobileService.isMobile = false;
+        this.router.navigate(['home']);
+        console.log('da3');
+      }
     }
   }
 

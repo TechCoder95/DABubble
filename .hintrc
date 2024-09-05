@@ -28,7 +28,8 @@
           "zoom",
           "scrollbar-width",
           "height: fit-content",
-          "width: fit-content"
+          "width: fit-content",
+          "rotate"
         ]
       }
     ],

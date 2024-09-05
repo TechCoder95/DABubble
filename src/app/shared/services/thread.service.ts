@@ -101,9 +101,15 @@ export class ThreadService {
     this.selectedThread = false;
     sessionStorage.removeItem('selectedThread');
     sessionStorage.removeItem('threadMessage');
-    this.router.navigate([
-      'home/channel/' +
-        JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
-    ]);
+    if (!this.mobileService.isMobile) {
+      this.router.navigate([
+        'home/channel/' +
+          JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+      ]);
+    } else {
+      this.router.navigate([
+        '/channel/' + JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+      ]);
+    }
   }
 }
