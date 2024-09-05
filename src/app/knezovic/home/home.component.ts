@@ -106,4 +106,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       return true;
     }
   }
+
+  getHome() {
+    if (this.router.url === '/home') {
+      return true;
+    }
+    return false;
+  }
 }

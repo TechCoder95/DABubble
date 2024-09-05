@@ -181,7 +181,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public mobileService: MobileService,
-  ) { }
+  ) {}
 
   /**
    * @public
@@ -196,15 +196,17 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.initializeSubscriptions();
     }
 
-    // todo channel id eventuell ändern
-    if (!this.router.url.includes('channel')) {
-      const defaultNode: Node = {
-        id: 'WySZLkL6ofOWVboysfcO',
-        name: 'allgemein',
-        type: 'groupChannel'
-      };
-      await this.selectChannel(defaultNode);
-      this.router.navigateByUrl('home/channel/WySZLkL6ofOWVboysfcO');
+    if (!this.mobileService.isMobile) {
+      // todo channel id eventuell ändern
+      if (!this.router.url.includes('channel')) {
+        const defaultNode: Node = {
+          id: 'WySZLkL6ofOWVboysfcO',
+          name: 'allgemein',
+          type: 'groupChannel',
+        };
+        await this.selectChannel(defaultNode);
+        this.router.navigate(['home','channel', defaultNode.id]);
+      }
     }
 
     /*  this.settings(); */
@@ -399,13 +401,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.settings();
   }
 
-
   async selectChannel(node: Node) {
     const selectedChannel = this.channels.find(
       (channel) => channel.id === node.id,
     );
     if (selectedChannel) {
-      if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
+      if (
+        sessionStorage.getItem('threadMessage') ||
+        sessionStorage.getItem('selectedThread')
+      ) {
         sessionStorage.removeItem('threadMessage');
         sessionStorage.removeItem('selectedThread');
       }
@@ -414,7 +418,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
       await this.navToSelectedChannel(selectedChannel);
     }
   }
-
 
   settings() {
     setTimeout(() => {
