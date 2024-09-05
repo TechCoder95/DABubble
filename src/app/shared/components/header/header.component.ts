@@ -56,7 +56,6 @@ export class HeaderComponent implements OnInit {
         this.activeGoogleUser = user;
       });
     }
-    this.checkRoute();
   }
 
 
@@ -105,7 +104,7 @@ export class HeaderComponent implements OnInit {
         ]);
         console.log('da2');
       }
-      else {
+      else if (this.router.url.includes('home')) {
         this.mobileService.isMobile = false;
         this.router.navigate(['home']);
         console.log('da3');
