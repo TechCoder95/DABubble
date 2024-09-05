@@ -160,7 +160,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
         // todo channel id eventuell ändern
         if (!this.router.url.includes('channel')) {
           const defaultNode: Node = {
-            id: 'EAukkpGCgo2ajC64rw67',
+            id: 'NGPmuLxfCkU64LcxSFHM',
             name: 'allgemein',
             type: 'groupChannel',
           };
