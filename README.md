@@ -34,12 +34,15 @@ Dieses Projekt ist eine Beispielanwendung, die zeigt, wie man eine README-Datei 
         Dimitrios Kapetanis
 
 6. Erstelle einen neuen Branch:
+        
         git checkout -b feature/NeuesFeature
 
 7. Nimm deine Änderungen vor und committe sie:
+        
         git commit -m 'Füge neues Feature hinzu'
 
 8. Pushe den Branch:
+        
         git push origin feature/NeuesFeature
 
 9. Erstelle einen Pull Request.
