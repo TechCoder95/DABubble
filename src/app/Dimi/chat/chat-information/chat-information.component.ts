@@ -185,48 +185,67 @@ export class ChatInformationComponent implements OnInit {
     return dialogConfig;
   }
 
-  /**
-   * Generates the dialog configuration based on the provided rectangle and position.
-   * @param rect - The rectangle object containing the dimensions of the dialog.
-   * @param position - The position of the dialog ('channelInfo', 'allUsers', or any other position).
-   * @returns The dialog configuration object.
-   */
-  returnDialogConfig(rect: any, position: string) {
-    if (position === 'channelInfo') {
-      return {
-        position: {
-          top: `${rect.bottom}px`,
-          left: `${rect.left}px`,
-        },
-        panelClass: 'custom-dialog-container',
-      };
-    } else if (position === 'allUsers') {
-      const dialogWidth = 400;
-      return {
-        position: {
-          top: `${rect.bottom}px`,
-          left: `${rect.right - dialogWidth}px`,
-        },
-        panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.assignedUsers },
-      };
-    }  else {
-      let dialogWidth: number;
-      if (window.innerWidth <= 910) {
-        dialogWidth = 350;
-      } else {
-        dialogWidth = 542;
-      }
-
-      return {
-        position: {
-          top: `${rect.bottom}px`,
-          left: `${rect.right - dialogWidth}px`,
-        },
-        panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.assignedUsers },
-      };
+  returnDialogConfig(rect: any, dialog: string) {
+    if (dialog === 'channelInfo') {
+      return this.returnDialogConfigChannelInfo(rect);
+    } else if (dialog === 'allUsers' && !this.windowIsSmall()) {
+      return this.returnDialogConfigAllUsersLargeScreen(rect);
+    } else if (dialog === 'allUsers' && this.windowIsSmall()) {
+      return this.returnDialogConfigAllUsersSmallScreen(rect);
+    } else {
+      return this.returnDialogConfigAddUsers(rect);
     }
+  }
+
+  returnDialogConfigChannelInfo(rect: any) {
+    return {
+      position: {
+        top: `${rect.bottom}px`,
+        left: `${rect.left}px`,
+      },
+      panelClass: 'custom-dialog-container',
+    };
+  }
+
+  returnDialogConfigAllUsersSmallScreen(rect: any) {
+    const dialogWidth = 320;
+    return {
+      position: {
+        top: `${rect.bottom}px`,
+        left: `${rect.right - dialogWidth}px`,
+      },
+      panelClass: 'custom-dialog-container',
+      data: { channelMembers: this.assignedUsers },
+    };
+  }
+
+  returnDialogConfigAllUsersLargeScreen(rect: any) {
+    const dialogWidth = 400;
+    return {
+      position: {
+        top: `${rect.bottom}px`,
+        left: `${rect.right - dialogWidth}px`,
+      },
+      panelClass: 'custom-dialog-container',
+      data: { channelMembers: this.assignedUsers },
+    };
+  }
+
+  returnDialogConfigAddUsers(rect: any) {
+    let dialogWidth: number;
+    if (window.innerWidth <= 910) {
+      dialogWidth = 200;
+    } else {
+      dialogWidth = 542;
+    }
+    return {
+      position: {
+        top: `${rect.bottom}px`,
+        left: `${rect.right - dialogWidth}px`,
+      },
+      panelClass: 'custom-dialog-container',
+      data: { channelMembers: this.assignedUsers },
+    };
   }
 
   /**

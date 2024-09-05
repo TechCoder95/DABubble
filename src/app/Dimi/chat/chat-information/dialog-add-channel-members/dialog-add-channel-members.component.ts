@@ -55,6 +55,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     public dialog: MatDialog,
     public router: Router,
   ) {}
+    public router: Router,
+  ) {}
 
   /**
    * Lifecycle hook that is called after Angular has fully initialized the component's view.
@@ -181,5 +183,9 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
         }, 0.1);
       }
     }
+  }
+
+  windowIsSmall() {
+    return window.innerWidth <= 910;
   }
 }

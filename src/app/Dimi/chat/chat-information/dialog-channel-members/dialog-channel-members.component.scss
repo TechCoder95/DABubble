@@ -78,34 +78,3 @@ p {
     }
   }
 }
-
-@media (max-width: 1000px) {
-  h3 {
-    margin: 0 0 16px 0;
-  }
-
-  ::ng-deep .mat-mdc-dialog-surface {
-    border-radius: 30px;
-    width: clamp(17.5rem, 13.3197rem + 22.2951vw, 26rem);
-  }
-
-  ::ng-deep .mat-mdc-dialog-panel {
-    margin-left: 0 !important;
-    margin-top: 0 !important;
-  }
-
-  ::ng-deep .cdk-global-overlay-wrapper {
-    justify-content: center !important;
-    align-items: center !important;
-  }
-}
-
-@media (max-width: 910px) {
-  .close {
-    display: none;
-  }
-
-  .wrapper {
-    height: 48vh;
-  }
-}

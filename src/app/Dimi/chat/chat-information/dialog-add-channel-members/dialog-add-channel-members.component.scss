@@ -103,6 +103,7 @@ input {
       border-radius: 30px;
       cursor: pointer;
       > img {
+        height: 50px;
         width: 50px;
         border-radius: 50%;
       }
@@ -143,6 +144,7 @@ button {
 }
 
 .user-avatar-img {
+  height: 35px;
   width: 35px;
   border-radius: 50%;
 }
@@ -164,8 +166,19 @@ button {
 }
 
 @media (max-width: 910px) {
+  main {
+    padding: 20px;
+  }
+
   input {
-    width: 320px;
+    width: auto;
+  }
+
+  .input-results {
+    padding: 10px;
+    > ul > li {
+      padding: 4px;
+    }
   }
 
   .channel-name {
