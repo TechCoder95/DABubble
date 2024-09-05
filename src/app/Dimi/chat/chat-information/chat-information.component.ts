@@ -9,10 +9,8 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
-import { DatabaseService } from '../../../shared/services/database.service';
 import {
   GlobalsubService,
-  OnlineStatus,
 } from '../../../shared/services/globalsub.service';
 import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
@@ -25,7 +23,6 @@ import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-i
 })
 export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
-  /*  activeUser!: DABubbleUser; */
   tagImg = './img/tag.svg';
   arrowImg = './img/keyboard_arrow_down.svg';
   tagImgClass = '';
@@ -36,7 +33,6 @@ export class ChatInformationComponent implements OnInit {
   privateChatPartner?: DABubbleUser;
   privatChatAvatar!: string | undefined;
   privateChatPartnerName!: string | undefined;
-  /*  private channelSubscription!: Subscription; */
   channelSub!: Subscription;
   statusSub!: Subscription;
 
@@ -335,5 +331,28 @@ export class ChatInformationComponent implements OnInit {
       );
       return await this.userService.getOneUserbyId(privateChatPartnerID!);
     } else return null;
+  }
+
+  /**
+   * Determines if the window size is small.
+   * @returns {boolean} Returns true if the window width is less than or equal to 910, otherwise returns false.
+   */
+  windowIsSmall() {
+    return window.innerWidth <= 910;
+  }
+
+  /**
+   * Checks the dialog to open based on the size of the window.
+   * If the window is small, opens the dialog for channel members.
+   * If the window is not small, opens the dialog to add channel members.
+   *
+   * @param event - The mouse event that triggered the function.
+   */
+  checkDialogToOpen(event: MouseEvent) {
+    if (this.windowIsSmall()) {
+      this.openDialogChannelMembers(event);
+    } else {
+      this.openDialogAddChannelMembers(event);
+    }
   }
 }
