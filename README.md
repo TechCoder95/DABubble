@@ -2,7 +2,9 @@
 
 ## Beschreibung
 
-Dieses Projekt ist eine Beispielanwendung, die zeigt, wie man eine README-Datei erstellt. Die README-Datei enthält wichtige Informationen über das Projekt, wie z.B. die Installation, Nutzung und Mitwirkungsmöglichkeiten.
+Das Projekt DABubble ist ein Prjekt der Developerakademie aus dem forntend Kurs. Dazusagen das Abschlussprojekt.
+Das Projekt ist ein Chatclon von Slack oder Discord ohne Sprache.
+Es ist ein Chatclient mit Authentifizierung, Threads, Privatchanneln, Usermanagement
 
 ## Installation
 
