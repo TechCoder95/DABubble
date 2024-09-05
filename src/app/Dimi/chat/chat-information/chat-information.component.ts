@@ -210,19 +210,8 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
         data: { channelMembers: this.assignedUsers },
       };
-    } /* else if (position === 'allUsers' && this.windowIsSmall()) {
-      const dialogWidth = 350;
-      return {
-        position: {
-          top: `${rect.bottom}px`,
-          left: `${rect.right - dialogWidth}px`,
-        },
-        panelClass: 'custom-dialog-container',
-        data: { channelMembers: this.assignedUsers },
-      };
-    } */ else {
+    }  else {
       let dialogWidth: number;
-      debugger;
       if (window.innerWidth <= 910) {
         dialogWidth = 350;
       } else {
