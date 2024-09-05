@@ -12,10 +12,12 @@ Dieses Projekt ist eine Beispielanwendung, die zeigt, wie man eine README-Datei 
    ```
 
 2. Wechsle in das Projektverzeichnis:
-    cd dabubble
+    
+        cd dabubble
 
 3. Installiere die Abhängigkeiten:
-    npm install
+    
+        npm install
 
 4. Nutzung
     Um die Anwendung zu starten, führe den folgenden Befehl aus:
