@@ -10,7 +10,10 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { DatabaseService } from '../../../shared/services/database.service';
-import { GlobalsubService, OnlineStatus } from '../../../shared/services/globalsub.service';
+import {
+  GlobalsubService,
+  OnlineStatus,
+} from '../../../shared/services/globalsub.service';
 import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
@@ -37,15 +40,11 @@ export class ChatInformationComponent implements OnInit {
   channelSub!: Subscription;
   statusSub!: Subscription;
 
-
-
-  selectedChannel!: TextChannel
+  selectedChannel!: TextChannel;
 
   @Input() activeUserFromChat: any;
   @Input() activeChannelFromChat: any;
   userStatusSubscription!: Subscription;
-
-
 
   constructor(
     public dialog: MatDialog,
@@ -53,12 +52,13 @@ export class ChatInformationComponent implements OnInit {
     private userService: UserService,
     private subService: GlobalsubService,
   ) {
-    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.selectedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
   }
 
   ngOnInit(): void {
-    if (this.selectedChannel.isPrivate)
-      this.getPrivateChatPartner();
+    if (this.selectedChannel.isPrivate) this.getPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
@@ -66,11 +66,13 @@ export class ChatInformationComponent implements OnInit {
       });
     });
 
-    this.userStatusSubscription = this.subService.getUserUpdateFromDatabaseObservable().subscribe(async (user) => {
-      if (user && this.privateChatPartner) {
-        this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
-      }
-    });
+    this.userStatusSubscription = this.subService
+      .getUserUpdateFromDatabaseObservable()
+      .subscribe(async (user) => {
+        if (user && this.privateChatPartner) {
+          this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
+        }
+      });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
@@ -80,9 +82,7 @@ export class ChatInformationComponent implements OnInit {
           this.assignedUsers.push(user as unknown as DABubbleUser);
         });
       });
-
     });
-
   }
 
   ngOnDestroy() {
@@ -122,7 +122,7 @@ export class ChatInformationComponent implements OnInit {
       const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
       const dialogRef = this.dialog.open(
         DialogChannelInformationComponent,
-        dialogConfig
+        dialogConfig,
       );
       this.handleDialogClose(dialogRef);
     }
@@ -134,7 +134,7 @@ export class ChatInformationComponent implements OnInit {
     const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
-      dialogConfig
+      dialogConfig,
     );
     this.handleDialogClose(dialogRef);
   }
@@ -145,7 +145,7 @@ export class ChatInformationComponent implements OnInit {
     const dialogConfig = this.handleDialogConfig(event, 'addChannelMembers');
     const dialogRef = this.dialog.open(
       DialogAddChannelMembersComponent,
-      dialogConfig
+      dialogConfig,
     );
     this.handleDialogClose(dialogRef);
   }
@@ -167,7 +167,7 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       };
     } else if (position === 'allUsers') {
-      const dialogWidth = 394;
+      const dialogWidth = 400;
       return {
         position: {
           top: `${rect.bottom}px`,
@@ -176,8 +176,25 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
         data: { channelMembers: this.assignedUsers },
       };
-    } else {
-      const dialogWidth = 542;
+    } /* else if (position === 'allUsers' && this.windowIsSmall()) {
+      const dialogWidth = 350;
+      return {
+        position: {
+          top: `${rect.bottom}px`,
+          left: `${rect.right - dialogWidth}px`,
+        },
+        panelClass: 'custom-dialog-container',
+        data: { channelMembers: this.assignedUsers },
+      };
+    } */ else {
+      let dialogWidth: number;
+      debugger;
+      if (window.innerWidth <= 910) {
+        dialogWidth = 350;
+      } else {
+        dialogWidth = 542;
+      }
+
       return {
         position: {
           top: `${rect.bottom}px`,
@@ -215,7 +232,7 @@ export class ChatInformationComponent implements OnInit {
 
   getPrivateChatPartner() {
     const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-      (userID) => userID !== this.userService.activeUser.id
+      (userID) => userID !== this.userService.activeUser.id,
     );
 
     if (privateChatPartnerID) {
@@ -245,11 +262,21 @@ export class ChatInformationComponent implements OnInit {
   async getMember(): Promise<DABubbleUser | null> {
     if (this.selectedChannel.assignedUser.length > 1) {
       const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-        (userID) => userID !== this.userService.activeUser.id
+        (userID) => userID !== this.userService.activeUser.id,
       );
       return await this.userService.getOneUserbyId(privateChatPartnerID!);
+    } else return null;
+  }
+
+  windowIsSmall() {
+    return window.innerWidth <= 910;
+  }
+
+  checkDialogToOpen(event: MouseEvent) {
+    if (this.windowIsSmall()) {
+      this.openDialogChannelMembers(event);
+    } else {
+      this.openDialogAddChannelMembers(event);
     }
-    else
-      return null;
   }
 }

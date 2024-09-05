@@ -21,7 +21,6 @@
 
         <span *ngIf="selectedChannel.isPrivate" class="private-chat-avatar">
           <img [src]="privatChatAvatar" class="privat-chat-avatar" />
-          
         </span>
 
         <h2 *ngIf="!selectedChannel.isPrivate">
@@ -50,19 +49,10 @@
           </p>
         </div>
         <img
-          class="just-desktop-view"
           [src]="addChannelMembersImg"
           (mouseenter)="changeAddMembersImg(true)"
           (mouseleave)="changeAddMembersImg(false)"
-          (click)="openDialogAddChannelMembers($event)"
-        />
-
-        <img
-          class="just-mobile-view"
-          (click)="openDialogChannelMembers($event)"
-          [src]="addChannelMembersImg"
-          (mouseenter)="changeAddMembersImg(true)"
-          (mouseleave)="changeAddMembersImg(false)"
+          (click)="checkDialogToOpen($event)"
         />
       </div>
     </section>
