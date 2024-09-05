@@ -205,7 +205,7 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
       };
     } else if (position === 'allUsers') {
-      const dialogWidth = 394;
+      const dialogWidth = 400;
       return {
         position: {
           top: `${rect.bottom}px`,
@@ -214,8 +214,25 @@ export class ChatInformationComponent implements OnInit {
         panelClass: 'custom-dialog-container',
         data: { channelMembers: this.assignedUsers },
       };
-    } else {
-      const dialogWidth = 542;
+    } /* else if (position === 'allUsers' && this.windowIsSmall()) {
+      const dialogWidth = 350;
+      return {
+        position: {
+          top: `${rect.bottom}px`,
+          left: `${rect.right - dialogWidth}px`,
+        },
+        panelClass: 'custom-dialog-container',
+        data: { channelMembers: this.assignedUsers },
+      };
+    } */ else {
+      let dialogWidth: number;
+      debugger;
+      if (window.innerWidth <= 910) {
+        dialogWidth = 350;
+      } else {
+        dialogWidth = 542;
+      }
+
       return {
         position: {
           top: `${rect.bottom}px`,

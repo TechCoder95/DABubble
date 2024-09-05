@@ -96,18 +96,24 @@ export class DialogChannelMembersComponent implements OnInit {
   addMembers() {
     this.closeDialog();
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
-    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
-      position: {
-        top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX - 135}px`,
-      },
-    });
+
+    if (window.innerWidth >= 910) {
+      const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+        position: {
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX - 135}px`,
+        },
+      });
+    } else {
+      const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+        position: {
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX - 35}px`,
+        },
+      });
+    }
   }
 
-  /**
-   * Handles the resize event of the window.
-   * Closes the dialog if the window width is greater than or equal to 910.
-   */
   @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth >= 910) {

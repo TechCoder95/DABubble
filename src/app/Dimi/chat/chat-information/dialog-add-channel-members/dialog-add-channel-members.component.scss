@@ -51,6 +51,7 @@ input {
   border-radius: 30px;
   padding: 15px 20px;
   font-size: 18px;
+  /* width: clamp(330px, 30vw, 420px); */
   width: 420px;
   border: 1px solid #ccc;
   cursor: pointer;
@@ -160,4 +161,14 @@ button {
   width: max-content;
   overflow: auto;
   font-size: 18px;
+}
+
+@media (max-width: 910px) {
+  input {
+    width: 320px;
+  }
+
+  .channel-name {
+    display: none;
+  }
 }
