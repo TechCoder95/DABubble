@@ -27,19 +27,20 @@ Dieses Projekt ist eine Beispielanwendung, die zeigt, wie man eine README-Datei 
     Die Anwendung wird auf http://localhost:4200 laufen.
 
 5. Mitwirken
-    Dominik Knezovic
-    Rabia Ürkmez
-    Tristan Gehring
-    Dimitrios Kapetanis
+
+        Dominik Knezovic
+        Rabia Ürkmez
+        Tristan Gehring
+        Dimitrios Kapetanis
 
 6. Erstelle einen neuen Branch:
-    git checkout -b feature/NeuesFeature
+        git checkout -b feature/NeuesFeature
 
 7. Nimm deine Änderungen vor und committe sie:
-    git commit -m 'Füge neues Feature hinzu'
+        git commit -m 'Füge neues Feature hinzu'
 
 8. Pushe den Branch:
-    git push origin feature/NeuesFeature
+        git push origin feature/NeuesFeature
 
 9. Erstelle einen Pull Request.
 
