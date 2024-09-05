@@ -34,8 +34,8 @@ export class ReceiveChatMessageComponent {
   @Input() sender!: DABubbleUser;
   @Input() chatType: ChatType = ChatType.Channel;
 
-  @ViewChild(ReceiveChatMessageReactionComponent) receiveChatMessageReactionComponent!: ReceiveChatMessageReactionComponent;
-
+  @ViewChild(ReceiveChatMessageReactionComponent)
+  receiveChatMessageReactionComponent!: ReceiveChatMessageReactionComponent;
 
   senderUser: DABubbleUser = {
     username: 'dummy',
@@ -48,8 +48,8 @@ export class ReceiveChatMessageComponent {
     private userService: UserService,
     private storageService: DAStorageService,
     public chatService: ChatService,
-    public threadService: ThreadService
-  ) { }
+    public threadService: ThreadService,
+  ) {}
 
   ngOnInit(): void {
     this.getUser();
@@ -58,12 +58,21 @@ export class ReceiveChatMessageComponent {
     }
   }
 
+  /**
+   * Opens the chat thread.
+   */
   onOpenThread() {
     if (this.receiveChatMessageReactionComponent) {
       this.receiveChatMessageReactionComponent.openThread();
     }
   }
 
+  /**
+   * Retrieves the user information for the sender of the chat message.
+   * Sets the avatar of the sender user to './img/avatar.svg'.
+   * 
+   * @returns {Promise<void>} A promise that resolves when the user information is retrieved and the sender user is updated.
+   */
   async getUser() {
     this.senderUser.avatar = './img/avatar.svg';
     let user = await this.userService.getOneUserbyId(
@@ -72,6 +81,14 @@ export class ReceiveChatMessageComponent {
     this.senderUser = user;
   }
 
+  /**
+   * Checks the given date and returns a string representation of it.
+   * If the given date is today, it returns 'Heute'.
+   * Otherwise, it formats the given date using the 'de-DE' locale and returns the formatted string.
+   *
+   * @param date - The date to be checked.
+   * @returns A string representation of the given date.
+   */
   checkDate(date: number): string {
     const today = new Date();
     const givenDate = new Date(date);
@@ -88,6 +105,10 @@ export class ReceiveChatMessageComponent {
   }
 
   receivedImgMessage = '';
+  /**
+   * Retrieves and sets the image source for the received chat message.
+   * @returns {Promise<void>} A promise that resolves once the image source is set.
+   */
   async getImage() {
     let imgSrc = await this.storageService.downloadMessageImage(
       this.receiveMessage.fileUrl!,
@@ -96,6 +117,10 @@ export class ReceiveChatMessageComponent {
     this.receivedImgMessage = imgSrc;
   }
 
+  /**
+   * Checks if the chat message is not a repeated message within 5 minutes.
+   * @returns {boolean} Returns true if the message is not repeated within 5 minutes, otherwise false.
+   */
   isNotRepeatedMessageInUnder5Minuten() {
     return (
       !this.repeatedMessage ||

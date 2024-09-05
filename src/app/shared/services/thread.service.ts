@@ -29,26 +29,58 @@ export class ThreadService {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
 
+  /**
+   * Retrieves the current thread.
+   *
+   * @returns The current thread.
+   */
   getThread() {
     return this.thread;
   }
 
+  /**
+   * Sets the ticket for the thread service.
+   *
+   * @param ticket - The chat message representing the ticket.
+   */
   setTicket(ticket: ChatMessage) {
     this.ticket = ticket;
   }
 
+  /**
+   * Retrieves the ticket.
+   *
+   * @returns The ticket.
+   */
   getTicket() {
     return this.ticket;
   }
 
+  /**
+   * Sets the message thread for the chat.
+   *
+   * @param chatMessage - The chat message to set as the message thread.
+   */
   setMessageThread(chatMessage: ChatMessage) {
     this.chatMessage = chatMessage;
   }
 
+  /**
+   * Retrieves the message thread.
+   *
+   * @returns The chat message thread.
+   */
   getMessageThread() {
     return this.chatMessage;
   }
 
+  /**
+   * Opens a thread.
+   *
+   * This method performs the necessary operations to open a thread. It closes any existing thread, sets the selected thread flag to true, retrieves the active user, creates a new thread channel object, retrieves the selected channel from session storage, retrieves the thread from the database if it exists, adds the thread to the database if it doesn't exist, updates the active thread in the subscription service, sets the selected thread in session storage, sets the thread message in session storage, and navigates to the appropriate route based on the device type.
+   *
+   * @returns {Promise<void>} A promise that resolves when the thread is opened.
+   */
   async openThread() {
     this.close();
     this.selectedThread = true;
@@ -97,6 +129,11 @@ export class ThreadService {
     }
   }
 
+  /**
+   * Closes the selected thread.
+   * Removes the selected thread and thread message from the session storage.
+   * Navigates to the home channel or channel based on the device type.
+   */
   close() {
     this.selectedThread = false;
     sessionStorage.removeItem('selectedThread');

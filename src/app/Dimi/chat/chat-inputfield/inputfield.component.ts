@@ -1,4 +1,11 @@
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  Input,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -107,6 +114,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     this.getUsersInChannel();
   }
 
+  /**
+   * Retrieves the users in the selected channel.
+   *
+   * @returns {Promise<void>} A promise that resolves when the users in the channel are retrieved.
+   */
   async getUsersInChannel() {
     this.selectedChannel?.assignedUser.forEach((id) => {
       this.userService.getOneUserbyId(id).then((user: DABubbleUser) => {
@@ -117,6 +129,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Changes the images displayed when hovering over the input field.
+   *
+   * @param hover - A boolean indicating whether the input field is being hovered over.
+   */
   changeAddFilesImg(hover: boolean) {
     if (hover) {
       this.addFilesImg = './img/add-files-hover.svg';
@@ -127,6 +144,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Changes the image paths for adding emojis based on the hover state.
+   *
+   * @param hover - A boolean indicating whether the hover state is active or not.
+   */
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
       this.addEmojiImg = './img/add-emoji-hover.svg';
@@ -137,6 +159,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Changes the images for adding a link, emoji, and files based on the hover state.
+   *
+   * @param hover - A boolean indicating whether the hover state is active or not.
+   */
   changeAddLinkImg(hover: boolean) {
     if (hover) {
       this.addLinkImg = './img/add-link-hover.svg';
@@ -147,12 +174,21 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Sets the default images for the chat input field.
+   */
   setDefaultImages() {
     this.addFilesImg = './img/add-files-default.svg';
     this.addEmojiImg = './img/add-emoji-default.svg';
     this.addLinkImg = './img/add-link-default.svg';
   }
 
+  /**
+   * Sends a message based on the given MessageType.
+   *
+   * @param type - The type of message to send.
+   * @returns A promise that resolves when the message is sent.
+   */
   async sendMessage(type: MessageType) {
     switch (type) {
       case MessageType.Groups:
@@ -163,7 +199,9 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         await this.send();
         break;
       case MessageType.Threads:
-        this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedThread')!,);
+        this.selectedChannel = JSON.parse(
+          sessionStorage.getItem('selectedThread')!,
+        );
         await this.send();
         break;
       case MessageType.NewDirect:
@@ -178,8 +216,13 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Sends a message to the selected group channel.
+   *
+   * @returns {Promise<void>} A promise that resolves when the message is sent.
+   */
   async sendMessageToGroupChannel() {
-    const selectedChannel = this.channelService.getSelectedChannel();    
+    const selectedChannel = this.channelService.getSelectedChannel();
     if (selectedChannel) {
       this.selectedChannel = selectedChannel;
       await this.router.navigate(['/home/channel/' + selectedChannel.id]);
@@ -187,10 +230,13 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Sends a message to the user.
+   *
+   * @returns {Promise<void>} A promise that resolves when the message is sent.
+   */
   async sendMessageToUser() {
     const channel = await this.channelService.findOrCreateChannelByUserID();
-    console.log(channel);
-    
     if (channel) {
       this.selectedChannel = channel;
       this.channelService.selectChannel(channel);
@@ -202,6 +248,12 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   image!: string | ArrayBuffer;
   pdf: SafeResourceUrl | null = null;
 
+  /**
+   * Sends a chat message.
+   *
+   * @returns {Promise<void>} A promise that resolves when the message is sent.
+   * @throws {Error} If there is an error while sending the message.
+   */
   async send() {
     let message: ChatMessage = this.returnCurrentMessage();
 
@@ -215,11 +267,21 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         this.databaseService.addChannelDataToDB('messages', message);
 
         if (this.messageType === MessageType.Threads) {
-          this.selectedMessage = JSON.parse(sessionStorage.getItem('threadMessage')!);
-          this.selectedMessage.replyNumber = this.selectedMessage.replyNumber + 1;
-          this.selectedMessage.lastRepliedTime = message.timestamp;          
-          this.databaseService.updateDataInDB('messages', this.selectedMessage.id!, this.selectedMessage);
-          sessionStorage.setItem('threadMessage', JSON.stringify(this.selectedMessage));
+          this.selectedMessage = JSON.parse(
+            sessionStorage.getItem('threadMessage')!,
+          );
+          this.selectedMessage.replyNumber =
+            this.selectedMessage.replyNumber + 1;
+          this.selectedMessage.lastRepliedTime = message.timestamp;
+          this.databaseService.updateDataInDB(
+            'messages',
+            this.selectedMessage.id!,
+            this.selectedMessage,
+          );
+          sessionStorage.setItem(
+            'threadMessage',
+            JSON.stringify(this.selectedMessage),
+          );
         }
         this.textareaValue = '';
         this.selectedFile = '';
@@ -229,9 +291,27 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       } catch (error) {
         console.error('Fehler beim Senden der Nachricht:', error);
       }
-    } 
+    }
   }
 
+  /**
+   * Returns the current message object.
+   *
+   * @returns {Object} The current message object with the following properties:
+   *   - `channelId`: The ID of the selected channel.
+   *   - `channelName`: The name of the selected channel or the username of the active user.
+   *   - `message`: The value of the textarea.
+   *   - `timestamp`: The current timestamp.
+   *   - `senderName`: The username of the active user or 'guest' if not available.
+   *   - `senderId`: The ID of the active user or 'senderIdDefault' if not available.
+   *   - `edited`: A boolean indicating if the message has been edited.
+   *   - `deleted`: A boolean indicating if the message has been deleted.
+   *   - `imageUrl`: The URL of an image associated with the message.
+   *   - `isThreadMsg`: A boolean indicating if the message is a thread message.
+   *   - `fileUrl`: The URL of a file associated with the message.
+   *   - `replyNumber`: The number of replies to the message.
+   *   - `lastRepliedTime`: The timestamp of the last reply to the message.
+   */
   returnCurrentMessage() {
     return {
       channelId: this.selectedChannel!.id,
@@ -250,6 +330,12 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     };
   }
 
+  /**
+   * Saves a file in the Firestore Storage.
+   *
+   * @param message - The ChatMessage object.
+   * @returns A Promise that resolves to the URL of the uploaded file.
+   */
   async saveFileInStorage(message: ChatMessage): Promise<string> {
     // Bild/PDF in Firestore Storage hochladen
     let fileBlob: Blob;
@@ -273,6 +359,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     return imageUrl;
   }
 
+  /**
+   * Handles the Enter key event.
+   *
+   * @param event - The keyboard event.
+   */
   handleEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       event.preventDefault();
@@ -280,19 +371,35 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
   }
 
+  /**
+   * Handles the focus event.
+   */
   handleFocus() {
     const setRef = document.getElementById('textarea');
     if (setRef) setRef.innerHTML = '';
   }
 
+  /**
+   * Handles the blur event of the input field.
+   */
   handleBlur() {
     this.getPlaceholderText();
   }
 
+  /**
+   * Handles the emoji event.
+   *
+   * @param event - The event object containing the emoji data.
+   */
   handleEmoji(event: any) {
     document.getElementById('textarea')!.innerHTML += event.data;
   }
 
+  /**
+   * Returns the placeholder text based on the current state of the input field.
+   *
+   * @returns The placeholder text.
+   */
   getPlaceholderText(): string {
     if (this.image) {
       return 'Bildunterschrift hinzufügen';
@@ -309,7 +416,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
         : 'Starte eine neue Nachricht';
     }
 
-
     if (this.messageType === MessageType.Groups) {
       if (this.selectedChannel) {
         return `Nachricht an #${this.selectedChannel?.name}`;
@@ -318,12 +424,13 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     }
 
     if (this.messageType === MessageType.Threads) {
-      const channelname = JSON.parse(sessionStorage.getItem('threadMessage')!).message;
+      const channelname = JSON.parse(
+        sessionStorage.getItem('threadMessage')!,
+      ).message;
       if (this.selectedChannel) {
         return `Antworten an Thread #${channelname}`;
       }
       return 'Starte eine neue Nachricht';
-      
     }
     return '';
   }
@@ -331,6 +438,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   selectedFile: string | ArrayBuffer | null = null;
   fileName: string = '';
 
+  /**
+   * Handles the selected file event.
+   *
+   * @param event - The selected file event.
+   */
   handleSelectedFile(event: string) {
     this.selectedFile = event;
 
@@ -346,14 +458,29 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     this.getPlaceholderText();
   }
 
+  /**
+   * Sets the value of the fileName property.
+   *
+   * @param event - The event containing the new file name.
+   */
   handleFileName(event: string) {
     this.fileName = event;
   }
 
+  /**
+   * Checks if there are any linked users.
+   *
+   * @returns {boolean} True if there are linked users, false otherwise.
+   */
   hasLinkedUsers(): boolean {
     return this.linkedUsers.length > 0;
   }
 
+  /**
+   * Handles the linked usernames in the chat input field.
+   *
+   * @param users - An array of DABubbleUser objects representing the linked usernames.
+   */
   handleLinkedUsernames(users: DABubbleUser[]) {
     users.forEach((user) => {
       if (!this.textareaValue.includes(`@${user.username}' `)) {
@@ -362,6 +489,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     });
   }
 
+  /**
+   * Handles the selected emoji event.
+   *
+   * @param event - The selected emoji.
+   */
   handleSelectedEmoji(event: string) {
     this.textareaValue += event + ' ';
   }

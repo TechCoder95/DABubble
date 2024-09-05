@@ -10,7 +10,10 @@ import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
 import { DatabaseService } from '../../../shared/services/database.service';
-import { GlobalsubService, OnlineStatus } from '../../../shared/services/globalsub.service';
+import {
+  GlobalsubService,
+  OnlineStatus,
+} from '../../../shared/services/globalsub.service';
 import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
@@ -37,15 +40,11 @@ export class ChatInformationComponent implements OnInit {
   channelSub!: Subscription;
   statusSub!: Subscription;
 
-
-
-  selectedChannel!: TextChannel
+  selectedChannel!: TextChannel;
 
   @Input() activeUserFromChat: any;
   @Input() activeChannelFromChat: any;
   userStatusSubscription!: Subscription;
-
-
 
   constructor(
     public dialog: MatDialog,
@@ -53,12 +52,13 @@ export class ChatInformationComponent implements OnInit {
     private userService: UserService,
     private subService: GlobalsubService,
   ) {
-    this.selectedChannel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.selectedChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
   }
 
   ngOnInit(): void {
-    if (this.selectedChannel.isPrivate)
-      this.getPrivateChatPartner();
+    if (this.selectedChannel.isPrivate) this.getPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
@@ -66,11 +66,13 @@ export class ChatInformationComponent implements OnInit {
       });
     });
 
-    this.userStatusSubscription = this.subService.getUserUpdateFromDatabaseObservable().subscribe(async (user) => {
-      if (user && this.privateChatPartner) {
-        this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
-      }
-    });
+    this.userStatusSubscription = this.subService
+      .getUserUpdateFromDatabaseObservable()
+      .subscribe(async (user) => {
+        if (user && this.privateChatPartner) {
+          this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
+        }
+      });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
       this.selectedChannel = channel;
@@ -80,9 +82,7 @@ export class ChatInformationComponent implements OnInit {
           this.assignedUsers.push(user as unknown as DABubbleUser);
         });
       });
-
     });
-
   }
 
   ngOnDestroy() {
@@ -94,6 +94,11 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Changes the tag and arrow images based on the hover state and the dialog channel info state.
+   *
+   * @param hover - A boolean indicating whether the element is being hovered over.
+   */
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
       this.tagImg = './img/tag-hover.svg';
@@ -104,6 +109,11 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Changes the image for adding members based on the hover state.
+   *
+   * @param hover - A boolean indicating whether the mouse is hovering over the image.
+   */
   changeAddMembersImg(hover: boolean) {
     if (hover) {
       this.addChannelMembersImg = './img/add-members-hover.svg';
@@ -112,6 +122,11 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Opens the channel information dialog.
+   *
+   * @param event - The mouse event that triggered the function.
+   */
   openDialogChannelInformation(event: MouseEvent) {
     if (!this.isPrivateChat) {
       this.dialogChannelInfoIsOpen = !this.dialogChannelInfoIsOpen;
@@ -122,34 +137,51 @@ export class ChatInformationComponent implements OnInit {
       const dialogConfig = this.handleDialogConfig(event, 'channelInfo');
       const dialogRef = this.dialog.open(
         DialogChannelInformationComponent,
-        dialogConfig
+        dialogConfig,
       );
       this.handleDialogClose(dialogRef);
     }
   }
 
   dialogChannelMembersIsOpen: boolean = false;
+  /**
+   * Opens the dialog for channel members.
+   *
+   * @param event - The mouse event that triggered the function.
+   */
   openDialogChannelMembers(event: MouseEvent) {
     this.dialogChannelMembersIsOpen = !this.dialogChannelMembersIsOpen;
     const dialogConfig = this.handleDialogConfig(event, 'allUsers');
     const dialogRef = this.dialog.open(
       DialogChannelMembersComponent,
-      dialogConfig
+      dialogConfig,
     );
     this.handleDialogClose(dialogRef);
   }
 
   dialogAddChannelMembersIsOpen: boolean = false;
+  /**
+   * Opens the dialog for adding channel members.
+   *
+   * @param event - The mouse event that triggered the function.
+   */
   openDialogAddChannelMembers(event: MouseEvent) {
     this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
     const dialogConfig = this.handleDialogConfig(event, 'addChannelMembers');
     const dialogRef = this.dialog.open(
       DialogAddChannelMembersComponent,
-      dialogConfig
+      dialogConfig,
     );
     this.handleDialogClose(dialogRef);
   }
 
+  /**
+   * Handles the dialog configuration based on the provided event and dialog name.
+   *
+   * @param event - The mouse event that triggered the dialog configuration.
+   * @param dialog - The name of the dialog.
+   * @returns The dialog configuration object.
+   */
   handleDialogConfig(event: MouseEvent, dialog: string) {
     const target = event.currentTarget as HTMLElement;
     const rect = target.getBoundingClientRect();
@@ -157,6 +189,12 @@ export class ChatInformationComponent implements OnInit {
     return dialogConfig;
   }
 
+  /**
+   * Generates the dialog configuration based on the provided rectangle and position.
+   * @param rect - The rectangle object containing the dimensions of the dialog.
+   * @param position - The position of the dialog ('channelInfo', 'allUsers', or any other position).
+   * @returns The dialog configuration object.
+   */
   returnDialogConfig(rect: any, position: string) {
     if (position === 'channelInfo') {
       return {
@@ -189,6 +227,11 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Handles the closing of a dialog.
+   *
+   * @param dialogRef - The reference to the dialog.
+   */
   handleDialogClose(dialogRef: any) {
     dialogRef.afterClosed().subscribe((result: boolean) => {
       this.dialogChannelInfoIsOpen = result;
@@ -198,6 +241,12 @@ export class ChatInformationComponent implements OnInit {
     });
   }
 
+  /**
+   * Retrieves the assigned users for a given channel.
+   *
+   * @param channel - The TextChannel object representing the channel.
+   * @returns An array of DABubbleUser objects representing the assigned users.
+   */
   getAssignedUsers(channel: TextChannel): DABubbleUser[] {
     this.assignedUsers = [];
     channel.assignedUser.forEach((userID) => {
@@ -208,14 +257,24 @@ export class ChatInformationComponent implements OnInit {
     return this.assignedUsers;
   }
 
+  /**
+   * Calculates the number of extra users beyond the first 5 assigned users.
+   * @returns The number of extra users.
+   */
   getExtraUserCount(): number {
     const totalAssignesUsers = this.assignedUsers.length;
     return totalAssignesUsers > 5 ? totalAssignesUsers - 5 : 0;
   }
 
+  /**
+   * Retrieves the private chat partner for the selected channel.
+   * If there is a private chat partner, it fetches the user details using the partner's ID
+   * and assigns the partner's name, avatar, and user object to the corresponding properties.
+   * If there is no private chat partner, it assigns the active user's name and avatar to the corresponding properties.
+   */
   getPrivateChatPartner() {
     const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-      (userID) => userID !== this.userService.activeUser.id
+      (userID) => userID !== this.userService.activeUser.id,
     );
 
     if (privateChatPartnerID) {
@@ -233,6 +292,11 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Opens the user information dialog.
+   *
+   * @returns {Promise<void>} A promise that resolves when the dialog is closed.
+   */
   async openUserInfo() {
     const member: DABubbleUser | null = await this.getMember();
     if (member) {
@@ -242,14 +306,17 @@ export class ChatInformationComponent implements OnInit {
     }
   }
 
+  /**
+   * Retrieves the member associated with the selected channel.
+   *
+   * @returns A Promise that resolves to a DABubbleUser object representing the member, or null if no member is found.
+   */
   async getMember(): Promise<DABubbleUser | null> {
     if (this.selectedChannel.assignedUser.length > 1) {
       const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-        (userID) => userID !== this.userService.activeUser.id
+        (userID) => userID !== this.userService.activeUser.id,
       );
       return await this.userService.getOneUserbyId(privateChatPartnerID!);
-    }
-    else
-      return null;
+    } else return null;
   }
 }

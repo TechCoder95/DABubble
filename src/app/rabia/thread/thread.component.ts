@@ -14,7 +14,7 @@ import { DatabaseService } from '../../shared/services/database.service';
 @Component({
   selector: 'app-thread',
   standalone: true,
-  imports: [MatCardModule, InputfieldComponent, CommonModule,],
+  imports: [MatCardModule, InputfieldComponent, CommonModule],
   templateUrl: './thread.component.html',
   styleUrl: './thread.component.scss',
 })
@@ -39,18 +39,16 @@ export class ThreadComponent {
   };
 
   @Input() selectedChannelFromChat: any;
-  // @Output() message
-
-
 
   constructor(
     public channelService: ChannelService,
     public threadService: ThreadService,
     private databaseService: DatabaseService,
-  ) { }
+  ) {}
 
   ngOnInit() {
-    this.selectedChannelFromChat = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+    this.selectedChannelFromChat = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
   }
-
 }

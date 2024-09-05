@@ -8,55 +8,66 @@ import { DAStorageService } from '../../shared/services/dastorage.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthenticationService } from '../../shared/services/authentication.service';
 
-
-
 @Component({
   selector: 'app-choose-avatar',
   standalone: true,
-  imports: [MatCardModule, CommonModule, MatButtonModule, MatProgressSpinnerModule],
+  imports: [
+    MatCardModule,
+    CommonModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './choose-avatar.component.html',
-  styleUrl: './choose-avatar.component.scss'
+  styleUrl: './choose-avatar.component.scss',
 })
 export class ChooseAvatarComponent {
   registerUser: boolean = false;
 
-  images: string[] = [
-    '1.svg',
-    '2.svg',
-    '3.svg',
-    '4.svg',
-    '5.svg',
-    '6.svg'
-  ];
+  images: string[] = ['1.svg', '2.svg', '3.svg', '4.svg', '5.svg', '6.svg'];
 
-
-
-  constructor(public UserService: UserService, private router: Router, private daStorage: DAStorageService, private authService: AuthenticationService) {
-
+  constructor(
+    public UserService: UserService,
+    private router: Router,
+    private daStorage: DAStorageService,
+    private authService: AuthenticationService,
+  ) {
     if (this.UserService.activeUser) {
-    }
-    else {
+    } else {
       this.authService.registerProcess = false;
       this.router.navigate(['/user/login']);
     }
   }
 
-
+  /**
+   * Returns a boolean value indicating whether the user is logged in or not.
+   * @returns {boolean} True if the user is logged in, false otherwise.
+   */
   get isLoggedIn() {
     return this.UserService.activeUser ? true : false;
   }
 
-
+  /**
+   * Sets the selected avatar for the active user.
+   *
+   * @param {string} image - The image URL of the selected avatar.
+   */
   selectAvatar(image: string) {
     this.UserService.activeUser.avatar = image;
   }
 
-
+  /**
+   * Navigates back to the registration page.
+   */
   goBackToRegister() {
     this.authService.registerProcess = true;
     this.router.navigate(['/users/register']);
   }
 
+  /**
+   * Handles the event when a file is selected.
+   *
+   * @param event - The event object triggered by the file selection.
+   */
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -72,25 +83,36 @@ export class ChooseAvatarComponent {
     }
   }
 
-
+  /**
+   * Uploads a file.
+   *
+   * @param file - The file to be uploaded.
+   */
   upload(file: File) {
-    this.daStorage.uploadFile(file, sessionStorage.getItem("uId")!);
+    this.daStorage.uploadFile(file, sessionStorage.getItem('uId')!);
   }
 
+  /**
+   * Saves the user's information.
+   *
+   * This method sets the `registerUser` property to `true` and then updates the database after a delay of 2000 milliseconds.
+   */
   saveUser() {
     this.registerUser = true;
     setTimeout(() => {
-      this.updateDatabase()
+      this.updateDatabase();
     }, 2000);
   }
 
-
+  /**
+   * Updates the database with the active user's information.
+   *
+   * @returns A promise that resolves when the user is successfully updated in the database.
+   */
   async updateDatabase() {
-    this.UserService.updateUser(this.UserService.activeUser)
-      .then(() => {
-        this.authService.registerProcess = false;
-        this.router.navigate(['/home'])
-      });
+    this.UserService.updateUser(this.UserService.activeUser).then(() => {
+      this.authService.registerProcess = false;
+      this.router.navigate(['/home']);
+    });
   }
-
 }

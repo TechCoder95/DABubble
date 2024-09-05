@@ -1,5 +1,17 @@
 import { Injectable, OnDestroy, inject } from '@angular/core';
-import { Firestore, collection, doc, onSnapshot, addDoc, updateDoc, deleteDoc, query, where, getDocs, getDoc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  doc,
+  onSnapshot,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  query,
+  where,
+  getDocs,
+  getDoc,
+} from '@angular/fire/firestore';
 import { ChatMessage } from '../interfaces/chatmessage';
 import { TextChannel } from '../interfaces/textchannel';
 import { GlobalsubService, OnlineStatus } from './globalsub.service';
@@ -7,14 +19,12 @@ import { DABubbleUser } from '../interfaces/user';
 import { Emoji } from '../interfaces/emoji';
 import { ThreadChannel } from '../interfaces/thread-channel';
 
-
-
 @Injectable({
   providedIn: 'root',
 })
 export class DatabaseService implements OnDestroy {
   firestore: Firestore = inject(Firestore);
-  private unsubscribe!: (() => void);
+  private unsubscribe!: () => void;
   threadMessageID!: string;
   threadID!: string;
 
@@ -22,6 +32,11 @@ export class DatabaseService implements OnDestroy {
     this.listenToEntityChanges('users');
   }
 
+  /**
+   * Listens to changes in the specified entity collection.
+   *
+   * @param entity - The name of the entity collection to listen to changes for.
+   */
   listenToEntityChanges(entity: string) {
     const collectionRef = collection(this.firestore, entity);
     this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
@@ -29,14 +44,15 @@ export class DatabaseService implements OnDestroy {
         if (change.type === 'added') {
         }
         if (change.type === 'modified') {
-          this.subService.updateUserFromDatabaseChange(change.doc.data() as DABubbleUser);
+          this.subService.updateUserFromDatabaseChange(
+            change.doc.data() as DABubbleUser,
+          );
         }
         if (change.type === 'removed') {
         }
       });
     });
   }
-  
 
   ngOnDestroy() {
     if (this.unsubscribe) {
@@ -64,13 +80,11 @@ export class DatabaseService implements OnDestroy {
     return collection(this.firestore, collectionName);
   }
 
-
   async readDataFromDB<T>(collectionName: string): Promise<T[]> {
     const collectionRef = collection(this.firestore, collectionName);
     const snapshot = await getDocs(collectionRef);
     return snapshot.docs.map((doc) => doc.data() as T);
   }
-
 
   /**
    * Adds data to the specified database.
@@ -91,7 +105,6 @@ export class DatabaseService implements OnDestroy {
     }
   }
 
-
   /**
    * Updates data in the specified database and document.
    *
@@ -100,15 +113,17 @@ export class DatabaseService implements OnDestroy {
    * @param {any} data - The data to be updated.
    * @returns {Promise<void>} - A promise that resolves when the data is updated.
    */
-  async updateDataInDB(collectionName: string, docId: string, data: any): Promise<void> {
-    await updateDoc(doc(this.firestore, collectionName, docId), data)
-    .catch(
+  async updateDataInDB(
+    collectionName: string,
+    docId: string,
+    data: any,
+  ): Promise<void> {
+    await updateDoc(doc(this.firestore, collectionName, docId), data).catch(
       (err) => {
         console.error('Error updating Data', err);
-      }
+      },
     );
   }
-
 
   /**
    * Deletes data from the specified database and document ID.
@@ -123,7 +138,6 @@ export class DatabaseService implements OnDestroy {
     });
   }
 
-
   /**
    * Retrieves messages from a given channel.
    *
@@ -132,23 +146,22 @@ export class DatabaseService implements OnDestroy {
    */
   public async getMessagesByChannel(channelID: string): Promise<ChatMessage[]> {
     const messagesCollectionRef = await this.getDataRef('messages');
-    const q = query(
-      messagesCollectionRef,
-      where('channelId', '==', channelID)
-    );
+    const q = query(messagesCollectionRef, where('channelId', '==', channelID));
     const snapshot = await getDocs(q);
     const messages: ChatMessage[] = [];
     snapshot.forEach((doc) => messages.push(doc.data() as ChatMessage));
     return messages;
   }
 
+  /**
+   * Retrieves a thread channel by its associated message ID.
+   * @param messageId - The ID of the message.
+   * @returns A Promise that resolves to the ThreadChannel object if found, or null if not found.
+   */
   async getThreadByMessage(messageId: string): Promise<ThreadChannel | null> {
     const threadsCollectionRef = await this.getDataRef('threads');
 
-    const q = query(
-      threadsCollectionRef,
-      where('messageID', '==', messageId)
-    );
+    const q = query(threadsCollectionRef, where('messageID', '==', messageId));
     this.threadMessageID = messageId;
 
     const snapshot = await getDocs(q);
@@ -156,7 +169,7 @@ export class DatabaseService implements OnDestroy {
     if (snapshot.size === 1) {
       const doc = snapshot.docs[0];
       const threadData = doc.data() as ThreadChannel;
-      this.threadID = JSON.stringify(threadData.id);      
+      this.threadID = JSON.stringify(threadData.id);
       return threadData;
     } else {
       return null;
@@ -178,10 +191,9 @@ export class DatabaseService implements OnDestroy {
     }
   }
 
-
   /**
    * Retrieves data from a Firestore collection based on a specific field and value.
-   * 
+   *
    * @param collectionName - The name of the collection to query.
    * @param field - The field to filter the data by.
    * @param value - The value to match in the specified field.
@@ -190,7 +202,7 @@ export class DatabaseService implements OnDestroy {
   async readDataByField(collectionName: string, field: string, value: string) {
     const q = query(
       collection(this.firestore, collectionName),
-      where(field, '==', value)
+      where(field, '==', value),
     );
     const snapshot = await getDocs(q);
     const data: any[] = [];
@@ -200,7 +212,7 @@ export class DatabaseService implements OnDestroy {
 
   /**
    * Retrieves data from a Firestore collection based on an array field value.
-   * 
+   *
    * @param collectionName - The name of the Firestore collection.
    * @param field - The name of the array field to filter by.
    * @param value - The value to search for in the array field.
@@ -209,7 +221,7 @@ export class DatabaseService implements OnDestroy {
   async readDataByArray(collectionName: string, field: string, value: string) {
     const q = query(
       collection(this.firestore, collectionName),
-      where(field, 'array-contains', value)
+      where(field, 'array-contains', value),
     );
     const snapshot = await getDocs(q);
     const data: any[] = [];
@@ -217,33 +229,39 @@ export class DatabaseService implements OnDestroy {
     return data;
   }
 
-
   /**
    * Deletes documents from a Firestore collection based on a specified field and value.
-   * 
+   *
    * @param collectionName - The name of the collection to delete documents from.
    * @param field - The field to filter documents by.
    * @param value - The value to match against the specified field.
    * @returns A Promise that resolves when the deletion is complete.
    */
-  async deleteDatabyField(collectionName: string, field: string, value: string) {
+  async deleteDatabyField(
+    collectionName: string,
+    field: string,
+    value: string,
+  ) {
     const q = query(
       collection(this.firestore, collectionName),
-      where(field, '==', value)
+      where(field, '==', value),
     );
     const snapshot = await getDocs(q);
     snapshot.forEach((doc) => deleteDoc(doc.ref));
   }
 
-  async deleteDatafromArray(collectionName: string, field: string, value: string) {
+  async deleteDatafromArray(
+    collectionName: string,
+    field: string,
+    value: string,
+  ) {
     const q = query(
       collection(this.firestore, collectionName),
-      where(field, 'array-contains', value)
+      where(field, 'array-contains', value),
     );
     const snapshot = await getDocs(q);
     snapshot.forEach((doc) => deleteDoc(doc.ref));
   }
-
 
   /**
    * Adds channel data to the database.
@@ -265,17 +283,16 @@ export class DatabaseService implements OnDestroy {
     }
   }
 
-
   /**
    * Subscribes to user data based on the provided user ID.
-   * 
+   *
    * @param userId - The ID of the user to subscribe to.
    * @returns A function to unsubscribe from the subscription.
    */
   async subscribeToOnlineData() {
     const q = query(
       collection(this.firestore, 'onlinestatus'),
-      where('id', '==', 'VZxZWTcEoLUUZGgItgwS')
+      where('id', '==', 'VZxZWTcEoLUUZGgItgwS'),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -286,38 +303,36 @@ export class DatabaseService implements OnDestroy {
     });
   }
 
-
-    /**
+  /**
    * Subscribes to user data based on the provided user ID.
-   * 
+   *
    * @param userId - The ID of the user to subscribe to.
    * @returns A function to unsubscribe from the subscription.
    */
-    async subscribeToUserData(userId: string) {
-      const q = query(
-        collection(this.firestore, 'users'),
-        where('id', '==', userId)
-      );
-  
-      const unsubscribe = onSnapshot(q, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          let data = change.doc.data();
-          this.subService.updateUser(data as DABubbleUser);
-        });
-      });
-    }
+  async subscribeToUserData(userId: string) {
+    const q = query(
+      collection(this.firestore, 'users'),
+      where('id', '==', userId),
+    );
 
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        let data = change.doc.data();
+        this.subService.updateUser(data as DABubbleUser);
+      });
+    });
+  }
 
   /**
    * Subscribes to channel data based on the provided channelId.
-   * 
+   *
    * @param channelId - The ID of the channel to subscribe to.
    * @returns A function to unsubscribe from the channel data subscription.
    */
   async subscribeToChannelData(channelId: string) {
     const q = query(
       collection(this.firestore, 'channels'),
-      where('id', '==', channelId)
+      where('id', '==', channelId),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -328,15 +343,15 @@ export class DatabaseService implements OnDestroy {
     });
   }
 
-
   /**
    * Subscribes to message data in a specific channel.
-   * 
+   *
    * @param channelId - The ID of the channel to subscribe to.
    */
   async subscribeToMessageDatainChannel(channelId: string) {
     const q = query(
-      collection(this.firestore, 'messages'), where('channelId', '==', channelId)
+      collection(this.firestore, 'messages'),
+      where('channelId', '==', channelId),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -347,15 +362,15 @@ export class DatabaseService implements OnDestroy {
     });
   }
 
-
   /**
    * Subscribes to emojis of a specific message.
-   * 
+   *
    * @param messageId - The ID of the message to subscribe to.
    */
   async subscribeToEmojisofMessage(messageId: string) {
     const q = query(
-      collection(this.firestore, 'emojies'), where('messageId', '==', messageId)
+      collection(this.firestore, 'emojies'),
+      where('messageId', '==', messageId),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -366,17 +381,16 @@ export class DatabaseService implements OnDestroy {
     });
   }
 
-
   /**
    * Subscribes to thread data based on the provided thread ID.
-   * 
+   *
    * @param threadId - The ID of the thread to subscribe to.
    * @returns A function to unsubscribe from the thread data subscription.
    */
   async subscribeToThreadData(threadId: string) {
     const q = query(
       collection(this.firestore, 'threads'),
-      where('id', '==', threadId)
+      where('id', '==', threadId),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -390,21 +404,24 @@ export class DatabaseService implements OnDestroy {
   async getChannelsByName(searchText: string): Promise<TextChannel[]> {
     const channelsRef = collection(this.firestore, 'channels');
     const lowerCaseSearchText = searchText.toLowerCase();
-  
+
     const querySnapshot = await getDocs(channelsRef);
     const channels: TextChannel[] = [];
-  
-    querySnapshot.forEach(doc => {
+
+    querySnapshot.forEach((doc) => {
       const data = doc.data() as TextChannel;
       data.id = doc.id;
-      
+
       // Überprüfe, ob 'name' definiert ist und ein String ist
-      if (data.name && typeof data.name === 'string' && data.name.toLowerCase().includes(lowerCaseSearchText)) {
+      if (
+        data.name &&
+        typeof data.name === 'string' &&
+        data.name.toLowerCase().includes(lowerCaseSearchText)
+      ) {
         channels.push(data);
       }
     });
-  
+
     return channels;
   }
-  
 }

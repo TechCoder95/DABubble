@@ -12,35 +12,40 @@ import { AuthenticationService } from '../../shared/services/authentication.serv
   standalone: true,
   imports: [MatCardModule, MatButtonModule, FormsModule, CommonModule],
   templateUrl: './password-reset.component.html',
-  styleUrl: './password-reset.component.scss'
+  styleUrl: './password-reset.component.scss',
 })
 export class PasswordResetComponent {
-
   email: string = '';
   message: boolean = false;
 
-  constructor(private router: Router, private emailService: EmailService, private authService: AuthenticationService) {}
-
+  constructor(
+    private router: Router,
+    private emailService: EmailService,
+    private authService: AuthenticationService,
+  ) {}
 
   goBack() {
     this.authService.registerProcess = false;
     this.router.navigate(['/user/login']);
   }
 
+  /**
+   * Handles the form submission for password reset.
+   *
+   * @param ngForm - The NgForm object representing the form being submitted.
+   */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid) {
       this.emailService.changePassword(this.email);
-      this.message = true
+      this.message = true;
       ngForm.resetForm();
       setTimeout(() => {
-      this.authService.registerProcess = false;
-      this.router.navigate(['/user/login']);
+        this.authService.registerProcess = false;
+        this.router.navigate(['/user/login']);
       }, 2000);
-    }
-    else {
+    } else {
       console.info('Form is not valid');
       ngForm.resetForm();
     }
-   
   }
 }

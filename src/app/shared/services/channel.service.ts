@@ -10,9 +10,10 @@ import { GlobalsubService } from './globalsub.service';
   providedIn: 'root',
 })
 export class ChannelService {
-
   channelSub!: Subscription;
-  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(null);
+  private selectedChannelSubject = new BehaviorSubject<TextChannel | null>(
+    null,
+  );
   selectedChannel$ = this.selectedChannelSubject.asObservable();
 
   channel!: TextChannel;
@@ -21,21 +22,27 @@ export class ChannelService {
   loading: boolean = false;
 
   /**
-    * @constructor
-    * @param {DatabaseService} databaseService - Service for interacting with the database.
-    * @param {UserService} userService - Service for managing user data.
-    * @param {GlobalsubService} subService - Service for managing global subscriptions.
-    */
-  constructor(private databaseService: DatabaseService, private userService: UserService, private subService: GlobalsubService) {
-    this.channel = JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
+   * @constructor
+   * @param {DatabaseService} databaseService - Service for interacting with the database.
+   * @param {UserService} userService - Service for managing user data.
+   * @param {GlobalsubService} subService - Service for managing global subscriptions.
+   */
+  constructor(
+    private databaseService: DatabaseService,
+    private userService: UserService,
+    private subService: GlobalsubService,
+  ) {
+    this.channel = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
     this.subService.updateActiveChannel(this.channel);
   }
 
   /**
-  * Selects a channel and updates the selected channel observable.
-  * 
-  * @param {TextChannel} channel - The channel to be selected.
-  */
+   * Selects a channel and updates the selected channel observable.
+   *
+   * @param {TextChannel} channel - The channel to be selected.
+   */
   selectChannel(channel: TextChannel) {
     this.selectedChannelSubject.next(channel);
     this.channel = channel;
@@ -43,47 +50,49 @@ export class ChannelService {
   }
 
   /**
-  * Gets the currently selected channel.
-  * 
-  * @returns {TextChannel | null} The currently selected channel.
-  */
+   * Gets the currently selected channel.
+   *
+   * @returns {TextChannel | null} The currently selected channel.
+   */
   getSelectedChannel(): TextChannel | null {
     return this.channel;
   }
 
   /**
    * Updates the name of the currently selected channel.
-   * 
+   *
    * @param {string} updatedName - The new name for the channel.
    */
   async updateChannelName(updatedName: string) {
-    const currentChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
+    const currentChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
     const updatedChannel = { ...currentChannel, name: updatedName };
     this.selectedChannelSubject.next(updatedChannel as TextChannel);
     if (this.channel.id) {
       await this.databaseService.updateDataInDB(
         'channels',
         this.channel.id,
-        this.getAsJSON({ name: updatedName })
+        this.getAsJSON({ name: updatedName }),
       );
     }
   }
 
   /**
-  * Fetches a channel by its ID.
-  * 
-  * @param {string} channelId - The ID of the channel to fetch.
-  * @returns {Promise<TextChannel>} The channel with the specified ID.
-  */
+   * Fetches a channel by its ID.
+   *
+   * @param {string} channelId - The ID of the channel to fetch.
+   * @returns {Promise<TextChannel>} The channel with the specified ID.
+   */
   async getChannelById(channelId: string) {
     return await this.databaseService.readDataByID('channels', channelId);
   }
 
   /**
-  * Updates a channel's data in the database.
-  * 
-  * @param {TextChannel} channel - The channel to update.
-  */
+   * Updates a channel's data in the database.
+   *
+   * @param {TextChannel} channel - The channel to update.
+   */
   async updateChannel(channel: TextChannel) {
     await this.databaseService.updateDataInDB('channels', channel.id, channel);
     sessionStorage.setItem('selectedChannel', JSON.stringify(channel));
@@ -91,10 +100,10 @@ export class ChannelService {
   }
 
   /**
-    * Updates the description of the currently selected channel.
-    * 
-    * @param {string} updatedDescription - The new description for the channel.
-    */
+   * Updates the description of the currently selected channel.
+   *
+   * @param {string} updatedDescription - The new description for the channel.
+   */
   async updateChannelDescription(updatedDescription: any) {
     const currentChannel = this.selectedChannelSubject.value;
     const updatedChannel = {
@@ -106,31 +115,38 @@ export class ChannelService {
       await this.databaseService.updateDataInDB(
         'channels',
         this.channel.id,
-        this.getAsJSON({ description: updatedDescription })
+        this.getAsJSON({ description: updatedDescription }),
       );
     }
   }
 
   /**
-    * Converts the provided updates object into a JSON-compatible format.
-    *
-    * @param {Object} updates - The updates to be converted to JSON format. This should be an object where keys are strings and values can be any type.
-    * @returns {Object} A JSON-compatible object representing the updates.
-    */
+   * Converts the provided updates object into a JSON-compatible format.
+   *
+   * @param {Object} updates - The updates to be converted to JSON format. This should be an object where keys are strings and values can be any type.
+   * @returns {Object} A JSON-compatible object representing the updates.
+   */
   getAsJSON(updates: { [key: string]: any }): {} {
     return updates;
   }
 
   /**
-* Creates a direct channel for the current user if it doesn't already exist.
-* 
-* @param {DABubbleUser} currentUser - The current user.
-* @param {TextChannel[]} channels - List of existing channels.
-* @returns {Promise<TextChannel>} The existing or newly created direct channel.
-*/
-  async createOwnDirectChannel(currentUser: DABubbleUser, channels: TextChannel[]): Promise<TextChannel> {
+   * Creates a direct channel for the current user if it doesn't already exist.
+   *
+   * @param {DABubbleUser} currentUser - The current user.
+   * @param {TextChannel[]} channels - List of existing channels.
+   * @returns {Promise<TextChannel>} The existing or newly created direct channel.
+   */
+  async createOwnDirectChannel(
+    currentUser: DABubbleUser,
+    channels: TextChannel[],
+  ): Promise<TextChannel> {
     let directChannelExists = channels.find((channel: TextChannel) => {
-      return channel.isPrivate && channel.assignedUser.length === 1 && channel.assignedUser.includes(currentUser.id!)
+      return (
+        channel.isPrivate &&
+        channel.assignedUser.length === 1 &&
+        channel.assignedUser.includes(currentUser.id!)
+      );
     });
 
     if (!directChannelExists) {
@@ -140,9 +156,12 @@ export class ChannelService {
         assignedUser: [currentUser.id!],
         isPrivate: true,
         description: '',
-        owner: currentUser.id!
+        owner: currentUser.id!,
       };
-      const newChannelId = await this.databaseService.addChannelDataToDB('channels', ownDirectChannel);
+      const newChannelId = await this.databaseService.addChannelDataToDB(
+        'channels',
+        ownDirectChannel,
+      );
       ownDirectChannel.id = newChannelId;
       directChannelExists = ownDirectChannel;
     }
@@ -152,19 +171,31 @@ export class ChannelService {
 
   /**
    * Creates a direct channel between the current user and another user.
-   * 
+   *
    * @param {DABubbleUser} user - The user to create a direct channel with.
    * @returns {Promise<TextChannel>} The existing or newly created direct channel.
    */
   async createDirectChannel(user: DABubbleUser): Promise<TextChannel> {
     const currentUser = this.userService.activeUser;
-    let userIDs = await this.databaseService.readDataByField('channels', 'assignedUser', currentUser.id!)
+    let userIDs = await this.databaseService.readDataByField(
+      'channels',
+      'assignedUser',
+      currentUser.id!,
+    );
     let userChannels: TextChannel[] = [];
     for (let i = 0; i < userIDs.length; i++) {
-      let channel = await this.databaseService.readDataByID('channels', userIDs[i]);
+      let channel = await this.databaseService.readDataByID(
+        'channels',
+        userIDs[i],
+      );
       userChannels.push(channel as TextChannel);
     }
-    let existingChannel = userChannels.find(channel => channel.isPrivate && channel.assignedUser.includes(currentUser.id!) && channel.assignedUser.includes(user.id!));
+    let existingChannel = userChannels.find(
+      (channel) =>
+        channel.isPrivate &&
+        channel.assignedUser.includes(currentUser.id!) &&
+        channel.assignedUser.includes(user.id!),
+    );
     if (!existingChannel) {
       let newChannel: TextChannel = {
         id: '',
@@ -172,9 +203,12 @@ export class ChannelService {
         assignedUser: [currentUser.id!, user.id!],
         isPrivate: true,
         description: '',
-        owner: currentUser.id!
+        owner: currentUser.id!,
       };
-      const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+      const newChannelId = await this.databaseService.addChannelDataToDB(
+        'channels',
+        newChannel,
+      );
       newChannel.id = newChannelId;
       existingChannel = newChannel;
       this.subService.updateCreatedChannel(existingChannel);
@@ -184,11 +218,11 @@ export class ChannelService {
   }
 
   /**
- * Creates a new group channel.
- * 
- * @param {TextChannel} channel - The channel to be created.
- * @returns {Promise<TextChannel | null>} The newly created group channel or null if not created.
- */
+   * Creates a new group channel.
+   *
+   * @param {TextChannel} channel - The channel to be created.
+   * @returns {Promise<TextChannel | null>} The newly created group channel or null if not created.
+   */
   async createGroupChannel(channel: TextChannel): Promise<TextChannel | null> {
     const currentUser = this.userService.activeUser;
     const newChannel: TextChannel = {
@@ -196,39 +230,49 @@ export class ChannelService {
       description: channel.description,
       assignedUser: channel.assignedUser,
       isPrivate: false,
-      owner: currentUser.id!
+      owner: currentUser.id!,
     };
 
-    const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+    const newChannelId = await this.databaseService.addChannelDataToDB(
+      'channels',
+      newChannel,
+    );
     newChannel.id = newChannelId;
     return newChannel;
   }
 
   /**
    * Checks if a channel name already exists, excluding a specific channel by ID.
-   * 
+   *
    * @param {string} channelName - The channel name to check.
    * @param {string} [excludeChannelId] - The ID of a channel to exclude from the check.
    * @returns {Promise<boolean>} True if the channel name exists, false otherwise.
    */
-  async doesChannelNameAlreadyExist(channelName: string, excludeChannelId?: string): Promise<boolean> {
+  async doesChannelNameAlreadyExist(
+    channelName: string,
+    excludeChannelId?: string,
+  ): Promise<boolean> {
     const lowerCaseName = channelName.toLowerCase();
-    const channels = await this.databaseService.readDataFromDB<TextChannel>('channels');
+    const channels =
+      await this.databaseService.readDataFromDB<TextChannel>('channels');
     return channels.some((channel: TextChannel) => {
-      if (channel && (channel != null) && (channel.name != undefined)) {
-        return channel.name.toLocaleLowerCase() === lowerCaseName && channel.id !== excludeChannelId
+      if (channel && channel != null && channel.name != undefined) {
+        return (
+          channel.name.toLocaleLowerCase() === lowerCaseName &&
+          channel.id !== excludeChannelId
+        );
       }
       return null;
     });
   }
 
   /**
- * Compares two arrays for equality.
- * 
- * @param {any[]} arr1 - The first array.
- * @param {any[]} arr2 - The second array.
- * @returns {boolean} True if the arrays are equal, false otherwise.
- */
+   * Compares two arrays for equality.
+   *
+   * @param {any[]} arr1 - The first array.
+   * @param {any[]} arr2 - The second array.
+   * @returns {boolean} True if the arrays are equal, false otherwise.
+   */
   arrayEquals(arr1: any[], arr2: any[]): boolean {
     if (!arr1 || !arr2) return false;
     if (arr1.length !== arr2.length) return false;
@@ -240,16 +284,18 @@ export class ChannelService {
     return sortedArr1.every((value, index) => value === sortedArr2[index]);
   }
 
-
   /**
-    * Creates the default group channels for the user.
-    * 
-    * @param {DABubbleUser} activeUser - The active user for whom the default channels are created.
-    * @returns {Promise<TextChannel[]>} The list of default group channels.
-    */
-  async createDefaultGroupChannels(activeUser: DABubbleUser): Promise<TextChannel[]> {
-    const users = await this.userService.getAllUsersFromDB() as DABubbleUser[];
-    const allUserIds = users.map(user => user!.id!);
+   * Creates the default group channels for the user.
+   *
+   * @param {DABubbleUser} activeUser - The active user for whom the default channels are created.
+   * @returns {Promise<TextChannel[]>} The list of default group channels.
+   */
+  async createDefaultGroupChannels(
+    activeUser: DABubbleUser,
+  ): Promise<TextChannel[]> {
+    const users =
+      (await this.userService.getAllUsersFromDB()) as DABubbleUser[];
+    const allUserIds = users.map((user) => user!.id!);
 
     if (!allUserIds.includes(activeUser.id!)) {
       allUserIds.push(activeUser.id!);
@@ -258,15 +304,22 @@ export class ChannelService {
     const updatedChannels: TextChannel[] = [];
     const defaultChannels = [
       { name: 'Allgemein', description: 'Hier werden alle Benutzer geladen.' },
-      { name: 'Entwicklerteam', description: 'Ein super tolles Entwicklerteam' }
+      {
+        name: 'Entwicklerteam',
+        description: 'Ein super tolles Entwicklerteam',
+      },
     ];
 
     for (const defaultChannel of defaultChannels) {
       const channelUid = `group-${defaultChannel.name.toLowerCase()}`;
       let existingChannel = await this.getChannelByUid(channelUid);
       if (existingChannel) {
-        const updatedAssignedUsers = [...new Set([...existingChannel.assignedUser, ...allUserIds])];
-        if (updatedAssignedUsers.length !== existingChannel.assignedUser.length) {
+        const updatedAssignedUsers = [
+          ...new Set([...existingChannel.assignedUser, ...allUserIds]),
+        ];
+        if (
+          updatedAssignedUsers.length !== existingChannel.assignedUser.length
+        ) {
           existingChannel.assignedUser = updatedAssignedUsers;
           await this.updateChannel(existingChannel);
         }
@@ -281,7 +334,10 @@ export class ChannelService {
           owner: activeUser.id!,
         };
 
-        const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+        const newChannelId = await this.databaseService.addChannelDataToDB(
+          'channels',
+          newChannel,
+        );
         newChannel.id = newChannelId;
         existingChannel = newChannel;
       }
@@ -293,13 +349,16 @@ export class ChannelService {
   }
 
   /**
- * Creates the default direct channels between the active user and a list of users.
- * 
- * @param {DABubbleUser[]} defaultUsers - The list of users to create direct channels with.
- * @param {DABubbleUser} activeUser - The active user.
- * @returns {Promise<TextChannel[]>} The list of created direct channels.
- */
-  async createDefaultDirectChannels(defaultUsers: DABubbleUser[], activeUser: DABubbleUser): Promise<TextChannel[]> {
+   * Creates the default direct channels between the active user and a list of users.
+   *
+   * @param {DABubbleUser[]} defaultUsers - The list of users to create direct channels with.
+   * @param {DABubbleUser} activeUser - The active user.
+   * @returns {Promise<TextChannel[]>} The list of created direct channels.
+   */
+  async createDefaultDirectChannels(
+    defaultUsers: DABubbleUser[],
+    activeUser: DABubbleUser,
+  ): Promise<TextChannel[]> {
     const directChannels: TextChannel[] = [];
 
     for (const user of defaultUsers) {
@@ -318,7 +377,10 @@ export class ChannelService {
           owner: activeUser.id!,
         };
 
-        const newChannelId = await this.databaseService.addChannelDataToDB('channels', newChannel);
+        const newChannelId = await this.databaseService.addChannelDataToDB(
+          'channels',
+          newChannel,
+        );
         newChannel.id = newChannelId;
         existingChannel = newChannel;
       }
@@ -330,28 +392,32 @@ export class ChannelService {
   }
 
   /**
- * Fetches a channel by its unique identifier (UID).
- * 
- * @param {string} uid - The unique identifier of the channel.
- * @returns {Promise<TextChannel | undefined>} The channel with the specified UID, or undefined if not found.
- */
+   * Fetches a channel by its unique identifier (UID).
+   *
+   * @param {string} uid - The unique identifier of the channel.
+   * @returns {Promise<TextChannel | undefined>} The channel with the specified UID, or undefined if not found.
+   */
   async getChannelByUid(uid: string): Promise<TextChannel | undefined> {
-    const channels = await this.databaseService.readDataByField('channels', 'uid', uid);
+    const channels = await this.databaseService.readDataByField(
+      'channels',
+      'uid',
+      uid,
+    );
     return channels.length > 0 ? channels[0] : undefined;
   }
 
   /**
- * Retrieves all channels from the database.
- * 
- * @returns {Promise<TextChannel[]>} A promise that resolves to the list of all channels.
- */
+   * Retrieves all channels from the database.
+   *
+   * @returns {Promise<TextChannel[]>} A promise that resolves to the list of all channels.
+   */
   async getAllChannels(): Promise<TextChannel[]> {
     return await this.databaseService.readDataFromDB<TextChannel>('channels');
   }
 
   /**
    * Finds or creates a direct channel between the current user and a selected user.
-   * 
+   *
    * @returns {Promise<TextChannel | null>} The found or newly created direct channel, or null if not found.
    */
   async findOrCreateChannelByUserID(): Promise<TextChannel | null> {
@@ -364,12 +430,14 @@ export class ChannelService {
           assignedUser: [this.userService.activeUser.id!, selectedUser.id!],
           isPrivate: true,
           description: '',
-          owner: this.userService.activeUser.id!
+          owner: this.userService.activeUser.id!,
         };
 
         const allChannels = await this.getAllChannels();
-        const existingChannel = allChannels.find(channel =>
-          this.arrayEquals(channel.assignedUser, textChannel.assignedUser) && channel.isPrivate
+        const existingChannel = allChannels.find(
+          (channel) =>
+            this.arrayEquals(channel.assignedUser, textChannel.assignedUser) &&
+            channel.isPrivate,
         );
 
         if (existingChannel) {
@@ -384,17 +452,21 @@ export class ChannelService {
     }
   }
 
-
   /**
-  * Removes the current user from the selected channel, and deletes the channel if it becomes empty.
-  */
+   * Removes the current user from the selected channel, and deletes the channel if it becomes empty.
+   */
   async leaveChannel() {
     const currentUser: DABubbleUser = this.userService.activeUser;
-    const channel: TextChannel = JSON.parse(sessionStorage.getItem("selectedChannel") || '{}');
-    const assignedUsersWithoutCurrentUser: string[] = this.channel.assignedUser.filter(id => id !== currentUser.id);
+    const channel: TextChannel = JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
+    const assignedUsersWithoutCurrentUser: string[] =
+      this.channel.assignedUser.filter((id) => id !== currentUser.id);
 
     if (assignedUsersWithoutCurrentUser.length > 0) {
-      await this.databaseService.updateDataInDB('channels', channel!.id, { assignedUser: assignedUsersWithoutCurrentUser });
+      await this.databaseService.updateDataInDB('channels', channel!.id, {
+        assignedUser: assignedUsersWithoutCurrentUser,
+      });
     } else {
       await this.databaseService.deleteDataFromDB('channels', channel!.id);
     }
@@ -408,38 +480,47 @@ export class ChannelService {
   }
 
   /**
- * Initializes default data, including creating default channels and loading user channels.
- */
+   * Initializes default data, including creating default channels and loading user channels.
+   */
   async initializeDefaultData() {
     this.loading = true;
     await this.createDefaultData();
-    this.channels = await this.userService.getUserChannels(this.userService.activeUser.id!);
+    this.channels = await this.userService.getUserChannels(
+      this.userService.activeUser.id!,
+    );
     sessionStorage.setItem('channels', JSON.stringify(this.channels));
   }
 
   /**
- * Creates default data, including users and channels.
- */
+   * Creates default data, including users and channels.
+   */
   async createDefaultData() {
     const defaultUsers = await this.userService.createDefaultUsers();
     await this.createDefaultGroupChannels(this.userService.activeUser);
-    await this.createDefaultDirectChannels(defaultUsers, this.userService.activeUser);
+    await this.createDefaultDirectChannels(
+      defaultUsers,
+      this.userService.activeUser,
+    );
     this.loading = false;
   }
 
   /**
- * Searches for channels by name and filters them by the active user's ID.
- * 
- * @param {string} searchText - The text to search for in channel names.
- * @param {string} activeUserId - The ID of the active user.
- * @returns {Promise<TextChannel[]>} The list of channels that match the search criteria.
- */
-  async searchChannelsByName(searchText: string, activeUserId: string): Promise<TextChannel[]> {
-    return await this.databaseService.getChannelsByName(searchText).then(channels => {
-      return channels.filter(channel => channel.assignedUser.includes(activeUserId));
-    });
+   * Searches for channels by name and filters them by the active user's ID.
+   *
+   * @param {string} searchText - The text to search for in channel names.
+   * @param {string} activeUserId - The ID of the active user.
+   * @returns {Promise<TextChannel[]>} The list of channels that match the search criteria.
+   */
+  async searchChannelsByName(
+    searchText: string,
+    activeUserId: string,
+  ): Promise<TextChannel[]> {
+    return await this.databaseService
+      .getChannelsByName(searchText)
+      .then((channels) => {
+        return channels.filter((channel) =>
+          channel.assignedUser.includes(activeUserId),
+        );
+      });
   }
-
 }
-
-

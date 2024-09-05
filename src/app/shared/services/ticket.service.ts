@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { ThreadMessage } from '../interfaces/threadmessage';
 import { DatabaseService } from './database.service';
 
 @Injectable({
@@ -20,8 +19,4 @@ export class TicketService {
   getTicket() {
     return this._ticket;
   }
-
-    
-  // }
-
 }

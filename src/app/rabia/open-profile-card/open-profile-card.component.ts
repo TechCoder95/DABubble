@@ -12,29 +12,44 @@ import { EmailService } from '../../shared/services/sendmail.service';
   standalone: true,
   imports: [MatButtonModule, CommonModule, FormsModule],
   templateUrl: './open-profile-card.component.html',
-  styleUrl: './open-profile-card.component.scss'
+  styleUrl: './open-profile-card.component.scss',
 })
 export class OpenProfileCardComponent {
-
   editable: boolean = false;
-  emailInput: string = "";
+  emailInput: string = '';
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
 
-  constructor(public userService: UserService, private daStorage: DAStorageService, private emailService: EmailService) {
-  }
+  constructor(
+    public userService: UserService,
+    private daStorage: DAStorageService,
+    private emailService: EmailService,
+  ) {}
 
+  /**
+   * Saves the profile by calling the necessary methods to update the user's profile information.
+   * - Calls the `editProfile` method to update the profile.
+   * - Calls the `updateUsername` method of the `userService` to update the username of the active user.
+   * - Calls the `updateGoogleEmail` method of the `emailService` to update the Google email if the `emailInput` is not empty.
+   */
   saveProfile() {
     this.editProfile();
     this.userService.updateUsername(this.userService.activeUser.username!);
-    if (this.emailInput != "") 
+    if (this.emailInput != '')
       this.emailService.updateGoogleEmail(this.emailInput);
-
   }
 
+  /**
+   * Toggles the editable state of the profile.
+   */
   editProfile() {
     this.editable = !this.editable;
   }
 
+  /**
+   * Handles the change event of the avatar input element.
+   *
+   * @param event - The event object representing the change event.
+   */
   changeAvatar(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -48,19 +63,28 @@ export class OpenProfileCardComponent {
       };
       reader.readAsDataURL(file);
     }
-
   }
 
+  /**
+   * Uploads a file.
+   *
+   * @param file - The file to be uploaded.
+   */
   upload(file: File) {
-    this.daStorage.uploadFile(file, sessionStorage.getItem("uId")!);
+    this.daStorage.uploadFile(file, sessionStorage.getItem('uId')!);
   }
 
+  /**
+   * Closes the edit mode of the profile card.
+   */
   closeEdit() {
     this.editable = false;
   }
 
+  /**
+   * Closes the profile card dialog.
+   */
   close() {
     this.dialogRef.close();
   }
-
 }

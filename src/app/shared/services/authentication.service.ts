@@ -9,21 +9,21 @@ import {
   getRedirectResult,
   setPersistence,
   browserSessionPersistence,
-  signInAnonymously
-} from "firebase/auth";
+  signInAnonymously,
+} from 'firebase/auth';
 import { UserService } from './user.service';
 import { EmailService } from './sendmail.service';
 import { GlobalsubService } from './globalsub.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthenticationService {
-
-  constructor(private userService: UserService, private emailService: EmailService, private subService: GlobalsubService) {
-  
-  }
-
+  constructor(
+    private userService: UserService,
+    private emailService: EmailService,
+    private subService: GlobalsubService,
+  ) {}
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -36,7 +36,7 @@ export class AuthenticationService {
 
   auth = getAuth();
   provider = new GoogleAuthProvider();
-  fehlerMeldung: string = "";
+  fehlerMeldung: string = '';
 
   loginSuccess: boolean = false;
   showMessage: boolean = false;
@@ -54,10 +54,14 @@ export class AuthenticationService {
   MailSignUp(email: string, password: string, username: string) {
     createUserWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        // Signed up 
-        this.userService.googleUser = userCredential.user
-        this.userService.register(email, username, this.userService.googleUser.uid);
-        sessionStorage.setItem("uId", this.userService.googleUser.uid);
+        // Signed up
+        this.userService.googleUser = userCredential.user;
+        this.userService.register(
+          email,
+          username,
+          this.userService.googleUser.uid,
+        );
+        sessionStorage.setItem('uId', this.userService.googleUser.uid);
         this.emailService.sendMail();
         this.registerProcess = true;
       })
@@ -69,50 +73,49 @@ export class AuthenticationService {
       });
   }
 
-
   /**
    * Signs in a user with email and password.
-   * 
+   *
    * @param email - The user's email address.
    * @param password - The user's password.
    */
   async mailSignIn(email: string, password: string) {
     signInWithEmailAndPassword(this.auth, email, password)
       .then((userCredential) => {
-        // Signed in 
+        // Signed in
         this.showMessage = true;
         this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
 
         setTimeout(() => {
-          this.userService.login(userCredential.user)
+          this.userService.login(userCredential.user);
           this.setLocalPersistent();
         }, 1000);
-
       })
       .catch((error) => {
         this.showMessage = false;
-        if (error.code === "auth/user-not-found")
-          this.fehlerMeldung = "Nutzer nicht gefunden. Bitte registrieren Sie sich.";
-        else if (error.code === "auth/network-request-failed")
-          this.fehlerMeldung = "Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung."
-        else if (error.code === "auth/too-many-requests")
-          this.fehlerMeldung = "Zu viele Anfragen. Versuchen Sie es später erneut.";
-        else if (error.code === "auth/invalid-credential")
-          this.fehlerMeldung = "Ungültige Anmeldeinformationen";
-        else if (error.code === "auth/invalid-email")
-          this.fehlerMeldung = "E-Mail-Adresse ist ungültig";
+        if (error.code === 'auth/user-not-found')
+          this.fehlerMeldung =
+            'Nutzer nicht gefunden. Bitte registrieren Sie sich.';
+        else if (error.code === 'auth/network-request-failed')
+          this.fehlerMeldung =
+            'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.';
+        else if (error.code === 'auth/too-many-requests')
+          this.fehlerMeldung =
+            'Zu viele Anfragen. Versuchen Sie es später erneut.';
+        else if (error.code === 'auth/invalid-credential')
+          this.fehlerMeldung = 'Ungültige Anmeldeinformationen';
+        else if (error.code === 'auth/invalid-email')
+          this.fehlerMeldung = 'E-Mail-Adresse ist ungültig';
         else {
           alert(error.message);
         }
-      })
+      });
   }
-
 
   //#endregion
   //#region [Google Authentication]
   //Google Auth
-
 
   /**
    * Signs in the user using Google authentication.
@@ -130,10 +133,11 @@ export class AuthenticationService {
         this.userService.googleUser = result.user;
 
         setTimeout(() => {
-          this.userService.login(result.user)
+          this.userService.login(result.user);
           this.setLocalPersistent();
         }, 1000);
-      }).catch((error) => {
+      })
+      .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -144,7 +148,6 @@ export class AuthenticationService {
         // ...
       });
   }
-
 
   /**
    * Retrieves the Google Access Token and performs necessary actions based on the result.
@@ -153,9 +156,12 @@ export class AuthenticationService {
     getRedirectResult(this.auth)
       .then((result) => {
         // This gives you a Google Access Token. You can use it to access Google APIs.
-        const credential = result ? GoogleAuthProvider.credentialFromResult(result) : null;
+        const credential = result
+          ? GoogleAuthProvider.credentialFromResult(result)
+          : null;
         const token = credential?.accessToken;
-      }).catch((error) => {
+      })
+      .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
         const errorMessage = error.message;
@@ -167,11 +173,9 @@ export class AuthenticationService {
       });
   }
 
-
   //#endregion
   //#region [User Authentication]
   //Für alle gültig
-
 
   /**
    * Signs out the user.
@@ -186,11 +190,6 @@ export class AuthenticationService {
       });
   }
 
-
-
-
-
-
   /**
    * Signs in the user as a guest.
    */
@@ -201,10 +200,14 @@ export class AuthenticationService {
         this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
 
-        this.userService.register("Gast", "Gast", this.userService.googleUser.uid);
+        this.userService.register(
+          'Gast',
+          'Gast',
+          this.userService.googleUser.uid,
+        );
 
         setTimeout(() => {
-          this.userService.login(userCredential.user)
+          this.userService.login(userCredential.user);
           this.setLocalPersistent();
         }, 1000);
       })
@@ -213,17 +216,14 @@ export class AuthenticationService {
         const errorMessage = error.message;
         // ...
       });
-
   }
-
 
   //#endregion
 
-
   /**
-    * Sets the local persistence for the authentication session.
-    * @returns A Promise that resolves when the session persistence is set successfully, or rejects with an error if there was an issue.
-    */
+   * Sets the local persistence for the authentication session.
+   * @returns A Promise that resolves when the session persistence is set successfully, or rejects with an error if there was an issue.
+   */
   setLocalPersistent() {
     setPersistence(this.auth, browserSessionPersistence)
       .then(() => {

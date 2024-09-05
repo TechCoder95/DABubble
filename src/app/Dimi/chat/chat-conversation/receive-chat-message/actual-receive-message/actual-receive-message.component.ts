@@ -2,14 +2,13 @@ import { Component, Input } from '@angular/core';
 import { ChatMessage } from '../../../../../shared/interfaces/chatmessage';
 import { CommonModule } from '@angular/common';
 import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
-import { HtmlConverterPipe } from "../../../../../shared/pipes/html-converter.pipe";
-import { VerlinkungPipe } from "../../../../../shared/pipes/verlinkung.pipe";
+import { HtmlConverterPipe } from '../../../../../shared/pipes/html-converter.pipe';
+import { VerlinkungPipe } from '../../../../../shared/pipes/verlinkung.pipe';
 import { DAStorageService } from '../../../../../shared/services/dastorage.service';
 import express from 'express';
 import cors from 'cors';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogReceivedImageComponent } from './dialog-received-image/dialog-received-image.component';
-
 
 @Component({
   selector: 'app-actual-receive-message',
@@ -31,10 +30,9 @@ export class ActualReceiveMessageComponent {
     );
   }
 
-    openImageInDialog() {
+  openImageInDialog() {
     this.dialog.open(DialogReceivedImageComponent, {
-      data: { receivedImgMessage: this.receivedImgMessage }
+      data: { receivedImgMessage: this.receivedImgMessage },
     });
   }
 }
-

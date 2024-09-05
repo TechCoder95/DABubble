@@ -1,6 +1,5 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { getApp } from 'firebase/app';
-import { Firestore } from 'firebase/firestore';
 import {
   getStorage,
   ref,
@@ -8,17 +7,13 @@ import {
   getDownloadURL,
   deleteObject,
   listAll,
-  StorageReference,
-  getBlob,
 } from 'firebase/storage';
-import { ChatMessage } from '../interfaces/chatmessage';
 
 @Injectable({
   providedIn: 'root',
 })
 export class DAStorageService {
-
-  constructor() { }
+  constructor() {}
   firebaseApp = getApp();
   /* firestore: Firestore = inject(Firestore); */
 
@@ -34,7 +29,7 @@ export class DAStorageService {
       'gs://dabubble-da785.appspot.com',
     );
     const mountainsRef = ref(storage, name);
-    uploadBytes(mountainsRef, file).then((snapshot) => { });
+    uploadBytes(mountainsRef, file).then((snapshot) => {});
     const metadata = {
       contentType: 'image/jpeg',
     };
@@ -46,31 +41,13 @@ export class DAStorageService {
    * @returns A Promise that resolves when the file is downloaded successfully.
    */
   async downloadFile(url: string, fileName: string) {
-    // Create a reference to the file we want to download
     const storage = getStorage();
     const starsRef = ref(storage, url);
 
     // Get the download URL
     getDownloadURL(starsRef)
-      .then((url) => {
-
-        // This can be downloaded directly:
-        /* const xhr = new XMLHttpRequest();
-
-        xhr.responseType = 'blob';
-        xhr.onload = (event) => {
-          const blob = xhr.response;
-        };
-        xhr.open('GET', url);
-        xhr.send(); */
-
-        // Or inserted into an <img> element
-        // const img = document.getElementById('myimg');
-        // img.setAttribute('src', url);
-      })
+      .then((url) => {})
       .catch((error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
         switch (error.code) {
           case 'storage/object-not-found':
             // File doesn't exist
@@ -81,36 +58,12 @@ export class DAStorageService {
           case 'storage/canceled':
             // User canceled the upload
             break;
-
-          // ...
-
           case 'storage/unknown':
             // Unknown error occurred, inspect the server response
             break;
         }
       });
   }
-
-
-
-
-  /**
-   * Deletes a file from the specified storage location.
-   * @param name - The name of the file in the storage.
-   * @returns A Promise that resolves when the file is deleted.
-   */
-  /*  async deleteFile(url: string) {
-    const storage = getStorage();
-
-    // Create a reference to the file to delete
-    const desertRef = ref(storage, url);
-    // Delete the file
-    deleteObject(desertRef).then(() => {
-      // File deleted successfully
-    }).catch((error) => {
-      // Uh-oh, an error occurred!
-    });
-  } */
 
   /**
    * Retrieves the download URL for a file stored in Firebase Storage.
@@ -146,6 +99,15 @@ export class DAStorageService {
       });
   }
 
+  /**
+   * Uploads an image file to the specified channel.
+   *
+   * @param channelId - The ID of the channel where the image will be uploaded.
+   * @param file - The image file to be uploaded.
+   * @param fileName - The name of the image file.
+   * @returns The full path of the uploaded image file.
+   * @throws If there is an error uploading the file.
+   */
   async uploadMessageImage(channelId: string, file: Blob, fileName: string) {
     let storage = getStorage(
       this.firebaseApp,
@@ -167,6 +129,12 @@ export class DAStorageService {
     }
   }
 
+  /**
+   * Downloads an image from the specified URL.
+   *
+   * @param url - The URL of the image to download.
+   * @returns The downloaded image URL.
+   */
   async downloadMessageImage(url: string) {
     let storage = getStorage(
       this.firebaseApp,
@@ -179,6 +147,12 @@ export class DAStorageService {
     return downloadedUrl;
   }
 
+  /**
+   * Deletes an image file from the storage.
+   *
+   * @param url - The URL of the image file to be deleted.
+   * @returns A promise that resolves when the file is deleted successfully, or rejects with an error if there was an issue deleting the file.
+   */
   async deleteMessageImage(url: string) {
     let storage = getStorage(
       this.firebaseApp,
@@ -188,7 +162,7 @@ export class DAStorageService {
 
     deleteObject(fullpath)
       .then(() => {
-         ('FILE DELETED SUCCESSFULLY');
+        ('FILE DELETED SUCCESSFULLY');
       })
       .catch((error) => {
         console.error('Error deleting file:', error);

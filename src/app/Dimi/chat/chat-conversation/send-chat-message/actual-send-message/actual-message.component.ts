@@ -9,7 +9,13 @@ import { SafePipe } from '../../../../../shared/pipes/safe.pipe';
 @Component({
   selector: 'app-actual-message',
   standalone: true,
-  imports: [CommonModule, EmojisPipe, HtmlConverterPipe, VerlinkungPipe, SafePipe],
+  imports: [
+    CommonModule,
+    EmojisPipe,
+    HtmlConverterPipe,
+    VerlinkungPipe,
+    SafePipe,
+  ],
   templateUrl: './actual-message.component.html',
   styleUrl: './actual-message.component.scss',
 })
@@ -22,6 +28,11 @@ export class ActualMessageComponent implements OnInit {
     this.sentPdfExists();
   }
 
+  /**
+   * Checks if a sent image exists.
+   *
+   * @returns {boolean} Returns true if a sent image exists, otherwise false.
+   */
   sentImageExists() {
     if (!this.sendMessage?.fileUrl || this.sendMessage.fileUrl.trim() === '') {
       return false;
@@ -32,6 +43,11 @@ export class ActualMessageComponent implements OnInit {
     );
   }
 
+  /**
+   * Checks if a PDF file is attached to the message being sent.
+   *
+   * @returns {boolean} True if a PDF file is attached, false otherwise.
+   */
   sentPdfExists() {
     if (!this.sendMessage?.fileUrl || this.sendMessage.fileUrl.trim() === '') {
       return false;
@@ -39,6 +55,11 @@ export class ActualMessageComponent implements OnInit {
     return this.sendMessage.fileUrl.toLowerCase().endsWith('.pdf');
   }
 
+  /**
+   * Checks if a message exists.
+   *
+   * @returns {boolean} True if the message exists, false otherwise.
+   */
   messageExists() {
     return this.sendMessage.message && this.sendMessage.message.trim() !== '';
   }

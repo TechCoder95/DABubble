@@ -3,25 +3,21 @@ import { Router } from '@angular/router';
 import { LoginComponent } from '../home/login/login.component';
 import { TypewriterService } from '../../shared/services/typewriter.service';
 
-
 @Component({
   selector: 'app-startscreen',
   standalone: true,
   imports: [LoginComponent],
   templateUrl: './startscreen.component.html',
-  styleUrl: './startscreen.component.scss'
+  styleUrl: './startscreen.component.scss',
 })
 export class StartscreenComponent {
-
-
   displayedTextWithoutCursor = '';
   cursor = '';
   private typewriterService = inject(TypewriterService);
 
-  constructor(private router: Router) { }
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-
     this.typewriterService.getTypewriterEffect(['DABubble']).subscribe(
       (text) => {
         if (text.endsWith('|')) {
@@ -32,19 +28,15 @@ export class StartscreenComponent {
           this.cursor = '';
         }
       },
-      (error) => console.error(error)
+      (error) => console.error(error),
     );
 
     if (sessionStorage.getItem('userLogin')) {
       this.router.navigate(['/home']);
-    }
-    else {
+    } else {
       setTimeout(() => {
         this.router.navigate(['/user/login']);
       }, 5550);
     }
   }
 }
-
-
-

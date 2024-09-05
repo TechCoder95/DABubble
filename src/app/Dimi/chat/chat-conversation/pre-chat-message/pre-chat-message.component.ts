@@ -19,44 +19,51 @@ export class PreChatMessageComponent {
   privateChatPartner!: DABubbleUser | undefined;
   channelName!: string | undefined;
 
-  @Input({required:true}) activeChannelFromChatconv!: any;
+  @Input({ required: true }) activeChannelFromChatconv!: any;
 
-  selectedChannel: TextChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+  selectedChannel: TextChannel = JSON.parse(
+    sessionStorage.getItem('selectedChannel')!,
+  );
 
   constructor(
     private userService: UserService,
-    private channelService: ChannelService
-  ) {    
+    private channelService: ChannelService,
+  ) {
     this.isPrivateChat = this.selectedChannel.isPrivate;
-    if(this.isPrivateChat && this.selectedChannel.assignedUser.length ===1){
+    if (this.isPrivateChat && this.selectedChannel.assignedUser.length === 1) {
       this.isChatWithMyself = true;
-    }else{
-      this.isChatWithMyself=false;
+    } else {
+      this.isChatWithMyself = false;
     }
     this.getChannelName();
     this.getPrivateChatPartner();
   }
 
-
+  /**
+   * Retrieves the channel name.
+   * If the chat is not a private chat, it sets the channel name based on the channel service's channel name.
+   */
   getChannelName() {
     if (!this.isPrivateChat) {
       this.channelName = this.channelService.channel.name;
     }
   }
 
+  /**
+   * Retrieves the private chat partner for the current chat conversation.
+   *
+   * @returns {Promise<void>} A promise that resolves when the private chat partner is retrieved.
+   */
   async getPrivateChatPartner() {
     if (this.isPrivateChat && !this.isChatWithMyself) {
-      const privateChatPartnerID =
-        this.selectedChannel.assignedUser.find(
-          (userID) => userID !== this.userService.activeUser.id
-        );
+      const privateChatPartnerID = this.selectedChannel.assignedUser.find(
+        (userID) => userID !== this.userService.activeUser.id,
+      );
 
       if (privateChatPartnerID) {
-        this.privateChatPartner = await this.userService.getOneUserbyId(
-          privateChatPartnerID
-        );        
+        this.privateChatPartner =
+          await this.userService.getOneUserbyId(privateChatPartnerID);
       }
     }
   }
-
 }

@@ -6,12 +6,17 @@ import { EmojisPipe } from '../../../../../shared/pipes/emojis.pipe';
   standalone: true,
   imports: [EmojisPipe],
   templateUrl: './emoji-selection.component.html',
-  styleUrl: './emoji-selection.component.scss'
+  styleUrl: './emoji-selection.component.scss',
 })
 export class EmojiSelectionComponent {
-@Output() selectedEmoji = new EventEmitter<string>();
+  @Output() selectedEmoji = new EventEmitter<string>();
 
-  putEmojiOut(emoji:string){
+  /**
+   * Emits the selected emoji.
+   *
+   * @param emoji - The selected emoji.
+   */
+  putEmojiOut(emoji: string) {
     this.selectedEmoji.emit(emoji);
   }
 }

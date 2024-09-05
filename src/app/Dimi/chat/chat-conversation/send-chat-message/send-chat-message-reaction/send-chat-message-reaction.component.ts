@@ -33,18 +33,25 @@ export class SendChatMessageReactionComponent {
   @Input({ required: true }) messageForThread!: ChatMessage;
   @Input() chatType: ChatType = ChatType.Channel;
 
-  constructor(private threadService: ThreadService, private chatService: ChatService) {
-    this.privateChat = JSON.parse(sessionStorage.getItem('selectedChannel')!).isPrivate;
+  constructor(
+    private threadService: ThreadService,
+    private chatService: ChatService,
+  ) {
+    this.privateChat = JSON.parse(
+      sessionStorage.getItem('selectedChannel')!,
+    ).isPrivate;
   }
 
+  /**
+   * Handles the hover effect for chat message reactions.
+   *
+   * @param type - The type of reaction.
+   * @param hover - Indicates whether the reaction is being hovered or not.
+   */
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
 
-    // if (type === 'checkMark') {
-    //   this.checkMarkImg = `${basePath}check-mark${hoverSuffix}.png`;
-    // } else if (type === 'handsUp') {
-    //   this.handsUpImg = `${basePath}hands-up${hoverSuffix}.svg`;
     if (type === 'addReaction') {
       this.addReactionImg = `${basePath}add-reaction${hoverSuffix}.svg`;
     } else if (type === 'answer') {
@@ -56,6 +63,9 @@ export class SendChatMessageReactionComponent {
     }
   }
 
+  /**
+   * Toggles the edit message dialog and updates the edit message image accordingly.
+   */
   editMessageDialog() {
     this.showEditMessageDialog = !this.showEditMessageDialog;
     if (this.showEditMessageDialog) {
@@ -65,22 +75,39 @@ export class SendChatMessageReactionComponent {
     }
   }
 
+  /**
+   * Enables the edit mode for the chat message.
+   * Emits an event to notify the parent component about the change in edit mode.
+   */
   editMessage() {
     this.isInEditMode = true;
     this.editModeChange.emit(this.isInEditMode);
   }
 
+  /**
+   * Marks the message as deleted and emits an event to notify the parent component.
+   */
   deleteMessage() {
     this.messageDeleted = true;
     this.deleteStatusChange.emit(this.messageDeleted);
   }
 
+  /**
+   * Opens a thread for the chat conversation.
+   * Sets the ticket and message thread for the thread service.
+   * Waits for the thread to be opened.
+   */
   async openThread() {
     this.threadService.setTicket(this.ticket);
     this.threadService.setMessageThread(this.messageForThread);
     await this.threadService.openThread();
   }
 
+  /**
+   * Handles the selection of an emoji.
+   *
+   * @param emojiType - The type of emoji selected.
+   */
   handleEmojis(emojiType: string) {
     let emoji: Emoji = {
       messageId: this.sendMessage.id!,
@@ -92,6 +119,9 @@ export class SendChatMessageReactionComponent {
   }
 
   addReactionDiv: boolean = false;
+  /**
+   * Opens or closes the add reaction div.
+   */
   openAddReactions() {
     this.addReactionDiv = !this.addReactionDiv;
   }

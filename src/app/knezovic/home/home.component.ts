@@ -1,9 +1,18 @@
-import { Component, EventEmitter, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { LoginComponent } from "./login/login.component";
-import { SidenavComponent } from "../../tristan/sidenav/sidenav.component";
-import { HeaderComponent } from "../../shared/components/header/header.component";
-import { VariableContentComponent } from "./variable-content/variable-content.component";
-import { GlobalsubService, OnlineStatus } from '../../shared/services/globalsub.service';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
+import { LoginComponent } from './login/login.component';
+import { SidenavComponent } from '../../tristan/sidenav/sidenav.component';
+import { HeaderComponent } from '../../shared/components/header/header.component';
+import { VariableContentComponent } from './variable-content/variable-content.component';
+import {
+  GlobalsubService,
+  OnlineStatus,
+} from '../../shared/services/globalsub.service';
 import { filter, Subscription, tap } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
@@ -12,7 +21,6 @@ import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
 import { MobileService } from '../../shared/services/mobile.service';
-
 
 @Component({
   selector: 'app-home',
@@ -34,7 +42,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     private globalSubService: GlobalsubService,
     private router: Router,
     public channelService: ChannelService,
-    public mobileService: MobileService
+    public mobileService: MobileService,
   ) {}
 
   userSub!: Subscription;
@@ -46,7 +54,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   activeUserChange = new EventEmitter<DABubbleUser>();
   activeGoogleUserChange = new EventEmitter<User>();
   onlineStatusChange = new EventEmitter<String[]>();
-
 
   ngOnInit() {
     let googleUser = sessionStorage.getItem(
@@ -88,6 +95,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.onlineStatusSub) this.onlineStatusSub.unsubscribe();
   }
 
+  /**
+   * Checks if the 'userLogin' item exists in the sessionStorage.
+   *
+   * @returns {boolean} Returns true if the 'userLogin' item exists in the sessionStorage, otherwise returns false.
+   */
   getStorage() {
     if (sessionStorage.getItem('userLogin')) {
       return true;
@@ -95,10 +107,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  /**
+   * Retrieves the current location of the router.
+   *
+   * @returns The URL of the current location.
+   */
   getLocation() {
     return this.router.url;
   }
 
+  /**
+   * Returns a boolean value indicating whether the current route is the root route or not.
+   *
+   * @returns {boolean} True if the current route is not the root route, false otherwise.
+   */
   getRoute() {
     if (this.router.url === '/') {
       return false;
@@ -107,6 +129,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Determines if the current route is the home route.
+   *
+   * @returns {boolean} True if the current route is '/home', false otherwise.
+   */
   getHome() {
     if (this.router.url === '/home') {
       return true;

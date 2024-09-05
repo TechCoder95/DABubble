@@ -1,7 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
@@ -25,37 +37,39 @@ export class DialogChannelMembersComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
-
   constructor(
     private userService: UserService,
     public channelService: ChannelService,
     private databaseService: DatabaseService,
     public dialogRef: MatDialogRef<DialogChannelMembersComponent>,
     private subService: GlobalsubService,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
     this.activeUser.isLoggedIn = true;
-    JSON.parse(sessionStorage.getItem('selectedChannel')!).assignedUser.forEach((userID: string) => {
-      this.databaseService.readDataByField('users', 'id', userID).then((user) => {
-        user.forEach((x: DABubbleUser) => {
-          if (x && x.id !== this.activeUser.id) {
-            this.channelMembers.push(x);
-          }
-        }
-        );
-      });
-    }
+    JSON.parse(sessionStorage.getItem('selectedChannel')!).assignedUser.forEach(
+      (userID: string) => {
+        this.databaseService
+          .readDataByField('users', 'id', userID)
+          .then((user) => {
+            user.forEach((x: DABubbleUser) => {
+              if (x && x.id !== this.activeUser.id) {
+                this.channelMembers.push(x);
+              }
+            });
+          });
+      },
     );
-
     await this.addChannelMembers();
   }
 
-
+  /**
+   * Adds channel members to the current active channel.
+   *
+   * @returns {Promise<void>} A promise that resolves when the channel members are added.
+   */
   async addChannelMembers() {
     this.subService.getActiveChannelObservable().subscribe((channel) => {
       if (channel) {
@@ -67,16 +81,20 @@ export class DialogChannelMembersComponent implements OnInit {
               this.channelMembers.push(x);
             }
           });
-        }
-        );
+        });
       }
     });
   }
 
-
+  /**
+   * Opens a dialog to add channel members.
+   *
+   * @remarks
+   * This method closes the current dialog and opens a new dialog to add channel members.
+   * The position of the new dialog is calculated based on the position of the relative element.
+   */
   addMembers() {
     this.closeDialog();
-
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
     const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
       position: {
@@ -84,18 +102,24 @@ export class DialogChannelMembersComponent implements OnInit {
         left: `${rect.left + window.scrollX - 135}px`,
       },
     });
-
   }
 
-
-  @HostListener("window:resize", ["$event"])
+  /**
+   * Handles the resize event of the window.
+   * Closes the dialog if the window width is greater than or equal to 910.
+   */
+  @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth >= 910) {
-      console.log('Viel Spaß beim Resizen ;-)');
       this.closeDialog();
     }
   }
 
+  /**
+   * Changes the image of the add members button based on the hover state.
+   *
+   * @param hover - A boolean indicating whether the button is being hovered over or not.
+   */
   changeAddMembersImg(hover: boolean) {
     if (hover) {
       this.addMemberImg = './img/add-members-hover.png';
@@ -104,6 +128,11 @@ export class DialogChannelMembersComponent implements OnInit {
     }
   }
 
+  /**
+   * Changes the close image based on the hover state.
+   *
+   * @param hover - A boolean indicating whether the mouse is hovering over the image.
+   */
   changeCloseImg(hover: boolean) {
     if (hover) {
       this.closeImg = './img/close-hover.png';
@@ -112,18 +141,10 @@ export class DialogChannelMembersComponent implements OnInit {
     }
   }
 
+  /**
+   * Closes the dialog.
+   */
   closeDialog() {
     this.dialogRef.close(false);
   }
-
-  /* dialogAddChannelMembersIsOpen: boolean = false;
-  openDialogAddChannelMembers(event: MouseEvent) {
-    this.dialogAddChannelMembersIsOpen = !this.dialogAddChannelMembersIsOpen;
-    const dialogConfig = this.handleDialogConfig(event, 'addChannelMembers');
-    const dialogRef = this.dialog.open(
-      DialogAddChannelMembersComponent,
-      dialogConfig
-    );
-    this.handleDialogClose(dialogRef);
-  } */
 }

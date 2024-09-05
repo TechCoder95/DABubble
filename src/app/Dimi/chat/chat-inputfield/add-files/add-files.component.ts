@@ -18,6 +18,11 @@ export class AddFilesComponent {
   fileIsImage!: boolean;
   fileIsPdf!: boolean;
 
+  /**
+   * Handles the event when a file is selected.
+   *
+   * @param event - The event object triggered by the file selection.
+   */
   onFileSelected(event: Event): void {
     let input = event.target as HTMLInputElement;
     if (input.files && input.files[0]) {
@@ -36,6 +41,11 @@ export class AddFilesComponent {
     }
   }
 
+  /**
+   * Determines the type of the given file.
+   *
+   * @param file - The file to determine the type of.
+   */
   getFileType(file: any) {
     if (file.type === 'application/pdf') {
       this.fileIsPdf = true;

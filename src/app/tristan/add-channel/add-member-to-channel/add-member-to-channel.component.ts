@@ -55,7 +55,6 @@ export class AddMemberToChannelComponent {
     public userService: UserService,
     public dialog: MatDialog,
   ) {
-    console.log(channel);
   }
 
   ngAfterViewInit(): void {

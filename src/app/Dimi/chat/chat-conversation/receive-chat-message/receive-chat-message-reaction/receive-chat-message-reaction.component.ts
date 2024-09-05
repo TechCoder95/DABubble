@@ -7,7 +7,6 @@ import { CommonModule } from '@angular/common';
 import { ThreadService } from '../../../../../shared/services/thread.service';
 import { ChatType } from '../../../../../shared/enums/chattype';
 
-
 @Component({
   selector: 'app-receive-chat-message-reaction',
   standalone: true,
@@ -29,11 +28,21 @@ export class ReceiveChatMessageReactionComponent {
 
   privateChat!: boolean;
 
-  constructor(private threadService: ThreadService, private chatService: ChatService) {
-    this.privateChat = JSON.parse(sessionStorage.getItem('selectedChannel')!).isPrivate;
-
+  constructor(
+    private threadService: ThreadService,
+    private chatService: ChatService,
+  ) {
+    this.privateChat = JSON.parse(
+      sessionStorage.getItem('selectedChannel')!,
+    ).isPrivate;
   }
 
+  /**
+   * Handles the hover effect for chat message reactions.
+   * 
+   * @param type - The type of reaction ('addReaction' or 'answer').
+   * @param hover - Indicates whether the hover effect is active or not.
+   */
   hoverReaction(type: string, hover: boolean) {
     const basePath = './img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
@@ -45,13 +54,21 @@ export class ReceiveChatMessageReactionComponent {
     }
   }
 
+  /**
+   * Opens the chat thread and sets the ticket and message thread.
+   * @returns {Promise<void>} A promise that resolves when the thread is opened.
+   */
   async openThread() {
     this.threadService.setTicket(this.ticket);
     this.threadService.setMessageThread(this.messageForThread);
     await this.threadService.openThread();
   }
 
-
+  /**
+   * Handles the selection of an emoji.
+   * 
+   * @param emojiType - The type of emoji selected.
+   */
   handleEmojis(emojiType: string) {
     let emoji: Emoji = {
       messageId: this.ticket.id!,
@@ -63,6 +80,9 @@ export class ReceiveChatMessageReactionComponent {
   }
 
   addReactionDiv: boolean = false;
+  /**
+   * Opens or closes the add reactions div.
+   */
   openAddReactions() {
     this.addReactionDiv = !this.addReactionDiv;
   }

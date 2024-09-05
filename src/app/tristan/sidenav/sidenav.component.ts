@@ -1,31 +1,3 @@
-/**
- * @module SidenavComponent
- * @description
- * This component provides a sidebar (Sidenav) for use in an Angular application.
- * It enables navigation between different channels and direct messages in a chat application.
- *
- * @requires @angular/common
- * @requires @angular/core
- * @requires @angular/material/sidenav
- * @requires @angular/material/icon
- * @requires @angular/material/button
- * @requires @angular/material/tree
- * @requires @angular/material/dialog
- * @requires @angular/router
- * @requires rxjs
- * @requires ../../shared/interfaces/textchannel
- * @requires ../../shared/interfaces/chatmessage
- * @requires ../../shared/interfaces/user
- * @requires ../../shared/services/channel.service
- * @requires ../../shared/services/user.service
- * @requires ../../shared/services/globalsub.service
- * @requires ../../shared/services/database.service
- * @requires ../add-channel/add-channel.component
- * @requires ../../Dimi/chat/chat.component
- * @requires ../../rabia/new-chat/new-chat.component
- * @requires ../../rabia/thread/thread.component
- * @requires ../../shared/components/header/searchbar/searchbar.component
- */
 import { CommonModule } from '@angular/common';
 import {
   Component,
@@ -33,7 +5,6 @@ import {
   OnDestroy,
   Input,
   EventEmitter,
-  HostListener,
 } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
@@ -53,11 +24,11 @@ import { ChannelService } from '../../shared/services/channel.service';
 import { UserService } from '../../shared/services/user.service';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { NewChatComponent } from '../../rabia/new-chat/new-chat.component';
-import { filter, Subscription, take, tap } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { ThreadComponent } from '../../rabia/thread/thread.component';
 import { GlobalsubService } from '../../shared/services/globalsub.service';
 import { User } from 'firebase/auth';
-import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
@@ -105,14 +76,6 @@ interface FlattenedNode {
 export class SidenavComponent implements OnInit, OnDestroy {
   workspaceMenuOpen: boolean = true;
 
-  /**
-   * @private
-   * @description
-   * Function to transform nodes into a flattened node model.
-   * @param {Node} node - The node to transform.
-   * @param {number} level - The depth of the node in the tree.
-   * @returns {FlattenedNode} The transformed node.
-   */
   private transformer = (node: Node, level: number): FlattenedNode => ({
     expandable: !!node.children && node.children.length > 0,
     name: node.name,
@@ -154,6 +117,11 @@ export class SidenavComponent implements OnInit, OnDestroy {
   activeGoogleUser!: User;
   activeChannel!: TextChannel;
 
+  imgWorkspaceOpen: string = './img/default-workspace-open.svg';
+  imgworkspaceClosed: string = './img/default-workspace-closed.svg';
+
+  hoverStates: { [key: string]: boolean } = {};
+
   private createdChannelSubscription!: Subscription;
   private activeUserChangeSubscription!: Subscription;
   private routeSubscription!: Subscription;
@@ -164,15 +132,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   hasChild = (_: number, node: FlattenedNode) => node.expandable;
   drawer: any;
 
-  /**
-   * @constructor
-   * @param {MatDialog} dialog - Dialog service to open modal dialogs.
-   * @param {ChannelService} channelService - Service to manage channels.
-   * @param {UserService} userService - Service to manage user data.
-   * @param {GlobalsubService} subscriptionService - Service for managing global subscriptions.
-   * @param {Router} router - Angular Router to navigate between routes.
-   * @param {ActivatedRoute} route - Provides access to information about a route associated with a component.
-   */
   constructor(
     private dialog: MatDialog,
     public channelService: ChannelService,
@@ -196,7 +155,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.initializeSubscriptions();
     }
 
-    if(window.innerWidth > 910){
+    if (window.innerWidth > 910) {
       if (!this.mobileService.isMobile) {
         // todo channel id eventuell ändern
         if (!this.router.url.includes('channel')) {
@@ -206,18 +165,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
             type: 'groupChannel',
           };
           await this.selectChannel(defaultNode);
-          this.router.navigate(['home','channel', defaultNode.id]);
+          this.router.navigate(['home', 'channel', defaultNode.id]);
         }
       }
     }
-
-
-
-
-
-   
-
-    /*  this.settings(); */
   }
 
   /**
@@ -405,10 +356,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     } else if (node.type === 'action') {
       this.openAddChannelDialog(event);
     }
-
     this.settings();
   }
 
+  /**
+   * Selects a channel based on the provided node.
+   *
+   * @param node - The node representing the channel to be selected.
+   * @returns A promise that resolves once the channel has been selected.
+   */
   async selectChannel(node: Node) {
     const selectedChannel = this.channels.find(
       (channel) => channel.id === node.id,
@@ -427,12 +383,20 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Sets the mobile and chat flags based on the window width and current router URL.
+   * If the window width is less than or equal to 910 and the router URL includes 'channel',
+   * sets `isMobile` and `isChat` to true. Otherwise, sets them to false.
+   *
+   * @remarks
+   * This method uses a timeout of 250 milliseconds to allow for any necessary DOM updates
+   * before checking the window width and router URL.
+   */
   settings() {
     setTimeout(() => {
       if (window.innerWidth <= 910 && this.router.url.includes('channel')) {
         this.mobileService.isMobile = true;
         this.mobileService.isChat = true;
-        console.log(this.activeUser);
       } else {
         this.mobileService.isMobile = false;
         this.mobileService.isChat = false;
@@ -440,19 +404,30 @@ export class SidenavComponent implements OnInit, OnDestroy {
     }, 250);
   }
 
+  /**
+   * Updates the hover states of the channels.
+   */
   updateHoverStates() {
     Object.keys(this.hoverStates).forEach((id) => {
       this.hoverStates[id] = id === this.selectedChannel.id;
     });
   }
 
-  hoverStates: { [key: string]: boolean } = {};
+  /**
+   * Sets the hover state of a tree node.
+   *
+   * @param hover - A boolean indicating whether the node is being hovered or not.
+   * @param nodeId - The ID of the node.
+   */
   hoverTreeNode(hover: boolean, nodeId: string) {
     this.hoverStates[nodeId] = hover;
   }
 
-  imgWorkspaceOpen: string = './img/default-workspace-open.svg';
-  imgworkspaceClosed: string = './img/default-workspace-closed.svg';
+  /**
+   * Changes the workspace image based on the hover state and the workspace menu open state.
+   *
+   * @param hover - A boolean indicating whether the mouse is hovering over the workspace.
+   */
   changeWorkspaceImg(hover: boolean) {
     if (hover && this.workspaceMenuOpen) {
       this.imgWorkspaceOpen = './img/hover-workspace-open.svg';
@@ -508,14 +483,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
         this.router.navigate(['/home/channel', selectedChannel.id]);
       }, 0.1);
       this.subscriptionService.updateActiveChannel(selectedChannel);
-    } else{
+    } else {
       await this.router.navigate(['/channel', selectedChannel.id]);
       this.subscriptionService.updateActiveChannel(selectedChannel);
     }
-
-
-
-   
   }
 
   /**

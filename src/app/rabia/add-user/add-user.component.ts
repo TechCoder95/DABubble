@@ -15,42 +15,65 @@ import { AuthenticationService } from '../../shared/services/authentication.serv
 @Component({
   selector: 'app-add-user',
   standalone: true,
-  imports: [MatCardModule, MatFormFieldModule, MatIconModule, MatInputModule, MatCheckboxModule, FormsModule, MatButtonModule, MatDialogModule, CommonModule, MatTooltipModule],
+  imports: [
+    MatCardModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatCheckboxModule,
+    FormsModule,
+    MatButtonModule,
+    MatDialogModule,
+    CommonModule,
+    MatTooltipModule,
+  ],
   templateUrl: './add-user.component.html',
-  styleUrl: './add-user.component.scss'
+  styleUrl: './add-user.component.scss',
 })
 export class AddUserComponent {
-
   user = {
     username: '',
     mail: '',
-    password: ''
-  }
+    password: '',
+  };
 
   acceptPolicy = false;
   readonly dialog = inject(MatDialog);
 
+  constructor(
+    private router: Router,
+    private authService: AuthenticationService,
+  ) {}
 
-  constructor(private router: Router, private authService : AuthenticationService) { }
-
-
+  /**
+   * Registers a user with the provided email, password, and username.
+   *
+   * @param mail - The email of the user.
+   * @param password - The password of the user.
+   * @param username - The username of the user.
+   */
   register(mail: string, password: string, username: string) {
     this.authService.MailSignUp(mail, password, username);
     this.acceptPolicy = true;
   }
 
-
+  /**
+   * Handles the form submission event.
+   *
+   * @param ngForm - The NgForm object representing the form being submitted.
+   */
   onSubmit(ngForm: NgForm) {
     if (ngForm.submitted && ngForm.form.valid && this.acceptPolicy) {
       this.register(this.user.mail, this.user.password, this.user.username);
-    }
-    else {
+    } else {
       console.info('Form is not valid');
       ngForm.resetForm();
     }
   }
 
-  
+  /**
+   * Navigates to the login page.
+   */
   goToLogin() {
     this.authService.registerProcess = false;
     this.router.navigate(['/user/login']);

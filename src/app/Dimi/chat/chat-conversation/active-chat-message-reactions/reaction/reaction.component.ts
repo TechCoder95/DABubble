@@ -25,14 +25,17 @@ export class ReactionComponent implements OnInit {
   constructor(
     private userService: UserService,
     private chatService: ChatService,
-    private subService: GlobalsubService
-  ) { }
+    private subService: GlobalsubService,
+  ) {}
 
   ngOnInit() {
     this.emojiSubscription = this.subService
       .getEmojiObservable()
       .subscribe((emoji: Emoji) => {
-        if (emoji.messageId === this.emoji.messageId && emoji.type === this.emoji.type) {
+        if (
+          emoji.messageId === this.emoji.messageId &&
+          emoji.type === this.emoji.type
+        ) {
           this.loadEmojiReactions(emoji);
         }
       });
@@ -46,8 +49,13 @@ export class ReactionComponent implements OnInit {
     }
   }
 
+  /**
+   * Retrieves the image path for a given emoji.
+   *
+   * @param emoji - The emoji object.
+   * @returns The image path for the emoji.
+   */
   getEmojiImg(emoji: Emoji) {
-
     switch (emoji.type) {
       case 'checkMark':
         return '/img/checkMarkEmoji.svg';
@@ -82,10 +90,21 @@ export class ReactionComponent implements OnInit {
     }
   }
 
+  /**
+   * Returns the number of users who have reacted with the specified emoji.
+   *
+   * @param emoji - The emoji to get the reactions amount for.
+   * @returns The number of users who have reacted with the specified emoji.
+   */
   getEmojiReactionsAmount(emoji: Emoji): number {
     return emoji.usersIds.length;
   }
 
+  /**
+   * Handles the click event for the reaction component.
+   * Sends the current emoji, message, and active user to the chat service.
+   * @returns A promise that resolves when the emoji is sent.
+   */
   async handleClick() {
     let currentEmoji: Emoji = {
       messageId: this.emoji.messageId,
@@ -96,10 +115,16 @@ export class ReactionComponent implements OnInit {
     await this.chatService.sendEmoji(
       currentEmoji,
       this.message,
-      this.activeUser
+      this.activeUser,
     );
   }
 
+  /**
+   * Loads the emoji reactions for a given emoji.
+   *
+   * @param emoji - The emoji for which to load the reactions.
+   * @returns A Promise that resolves to void.
+   */
   async loadEmojiReactions(emoji: Emoji) {
     let emojiReactors: string[] = [];
 
@@ -116,6 +141,12 @@ export class ReactionComponent implements OnInit {
     this.emojiUsersText = this.usersReactionString(emojiReactors);
   }
 
+  /**
+   * Generates a string representing the users' reaction to a message.
+   *
+   * @param emojiReactors - An array of strings representing the users who reacted with emojis.
+   * @returns A string representing the users' reaction.
+   */
   usersReactionString(emojiReactors: string[]): string {
     if (emojiReactors.length === 1 && emojiReactors[0] === 'Du') {
       return `<strong class="reactorNames">${emojiReactors[0]}</strong> hast reagiert`;
@@ -126,7 +157,7 @@ export class ReactionComponent implements OnInit {
     } else if (emojiReactors.length > 2) {
       const lastUser = emojiReactors.pop();
       return `<strong>${emojiReactors.join(
-        ', '
+        ', ',
       )}</strong> und <strong>${lastUser}</strong> haben reagiert`;
     } else {
       return emojiReactors.join('');

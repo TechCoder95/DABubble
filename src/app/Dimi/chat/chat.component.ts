@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  HostListener,
   inject,
   OnDestroy,
   OnInit,
@@ -22,7 +21,6 @@ import { ThreadService } from '../../shared/services/thread.service';
 import { ThreadChannel } from '../../shared/interfaces/thread-channel';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
-import { ChatMessage } from '../../shared/interfaces/chatmessage';
 import { ThreadConversationComponent } from '../../rabia/thread/thread-conversation/thread-conversation.component';
 import { Router } from '@angular/router';
 import { MobileService } from '../../shared/services/mobile.service';
@@ -46,7 +44,6 @@ export class ChatComponent implements OnInit, OnDestroy {
   @Output() selectedChannelFromChat = new EventEmitter<TextChannel>();
   @Output() selectedUserFromChat = new EventEmitter<DABubbleUser>();
   @Output() selectedThreadOwner = new EventEmitter<ThreadChannel>();
-
   @Output() activeUser!: any;
 
   channelsub!: Subscription;
@@ -68,14 +65,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     public mobileService: MobileService,
   ) {}
 
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-  //    if (this.mobileService.isMobile) {
-  //      console.log('Viel Spaß beim Resizen ;-)');
-  //      this.router.navigate(['home']);
-  //    }
-   }
-
+  /**
+   * Initializes the component and emits selected user and channel information.
+   *
+   * @returns {Promise<void>} A promise that resolves when the component is initialized.
+   */
   async ngOnInit() {
     this.selectedUserFromChat.emit(
       JSON.parse(sessionStorage.getItem('userLogin')!),
@@ -109,6 +103,10 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Lifecycle hook that is called when the component is about to be destroyed.
+   * Unsubscribes from the channelsub and threadsub if they exist.
+   */
   ngOnDestroy() {
     if (this.channelsub) {
       this.channelsub.unsubscribe();
@@ -117,6 +115,11 @@ export class ChatComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Checks if the 'selectedThread' item exists in the sessionStorage.
+   *
+   * @returns {boolean} Returns true if the 'selectedThread' item exists in the sessionStorage, otherwise returns false.
+   */
   getStorage() {
     if (sessionStorage.getItem('selectedThread')) {
       return true;
@@ -124,11 +127,12 @@ export class ChatComponent implements OnInit, OnDestroy {
     return false;
   }
 
+  /**
+   * Retrieves the current URL from the router.
+   *
+   * @returns The current URL.
+   */
   getUrl() {
     return this.router.url;
-  }
-
-  windowIsSmall() {
-    return window.innerWidth <= 910;
   }
 }

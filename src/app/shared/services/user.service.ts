@@ -352,6 +352,13 @@ export class UserService {
     return users;
   }
 
+  /**
+   * Searches for users excluding the selected users.
+   *
+   * @param searchText - The text to search for.
+   * @param selectedUsers - An array of selected users to exclude from the search results.
+   * @returns A promise that resolves to an array of users matching the search criteria, excluding the selected users.
+   */
   async searchUsersExcludingSelected(
     searchText: string,
     selectedUsers: DABubbleUser[],
@@ -377,6 +384,13 @@ export class UserService {
     return users;
   }
 
+  /**
+   * Checks if the given data's username or email matches the provided search text.
+   *
+   * @param data - The data object to check.
+   * @param lowerCaseSearchText - The search text to match against the username or email.
+   * @returns True if the username or email matches the search text, false otherwise.
+   */
   usernameOrEmailMatchText(data: any, lowerCaseSearchText: string) {
     return (
       (data.username &&
@@ -385,20 +399,39 @@ export class UserService {
     );
   }
 
+  /**
+   * Sets the selected user.
+   *
+   * @param user - The user to be set as the selected user. Pass `null` to clear the selected user.
+   */
   setSelectedUser(user: DABubbleUser | null) {
     this.selectedUserSubject.next(user);
   }
 
+  /**
+   * Retrieves the selected user.
+   *
+   * @returns The selected user or null if no user is selected.
+   */
   getSelectedUser(): DABubbleUser | null {
     return this.selectedUserSubject.value;
   }
 
+  /**
+   * Retrieves all users from the database.
+   * @returns A promise that resolves to an array of DABubbleUser objects.
+   */
   async getAllUsersFromDB(): Promise<DABubbleUser[]> {
     const users = await this.DatabaseService.readDataFromDB('users');
     return users as DABubbleUser[];
   }
-  
 
+  /**
+   * Retrieves the default user by their UID.
+   *
+   * @param uid - The UID of the user.
+   * @returns A Promise that resolves to a DABubbleUser object if found, otherwise undefined.
+   */
   async getDefaultUserByUid(uid: string): Promise<DABubbleUser | undefined> {
     const usersRef = collection(
       this.DatabaseService.firestore,
@@ -415,6 +448,13 @@ export class UserService {
     }
   }
 
+  /**
+   * Adds a default user to the database.
+   *
+   * @param user - The user object to be added to the database.
+   * @returns A promise that resolves with the ID of the added user.
+   * @throws If there is an error adding the user to the database.
+   */
   async addDefaultUserToDatabase(user: DABubbleUser): Promise<string> {
     try {
       const userRef = doc(
@@ -430,6 +470,11 @@ export class UserService {
     }
   }
 
+  /**
+   * Creates default users in the system.
+   *
+   * @returns A promise that resolves to an array of DABubbleUser objects representing the default users.
+   */
   async createDefaultUsers(): Promise<DABubbleUser[]> {
     const defaultUsers: DABubbleUser[] = [
       {
@@ -457,11 +502,11 @@ export class UserService {
         uid: 'Mia-uid',
       },
     ];
-  
+
     for (let i = 0; i < defaultUsers.length; i++) {
       const user = defaultUsers[i];
       const existingUser = await this.getDefaultUserByUid(user.uid!);
-      
+
       if (!existingUser) {
         const userId = await this.addDefaultUserToDatabase(user);
         defaultUsers[i].id = userId;
@@ -469,8 +514,7 @@ export class UserService {
         defaultUsers[i] = existingUser;
       }
     }
-  
+
     return defaultUsers;
   }
-  
 }
