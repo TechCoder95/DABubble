@@ -5,11 +5,9 @@
   getUrl() !== "/user/chooseAvatar"
 ) {
   <div class="mobile-p flex justify-content-between align-items-center">
-    @if (inChannel) {
+    @if (this.mobileService.isMobile && getUrl() !== "/home") {
       <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
-    }
 
-    @if (inChannel) {
       <img
         class="logo"
         src="/img/devspace-small-screen.svg"

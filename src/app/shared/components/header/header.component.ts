@@ -35,7 +35,7 @@ export class HeaderComponent implements OnInit {
     public AuthService: AuthenticationService,
     private router: Router,
     private userService: UserService,
-    private mobileService: MobileService,
+    public mobileService: MobileService,
   ) {}
 
   activeUser!: DABubbleUser;
@@ -56,16 +56,14 @@ export class HeaderComponent implements OnInit {
         this.activeGoogleUser = user;
       });
     }
-
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe(() => {
-        this.checkConditions();
-      });
+    this.checkRoute();
   }
 
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
+
+
+
+
+  checkRoute() {
     if (window.innerWidth <= 910) {
       /* console.log('Viel Spaß beim Resizen ;-)');
       console.log(this.router.url); */
@@ -79,6 +77,8 @@ export class HeaderComponent implements OnInit {
         console.log('hier1');
       } else if (this.router.url.includes('channel')) {
         this.mobileService.isMobile = true;
+        
+        this.checkConditions();
         this.router.navigate([
           'channel',
           JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
@@ -111,6 +111,15 @@ export class HeaderComponent implements OnInit {
         console.log('da3');
       }
     }
+  
+  
+  }
+
+
+
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.checkRoute();
   }
 
   openMenu() {

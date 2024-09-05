@@ -6,5 +6,11 @@ import { Injectable } from '@angular/core';
 export class MobileService {
   isMobile: boolean = false;
   isChat: boolean = false;
-  constructor() {}
+  constructor() {
+
+    if (window.innerWidth <= 910) {
+      this.isMobile = true;
+    }
+
+  }
 }

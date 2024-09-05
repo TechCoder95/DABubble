@@ -196,18 +196,26 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.initializeSubscriptions();
     }
 
-    if (!this.mobileService.isMobile) {
-      // todo channel id eventuell ändern
-      if (!this.router.url.includes('channel')) {
-        const defaultNode: Node = {
-          id: 'WySZLkL6ofOWVboysfcO',
-          name: 'allgemein',
-          type: 'groupChannel',
-        };
-        await this.selectChannel(defaultNode);
-        this.router.navigate(['home','channel', defaultNode.id]);
+    if(window.innerWidth > 910){
+      if (!this.mobileService.isMobile) {
+        // todo channel id eventuell ändern
+        if (!this.router.url.includes('channel')) {
+          const defaultNode: Node = {
+            id: 'WySZLkL6ofOWVboysfcO',
+            name: 'allgemein',
+            type: 'groupChannel',
+          };
+          await this.selectChannel(defaultNode);
+          this.router.navigate(['home','channel', defaultNode.id]);
+        }
       }
     }
+
+
+
+
+
+   
 
     /*  this.settings(); */
   }
@@ -493,11 +501,21 @@ export class SidenavComponent implements OnInit, OnDestroy {
    */
   async navToSelectedChannel(selectedChannel: TextChannel) {
     sessionStorage.setItem('selectedChannel', JSON.stringify(selectedChannel));
-    await this.router.navigate(['/home']);
-    setTimeout(async () => {
-      this.router.navigate(['/home/channel', selectedChannel.id]);
-    }, 0.1);
-    this.subscriptionService.updateActiveChannel(selectedChannel);
+
+    if (!this.mobileService.isMobile) {
+      await this.router.navigate(['/home']);
+      setTimeout(async () => {
+        this.router.navigate(['/home/channel', selectedChannel.id]);
+      }, 0.1);
+      this.subscriptionService.updateActiveChannel(selectedChannel);
+    } else{
+      await this.router.navigate(['/channel', selectedChannel.id]);
+      this.subscriptionService.updateActiveChannel(selectedChannel);
+    }
+
+
+
+   
   }
 
   /**
