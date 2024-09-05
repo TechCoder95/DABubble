@@ -2,7 +2,7 @@
 
 ## Beschreibung
 
-Das Projekt DABubble ist ein Prjekt der Developerakademie aus dem forntend Kurs. Dazusagen das Abschlussprojekt.
+Das Projekt DABubble ist ein Projekt der Developerakademie aus dem Frontend Kurs. Sozusagen das Abschlussprojekt.
 Das Projekt ist ein Chatclon von Slack oder Discord ohne Sprache.
 Es ist ein Chatclient mit Authentifizierung, Threads, Privatchanneln, Usermanagement
 
