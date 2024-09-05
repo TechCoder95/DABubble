@@ -1,7 +1,19 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, HostListener, inject, Inject, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  HostListener,
+  inject,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { MemberComponent } from './member/member.component';
 import { UserService } from '../../../../shared/services/user.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
@@ -25,36 +37,34 @@ export class DialogChannelMembersComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
-
   constructor(
     private userService: UserService,
     public channelService: ChannelService,
     private databaseService: DatabaseService,
     public dialogRef: MatDialogRef<DialogChannelMembersComponent>,
     private subService: GlobalsubService,
-    @Inject(MAT_DIALOG_DATA) public data: any
-  ) {
-
-  }
+    @Inject(MAT_DIALOG_DATA) public data: any,
+  ) {}
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
     this.activeUser.isLoggedIn = true;
-    JSON.parse(sessionStorage.getItem('selectedChannel')!).assignedUser.forEach((userID: string) => {
-      this.databaseService.readDataByField('users', 'id', userID).then((user) => {
-        user.forEach((x: DABubbleUser) => {
-          if (x && x.id !== this.activeUser.id) {
-            this.channelMembers.push(x);
-          }
-        }
-        );
-      });
-    }
+    JSON.parse(sessionStorage.getItem('selectedChannel')!).assignedUser.forEach(
+      (userID: string) => {
+        this.databaseService
+          .readDataByField('users', 'id', userID)
+          .then((user) => {
+            user.forEach((x: DABubbleUser) => {
+              if (x && x.id !== this.activeUser.id) {
+                this.channelMembers.push(x);
+              }
+            });
+          });
+      },
     );
 
     await this.addChannelMembers();
   }
-
 
   async addChannelMembers() {
     this.subService.getActiveChannelObservable().subscribe((channel) => {
@@ -67,28 +77,34 @@ export class DialogChannelMembersComponent implements OnInit {
               this.channelMembers.push(x);
             }
           });
-        }
-        );
+        });
       }
     });
   }
-
 
   addMembers() {
     this.closeDialog();
 
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
-    const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
-      position: {
-        top: `${rect.top + window.scrollY}px`,
-        left: `${rect.left + window.scrollX - 135}px`,
-      },
-    });
 
+    if (window.innerWidth >= 910) {
+      const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+        position: {
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX - 135}px`,
+        },
+      });
+    } else {
+      const dialogAdd = this.dialog.open(DialogAddChannelMembersComponent, {
+        position: {
+          top: `${rect.top + window.scrollY}px`,
+          left: `${rect.left + window.scrollX - 35}px`,
+        },
+      });
+    }
   }
 
-
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth >= 910) {
       console.log('Viel Spaß beim Resizen ;-)');
