@@ -1,27 +1,43 @@
-# Dabubble
+# DABUBBLE
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.0.1.
+## Beschreibung
+Dieses Projekt ist eine Beispielanwendung, die zeigt, wie man eine README-Datei erstellt. Die README-Datei enthält wichtige Informationen über das Projekt, wie z.B. die Installation, Nutzung und Mitwirkungsmöglichkeiten.
 
-## Development server
+## Installation
+1. Klone das Repository:
+   ```bash
+   git clone https://github.com/techcoder95/dabubble.git
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+Wechsle in das Projektverzeichnis:
+cd projektname
 
-## Code scaffolding
+Installiere die Abhängigkeiten:
+npm install
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Nutzung
+Um die Anwendung zu starten, führe den folgenden Befehl aus:
 
-## Build
+npm start
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+Die Anwendung wird auf http://localhost:4200 laufen.
 
-## Running unit tests
+Mitwirken
+Beiträge sind willkommen! Bitte folge diesen Schritten, um beizutragen:
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Forke das Repository.
+Erstelle einen neuen Branch:
+git checkout -b feature/NeuesFeature
 
-## Running end-to-end tests
+Nimm deine Änderungen vor und committe sie:
+git commit -m 'Füge neues Feature hinzu'
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Pushe den Branch:
+git push origin feature/NeuesFeature
 
-## Further help
+Erstelle einen Pull Request.
+Lizenz
+Dieses Projekt ist unter der MIT-Lizenz lizenziert. Siehe die LICENSE Datei für weitere Details.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Kontakt
+Für Fragen oder Anregungen, bitte eine E-Mail an dominik.knezovic@knezovic-it.com senden.
+
