@@ -5,9 +5,10 @@ import { ChatMessage } from '../interfaces/chatmessage';
 import { Router } from '@angular/router';
 import { GlobalsubService } from './globalsub.service';
 import { UserService } from './user.service';
+import { MobileService } from './mobile.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ThreadService {
   thread: ThreadChannel;
@@ -18,8 +19,13 @@ export class ThreadService {
 
   @Output() selectedMessage: EventEmitter<ChatMessage> = new EventEmitter();
 
-
-  constructor(private userService: UserService, private databaseService: DatabaseService, private router: Router, private subService: GlobalsubService) {
+  constructor(
+    private userService: UserService,
+    private databaseService: DatabaseService,
+    private router: Router,
+    private subService: GlobalsubService,
+    private mobileService: MobileService,
+  ) {
     this.thread = JSON.parse(sessionStorage.getItem('selectedThread') || '{}');
   }
 
@@ -28,7 +34,7 @@ export class ThreadService {
   }
 
   setTicket(ticket: ChatMessage) {
-    this.ticket = ticket
+    this.ticket = ticket;
   }
 
   getTicket() {
@@ -53,18 +59,21 @@ export class ThreadService {
       channelID: this.ticket.channelId,
       userID: user.id!,
       messages: [],
-      id: ''
-    }
+      id: '',
+    };
 
-    const selectedChannel = await JSON.parse(sessionStorage.getItem('selectedChannel') || '{}');
-    const threadFromDB = await this.databaseService.getThreadByMessage(thread.messageID);
+    const selectedChannel = await JSON.parse(
+      sessionStorage.getItem('selectedChannel') || '{}',
+    );
+    const threadFromDB = await this.databaseService.getThreadByMessage(
+      thread.messageID,
+    );
 
     if (threadFromDB === null) {
       await this.databaseService.addDataToDB('threads', thread).then((res) => {
         thread.id! = res;
       });
-    }
-    else {
+    } else {
       thread.id = threadFromDB.id;
     }
     sessionStorage.setItem('selectedThread', JSON.stringify(thread));
@@ -72,17 +81,29 @@ export class ThreadService {
     this.subService.updateActiveThread(thread);
 
     sessionStorage.setItem('threadMessage', JSON.stringify(this.chatMessage));
-    this.router.navigate(['home/channel/' + selectedChannel.id]);
-    setTimeout(() => {
-      this.router.navigate(['home/channel/' + selectedChannel.id + "/thread/" + thread.id]);
-    }, 0.1);
+
+    if (!this.mobileService.isMobile) {
+      this.router.navigate(['home/channel/' + selectedChannel.id]);
+      setTimeout(() => {
+        this.router.navigate([
+          'home/channel/' + selectedChannel.id + '/thread/' + thread.id,
+        ]);
+      }, 0.1);
+    } else {
+      this.router.navigate(['/channel/' + selectedChannel.id]);
+      setTimeout(() => {
+        this.router.navigate(['thread', thread.id]);
+      }, 0.1);
+    }
   }
 
   close() {
     this.selectedThread = false;
     sessionStorage.removeItem('selectedThread');
     sessionStorage.removeItem('threadMessage');
-    this.router.navigate(['home/channel/' + JSON.parse(sessionStorage.getItem('selectedChannel')!).id]);
+    this.router.navigate([
+      'home/channel/' +
+        JSON.parse(sessionStorage.getItem('selectedChannel')!).id,
+    ]);
   }
-
 }
