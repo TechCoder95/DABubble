@@ -46,8 +46,8 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     public channelService: ChannelService,
     public userService: UserService,
     public dialog: MatDialog,
-    public router: Router
-  ) { }
+    public router: Router,
+  ) {}
 
   ngAfterViewInit(): void {
     setTimeout(() => this.inputName.nativeElement.blur(), 200);
@@ -59,7 +59,7 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
     keyup$.subscribe((event: KeyboardEvent) => this.searchUser(event));
   }
 
-  @HostListener("window:resize", ["$event"])
+  @HostListener('window:resize', ['$event'])
   onResize(): void {
     if (window.innerWidth >= 910) {
       console.log('Viel Spaß beim Resizen ;-)');
@@ -144,5 +144,9 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
         }, 0.1);
       }
     }
+  }
+
+  windowIsSmall() {
+    return window.innerWidth <= 910;
   }
 }

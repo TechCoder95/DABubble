@@ -31,7 +31,9 @@
               <img [src]="result.avatar" />
               <span>
                 <h4>{{ result.username }}</h4>
-                <p>{{ result.mail }}</p>
+                @if (!windowIsSmall()) {
+                  <p>{{ result.mail }}</p>
+                }
               </span>
             </li>
           }
