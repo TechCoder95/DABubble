@@ -213,3 +213,17 @@ h5 {
     gap: clamp(0.75rem, 0.3578rem + 1.5686vw, 1.25rem);
   }
 }
+
+@media (max-width: 340px) {
+  .sender-and-time {
+    flex-direction: column;
+    align-items: start !important;
+    gap: 2px !important;
+  }
+
+  .style-thread-answers {
+    flex-direction: column;
+    align-items: start;
+    gap: 4px;
+  }
+}

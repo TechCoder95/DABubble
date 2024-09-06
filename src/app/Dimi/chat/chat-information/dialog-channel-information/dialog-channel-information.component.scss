@@ -54,11 +54,11 @@ h3 {
   align-items: center;
   gap: 5px;
 
-  > p {
+  >p {
     font-size: 18px;
   }
 
-  > h3 {
+  >h3 {
     font-size: clamp(20px, 3vw, 24px);
   }
 }
@@ -87,7 +87,7 @@ h3 {
   display: flex;
   justify-content: space-between;
 
-  > p:last-child {
+  >p:last-child {
     color: rgba(83, 90, 241, 1);
     transition: font-weight 0.3s ease-in-out;
     cursor: pointer;
@@ -103,7 +103,7 @@ h3 {
   align-items: center;
   gap: 10px;
 
-  > img {
+  >img {
     height: 20px;
     width: 20px;
   }
@@ -230,4 +230,24 @@ WHEN CLICKING ON EDIT TITLE
   app-dialog-channel-members {
     margin: -25px;
   }
+}
+
+@media (max-height: 1000px) {
+  .edit-channel-header {
+    height: 60px;
+  }
+
+  .edit-channel-name {
+    margin-top: 56px;
+    gap: 20px !important;
+  }
+
+  .channel-description-wrapper {
+    gap: 8px;
+  }
+
+  .channel-info {
+    gap: 8px;
+  }
+
 }

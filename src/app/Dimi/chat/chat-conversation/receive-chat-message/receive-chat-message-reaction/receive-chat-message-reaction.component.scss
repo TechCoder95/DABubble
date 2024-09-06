@@ -39,3 +39,12 @@ main {
   gap: 5px;
   border: 1px solid rgb(173, 176, 217);
 }
+
+// todo bitte einmal testen, gefällt mir so tatsächlich NICHT gut, da die Reactions nicht mehr sichtbar sind
+// @media (max-width: 950px) {
+//   .add-reactions-div {
+//     grid-template-columns: repeat(5, 1fr);
+//     grid-template-rows: repeat(2, 1fr);
+//     display: grid;
+//   }
+// }

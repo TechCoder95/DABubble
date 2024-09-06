@@ -83,3 +83,15 @@ p {
     display: none;
   }
 }
+
+@media (max-height: 1000px) {
+  .wrapper {
+    height: 40vh;
+  }
+}
+
+@media (max-height: 805px) {
+  .wrapper {
+    height: 32vh;
+  }
+}

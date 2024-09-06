@@ -10,7 +10,8 @@
   width: 100%;
   cursor: default;
   border: 1px solid rgb(173, 176, 217);
-  > figure {
+
+  >figure {
     margin: 0;
     padding: 8px;
     cursor: pointer;
@@ -19,9 +20,39 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     &:hover {
       background-color: #eceefe;
       border-radius: 100%;
     }
+  }
+}
+
+@media (max-width: 1100px) {
+  .emoji-selection {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 910px) {
+  .emoji-selection {
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+  }
+}
+
+@media (max-width: 650px) {
+  .emoji-selection {
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 400px) {
+  .emoji-selection {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
   }
 }
