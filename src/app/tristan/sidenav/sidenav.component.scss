@@ -223,3 +223,14 @@ section{
     }
   }
 }
+
+.selected-background {
+  background: rgb(236, 238, 254);
+}
+
+.spinner{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

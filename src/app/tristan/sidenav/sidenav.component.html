@@ -1,172 +1,108 @@
 @if (!this.channelService.loading) {
-  @if (activeUser && !(mobileService.isMobile && mobileService.isChat)) {
-    <mat-drawer-container class="h-full relative" autosize>
-      <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
-        <app-searchbar class="show-if-mobile"></app-searchbar>
+@if (activeUser && !(mobileService.isMobile && mobileService.isChat)) {
+<mat-drawer-container class="h-full relative" autosize>
+  <mat-drawer #drawer class="p-4 sidenav-style" mode="side" [opened]="true">
+    <app-searchbar class="show-if-mobile"></app-searchbar>
 
-        <div
-          class="flex align-items-center justify-content-between hide-if-mobile"
-        >
-          <div class="flex align-items-center">
-            <img src="img/devspace.svg" alt="devspace-logo" />
-            <h3 class="text-3xl m-2">Devspace</h3>
-          </div>
-          <div (click)="navToCreateNewChat()" class="new-channel"></div>
-        </div>
+    <div class="flex align-items-center justify-content-between hide-if-mobile">
+      <div class="flex align-items-center">
+        <img src="img/devspace.svg" alt="devspace-logo" />
+        <h3 class="text-3xl m-2">Devspace</h3>
+      </div>
+      <div (click)="navToCreateNewChat()" class="new-channel"></div>
+    </div>
 
-        <mat-tree
-          class="mt-5"
-          [dataSource]="dataSource"
-          [treeControl]="treeControl"
-        >
-          <mat-tree-node
-            *matTreeNodeDef="let channelNode"
-            (mouseenter)="hoverTreeNode(true, channelNode.id)"
-            (mouseleave)="hoverTreeNode(false, channelNode.id)"
-            (click)="onNode($event, channelNode)"
-          >
-            <div class="flex align-items-center cursor-pointer pl-48">
-              <!-- <button mat-icon-button></button> -->
-              <ng-container *ngIf="channelNode">
-                <img
-                  *ngIf="isGroupChannel(channelNode)"
-                  class="mr-3"
-                  [src]="
-                    hoverStates[channelNode.id] ||
-                    selectedChannel.id === channelNode.id
-                      ? './img/tag-hover.svg'
-                      : './img/sidenav-tag-default.svg'
-                  "
-                  alt="channel"
-                />
-                <img
-                  *ngIf="isActionNode(channelNode)"
-                  class="mr-3"
-                  src="img/add-channel-2.svg"
-                  alt="add-channel"
-                />
-                <div
-                  *ngIf="isDirectChannel(channelNode)"
-                  class="mr-3 img-container relative"
-                >
-                  <img
-                    class="border-circle"
-                    style="width: 50px"
-                    [src]="channelNode.avatar"
-                    alt="pm"
-                  />
-                  <div
-                    class="online-status"
-                    [ngClass]="channelNode.isLoggedIn ? 'green' : 'grey'"
-                  ></div>
-                </div>
-              </ng-container>
+    <mat-tree class="mt-5" [dataSource]="dataSource" [treeControl]="treeControl">
+      <mat-tree-node *matTreeNodeDef="let channelNode" (mouseenter)="hoverTreeNode(true, channelNode.id)"
+        (mouseleave)="hoverTreeNode(false, channelNode.id)" (click)="onNode($event, channelNode)" [ngClass]="{
+              'selected-background':
+                hoverStates[channelNode.id] ||
+                selectedChannel.id === channelNode.id,
+            }">
+        <div class="flex align-items-center cursor-pointer pl-48">
+          <!-- <button mat-icon-button></button> -->
+          <ng-container *ngIf="channelNode">
+            <img *ngIf="isGroupChannel(channelNode)" class="mr-3"
+              [src]=" hoverStates[channelNode.id] || selectedChannel.id === channelNode.id ? './img/tag-hover.svg' : './img/sidenav-tag-default.svg'" />
+            <img *ngIf="isActionNode(channelNode)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
+            <div *ngIf="isDirectChannel(channelNode)" class="mr-3 img-container relative">
+              <img class="border-circle" style="width: 50px" [src]="channelNode.avatar" alt="pm" />
+              <div class="online-status" [ngClass]="channelNode.isLoggedIn ? 'green' : 'grey'"></div>
+            </div>
+          </ng-container>
 
-              <span
-                [routerLink]="['/home/channel', channelNode.id]"
-                routerLinkActive="selected-channel"
-                [ngClass]="{
+          <span [routerLink]="['/home/channel', channelNode.id]" routerLinkActive="selected-channel" [ngClass]="{
                   'cursor-pointer': true,
                   'blue-channel-name': isGroupChannel(channelNode),
                   'blue-name': isCategoryNode(channelNode),
                   'font-bold': isCategoryNode(channelNode),
                   'blue-action-name': isActionNode(channelNode),
                   'router-link-active-class': true,
-                }"
-                >{{ channelNode.name }}</span
-              >
-            </div>
-          </mat-tree-node>
+                }">{{ channelNode.name }}</span>
+        </div>
+      </mat-tree-node>
 
-          <mat-tree-node *matTreeNodeDef="let channelNode; when: hasChild">
-            <div
-              class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
-              matTreeNodeToggle
-            >
-              <div class="flex align-items-center">
-                <button
-                  mat-icon-button
-                  (click)="$event.stopPropagation()"
-                  matTreeNodeToggle
-                >
-                  <mat-icon
-                    class="mat-icon-rtl-mirror align-items-center flex justify-content-center"
-                  >
-                    <img
-                      style="width: 10px; height: 10px"
-                      [src]="
+      <mat-tree-node *matTreeNodeDef="let channelNode; when: hasChild">
+        <div class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter test-class"
+          matTreeNodeToggle (mouseenter)="hoverChannelImg(true, channelNode.name)"
+          (mouseleave)="hoverChannelImg(false, channelNode.name)">
+          <div class="flex align-items-center">
+            <button mat-icon-button (click)="$event.stopPropagation()" matTreeNodeToggle>
+              <mat-icon class="mat-icon-rtl-mirror align-items-center flex justify-content-center">
+                <img style="width: 10px; height: 10px" [src]="
                         treeControl.isExpanded(channelNode)
                           ? 'img/arrow_down.svg'
                           : 'img/arrow-right.svg'
-                      "
-                      alt="toggle icon"
-                    />
-                  </mat-icon>
-                </button>
-                <ng-container *ngIf="channelNode">
-                  <img
-                    *ngIf="
+                      " alt="toggle icon" />
+              </mat-icon>
+            </button>
+            <ng-container *ngIf="channelNode">
+              <img *ngIf="
                       isCategoryNode(channelNode) &&
                       channelNode.name === 'Channels'
-                    "
-                    class="mr-3"
-                    src="img/channels.svg"
-                    alt="channels"
-                  />
-                  <img
-                    *ngIf="
+                    " class="mr-3" [src]="channelImg" alt="channels" />
+              <div class="mr-3 channel-test"></div>
+              <img *ngIf="
                       isCategoryNode(channelNode) &&
                       channelNode.name === 'Direktnachrichten'
-                    "
-                    class="mr-3"
-                    src="img/account_circle.svg"
-                  />
-                </ng-container>
-                <span
-                  matTreeNodeToggle
-                  [ngClass]="{
+                    " class="mr-3" [src]="directMessageImg" />
+            </ng-container>
+            <span matTreeNodeToggle [ngClass]="{
                     'cursor-pointer': true,
                     'blue-channel-name': isGroupChannel(channelNode),
                     'blue-name': isCategoryNode(channelNode),
                     'font-bold': isCategoryNode(channelNode),
                     'blue-action-name': isActionNode(channelNode),
                     'selected-channel': isSelectedChannel(channelNode),
-                  }"
-                >
-                  {{ channelNode.name }}</span
-                >
-              </div>
-              <ng-container *ngIf="channelNode.name === 'Channels'">
-                <div
-                  (click)="openAddChannelDialog($event)"
-                  class="add-channel hover"
-                ></div>
-              </ng-container>
-            </div>
-          </mat-tree-node>
-        </mat-tree>
-        <div class="style-mobile-channel-btn">
-          <div (click)="navToCreateNewChat()" class="new-channel-mobile"></div>
+                  }">
+              {{ channelNode.name }}</span>
+          </div>
+          <ng-container *ngIf="channelNode.name === 'Channels'">
+            <div (click)="openAddChannelDialog($event)" class="add-channel hover"></div>
+          </ng-container>
         </div>
-      </mat-drawer>
-    </mat-drawer-container>
-
-    <div
-      class="absolute z-5 -rotate-90 cursor-pointer button new-channel-mobile"
-      (click)="drawer.toggle(); workspaceMenuOpen = !workspaceMenuOpen"
-      (mouseenter)="changeWorkspaceImg(true)"
-      (mouseleave)="changeWorkspaceImg(false)"
-    >
-      @if (workspaceMenuOpen) {
-        <span>Workspace-Menü schließen</span>
-      } @else {
-        <span>Workspace-Menü öffnen</span>
-      }
-
-      <img
-        [src]="workspaceMenuOpen ? imgWorkspaceOpen : imgworkspaceClosed"
-        class="rotate-90 align-self-center"
-      />
+      </mat-tree-node>
+    </mat-tree>
+    <div class="style-mobile-channel-btn">
+      <div (click)="navToCreateNewChat()" class="new-channel-mobile"></div>
     </div>
+  </mat-drawer>
+</mat-drawer-container>
+
+<div class="absolute z-5 -rotate-90 cursor-pointer button new-channel-mobile"
+  (click)="drawer.toggle(); workspaceMenuOpen = !workspaceMenuOpen" (mouseenter)="changeWorkspaceImg(true)"
+  (mouseleave)="changeWorkspaceImg(false)">
+  @if (workspaceMenuOpen) {
+  <span>Workspace-Menü schließen</span>
+  } @else {
+  <span>Workspace-Menü öffnen</span>
   }
+
+  <img [src]="workspaceMenuOpen ? imgWorkspaceOpen : imgworkspaceClosed" class="rotate-90 align-self-center" />
+</div>
+}
+} @else if (this.channelService.loading && this.mobileService.isMobile) {
+<div class="spinner">
+  <mat-spinner></mat-spinner>
+</div>
 }
