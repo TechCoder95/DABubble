@@ -24,6 +24,11 @@
             (mouseenter)="hoverTreeNode(true, channelNode.id)"
             (mouseleave)="hoverTreeNode(false, channelNode.id)"
             (click)="onNode($event, channelNode)"
+            [ngClass]="{
+              'selected-background':
+                hoverStates[channelNode.id] ||
+                selectedChannel.id === channelNode.id,
+            }"
           >
             <div class="flex align-items-center cursor-pointer pl-48">
               <!-- <button mat-icon-button></button> -->
@@ -80,8 +85,10 @@
 
           <mat-tree-node *matTreeNodeDef="let channelNode; when: hasChild">
             <div
-              class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter"
+              class="flex align-items-center justify-content-between cursor-pointer w-full blue-filter test-class"
               matTreeNodeToggle
+              (mouseenter)="hoverChannelImg(true, channelNode.name)"
+              (mouseleave)="hoverChannelImg(false, channelNode.name)"
             >
               <div class="flex align-items-center">
                 <button
@@ -110,16 +117,17 @@
                       channelNode.name === 'Channels'
                     "
                     class="mr-3"
-                    src="img/channels.svg"
+                    [src]="channelImg"
                     alt="channels"
                   />
+                  <div class="mr-3 channel-test"></div>
                   <img
                     *ngIf="
                       isCategoryNode(channelNode) &&
                       channelNode.name === 'Direktnachrichten'
                     "
                     class="mr-3"
-                    src="img/account_circle.svg"
+                    [src]="directMessageImg"
                   />
                 </ng-container>
                 <span

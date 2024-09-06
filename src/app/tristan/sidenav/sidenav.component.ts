@@ -669,4 +669,19 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.activeChannelSubscription.unsubscribe();
     }
   }
+
+  /*  arrowDown: string = 'img/arrow_down.svg'; */
+  channelImg: string = 'img/channels.svg';
+  directMessageImg: string = 'img/account_circle.svg';
+  hoverChannelImg(hover: boolean, channelNodeName: string) {
+    if (hover && channelNodeName === 'Channels') {
+      this.channelImg = 'img/sidenav-channel-logo-hover.svg';
+    } else if (!hover && channelNodeName === 'Channels') {
+      this.channelImg = 'img/channels.svg';
+    } else if (hover && channelNodeName === 'Direktnachrichten') {
+      this.directMessageImg = 'img/account_circle-hover.svg';
+    } else {
+      this.directMessageImg = 'img/account_circle.svg';
+    }
+  }
 }
