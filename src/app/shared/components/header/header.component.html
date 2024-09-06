@@ -6,7 +6,8 @@
 ) {
   <div class="mobile-p flex justify-content-between align-items-center">
     @if (this.mobileService.isMobile && getUrl() !== "/home") {
-      <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
+      <div class="flex">
+        <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
 
       <img
         class="logo"
@@ -14,6 +15,7 @@
         alt="dabubble-logo"
         (click)="backToSidenav()"
       />
+      </div>
     } @else {
       <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
     }
