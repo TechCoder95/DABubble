@@ -210,7 +210,7 @@ export class ChatInformationComponent implements OnInit {
     return {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.right - dialogWidth}px`,
+        left: `${rect.right - dialogWidth - 40}px`,
       },
       panelClass: 'custom-dialog-container',
       data: { channelMembers: this.assignedUsers },
@@ -230,17 +230,11 @@ export class ChatInformationComponent implements OnInit {
   }
 
   returnDialogConfigAddUsers(rect: any) {
-    /* let dialogWidth: number;
-    if (window.innerWidth <= 910) {
-      dialogWidth = 350;
-    } else {
-      dialogWidth = 542;
-    } */
     const dialogWidth: number = 542;
     return {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.right - dialogWidth}px`,
+        left: `${rect.right - dialogWidth - 40 }px`,
       },
       panelClass: 'custom-dialog-container',
       data: { channelMembers: this.assignedUsers },
