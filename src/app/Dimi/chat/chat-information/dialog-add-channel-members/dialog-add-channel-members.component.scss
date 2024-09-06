@@ -170,6 +170,14 @@ button {
     padding: 20px;
   }
 
+  :root {
+  --overlay-margin-left: calc(100% - 320px);
+}
+
+#cdk-overlay-3 {
+  margin-left: var(--overlay-margin-left);
+}
+
   input {
     width: auto;
   }

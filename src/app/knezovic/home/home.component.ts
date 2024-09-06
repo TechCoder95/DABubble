@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  HostBinding,
   HostListener,
   OnDestroy,
   OnInit,
@@ -16,7 +17,7 @@ import {
 import { filter, Subscription, tap } from 'rxjs';
 import { DABubbleUser } from '../../shared/interfaces/user';
 import { User } from 'firebase/auth';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ChannelService } from '../../shared/services/channel.service';
@@ -38,6 +39,9 @@ import { MobileService } from '../../shared/services/mobile.service';
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit, OnDestroy {
+  @HostBinding('class.small-screen-channel') isSmallScreenChannel = false;
+  routerEventsSub: any;
+
   constructor(
     private globalSubService: GlobalsubService,
     private router: Router,
@@ -85,6 +89,14 @@ export class HomeComponent implements OnInit, OnDestroy {
         .subscribe((data) => {
           this.onlineStatusChange.emit(data.onlineUser);
         });
+
+    this.checkConditions();
+    window.addEventListener('resize', this.checkConditions.bind(this));
+    this.routerEventsSub = this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.checkConditions();
+      });
   }
 
   ngOnDestroy(): void {
@@ -93,6 +105,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (this.googleUserSub) this.googleUserSub.unsubscribe();
 
     if (this.onlineStatusSub) this.onlineStatusSub.unsubscribe();
+
+    if (this.routerEventsSub) this.routerEventsSub.unsubscribe();
   }
 
   /**
@@ -139,5 +153,14 @@ export class HomeComponent implements OnInit, OnDestroy {
       return true;
     }
     return false;
+  }
+
+  /**
+   * Checks if the window width is less than 910px and if the current URL includes 'channel'.
+   * Sets the `isSmallScreenChannel` property accordingly.
+   */
+  checkConditions(): void {
+    this.isSmallScreenChannel =
+      window.innerWidth < 910 && this.router.url.includes('channel');
   }
 }

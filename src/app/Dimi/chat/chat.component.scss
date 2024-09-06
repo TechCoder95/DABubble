@@ -45,7 +45,13 @@ app-chat{
 
 @media (max-width: 910px) {
 
+  :host{
+    height: 100%;
+    display: flex;
+  }
+
   mat-card {
+    flex: 1;
     width: 100vw;
     left: 0;
     right: 0;

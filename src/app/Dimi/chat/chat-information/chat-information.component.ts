@@ -9,9 +9,7 @@ import { UserService } from '../../../shared/services/user.service';
 import { DABubbleUser } from '../../../shared/interfaces/user';
 import { Subscription } from 'rxjs';
 import { TextChannel } from '../../../shared/interfaces/textchannel';
-import {
-  GlobalsubService,
-} from '../../../shared/services/globalsub.service';
+import { GlobalsubService } from '../../../shared/services/globalsub.service';
 import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-info.component';
 
 @Component({
@@ -208,7 +206,7 @@ export class ChatInformationComponent implements OnInit {
   }
 
   returnDialogConfigAllUsersSmallScreen(rect: any) {
-    const dialogWidth = 320;
+    const dialogWidth = 310;
     return {
       position: {
         top: `${rect.bottom}px`,
@@ -232,12 +230,13 @@ export class ChatInformationComponent implements OnInit {
   }
 
   returnDialogConfigAddUsers(rect: any) {
-    let dialogWidth: number;
+    /* let dialogWidth: number;
     if (window.innerWidth <= 910) {
-      dialogWidth = 200;
+      dialogWidth = 350;
     } else {
       dialogWidth = 542;
-    }
+    } */
+    const dialogWidth: number = 542;
     return {
       position: {
         top: `${rect.bottom}px`,
