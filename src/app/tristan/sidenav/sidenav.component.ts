@@ -140,7 +140,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public mobileService: MobileService,
-  ) {}
+  ) { }
 
   /**
    * @public
@@ -169,6 +169,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
         }
       }
     }
+
+    this.restoreSelectedChannel();
   }
 
   /**
@@ -359,6 +361,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
     this.settings();
   }
 
+  restoreSelectedChannel() {
+    const savedChannel = JSON.parse(sessionStorage.getItem('selectedChannel')!);
+    if (savedChannel) {
+      this.selectedChannel = savedChannel;
+    }
+  }
+
   /**
    * Selects a channel based on the provided node.
    *
@@ -370,15 +379,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
       (channel) => channel.id === node.id,
     );
     if (selectedChannel) {
-      if (
-        sessionStorage.getItem('threadMessage') ||
-        sessionStorage.getItem('selectedThread')
-      ) {
+      if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
         sessionStorage.removeItem('threadMessage');
         sessionStorage.removeItem('selectedThread');
       }
       this.selectedChannel = selectedChannel;
       this.updateHoverStates();
+
       await this.navToSelectedChannel(selectedChannel);
     }
   }
