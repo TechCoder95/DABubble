@@ -23,7 +23,7 @@
           <!-- <button mat-icon-button></button> -->
           <ng-container *ngIf="channelNode">
             <img *ngIf="isGroupChannel(channelNode)" class="mr-3"
-              [src]=" hoverStates[channelNode.id] || selectedChannel.id === channelNode.id ? './img/tag-hover.svg' : './img/sidenav-tag-default.svg'" />
+              [src]=" hoverStates[channelNode.id] || selectedChannel.id === channelNode.id && !isMobile() ? './img/tag-hover.svg' : './img/sidenav-tag-default.svg'" />
             <img *ngIf="isActionNode(channelNode)" class="mr-3" src="img/add-channel-2.svg" alt="add-channel" />
             <div *ngIf="isDirectChannel(channelNode)" class="mr-3 img-container relative">
               <img class="border-circle" style="width: 50px" [src]="channelNode.avatar" alt="pm" />
@@ -31,7 +31,7 @@
             </div>
           </ng-container>
 
-          <span [routerLink]="['/home/channel', channelNode.id]" routerLinkActive="selected-channel" [ngClass]="{
+          <span [routerLink]="['/home/channel', channelNode.id]" routerLinkActive="selected-channel"  [ngClass]="{
                   'cursor-pointer': true,
                   'blue-channel-name': isGroupChannel(channelNode),
                   'blue-name': isCategoryNode(channelNode),

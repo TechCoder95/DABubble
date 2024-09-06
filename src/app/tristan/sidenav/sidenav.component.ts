@@ -140,7 +140,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public mobileService: MobileService,
-  ) { }
+  ) {}
 
   /**
    * @public
@@ -379,7 +379,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
       (channel) => channel.id === node.id,
     );
     if (selectedChannel) {
-      if (sessionStorage.getItem('threadMessage') || sessionStorage.getItem('selectedThread')) {
+      if (
+        sessionStorage.getItem('threadMessage') ||
+        sessionStorage.getItem('selectedThread')
+      ) {
         sessionStorage.removeItem('threadMessage');
         sessionStorage.removeItem('selectedThread');
       }
@@ -690,5 +693,9 @@ export class SidenavComponent implements OnInit, OnDestroy {
     } else {
       this.directMessageImg = 'img/account_circle.svg';
     }
+  }
+
+  isMobile() {
+    return window.innerWidth <= 910;
   }
 }
