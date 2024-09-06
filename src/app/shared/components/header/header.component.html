@@ -1,60 +1,48 @@
 @if (
-  activeUser &&
-  getUrl() !== "/user/login" &&
-  getUrl() !== "/user/register" &&
-  getUrl() !== "/user/chooseAvatar"
+activeUser &&
+getUrl() !== "/user/login" &&
+getUrl() !== "/user/register" &&
+getUrl() !== "/user/chooseAvatar"
 ) {
-  <div class="mobile-p flex justify-content-between align-items-center">
-    @if (this.mobileService.isMobile && getUrl() !== "/home") {
-      <div class="flex">
-        <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
+<div class="mobile-p flex justify-content-between align-items-center">
+  @if (this.mobileService.isMobile && getUrl() !== "/home") {
+  <div class="flex">
+    <img src="./img/back-to-sidenav-arrow.svg" (click)="backToSidenav()" />
 
-      <img
-        class="logo"
-        src="/img/devspace-small-screen.svg"
-        alt="dabubble-logo"
-        (click)="backToSidenav()"
-      />
-      </div>
-    } @else {
-      <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
-    }
-
-    <!-- <div class="logo-if-channel-open"> das hier mal drin lassen, werde ich zum responsiveness brauchen 
-        <div class="arrow-back"></div>
-        <img src="img/logo-devspace.svg" alt="devspace-logo">
-    </div> -->
-
-    <div class="search">
-      <app-searchbar></app-searchbar>
-    </div>
-
-    <div (click)="openMenu()" class="flex align-items-center cursor-pointer">
-      <p class="userName register-desktop">{{ activeUser.username }}</p>
-      <div class="ml-2 mr-2 relative img-container">
-        <img class="profileimg" src="{{ activeUser.avatar }}" alt="" />
-        <div class="online-status"></div>
-      </div>
-      <img class="ml-2" src="/img/arrow-down.svg" alt="" />
-    </div>
+    <img class="logo" src="/img/devspace-small-screen.svg" alt="dabubble-logo" (click)="backToSidenav()" />
   </div>
+  } @else {
+  <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
+  }
+
+  <div class="search">
+    <app-searchbar></app-searchbar>
+  </div>
+
+  <div (click)="openMenu()" class="flex align-items-center cursor-pointer">
+    <p class="userName register-desktop">{{ activeUser.username }}</p>
+    <div class="ml-2 mr-2 relative img-container">
+      <img class="profileimg" src="{{ activeUser.avatar }}" alt="" />
+      <div class="online-status"></div>
+    </div>
+    <img class="ml-2" src="/img/arrow-down.svg" alt="" />
+  </div>
+</div>
 } @else {
-  <div class="flex justify-content-between align-items-center p-3">
-    <a class="mobile-logo" href="/user/login" title="home"
-      ><img src="/img/logo.svg" alt=""
-    /></a>
-    @if (!this.AuthService.registerProcess) {
-      <div class="flex align-items-center flex-column register-desktop">
-        <p>Neu bei DABubble?</p>
-        <a class="register" (click)="goToRegister()">Konto erstellen</a>
-      </div>
-
-      <div class="register-mobile">
-        <p>Neu bei DABubble?</p>
-        <a class="register" (click)="goToRegister()">Konto erstellen</a>
-      </div>
-    }
+<div class="flex justify-content-between align-items-center p-3">
+  <a class="mobile-logo" href="/user/login" title="home"><img src="/img/logo.svg" alt="" /></a>
+  @if (!this.AuthService.registerProcess) {
+  <div class="flex align-items-center flex-column register-desktop">
+    <p>Neu bei DABubble?</p>
+    <a class="register" (click)="goToRegister()">Konto erstellen</a>
   </div>
+
+  <div class="register-mobile">
+    <p>Neu bei DABubble?</p>
+    <a class="register" (click)="goToRegister()">Konto erstellen</a>
+  </div>
+  }
+</div>
 }
 
 <div (window:beforeunload)="unloadHandler()"></div>

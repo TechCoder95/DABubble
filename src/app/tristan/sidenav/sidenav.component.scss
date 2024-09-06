@@ -161,6 +161,7 @@ section{
   mat-drawer-container {
     padding: 0;
     border-radius: 0 !important;
+    height: calc(100% - 80px) !important;
   }
 
   mat-drawer {

@@ -48,6 +48,7 @@ app-chat{
   :host{
     height: 100%;
     display: flex;
+    height: calc(100% - 80px);
   }
 
   mat-card {

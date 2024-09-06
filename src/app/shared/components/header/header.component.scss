@@ -72,10 +72,6 @@ img {
     width: 160px;
   }
 
-  // .userName {
-  //     font-size: 24px;
-  // }
-
   .img-container {
     width: 50px;
     height: 50px;
@@ -88,32 +84,12 @@ img {
 
   .mobile-p {
     padding: 15px;
+    box-sizing: border-box;
+    height: 80px;
   }
 
   .search {
     display: none;
-  }
-
-  .logo-if-channel-open {
-    display: flex;
-    align-items: center;
-
-    img {
-      width: 160px;
-    }
-
-    .arrow-back {
-      width: 40px;
-      height: 40px;
-      background-position: center;
-      background-repeat: no-repeat;
-      rotate: 90deg;
-      background-image: url(/img/arrow-down.svg);
-
-      &:hover {
-        background-image: url(/img/arrow-down-hover.svg);
-      }
-    }
   }
 
   .d-none {

@@ -1,16 +1,14 @@
 <main>
-        <div class="flex align-items-center justify-content-between w-full">
-            <div class="flex align-items-center" style="gap: 5px;">
-                <mat-card-subtitle class="font-bold text-2xl">Thread</mat-card-subtitle>
-                <img src="./img/tag-hover-thin.svg" alt="">
-                <span class="purple">{{ this.selectedChannelFromChat.name }}</span>
-            </div>
-
-            <div (click)="this.threadService.close()" class="close"></div>
+    <div class="flex align-items-center justify-content-between w-full">
+        <div class="flex align-items-center" style="gap: 5px;">
+            <mat-card-subtitle class="font-bold text-2xl">Thread</mat-card-subtitle>
+            <img src="./img/tag-hover-thin.svg" alt="">
+            <span class="purple">{{ this.selectedChannelFromChat.name }}</span>
         </div>
-    </main>
-    <div class="h-full flex align-items-end">
+
+        <div (click)="this.threadService.close()" class="close"></div>
     </div>
-    <div class="h-full flex align-items-end">
-
-
+</main>
+<div class="h-full flex align-items-end">
+</div>
+<div class="h-full flex align-items-end">

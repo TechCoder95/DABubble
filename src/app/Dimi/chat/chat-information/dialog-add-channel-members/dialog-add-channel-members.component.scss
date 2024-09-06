@@ -28,6 +28,7 @@ h2 {
   border-radius: 50%;
   padding: 2px;
   transition: background 0.5s ease;
+
   &:hover {
     background: rgba(236, 238, 254, 1);
   }
@@ -37,11 +38,13 @@ h2 {
   display: flex;
   gap: 15px;
   align-items: center;
-  > img {
+
+  >img {
     width: 16px;
     height: 16px;
   }
-  > p {
+
+  >p {
     font-size: 18px;
     color: rgba(121, 126, 243, 1);
   }
@@ -87,14 +90,16 @@ input {
   z-index: 1000;
   max-height: 25vh;
   overflow: auto;
-  > ul {
+
+  >ul {
     display: flex;
     flex-direction: column;
     gap: 10px;
     list-style-type: none;
     margin: 0;
     padding: 0;
-    > li {
+
+    >li {
       display: flex;
       align-items: center;
       justify-content: flex-start;
@@ -102,11 +107,13 @@ input {
       padding: 4px 20px;
       border-radius: 30px;
       cursor: pointer;
-      > img {
+
+      >img {
         height: 50px;
         width: 50px;
         border-radius: 50%;
       }
+
       &:hover {
         background: rgba(236, 238, 254, 1);
       }
@@ -128,6 +135,7 @@ button {
 .active-btn {
   background: rgba(68, 77, 242, 1);
   cursor: pointer;
+
   &:hover {
     opacity: 0.75;
   }
@@ -151,8 +159,8 @@ button {
 
 .remove-selected-user-img {
   cursor: pointer;
-  width: 30px;
-  height: 30px;
+  width: 18px;
+  height: 18px;
 }
 
 .arrange-selected-user {
@@ -170,21 +178,33 @@ button {
     padding: 20px;
   }
 
-  :root {
-  --overlay-margin-left: calc(100% - 320px);
-}
+  ::ng-deep .mat-mdc-dialog-panel {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    position: relative !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
 
-#cdk-overlay-3 {
-  margin-left: var(--overlay-margin-left);
-}
+  :root {
+    --overlay-margin-left: calc(100% - 320px);
+  }
+
+  #cdk-overlay-3 {
+    margin-left: var(--overlay-margin-left);
+  }
 
   input {
     width: auto;
+    height: 40px;
+    box-sizing: border-box;
   }
 
   .input-results {
     padding: 10px;
-    > ul > li {
+
+    >ul>li {
       padding: 4px;
     }
   }
