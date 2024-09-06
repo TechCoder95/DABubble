@@ -11,11 +11,6 @@
   font-weight: bolder;
 }
 
-.selected-channel {
-  color: #535af1;
-  font-weight: bolder;
-}
-
 .content {
   background-color: #eceefe;
 }
@@ -224,13 +219,20 @@ section{
   }
 }
 
-.selected-background {
-  background: rgb(236, 238, 254);
-}
-
-.spinner{
+.spinner {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+@media (min-width: 910px) {
+  .selected-channel {
+    color: #535af1;
+    font-weight: bolder;
+  }
+
+  .selected-background {
+    background: rgb(236, 238, 254);
+  }
 }
