@@ -251,3 +251,23 @@ WHEN CLICKING ON EDIT TITLE
   }
 
 }
+
+@media (max-height: 730px) {
+  .edit-channel-header {
+    height: 56px;
+  }
+
+  .edit-channel-name {
+    margin-top: 48px;
+  }
+}
+
+@media (max-height: 700px) {
+  .wrapper {
+    gap: 16px;
+  }
+
+  .channel-info {
+    gap: 2px;
+  }
+}
