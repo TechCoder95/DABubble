@@ -5,6 +5,11 @@
   z-index: 1000;
 }
 
+.header {
+  height: 107px;
+  box-sizing: border-box;
+}
+
 .search {
   width: 50%;
 }
@@ -67,6 +72,16 @@ img {
   display: none;
 }
 
+@keyframes visibility {
+  from {
+      opacity: 0;
+  }
+
+  to {
+      opacity: 1;
+  }
+}
+
 @media (max-width: 910px) {
   .logo {
     width: 160px;
@@ -103,10 +118,12 @@ img {
   }
 
   .mobile-logo {
+    opacity: 0;
+    animation: visibility 4s forwards;
     left: 50%;
     position: absolute;
     transform: translate(-50%);
-    top: 100%;
+    top: 30%;
   }
 
   .register-mobile {
@@ -144,6 +161,7 @@ img {
 
 @media (max-width: 380px) {
   .register-mobile {
+
     p,
     a {
       font-size: 13px;

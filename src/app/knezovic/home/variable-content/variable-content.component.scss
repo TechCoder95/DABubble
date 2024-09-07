@@ -6,6 +6,11 @@
     border-radius: 25px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     background-color: white;
+    z-index: -99999;
+}
+
+.h-full {
+    height: calc(100vh - 107px) !important;
 }
 
 a {

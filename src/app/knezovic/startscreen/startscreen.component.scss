@@ -1,23 +1,37 @@
 .bg-color {
     background-color: royalblue;
-    animation: visibility 1.5s reverse 4s, change-bg forwards 5s,
+    animation: visibility 1.5s reverse 4s, change-bg forwards 5s;
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.full-pos {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .background {
     animation: moveTheBGToTop 4s forwards 2s;
     position: absolute;
+    // top: 50%;
 }
 
 span {
     font-size: 116px;
     color: white;
     font-weight: 700;
-    animation: moveTheFontToTop 2s forwards 2s; 
+    animation: moveTheFontToTop 2s forwards 2s;
 }
 
 .cursor {
-    font-weight: 200 !important; 
-  }
+    font-weight: 200 !important;
+}
 
 .logo {
     animation: rotate 1s forwards 1s, moveTheLogoToTop 2s forwards 2s;
@@ -84,7 +98,7 @@ span {
         padding-right: 173px;
         transform: translate(-50%);
     }
-    
+
 }
 
 @keyframes moveTheFontToTop {
@@ -138,7 +152,8 @@ span {
     background-color: white;
     opacity: 0;
     animation: visibility 1s forwards 4s;
-    width: 570px;
+    // width: -webkit-fill-available;
+    // width: 570px;
 }
 
 a {
@@ -163,7 +178,7 @@ a {
         display: none !important;
     }
 
-    
+
 }
 
 @media (max-width: 650px) {
@@ -178,7 +193,7 @@ a {
     .mobile-view {
         display: none !important;
     }
-    
+
 }
 
 .logincard {
