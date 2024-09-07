@@ -73,3 +73,13 @@ h3 {
   gap: 5px;
   border: 1px solid rgb(173, 176, 217);
 }
+
+@media (max-width: 950px) {
+  .add-reactions-div {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    display: grid;
+    position: absolute;
+    bottom: -94px;
+  }
+}

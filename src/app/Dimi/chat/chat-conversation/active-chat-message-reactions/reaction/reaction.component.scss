@@ -10,7 +10,7 @@ main {
   background: rgba(255, 255, 255, 1);
   cursor: pointer;
   > section {
-    width: max-content;
+    width: min-content;
     position: absolute;
     display: none;
     justify-content: center;
