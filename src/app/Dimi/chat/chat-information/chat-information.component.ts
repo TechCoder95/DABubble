@@ -77,6 +77,13 @@ export class ChatInformationComponent implements OnInit {
         });
       });
     });
+
+    this.checkDialogSettings();
+    window.addEventListener('resize', this.onResize.bind(this));
+  }
+
+  onResize() {
+    this.checkDialogSettings();
   }
 
   ngOnDestroy() {
@@ -86,6 +93,7 @@ export class ChatInformationComponent implements OnInit {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }
+    window.removeEventListener('resize', this.onResize.bind(this));
   }
 
   /**
@@ -202,6 +210,10 @@ export class ChatInformationComponent implements OnInit {
         left: `${rect.left}px`,
       },
       panelClass: 'custom-dialog-container',
+      data: {
+        channelMembers: this.assignedUsers,
+        isMobileAndInChannelInformation: this.isMobileAndInChannelInformation,
+      },
     };
   }
 
@@ -234,7 +246,7 @@ export class ChatInformationComponent implements OnInit {
     return {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.right - dialogWidth - 40 }px`,
+        left: `${rect.right - dialogWidth - 40}px`,
       },
       panelClass: 'custom-dialog-container',
       data: { channelMembers: this.assignedUsers },
@@ -354,6 +366,15 @@ export class ChatInformationComponent implements OnInit {
       this.openDialogChannelMembers(event);
     } else {
       this.openDialogAddChannelMembers(event);
+    }
+  }
+
+  isMobileAndInChannelInformation!: boolean;
+  checkDialogSettings() {
+    if (window.innerWidth < 910) {
+      this.isMobileAndInChannelInformation = true;
+    } else {
+      this.isMobileAndInChannelInformation = false;
     }
   }
 }
