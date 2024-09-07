@@ -15,11 +15,6 @@
   background-color: #eceefe;
 }
 
-// testen
-mat-tree {
-  //  overflow-y: auto;
-}
-
 mat-tree-node {
   margin-top: 8px;
   cursor: pointer;
@@ -126,11 +121,6 @@ mat-drawer-container {
 .grey {
   background-color: #686868;
 }
-
-/* 
-section{
-  overflow: auto;
-} */
 
 .show-if-mobile {
   display: none;
