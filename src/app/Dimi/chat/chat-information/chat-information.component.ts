@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
@@ -77,6 +81,13 @@ export class ChatInformationComponent implements OnInit {
         });
       });
     });
+
+    this.checkDialogSettings();
+    window.addEventListener('resize', this.onResize.bind(this));
+  }
+
+  onResize() {
+    this.checkDialogSettings();
   }
 
   ngOnDestroy() {
@@ -86,6 +97,7 @@ export class ChatInformationComponent implements OnInit {
     if (this.userStatusSubscription) {
       this.userStatusSubscription.unsubscribe();
     }
+    window.removeEventListener('resize', this.onResize.bind(this));
   }
 
   /**
@@ -202,6 +214,10 @@ export class ChatInformationComponent implements OnInit {
         left: `${rect.left}px`,
       },
       panelClass: 'custom-dialog-container',
+      data: {
+        channelMembers: this.assignedUsers,
+        isMobileAndInChannelInformation: this.isMobileAndInChannelInformation,
+      },
     };
   }
 
@@ -216,6 +232,22 @@ export class ChatInformationComponent implements OnInit {
       data: { channelMembers: this.assignedUsers },
     };
   }
+
+  /* returnDialogConfigAllUsersSmallScreen(rect: any): MatDialogConfig {
+    const dialogWidth = 310;
+    return {
+      position: this.getDialogPosition(rect, dialogWidth),
+      panelClass: 'custom-dialog-container',
+      data: { channelMembers: this.assignedUsers },
+    };
+  }
+
+  getDialogPosition(rect: any, dialogWidth: number) {
+    return {
+      top: `${rect.bottom}px`,
+      left: `${rect.right - dialogWidth}px`,
+    };
+  } */
 
   returnDialogConfigAllUsersLargeScreen(rect: any) {
     const dialogWidth = 400;
@@ -234,7 +266,7 @@ export class ChatInformationComponent implements OnInit {
     return {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.right - dialogWidth - 40 }px`,
+        left: `${rect.right - dialogWidth - 40}px`,
       },
       panelClass: 'custom-dialog-container',
       data: { channelMembers: this.assignedUsers },
@@ -354,6 +386,15 @@ export class ChatInformationComponent implements OnInit {
       this.openDialogChannelMembers(event);
     } else {
       this.openDialogAddChannelMembers(event);
+    }
+  }
+
+  isMobileAndInChannelInformation!: boolean;
+  checkDialogSettings() {
+    if (window.innerWidth < 910) {
+      this.isMobileAndInChannelInformation = true;
+    } else {
+      this.isMobileAndInChannelInformation = false;
     }
   }
 }

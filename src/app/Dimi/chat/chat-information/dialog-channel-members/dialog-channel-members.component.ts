@@ -5,6 +5,7 @@ import {
   HostListener,
   inject,
   Inject,
+  Input,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -34,6 +35,9 @@ export class DialogChannelMembersComponent implements OnInit {
   addMemberImg = './img/add-members-default.png';
   activeUser!: DABubbleUser;
   channelMembers: DABubbleUser[] = [];
+  @Input() isMobileAndInChannelInformation!: boolean;
+  displayCloseImg!: boolean;
+
   readonly dialog = inject(MatDialog);
   @ViewChild('relativeElement', { static: true }) relativeElement!: ElementRef;
 
@@ -44,7 +48,14 @@ export class DialogChannelMembersComponent implements OnInit {
     public dialogRef: MatDialogRef<DialogChannelMembersComponent>,
     private subService: GlobalsubService,
     @Inject(MAT_DIALOG_DATA) public data: any,
-  ) {}
+  ) {
+    this.isMobileAndInChannelInformation = data.isMobileAndInChannelInformation;
+    if (!this.isMobileAndInChannelInformation) {
+      this.displayCloseImg = false;
+    } else {
+      this.displayCloseImg = true;
+    }
+  }
 
   async ngOnInit() {
     this.activeUser = this.userService.activeUser;
@@ -96,20 +107,22 @@ export class DialogChannelMembersComponent implements OnInit {
   addMembers() {
     this.closeDialog();
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
-    const dialogWidth: number = 542;
+    let dialogWidth!: number;
 
     if (window.innerWidth >= 910) {
+      dialogWidth = 542;
       this.dialog.open(DialogAddChannelMembersComponent, {
         position: {
           top: `${rect.top + window.scrollY}px`,
-          left: `${rect.right - dialogWidth +100 }px`,
+          left: `${rect.right - dialogWidth + 100}px`,
         },
       });
     } else {
+      dialogWidth = 280;
       this.dialog.open(DialogAddChannelMembersComponent, {
         position: {
           top: `${rect.top + window.scrollY}px`,
-          left: `${rect.left + window.scrollX + 30}px`,
+          left: `${rect.right - dialogWidth}px`,
         },
       });
     }
