@@ -1,6 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import {
+  MatDialog,
+  MatDialogConfig,
+  MatDialogModule,
+} from '@angular/material/dialog';
 import { DialogChannelInformationComponent } from './dialog-channel-information/dialog-channel-information.component';
 import { DialogChannelMembersComponent } from './dialog-channel-members/dialog-channel-members.component';
 import { DialogAddChannelMembersComponent } from './dialog-add-channel-members/dialog-add-channel-members.component';
@@ -228,6 +232,22 @@ export class ChatInformationComponent implements OnInit {
       data: { channelMembers: this.assignedUsers },
     };
   }
+
+  /* returnDialogConfigAllUsersSmallScreen(rect: any): MatDialogConfig {
+    const dialogWidth = 310;
+    return {
+      position: this.getDialogPosition(rect, dialogWidth),
+      panelClass: 'custom-dialog-container',
+      data: { channelMembers: this.assignedUsers },
+    };
+  }
+
+  getDialogPosition(rect: any, dialogWidth: number) {
+    return {
+      top: `${rect.bottom}px`,
+      left: `${rect.right - dialogWidth}px`,
+    };
+  } */
 
   returnDialogConfigAllUsersLargeScreen(rect: any) {
     const dialogWidth = 400;

@@ -107,9 +107,10 @@ export class DialogChannelMembersComponent implements OnInit {
   addMembers() {
     this.closeDialog();
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
-    const dialogWidth: number = 542;
+    let dialogWidth!: number;
 
     if (window.innerWidth >= 910) {
+      dialogWidth = 542;
       this.dialog.open(DialogAddChannelMembersComponent, {
         position: {
           top: `${rect.top + window.scrollY}px`,
@@ -117,10 +118,11 @@ export class DialogChannelMembersComponent implements OnInit {
         },
       });
     } else {
+      dialogWidth = 280;
       this.dialog.open(DialogAddChannelMembersComponent, {
         position: {
           top: `${rect.top + window.scrollY}px`,
-          left: `${rect.left + window.scrollX + 30}px`,
+          left: `${rect.right - dialogWidth}px`,
         },
       });
     }
