@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginComponent } from '../home/login/login.component';
 import { TypewriterService } from '../../shared/services/typewriter.service';
+import { MobileService } from '../../shared/services/mobile.service';
 
 @Component({
   selector: 'app-startscreen',
@@ -14,6 +15,7 @@ export class StartscreenComponent {
   displayedTextWithoutCursor = '';
   cursor = '';
   private typewriterService = inject(TypewriterService);
+  public mobileService = inject(MobileService);
 
   constructor(private router: Router) {}
 
