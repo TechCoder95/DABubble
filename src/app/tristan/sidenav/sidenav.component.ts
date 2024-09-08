@@ -619,7 +619,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       });
 
     this.userStatusSubscription = this.subscriptionService
-      .getUserUpdateFromDatabaseObservable()
+      .getUserObservable()
       .subscribe(async () => {
         await this.updateTreeData();
       });

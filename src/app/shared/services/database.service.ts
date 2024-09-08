@@ -29,29 +29,6 @@ export class DatabaseService implements OnDestroy {
   threadID!: string;
 
   constructor(private subService: GlobalsubService) {
-    this.listenToEntityChanges('users');
-  }
-
-  /**
-   * Listens to changes in the specified entity collection.
-   *
-   * @param entity - The name of the entity collection to listen to changes for.
-   */
-  listenToEntityChanges(entity: string) {
-    const collectionRef = collection(this.firestore, entity);
-    this.unsubscribe = onSnapshot(collectionRef, (snapshot) => {
-      snapshot.docChanges().forEach((change) => {
-        if (change.type === 'added') {
-        }
-        if (change.type === 'modified') {
-          this.subService.updateUserFromDatabaseChange(
-            change.doc.data() as DABubbleUser,
-          );
-        }
-        if (change.type === 'removed') {
-        }
-      });
-    });
   }
 
   ngOnDestroy() {

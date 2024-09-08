@@ -23,7 +23,6 @@ export class GlobalsubService {
   private createChannelSubject = new Subject<TextChannel>();
   private activeThreadSubject = new Subject<ThreadChannel>();
   private emjoiSubject = new Subject<Emoji>();
-  private updateUserChangesSubject = new Subject<DABubbleUser>();
   private updateTreeSubject = new Subject<void>();
   private activeMessageSubject = new Subject<ChatMessage>();
   private statusSubject = new Subject<OnlineStatus>();
@@ -89,15 +88,6 @@ export class GlobalsubService {
    */
   getChannelCreatedObservable() {
     return this.createChannelSubject.asObservable();
-  }
-
-  /**
-   * Returns an observable that emits user update changes from the database.
-   *
-   * @returns An observable that emits user update changes.
-   */
-  getUserUpdateFromDatabaseObservable() {
-    return this.updateUserChangesSubject.asObservable();
   }
 
   /**
@@ -219,14 +209,6 @@ export class GlobalsubService {
     this.createChannelSubject.next(data);
   }
 
-  /**
-   * Updates the user from a database change.
-   *
-   * @param data - The updated user data.
-   */
-  updateUserFromDatabaseChange(data: DABubbleUser) {
-    this.updateUserChangesSubject.next(data);
-  }
 
   /**
    * Updates the sidenav tree.

@@ -65,7 +65,7 @@ export class ChatInformationComponent implements OnInit {
     });
 
     this.userStatusSubscription = this.subService
-      .getUserUpdateFromDatabaseObservable()
+      .getUserObservable()
       .subscribe(async (user) => {
         if (user && this.privateChatPartner) {
           this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
