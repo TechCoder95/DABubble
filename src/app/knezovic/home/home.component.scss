@@ -12,7 +12,7 @@ main {
 
 .adjustments {
   display: flex;
-  height: 100%;
+  height: calc(100vh - 160px);
   gap: 30px;
 }
 .spinner {
