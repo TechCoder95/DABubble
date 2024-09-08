@@ -1,11 +1,12 @@
 section {
     position: relative;
+    padding: 40px;
 }
 
 .arrow-back {
-    // position: absolute; //wenn Text drin ist wieder einklammern
-    // right: 40px;
-    // top: 40px;
+    position: absolute; //wenn Text drin ist wieder einklammern
+    right: 40px;
+    top: 40px;
     width: 40px;
     height: 40px;
     background-repeat: no-repeat;

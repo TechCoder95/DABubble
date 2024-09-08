@@ -47,4 +47,8 @@ export class VariableContentComponent {
     this.authService.registerProcess = false;
     this.router.navigate(['/user/privacy']);
   }
+
+  getUrl() {
+    return this.router.url;
+  }
 }
