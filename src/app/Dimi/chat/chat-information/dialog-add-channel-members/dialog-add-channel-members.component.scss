@@ -4,7 +4,7 @@ main {
   align-items: flex-end;
   gap: 20px;
   padding: 40px;
-  /* position: relative; */
+  position: relative;
   overflow: visible;
 }
 
@@ -176,6 +176,15 @@ button {
 @media (max-width: 910px) {
   main {
     padding: 20px;
+  }
+
+  ::ng-deep .mat-mdc-dialog-panel {
+    margin-left: 0 !important;
+    margin-top: 0 !important;
+    position: relative !important;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
   }
 
   :root {

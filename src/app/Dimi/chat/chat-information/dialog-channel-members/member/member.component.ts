@@ -44,11 +44,11 @@ export class MemberComponent implements OnDestroy {
   ngOnInit(): void {
     this.activeUser = this.userService.activeUser;
 
-   /*  this.databaseService
+    this.databaseService
       .readDataByArray('onlinestatus', 'onlineUser', this.activeUser.id!)
       .then((data) => {
         this.member.isLoggedIn = data[0].onlineUser.includes(this.member.id!);
-      }); */
+      });
   }
 
   ngOnDestroy() {

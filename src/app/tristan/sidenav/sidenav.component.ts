@@ -33,7 +33,6 @@ import { RouterModule } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { SearchbarComponent } from '../../shared/components/header/searchbar/searchbar.component';
 import { MobileService } from '../../shared/services/mobile.service';
-import { DialogChannelAlreadyExistsComponent } from '../dialog-channel-already-exists/dialog-channel-already-exists.component';
 
 interface Node {
   id: string;
@@ -108,8 +107,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isCurrentUserActivated: boolean | undefined;
   assignedUserMap: { [channelId: string]: DABubbleUser } = {};
   userIsLoggedIn!: boolean;
-  selectedActionNode: string | null = null;
-
 
   @Input({ required: true }) activeUserChange!: any;
   @Input({ required: true }) activeGoogleUserChange!: any;
@@ -143,7 +140,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     public mobileService: MobileService,
-  ) { }
+  ) {}
 
   /**
    * @public
@@ -356,16 +353,10 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async onNode(event: Event, node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
-    }
-    else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
+    } else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
       await this.selectChannel(node);
-    }
-    else if (this.isActionNode(node)) {
-      this.selectedActionNode = node.id;
+    } else if (node.type === 'action') {
       this.openAddChannelDialog(event);
-    } else {
-      this.selectedChannel = node;
-      this.selectedActionNode = null;
     }
     this.settings();
   }
@@ -469,7 +460,15 @@ export class SidenavComponent implements OnInit, OnDestroy {
     const dialogRef = this.dialog.open(AddChannelComponent);
     dialogRef.afterClosed().subscribe(async (channel: TextChannel) => {
       if (channel) {
-        const newChannel = await this.channelService.createGroupChannel(channel);
+        const nameExists =
+          await this.channelService.doesChannelNameAlreadyExist(channel.name);
+        if (nameExists) {
+          // todo fehlermeldung zurück geben eventuell
+          alert(`Ein Kanal mit dem Namen "${channel.name}" existiert bereits.`);
+          return;
+        }
+        const newChannel =
+          await this.channelService.createGroupChannel(channel);
         if (newChannel) {
           this.channels.push(newChannel);
           await this.navToSelectedChannel(newChannel);
