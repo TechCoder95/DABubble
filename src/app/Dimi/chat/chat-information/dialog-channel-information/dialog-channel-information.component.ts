@@ -1,18 +1,8 @@
-import {
-  Component,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-  Inject,
-} from '@angular/core';
+import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChannelService } from '../../../../shared/services/channel.service';
@@ -61,7 +51,6 @@ export class DialogChannelInformationComponent {
   updatedChannelDescription!: ElementRef;
   channelCreatorObject!: DABubbleUser;
   channelCreatorName!: string;
-  isMobileAndInChannelInformation!: boolean;
 
   selectedChannel: TextChannel = JSON.parse(
     sessionStorage.getItem('selectedChannel')!,
@@ -73,11 +62,7 @@ export class DialogChannelInformationComponent {
     private userService: UserService,
     private router: Router,
     private subscriptionService: GlobalsubService,
-    @Inject(MAT_DIALOG_DATA) public data: any,
-  ) {
-    this.isMobileAndInChannelInformation = data.isMobileAndInChannelInformation;
-    console.log(this.isMobileAndInChannelInformation);
-  }
+  ) {}
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -311,12 +296,4 @@ export class DialogChannelInformationComponent {
     this.dialogRef.close();
     await this.router.navigate(['home']);
   }
-  /*  isMobileAndChannelInformation: boolean = false;
-  checkDialogSettings() {
-    if (window.innerWidth < 910) {
-      this.isMobileAndChannelInformation = true;
-    } else {
-      this.isMobileAndChannelInformation = false;
-    }
-  } */
 }

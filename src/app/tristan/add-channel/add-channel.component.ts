@@ -10,8 +10,6 @@ import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { TextChannel } from '../../shared/interfaces/textchannel';
 import { AddMemberToChannelComponent } from './add-member-to-channel/add-member-to-channel.component';
-import { ChannelService } from '../../shared/services/channel.service';
-import { DialogChannelAlreadyExistsComponent } from '../dialog-channel-already-exists/dialog-channel-already-exists.component';
 
 /**
  * @component AddChannelComponent
@@ -49,7 +47,7 @@ export class AddChannelComponent {
    * @constructor
    * @param {MatDialogRef<AddChannelComponent>} dialogRef - Reference to the dialog opened to create a new channel.
    */
-  constructor(private dialogRef: MatDialogRef<AddChannelComponent>, public channelService: ChannelService, private dialog: MatDialog) { }
+  constructor(private dialogRef: MatDialogRef<AddChannelComponent>) {}
 
   /**
    * Closes the dialog without saving any data.
@@ -59,13 +57,7 @@ export class AddChannelComponent {
     this.dialogRef.close();
   }
 
-  async onCreateClick() {
-    const nameExists = await this.channelService.doesChannelNameAlreadyExist(this.channel.name);
-    if (nameExists) {
-      this.dialog.open(DialogChannelAlreadyExistsComponent, { data: this.channel });
-      return;
-    }
-
+  onCreateClick() {
     const newDialogRef = this.newDialog.open(AddMemberToChannelComponent, {
       data: this.channel,
       panelClass: 'custom-dialog-container',

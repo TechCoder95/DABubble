@@ -2,26 +2,20 @@
   <main>
     <section class="headline">
       <h3>Mitglieder</h3>
-      @if (!displayCloseImg) {
-        <img
-          [src]="closeImg"
-          class="close"
-          (mouseenter)="changeCloseImg(true)"
-          (mouseleave)="changeCloseImg(false)"
-          (click)="closeDialog()"
-        />
-      }
+      <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
+        (click)="closeDialog()" />
     </section>
 
     <section class="channel-members">
       <app-member [member]="activeUser"></app-member>
-      @for (member of this.channelMembers; track $index) {
-        <app-member [member]="member"></app-member>
-      } @empty {
-        <p>Keine Mitglieder</p>
-      }
+    @for (member of this.channelMembers; track $index) {
+    <app-member [member]="member"></app-member>
+    }
+    @empty {
+    <p>Keine Mitglieder</p>
+    }
 
-      <div (click)="addMembers()" class="add-member">
+    <div (click)="addMembers()" class="add-member">
         <div></div>
         <p>Mitglied Hinzufügen</p>
       </div>

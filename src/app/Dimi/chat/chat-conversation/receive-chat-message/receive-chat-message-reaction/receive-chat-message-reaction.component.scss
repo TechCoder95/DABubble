@@ -1,5 +1,4 @@
 main {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -46,6 +45,7 @@ main {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
     display: grid;
+    position: absolute;
     bottom: -94px;
   }
 }
