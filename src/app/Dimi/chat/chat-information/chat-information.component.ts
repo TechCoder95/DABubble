@@ -226,28 +226,12 @@ export class ChatInformationComponent implements OnInit {
     return {
       position: {
         top: `${rect.bottom}px`,
-        left: `${rect.right - dialogWidth - 40}px`,
+        left: `${rect.right - dialogWidth}px`,
       },
       panelClass: 'custom-dialog-container',
       data: { channelMembers: this.assignedUsers },
     };
   }
-
-  /* returnDialogConfigAllUsersSmallScreen(rect: any): MatDialogConfig {
-    const dialogWidth = 310;
-    return {
-      position: this.getDialogPosition(rect, dialogWidth),
-      panelClass: 'custom-dialog-container',
-      data: { channelMembers: this.assignedUsers },
-    };
-  }
-
-  getDialogPosition(rect: any, dialogWidth: number) {
-    return {
-      top: `${rect.bottom}px`,
-      left: `${rect.right - dialogWidth}px`,
-    };
-  } */
 
   returnDialogConfigAllUsersLargeScreen(rect: any) {
     const dialogWidth = 400;
