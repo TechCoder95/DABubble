@@ -1,0 +1,34 @@
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    padding: 30px;
+
+    >h3 {
+        margin: 0;
+    }
+}
+
+::ng-deep .mat-mdc-dialog-surface {
+    border-radius: 30px !important;
+}
+
+button {
+    border: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    color: white;
+    font-size: 18px;
+    font-weight: 800;
+    background: rgba(68, 77, 242, 1);
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.75;
+    }
+}
+
+span {
+    color: rgba(68, 77, 242, 1);
+}
