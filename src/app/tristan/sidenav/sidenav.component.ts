@@ -107,6 +107,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   isCurrentUserActivated: boolean | undefined;
   assignedUserMap: { [channelId: string]: DABubbleUser } = {};
   userIsLoggedIn!: boolean;
+  selectedActionNode: string | null = null;
+
 
   @Input({ required: true }) activeUserChange!: any;
   @Input({ required: true }) activeGoogleUserChange!: any;
@@ -353,10 +355,16 @@ export class SidenavComponent implements OnInit, OnDestroy {
   async onNode(event: Event, node: FlattenedNode) {
     if (node.expandable) {
       this.treeControl.toggle(node);
-    } else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
+    } 
+    else if (this.isGroupChannel(node) || this.isDirectChannel(node)) {
       await this.selectChannel(node);
-    } else if (node.type === 'action') {
+    } 
+    else if (this.isActionNode(node)) {
+      this.selectedActionNode = node.id;
       this.openAddChannelDialog(event);
+    } else {
+      this.selectedChannel = node;
+      this.selectedActionNode = null; 
     }
     this.settings();
   }
