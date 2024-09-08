@@ -237,10 +237,11 @@ export class UserService {
         isLoggedIn: false,
       }).then(() => {
         sessionStorage.removeItem('userLogin');
-        sessionStorage.removeItem('uId');
-        sessionStorage.removeItem('userLogin');
         sessionStorage.removeItem('selectedChannel');
         sessionStorage.removeItem('selectedThread');
+        sessionStorage.removeItem('channels');
+        sessionStorage.removeItem('threadMessage');
+        window.location.reload();
         this.router.navigate(['/user/login']);
       });
     }
