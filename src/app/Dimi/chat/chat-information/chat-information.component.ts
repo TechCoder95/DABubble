@@ -163,6 +163,8 @@ export class ChatInformationComponent implements OnInit {
       dialogConfig,
     );
     this.handleDialogClose(dialogRef);
+    console.log("test");
+    
   }
 
   dialogAddChannelMembersIsOpen: boolean = false;
