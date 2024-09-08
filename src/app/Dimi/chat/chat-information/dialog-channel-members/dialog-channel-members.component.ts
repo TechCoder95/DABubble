@@ -104,7 +104,7 @@ export class DialogChannelMembersComponent implements OnInit {
    * This method closes the current dialog and opens a new dialog to add channel members.
    * The position of the new dialog is calculated based on the position of the relative element.
    */
-  addMembers() {
+   addMembers() {
     this.closeDialog();
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
     let dialogWidth!: number;
@@ -115,6 +115,14 @@ export class DialogChannelMembersComponent implements OnInit {
         position: {
           top: `${rect.top + window.scrollY}px`,
           left: `${rect.right - dialogWidth + 100}px`,
+        },
+      });
+    } else if (this.isMobileAndInChannelInformation) {
+      dialogWidth = 280;
+      this.dialog.open(DialogAddChannelMembersComponent, {
+        position: {
+          top: `${rect.top + window.scrollY - 220}px`,
+          left: `${rect.right - dialogWidth - 20}px`,
         },
       });
     } else {

@@ -10,7 +10,7 @@
     *ngIf="receiveMessage.message && receiveMessage.message.toString().trim() !== ''"
   >
     <div class="message" [innerHTML]="receiveMessage.message | emojis | verlinkung"></div>
-    <span *ngIf="receiveMessage.edited">bearbeitet</span>
+    <span *ngIf="receiveMessage.edited" class="edited">bearbeitet</span>
   </section>
   <div *ngIf="imageExists()" (click)="openImageInDialog()">
     <img [src]="receivedImgMessage" />
