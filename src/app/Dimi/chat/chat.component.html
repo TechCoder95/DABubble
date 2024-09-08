@@ -3,7 +3,7 @@
 @if (!this.mobileService.isMobile) {
   <div class="flex height">
     
-    <mat-card style="width: 60%">
+    <mat-card style="width: 30vw">
       <app-chat-information
         [activeUserFromChat]="selectedUserFromChat"
         [activeChannelFromChat]="selectedChannelFromChat"
@@ -23,7 +23,7 @@
     </mat-card>
 
     @if (getStorage()) {
-      <mat-card class="thread-card" style="width: 40%">
+      <mat-card class="thread-card">
         <app-thread
           [selectedChannelFromChat]="selectedChannelFromChat"
         ></app-thread>
