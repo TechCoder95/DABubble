@@ -26,11 +26,15 @@
         </section>
       </main>
     </div>
+  } @else if (getLocation() === "/user/imprint") {
+    <section>
+      <router-outlet />
+    </section>
   } @else {
     <div>
       <main>
         <section>
-          @if (getRoute() && getLocation() !== "/user/imprint") {
+          @if (getRoute()) {
             <app-header
               [activeUserChange]="activeUserChange"
               [activeGoogleUserChange]="activeGoogleUserChange"

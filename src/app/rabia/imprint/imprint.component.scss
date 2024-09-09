@@ -1,3 +1,11 @@
+.wrapper {
+  height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 main {
   position: relative;
   width: 400px;
@@ -5,6 +13,8 @@ main {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background: white;
+  border-radius: 25px;
 }
 
 .arrow-back {
@@ -24,6 +34,14 @@ main {
     transition: 125ms;
     background-image: url(/img/arrow-back-hover.svg);
   }
+}
+
+.arrow-back-mobile {
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/arrow-back.svg);
 }
 
 h1 {
@@ -58,11 +76,26 @@ img {
   cursor: pointer;
 }
 
+.position-mobile {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+
 @media (max-width: 510px) {
+  .wrapper {
+    height: unset;
+  }
+
   main {
     width: unset;
     align-items: center;
-    padding: unset;
+    gap: 32px;
+    border-radius: unset;
+  }
+
+  img {
+    position: unset;
   }
 
   .arrow-back {
@@ -78,9 +111,5 @@ img {
   .contact {
     grid-template-columns: repeat(2, 1fr) !important;
     grid-template-rows: repeat(2, auto) !important;
-  }
-  .wrapper {
-    display: flex;
-    flex-direction: column;
   }
 }

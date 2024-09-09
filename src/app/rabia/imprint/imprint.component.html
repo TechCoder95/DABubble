@@ -1,10 +1,20 @@
 <div class="wrapper">
-  <img src="/img/logo.svg" (click)="goBack()" />
+  @if (!isMobile()) {
+    <img src="/img/logo.svg" (click)="goBack()" />
+  }
 
   <main>
-    <div (click)="goBack()" class="arrow-back"></div>
+    @if (isMobile()) {
+      <img src="/img/logo.svg" (click)="goBack()" />
 
-    <h1>Impressum</h1>
+      <div class="position-mobile">
+        <div (click)="goBack()" class="arrow-back-mobile"></div>
+        <h1>Impressum</h1>
+      </div>
+    } @else {
+      <div (click)="goBack()" class="arrow-back"></div>
+      <h1>Impressum</h1>
+    }
 
     <section class="position-content">
       <div>
