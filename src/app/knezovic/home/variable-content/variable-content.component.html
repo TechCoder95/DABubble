@@ -1,34 +1,37 @@
 @if (getUrl() === "/user/privacy") {
-    <div class="h-screen w-full">
-        <div class="h-inner w-full flex  justify-content-center">
-            <div>
-                <div class="flex flex-column w-full justify-content-center">
-                    <div class="card privacy flex flex-column justify-content-center h-8">
-                        <router-outlet></router-outlet>
-    
-                    </div>
-                </div>
-            </div>
+  <div class="h-screen w-full">
+    <div class="h-full w-full flex justify-content-center">
+      <div>
+        <div class="flex flex-column w-full justify-content-center">
+          <div class="card privacy flex flex-column justify-content-center h-8">
+            <router-outlet></router-outlet>
+          </div>
         </div>
+      </div>
     </div>
-}
-@else {
-    <div class="h-screen w-full">
-        <div class="h-inner w-full flex align-items-center justify-content-center">
-    
-            <div>
-                <div class="flex flex-column w-full align-items-center justify-content-center">
-                    <div class="card flex flex-column align-items-center justify-content-center h-8">
-                        <router-outlet></router-outlet>
-    
-                    </div>
-                   
-                    <div class="flex gap-8 mobile-view">
-                        <a (click)="routeToImprint()">Impressum</a>
-                        <a (click)="routeToPrivacy()">Datenschutz</a>
-                    </div>
-                </div>
+  </div>
+} @else if (getUrl() === "/user/imprint") {
+  <router-outlet></router-outlet>
+} @else {
+  <div class="h-screen w-full">
+    <div class="h-full w-full flex align-items-center justify-content-center">
+      <div>
+        <div
+          class="flex flex-column w-full align-items-center justify-content-center"
+        >
+          <div
+            class="card flex flex-column align-items-center justify-content-center h-8"
+          >
+            <router-outlet></router-outlet>
+          </div>
+          @if (getUrl() !== "/user/imprint") {
+            <div class="flex gap-8 mobile-view">
+              <a (click)="routeToImprint()">Impressum</a>
+              <a (click)="routeToPrivacy()">Datenschutz</a>
             </div>
+          }
         </div>
+      </div>
     </div>
+  </div>
 }
