@@ -57,3 +57,30 @@ img {
   top: 16px;
   cursor: pointer;
 }
+
+@media (max-width: 510px) {
+  main {
+    width: unset;
+    align-items: center;
+    padding: unset;
+  }
+
+  .arrow-back {
+    top: 0;
+    right: 0;
+  }
+
+  .position-content {
+    grid-template-columns: unset;
+    grid-template-rows: unset;
+  }
+
+  .contact {
+    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-rows: repeat(2, auto) !important;
+  }
+  .wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+}
