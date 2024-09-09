@@ -241,7 +241,6 @@ export class UserService {
         sessionStorage.removeItem('selectedThread');
         sessionStorage.removeItem('channels');
         sessionStorage.removeItem('threadMessage');
-        window.location.reload();
         this.router.navigate(['/user/login']);
       });
     }
