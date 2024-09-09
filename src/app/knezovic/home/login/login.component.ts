@@ -6,11 +6,12 @@ import { UserService } from '../../../shared/services/user.service';
 import { Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../shared/services/authentication.service';
 import { GlobalsubService } from '../../../shared/services/globalsub.service';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [CommonModule, FormsModule, RouterLink, MatCardModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
 })

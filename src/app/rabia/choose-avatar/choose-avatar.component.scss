@@ -89,6 +89,7 @@ mat-spinner {
     background-color: rgb(0 0 0 / 8%);
     left: 0;
     right: 0;
+    z-index: 9;
 }
 
 .alert {
@@ -100,8 +101,16 @@ mat-spinner {
     position: fixed;
     right: 40px;
     bottom: 40px;
+    font-weight: 700;
+    font-size: 36px;
 }
 
+@media (max-width: 910px) {
+    .alert {
+        padding: 20px 30px;
+        font-size: 22px;
+    }
+}
 
 @media (max-width: 450px) {
 
