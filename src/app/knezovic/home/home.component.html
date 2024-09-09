@@ -30,7 +30,7 @@
     <div>
       <main>
         <section>
-          @if (getRoute()) {
+          @if (getRoute() && getLocation() !== "/user/imprint") {
             <app-header
               [activeUserChange]="activeUserChange"
               [activeGoogleUserChange]="activeGoogleUserChange"
@@ -67,6 +67,7 @@
       [activeUserChange]="activeUserChange"
       [activeGoogleUserChange]="activeGoogleUserChange"
     ></app-header>
+
     <router-outlet></router-outlet>
   }
 }
