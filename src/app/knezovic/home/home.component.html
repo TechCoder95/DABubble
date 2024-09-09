@@ -63,10 +63,12 @@
       [onlineStatusChange]="onlineStatusChange"
     ></app-sidenav>
   } @else {
-    <app-header
-      [activeUserChange]="activeUserChange"
-      [activeGoogleUserChange]="activeGoogleUserChange"
-    ></app-header>
+    @if (getLocation() !== "/user/imprint") {
+      <app-header
+        [activeUserChange]="activeUserChange"
+        [activeGoogleUserChange]="activeGoogleUserChange"
+      ></app-header>
+    }
 
     <router-outlet></router-outlet>
   }
