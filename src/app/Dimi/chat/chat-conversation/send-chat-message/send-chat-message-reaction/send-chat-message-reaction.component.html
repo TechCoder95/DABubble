@@ -12,7 +12,7 @@
   <section class="bg" [ngStyle]="{ position: 'relative' }" (mouseenter)="hoverReaction('addReaction', true)"
     (mouseleave)="hoverReaction('addReaction', false)" (click)="openAddReactions()">
     <img [src]="addReactionImg" />
-    <div *ngIf="addReactionDiv" class="add-reactions-div">
+    <div *ngIf="addReactionDiv" [ngClass]="chatType === 'channel' ? 'add-reactions-div' : 'add-reactions-div-threads'" class="add-reactions">
       <div class="bg" (click)="handleEmojis('nerdFace')">
         <img src="/img/message-reaction-nerd-face.svg" />
       </div>
