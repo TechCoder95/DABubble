@@ -31,6 +31,8 @@ main {
 }
 
 input {
+  height: 40px;
+  box-sizing: border-box;
   padding: 15px;
   border: 1px solid #adb0d9;
   width: -webkit-fill-available;
@@ -114,5 +116,19 @@ input {
   .channel-text {
     color: #4528b3;
     font-weight: bolder;
+  }
+}
+
+@media (max-width: 910px) {
+  mat-card {
+    height: calc(100vh - 80px) !important;
+  }
+
+  main {
+    border-radius: 0 !important;
+  }
+
+  :host ::ng-deep mat-card {
+    border-radius: 0 !important;
   }
 }
