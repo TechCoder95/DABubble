@@ -158,7 +158,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
       this.initializeSubscriptions();
     }
 
-    if (window.innerWidth > 910) {
+    if (window.innerWidth > 1250) {
       if (!this.mobileService.isMobile) {
         // todo channel id eventuell ändern
         if (!this.router.url.includes('channel')) {
@@ -413,7 +413,7 @@ export class SidenavComponent implements OnInit, OnDestroy {
    */
   settings() {
     setTimeout(() => {
-      if (window.innerWidth <= 910 && this.router.url.includes('channel')) {
+      if (window.innerWidth <= 1250 && this.router.url.includes('channel')) {
         this.mobileService.isMobile = true;
         this.mobileService.isChat = true;
       } else {
@@ -697,6 +697,6 @@ export class SidenavComponent implements OnInit, OnDestroy {
   }
 
   isMobile() {
-    return window.innerWidth <= 910;
+    return window.innerWidth <= 1250;
   }
 }

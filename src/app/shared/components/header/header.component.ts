@@ -69,7 +69,7 @@ export class HeaderComponent implements OnInit {
    *   - If the current route includes 'home', sets mobileService.isMobile to false and navigates to the home page.
    */
   checkRoute() {
-    if (window.innerWidth <= 910) {
+    if (window.innerWidth <= 1250) {
       if (this.router.url.includes('thread')) {
         this.mobileService.isMobile = true;
         this.router.navigate([
@@ -164,7 +164,7 @@ export class HeaderComponent implements OnInit {
    * @returns {boolean} True if the window size is small, false otherwise.
    */
   windowIsSmall() {
-    return window.innerWidth <= 910;
+    return window.innerWidth <= 1250;
   }
 
   /**

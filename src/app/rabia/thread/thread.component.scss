@@ -45,7 +45,7 @@ main {
     color: #797EF3;
 }
 
-@media (max-width: 910px) {
+@media (max-width: 1250px) {
     main {
         padding: clamp(1rem, 0.2623rem + 3.9344vw, 2.5rem) 40px; 
     }

@@ -126,7 +126,7 @@ mat-drawer-container {
   display: none;
 }
 
-@media (max-width: 910px) {
+@media (max-width: 1250px) {
   .hide-if-mobile {
     display: none !important;
   }
@@ -216,7 +216,7 @@ mat-drawer-container {
   transform: translate(-50%, -50%);
 }
 
-@media (min-width: 910px) {
+@media (min-width: 1250px) {
   .selected-channel {
     color: #535af1;
     font-weight: bolder;

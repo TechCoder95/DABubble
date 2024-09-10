@@ -184,6 +184,6 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
   }
 
   windowIsSmall() {
-    return window.innerWidth <= 910;
+    return window.innerWidth <= 1250;
   }
 }

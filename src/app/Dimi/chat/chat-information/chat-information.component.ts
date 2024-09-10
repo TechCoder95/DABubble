@@ -357,7 +357,7 @@ export class ChatInformationComponent implements OnInit {
    * @returns {boolean} Returns true if the window width is less than or equal to 910, otherwise returns false.
    */
   windowIsSmall() {
-    return window.innerWidth <= 910;
+    return window.innerWidth <= 1250;
   }
 
   /**
@@ -377,7 +377,7 @@ export class ChatInformationComponent implements OnInit {
 
   isMobileAndInChannelInformation!: boolean;
   checkDialogSettings() {
-    if (window.innerWidth < 910) {
+    if (window.innerWidth < 1250) {
       this.isMobileAndInChannelInformation = true;
     } else {
       this.isMobileAndInChannelInformation = false;

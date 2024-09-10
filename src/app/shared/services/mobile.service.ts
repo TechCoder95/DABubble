@@ -9,7 +9,7 @@ export class MobileService {
   isChat: boolean = false;
 
   constructor() {
-    if (window.innerWidth <= 910) {
+    if (window.innerWidth <= 1250) {
       this.isMobile = true;
     }
   }

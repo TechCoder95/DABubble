@@ -16,6 +16,6 @@ export class PrivacyComponent {
   }
 
   isMobile() {
-    return window.innerWidth < 910;
+    return window.innerWidth < 1250;
   }
 }
