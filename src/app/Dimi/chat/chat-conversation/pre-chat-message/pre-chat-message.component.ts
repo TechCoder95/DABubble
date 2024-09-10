@@ -4,6 +4,8 @@ import { ChannelService } from '../../../../shared/services/channel.service';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
 import { CommonModule } from '@angular/common';
 import { TextChannel } from '../../../../shared/interfaces/textchannel';
+import { Subscription } from 'rxjs';
+import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 
 @Component({
   selector: 'app-pre-chat-message',
@@ -18,6 +20,7 @@ export class PreChatMessageComponent {
   isChatWithMyself!: boolean;
   privateChatPartner!: DABubbleUser | undefined;
   channelName!: string | undefined;
+  userSubscription!: Subscription;
 
   @Input({ required: true }) activeChannelFromChatconv!: any;
 
@@ -28,6 +31,7 @@ export class PreChatMessageComponent {
   constructor(
     private userService: UserService,
     private channelService: ChannelService,
+    private subscriptionService: GlobalsubService
   ) {
     this.isPrivateChat = this.selectedChannel.isPrivate;
     if (this.isPrivateChat && this.selectedChannel.assignedUser.length === 1) {
@@ -37,6 +41,16 @@ export class PreChatMessageComponent {
     }
     this.getChannelName();
     this.getPrivateChatPartner();
+
+    this.userSubscription = this.subscriptionService.getUserObservable().subscribe(async (user) => {
+      this.activeUser = user;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
   }
 
   /**

@@ -6,6 +6,9 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DAStorageService } from '../../shared/services/dastorage.service';
 import { EmailService } from '../../shared/services/sendmail.service';
+import { GlobalsubService } from '../../shared/services/globalsub.service';
+import { Subscription } from 'rxjs';
+import { DABubbleUser } from '../../shared/interfaces/user';
 
 @Component({
   selector: 'app-open-profile-card',
@@ -18,12 +21,32 @@ export class OpenProfileCardComponent {
   editable: boolean = false;
   emailInput: string = '';
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
+  userSubscription: Subscription;
+
+  user!: DABubbleUser;
+  isUserLoggedIn: boolean = true;
+  userName: string = '';
+  userMail: string = '';
+  userAvatar: string = '';
 
   constructor(
     public userService: UserService,
     private daStorage: DAStorageService,
     private emailService: EmailService,
-  ) {}
+    private subscriptionService: GlobalsubService
+  ) {
+    this.user = this.userService.activeUser;
+
+    this.userSubscription = this.subscriptionService.getUserObservable().subscribe(async (user) => {
+      this.user = user;
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
 
   /**
    * Saves the profile by calling the necessary methods to update the user's profile information.
@@ -33,9 +56,7 @@ export class OpenProfileCardComponent {
    */
   saveProfile() {
     this.editProfile();
-    this.userService.updateUsername(this.userService.activeUser.username!);
-    if (this.emailInput != '')
-      this.emailService.updateGoogleEmail(this.emailInput);
+    this.userService.updateUser(this.user)  
   }
 
   /**
@@ -71,8 +92,11 @@ export class OpenProfileCardComponent {
    * @param file - The file to be uploaded.
    */
   upload(file: File) {
-    this.daStorage.uploadFile(file, sessionStorage.getItem('uId')!);
+    const userId = sessionStorage.getItem('uId')!;
+    const filePath = `avatars/${userId}/${file.name}`; // Unterverzeichnis für Avatare, z.B. "avatars/<userId>/<dateiname>"
+    this.daStorage.uploadFile(file, filePath);
   }
+  
 
   /**
    * Closes the edit mode of the profile card.

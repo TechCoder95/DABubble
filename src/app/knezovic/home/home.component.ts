@@ -156,11 +156,11 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Checks if the window width is less than 910px and if the current URL includes 'channel'.
+   * Checks if the window width is less than 1250px and if the current URL includes 'channel'.
    * Sets the `isSmallScreenChannel` property accordingly.
    */
   checkConditions(): void {
     this.isSmallScreenChannel =
-      window.innerWidth < 910 && this.router.url.includes('channel');
+      window.innerWidth < 1250 && this.router.url.includes('channel');
   }
 }

@@ -109,7 +109,7 @@ export class DialogChannelMembersComponent implements OnInit {
     const rect = this.relativeElement.nativeElement.getBoundingClientRect();
     let dialogWidth!: number;
 
-    if (window.innerWidth >= 910) {
+    if (window.innerWidth >= 1250) {
       dialogWidth = 542;
       this.dialog.open(DialogAddChannelMembersComponent, {
         position: {
@@ -138,7 +138,7 @@ export class DialogChannelMembersComponent implements OnInit {
 
   @HostListener('window:resize', ['$event'])
   onResize(): void {
-    if (window.innerWidth >= 910) {
+    if (window.innerWidth >= 1250) {
       this.closeDialog();
     }
   }

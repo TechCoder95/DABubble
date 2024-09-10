@@ -74,22 +74,22 @@ h3 {
   gap: 5px;
   border: 1px solid rgb(173, 176, 217);
 }
+.add-reactions-div {
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  display: grid;
+  bottom: -94px;
+}
 
+.add-reactions-div-threads {
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  display: grid;
+  bottom: -90px;
+  left: -24px;
+}
 @media (max-width: 950px) {
-  .add-reactions-div {
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    display: grid;
-    bottom: -94px;
-  }
 
-  .add-reactions-div-threads {
-    grid-template-columns: repeat(5, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    display: grid;
-    bottom: -90px;
-    left: -24px;
-  }
 
   .edit-message-dialog {
     left: 8px;
