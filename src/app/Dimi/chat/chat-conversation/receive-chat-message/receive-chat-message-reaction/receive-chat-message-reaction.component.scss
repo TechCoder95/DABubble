@@ -29,7 +29,7 @@ main {
   }
 }
 
-.add-reactions-div {
+.add-reactions {
   position: absolute;
   bottom: -110%;
   background-color: white;
@@ -47,5 +47,12 @@ main {
     grid-template-rows: repeat(2, 1fr);
     display: grid;
     bottom: -94px;
+  }
+
+  .add-reactions-div-threads {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    display: grid;
+    bottom: -186px;
   }
 }

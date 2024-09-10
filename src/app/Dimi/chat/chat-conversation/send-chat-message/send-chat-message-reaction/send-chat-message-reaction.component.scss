@@ -2,11 +2,12 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-inline:15px;
+  padding-inline: 15px;
   background-color: white;
   border-radius: 25px 25px 0px 25px;
   border: 1px solid rgba(173, 176, 217, 1);
-  > img {
+
+  >img {
     cursor: default;
   }
 }
@@ -50,7 +51,7 @@ h3 {
   padding: 5px 10px;
   cursor: pointer;
 
-  > h3 {
+  >h3 {
     padding: 5px 10px;
     background-color: white;
     border-radius: 30px;
@@ -62,7 +63,7 @@ h3 {
   }
 }
 
-.add-reactions-div {
+.add-reactions {
   position: absolute;
   bottom: -110%;
   background-color: white;
@@ -79,7 +80,33 @@ h3 {
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(2, 1fr);
     display: grid;
-    position: absolute;
     bottom: -94px;
+  }
+
+  .add-reactions-div-threads {
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    display: grid;
+    bottom: -90px;
+    left: -24px;
+  }
+
+  .edit-message-dialog {
+    left: 8px;
+    top: 32px;
+
+    h3 {
+      font-size: 16px;
+    }
+  }
+}
+
+@media (max-width: 550px) {
+
+  .edit-message-dialog {
+  
+    h3 {
+      font-size: 12px;
+    }
   }
 }
