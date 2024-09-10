@@ -39,7 +39,7 @@
       <main>
         <section>
           @if (
-            (getRoute() && getLocation() !== "/user/imprint") || 
+            (getRoute() && getLocation() !== "/user/imprint") ||
             getLocation() !== "/user/privacy"
           ) {
             <app-header
@@ -75,7 +75,7 @@
     ></app-sidenav>
   } @else {
     @if (
-      getLocation() !== "/user/imprint" 
+      getLocation() !== "/user/imprint" || getLocation() !== "/user/privacy"
     ) {
       <app-header
         [activeUserChange]="activeUserChange"
