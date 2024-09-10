@@ -74,11 +74,11 @@ img {
 
 @keyframes visibility {
   from {
-      opacity: 0;
+    opacity: 0;
   }
 
   to {
-      opacity: 1;
+    opacity: 1;
   }
 }
 
@@ -161,7 +161,6 @@ img {
 
 @media (max-width: 380px) {
   .register-mobile {
-
     p,
     a {
       font-size: 13px;
@@ -176,5 +175,13 @@ img {
 @media (max-height: 1000px) {
   .register-mobile {
     bottom: 4%;
+  }
+}
+
+@media (max-height: 700px) {
+  .mobile-logo {
+    > img {
+      width: 200px;
+    }
   }
 }

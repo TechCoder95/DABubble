@@ -140,6 +140,13 @@ input {
     }
 }
 
+@media (max-height: 700px) {
+  .bigAlert {
+    padding: 6px;
+    font-size: 15px;
+  }
+}
+
 @media (max-height: 600px) {
 
     input {
