@@ -1,14 +1,14 @@
 .card {
-    margin: clamp(0rem, -0.2205rem + 1.176vw, 1.25rem);
-    margin-top: 0;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 25px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    background-color: white;
+  margin: clamp(0rem, -0.2205rem + 1.176vw, 1.25rem);
+  margin-top: 0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 25px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 .privacy {
-    margin-top: 120px !important;
+  margin-top: 120px !important;
 }
 
 // .h-full {
@@ -20,48 +20,53 @@
 }
 
 .h-screen {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
 .h-inner {
-    position: relative;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    left: 50%;
+  position: relative;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  left: 50%;
 }
 
 a {
-    font-family: 'Figtree' !important;
-    font-size: 18px;
-    color: #797EF3;
-    font-weight: 400;
-    border: 1px solid transparent;
-    border-radius: 30px;
-    padding: 10px 15px;
-    text-decoration: none;
-    border-radius: 30px;
-    padding: 10px 15px;
-    text-decoration: none;
+  font-family: "Figtree" !important;
+  font-size: 18px;
+  color: #797ef3;
+  font-weight: 400;
+  border: 1px solid transparent;
+  border-radius: 30px;
+  padding: 10px 15px;
+  text-decoration: none;
+  border-radius: 30px;
+  padding: 10px 15px;
+  text-decoration: none;
 
-    &:hover {
-        cursor: pointer;
-        color: #444DF2;
-        font-weight: 500;
-        border: 1px solid #ADB0D9;
-    }
-
+  &:hover {
+    cursor: pointer;
+    color: #444df2;
+    font-weight: 500;
+    border: 1px solid #adb0d9;
+  }
 }
 
 @media (max-width: 650px) {
-    .mobile-container {
-        width: 100% !important;
-    }
+  .mobile-container {
+    width: 100% !important;
+  }
 
-    .mobile-view {
-        display: none !important;
-    }
+  .mobile-view {
+    display: none !important;
+  }
+}
+
+@media (max-height: 700px) {
+  .card {
+    margin-top: 40px;
+  }
 }
