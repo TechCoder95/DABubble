@@ -6,13 +6,16 @@ import { Location } from '@angular/common';
   standalone: true,
   imports: [],
   templateUrl: './privacy.component.html',
-  styleUrl: './privacy.component.scss'
+  styleUrl: './privacy.component.scss',
 })
 export class PrivacyComponent {
-
-  constructor(private location: Location) { }
+  constructor(private location: Location) {}
 
   goBack() {
     this.location.back();
+  }
+
+  isMobile() {
+    return window.innerWidth < 910;
   }
 }

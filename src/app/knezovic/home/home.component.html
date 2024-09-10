@@ -30,11 +30,18 @@
     <section>
       <router-outlet />
     </section>
+  } @else if (getLocation() === "/user/privacy") {
+    <section>
+      <router-outlet />
+    </section>
   } @else {
     <div>
       <main>
         <section>
-          @if (getRoute()) {
+          @if (
+            (getRoute() && getLocation() !== "/user/imprint") || 
+            getLocation() !== "/user/privacy"
+          ) {
             <app-header
               [activeUserChange]="activeUserChange"
               [activeGoogleUserChange]="activeGoogleUserChange"
@@ -67,7 +74,9 @@
       [onlineStatusChange]="onlineStatusChange"
     ></app-sidenav>
   } @else {
-    @if (getLocation() !== "/user/imprint") {
+    @if (
+      getLocation() !== "/user/imprint" || getLocation() !== "/user/privacy"
+    ) {
       <app-header
         [activeUserChange]="activeUserChange"
         [activeGoogleUserChange]="activeGoogleUserChange"

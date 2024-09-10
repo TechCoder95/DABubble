@@ -1,8 +1,12 @@
-<section>
-  <div (click)="goBack()" class="arrow-back"></div>
+<div class="wrapper">
+  <img src="/img/logo.svg" (click)="goBack()" />
 
-  <div class="legal-content">
-    <div class="arrow"><h1>Datenschutzerklärung</h1></div>
+  <main class="legal-content">
+    <section class="position-headline">
+      <h1>Datenschutzerklärung</h1>
+      <div (click)="goBack()" class="arrow-back"></div>
+    </section>
+
     <strong>1. Datenschutz auf einen Blick</strong><br />
     <p>
       <br />Allgemeine Hinweise:<br />
@@ -270,5 +274,5 @@
       Bestimmungen – insbesondere Aufbewahrungsfristen – bleiben unberührt.<br />
       <br /><br />Quelle: https://www.e-recht24.de"<br />
     </p>
-  </div>
-</section>
+  </main>
+</div>

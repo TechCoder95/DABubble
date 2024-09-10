@@ -1,23 +1,64 @@
-section {
-    position: relative;
-    padding: 40px;
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 16px;
+}
+
+.position-headline {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+main {
+  position: relative;
+  background-color: white;
+  border-radius: 25px;
+  padding: clamp(20px, 5vw, 50px);
+}
+
+img {
+  object-fit: cover;
+  width: fit-content;
 }
 
 .arrow-back {
-    position: absolute; //wenn Text drin ist wieder einklammern
-    right: 40px;
-    top: 40px;
-    width: 40px;
-    height: 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-image: url(/img/arrow-back.svg);
+  width: 40px;
+  height: 40px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url(/img/arrow-back.svg);
 
-    &:hover {
-        cursor: pointer;
-        background-color: #ECEEFE;
-        border-radius: 100%;
-        transition: 125ms;
-        background-image: url(/img/arrow-back-hover.svg);
-    }
+  &:hover {
+    cursor: pointer;
+    background-color: #eceefe;
+    border-radius: 100%;
+    transition: 125ms;
+    background-image: url(/img/arrow-back-hover.svg);
+  }
+}
+
+h1 {
+  color: #444df2;
+  font-size: clamp(24px, 4vw, 46px);
+  font-weight: 700;
+  margin: 0;
+}
+
+p {
+  font-size: clamp(17px, 2vw, 20px);
+  margin: 0;
+}
+
+@media (max-width: 510px) {
+  .wrapper {
+    align-items: center;
+  }
+
+  .position-headline {
+    flex-direction: row-reverse;
+  }
 }

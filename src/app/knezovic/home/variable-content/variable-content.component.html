@@ -1,4 +1,4 @@
-@if (getUrl() === "/user/privacy") {
+<!-- @if (getUrl() === "/user/privacy") {
   <div class="h-screen w-full">
     <div class="h-full w-full flex justify-content-center">
       <div>
@@ -9,9 +9,12 @@
         </div>
       </div>
     </div>
-  </div>
-} @else if (getUrl() === "/user/imprint") {
+  </div> -->
+@if (getUrl() === "/user/imprint") {
   <router-outlet></router-outlet>
+} @else if (getUrl() === "/user/privacy") {
+  <router-outlet></router-outlet>
+
 } @else {
   <div class="h-screen w-full">
     <div class="h-full w-full flex align-items-center justify-content-center">
