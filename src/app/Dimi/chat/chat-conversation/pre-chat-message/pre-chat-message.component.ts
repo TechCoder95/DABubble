@@ -47,6 +47,12 @@ export class PreChatMessageComponent {
     });
   }
 
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
+
   /**
    * Retrieves the channel name.
    * If the chat is not a private chat, it sets the channel name based on the channel service's channel name.
