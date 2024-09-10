@@ -6,6 +6,8 @@ import { FormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { DAStorageService } from '../../shared/services/dastorage.service';
 import { EmailService } from '../../shared/services/sendmail.service';
+import { GlobalsubService } from '../../shared/services/globalsub.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-open-profile-card',
@@ -18,12 +20,37 @@ export class OpenProfileCardComponent {
   editable: boolean = false;
   emailInput: string = '';
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
+  userSubscription: Subscription;
+
+  isUserLoggedIn: boolean = true;
+  userName: string = '';
+  userMail: string = '';
+  userAvatar: string = '';
 
   constructor(
     public userService: UserService,
     private daStorage: DAStorageService,
     private emailService: EmailService,
-  ) {}
+    private subscriptionService: GlobalsubService
+  ) {
+    this.userName = this.userService.activeUser.username;
+    this.userMail = this.userService.activeUser.mail;
+    this.userAvatar = this.userService.activeUser.avatar;
+
+    this.userSubscription = this.subscriptionService.getUserObservable().subscribe(async (user) => {
+      this.userName = user.username;
+      this.userMail = user.mail;
+      this.userAvatar = user.avatar;
+      console.log("neue mail?:", user.mail);
+      
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.userSubscription) {
+      this.userSubscription.unsubscribe();
+    }
+  }
 
   /**
    * Saves the profile by calling the necessary methods to update the user's profile information.
@@ -32,8 +59,9 @@ export class OpenProfileCardComponent {
    * - Calls the `updateGoogleEmail` method of the `emailService` to update the Google email if the `emailInput` is not empty.
    */
   saveProfile() {
+   
     this.editProfile();
-    this.userService.updateUsername(this.userService.activeUser.username!);
+    this.userService.updateUsername(this.userName);
     if (this.emailInput != '')
       this.emailService.updateGoogleEmail(this.emailInput);
   }
