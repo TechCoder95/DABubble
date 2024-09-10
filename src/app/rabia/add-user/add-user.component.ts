@@ -7,7 +7,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthenticationService } from '../../shared/services/authentication.service';
@@ -26,6 +26,7 @@ import { AuthenticationService } from '../../shared/services/authentication.serv
     MatDialogModule,
     CommonModule,
     MatTooltipModule,
+    RouterLink
   ],
   templateUrl: './add-user.component.html',
   styleUrl: './add-user.component.scss',
