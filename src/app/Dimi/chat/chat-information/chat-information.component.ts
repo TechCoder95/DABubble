@@ -56,7 +56,8 @@ export class ChatInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.selectedChannel.isPrivate) this.getPrivateChatPartner();
+    if (this.selectedChannel.isPrivate)
+      this.setPrivateChatPartner();
 
     this.selectedChannel.assignedUser.forEach((userID) => {
       this.userService.getOneUserbyId(userID).then((user) => {
@@ -64,12 +65,12 @@ export class ChatInformationComponent implements OnInit {
       });
     });
 
-    this.userStatusSubscription = this.subService
-      .getUserObservable()
-      .subscribe(async (user) => {
-        if (user && this.privateChatPartner) {
+    this.userStatusSubscription = this.subService.getUserObservable().subscribe(async (user) => {
+        if (this.privateChatPartner) {
           this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
         }
+        this.privateChatPartnerName = user.username;
+        this.privatChatAvatar = user.avatar;        
       });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {
@@ -163,8 +164,6 @@ export class ChatInformationComponent implements OnInit {
       dialogConfig,
     );
     this.handleDialogClose(dialogRef);
-    console.log("test");
-    
   }
 
   dialogAddChannelMembersIsOpen: boolean = false;
@@ -304,22 +303,18 @@ export class ChatInformationComponent implements OnInit {
    * and assigns the partner's name, avatar, and user object to the corresponding properties.
    * If there is no private chat partner, it assigns the active user's name and avatar to the corresponding properties.
    */
-  getPrivateChatPartner() {
-    const privateChatPartnerID = this.selectedChannel.assignedUser.find(
-      (userID) => userID !== this.userService.activeUser.id,
-    );
+  setPrivateChatPartner() {
+    const privateChatPartnerID = this.selectedChannel.assignedUser.find((userID) => userID !== this.userService.activeUser.id);
 
     if (privateChatPartnerID) {
-      this.userService
-        .getOneUserbyId(privateChatPartnerID!)
+      this.userService.getOneUserbyId(privateChatPartnerID!)
         .then((privateChatPartner) => {
           this.privateChatPartnerName = privateChatPartner?.username;
           this.privatChatAvatar = privateChatPartner?.avatar;
           this.privateChatPartner = privateChatPartner;
         });
     } else {
-      this.privateChatPartnerName =
-        this.userService.activeUser.username + ' (Du)';
+      this.privateChatPartnerName = this.userService.activeUser.username + ' (Du)';
       this.privatChatAvatar = this.userService.activeUser.avatar;
     }
   }

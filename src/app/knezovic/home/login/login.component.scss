@@ -1,181 +1,176 @@
 form {
-    max-width: 606px;
+  max-width: 606px;
 }
 
 input {
-    margin: 10px;
-    padding: 15px;
-    border: 2px solid white;
-    border-radius: 5px;
-    width: -webkit-fill-available;
-    max-width: 500px;
-    border-radius: 40px;
-    font-size: 16px;
-    background-color: #ECEEFD;
-    cursor: pointer;
-    border: 1px solid white;
-    outline: none;
+  margin: 10px;
+  padding: 15px;
+  border: 2px solid white;
+  border-radius: 5px;
+  width: -webkit-fill-available;
+  max-width: 500px;
+  border-radius: 40px;
+  font-size: 16px;
+  background-color: #eceefd;
+  cursor: pointer;
+  border: 1px solid white;
+  outline: none;
 
-    ::placeholder {
-        font-size: 18px;
-    }
+  ::placeholder {
+    font-size: 18px;
+  }
 
-    &:hover {
-        border: 1px solid #ADB0D9
-    }
+  &:hover {
+    border: 1px solid #adb0d9;
+  }
 
-    &:focus {
-        border: 1px solid #535AF1
-    }
+  &:focus {
+    border: 1px solid #535af1;
+  }
 }
 
 span {
-    margin-left: 20px;
+  margin-left: 20px;
 }
 
 button {
-    margin: 10px;
-    padding: 10px;
-    border: 2px solid #444DF2;
-    border-radius: 40px;
-    width: 150px;
-    height: 50px;
-    font-size: 16px;
-    background-color: #444DF2;
-    color: white;
-    cursor: pointer;
+  margin: 10px;
+  padding: 10px;
+  border: 2px solid #444df2;
+  border-radius: 40px;
+  width: 150px;
+  height: 50px;
+  font-size: 16px;
+  background-color: #444df2;
+  color: white;
+  cursor: pointer;
 
-    &:disabled {
-        background: #4e4e4e;
-        cursor: not-allowed;
-    }
+  &:disabled {
+    background: #4e4e4e;
+    cursor: not-allowed;
+  }
 
-    &:hover {
-        background-color: white;
-        color: #444DF2;
-        border: 2px solid #444DF2;
-    }
+  &:hover {
+    background-color: white;
+    color: #444df2;
+    border: 2px solid #444df2;
+  }
 }
 
 .bigAlert {
-    background-color: red;
-    color: white;
-    font-size: 20px;
-    margin: 5px;
-    padding: 12px;
-    border-radius: 25px;
-    text-align: center;
-    width: 83%;
-    margin: 0 auto;
+  background-color: red;
+  color: white;
+  font-size: 20px;
+  margin: 5px;
+  padding: 12px;
+  border-radius: 25px;
+  text-align: center;
+  width: 83%;
+  margin: 0 auto;
 }
 
 .alert {
-    color: red;
-    font-size: 14px;
-    margin: 5px;
+  color: red;
+  font-size: 14px;
+  margin: 5px;
 }
-
-
 
 hr {
-    margin: 20px;
-    width: 30%;
+  margin: 20px;
+  width: 30%;
 }
-
 
 .test {
-    display: none;
+  display: none;
 }
 
-
 .test2 {
-    width: 90%;
+  width: 90%;
 }
 
 .gast {
-    background-color: white;
-    border: 2px solid #444DF2;
-    color: #444DF2;
+  background-color: white;
+  border: 2px solid #444df2;
+  color: #444df2;
 
-    &:hover {
-        background-color: #444DF2;
-        color: white;
-        border: 2px solid #444DF2;
-    }
-
+  &:hover {
+    background-color: #444df2;
+    color: white;
+    border: 2px solid #444df2;
+  }
 }
 
 .googleButton {
-    margin: 10px;
-    padding: 20px;
-    border: 1px solid #ECEEFD;
-    border-radius: 5px;
-    width: 90%;
-    color: #5262ED;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 40px;
-    font-size: 16px;
-    text-align: center;
-    background-color: #ECEEFD;
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #eceefd;
+  border-radius: 5px;
+  width: 90%;
+  color: #5262ed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 40px;
+  font-size: 16px;
+  text-align: center;
+  background-color: #eceefd;
 
-    &:hover {
-        border: 1px solid #444DF2;
-        background-color: #ECEEFD;
-        color: #5262ED;
-    }
+  &:hover {
+    border: 1px solid #444df2;
+    background-color: #eceefd;
+    color: #5262ed;
+  }
 
-    &:focus {
-        border: 1px solid #686868;
-        background-color: #ECEEFD;
-    }
+  &:focus {
+    border: 1px solid #686868;
+    background-color: #eceefd;
+  }
 }
 
 h1 {
-    color: #444DF2;
-    font-size: 46px;
-    font-weight: 700;
-    margin: 0;
+  color: #444df2;
+  font-size: 46px;
+  font-weight: 700;
+  margin: 0;
 }
 
 p {
-    font-size: 20px;
-    font-weight: 400;
+  font-size: 20px;
+  font-weight: 400;
 }
 
 table {
-    border-collapse: collapse;
-    width: 100%;
+  border-collapse: collapse;
+  width: 100%;
 }
 
 a {
-    font-family: 'Figtree' !important;
-    text-decoration: none;
-    color: #797EF3;
+  font-family: "Figtree" !important;
+  text-decoration: none;
+  color: #797ef3;
 
-    &:hover {
-        color: #444DF2;
-        background-color: #eceefe;
-        border-radius: 30px;
-        padding: 5px 30px;
-        font-weight: 500;
-        cursor: pointer;
-    }
+  &:hover {
+    color: #444df2;
+    background-color: #eceefe;
+    border-radius: 30px;
+    padding: 5px 30px;
+    font-weight: 500;
+    cursor: pointer;
+  }
 }
 
 .message {
-    position: absolute;
-    right: 20px;
-    bottom: 20px;
-    border-radius: 30px 30px 0 30px;
-    padding: 50px;
-    background: #444DF2;
-    color: white;
-    box-shadow: 0px 6px 10px 0px #00000033;
-    font-weight: 700;
-    font-size: 36px;
-
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 30px 30px 0 30px;
+  padding: 50px;
+  background: #444df2;
+  color: white;
+  box-shadow: 0px 6px 10px 0px #00000033;
+  font-weight: 700;
+  font-size: 36px;
+  z-index: 1000;
 }
 
 @media (max-width: 1250px) {
@@ -186,72 +181,68 @@ a {
 }
 
 @media (max-width: 650px) {
-
-    p {
-        width: 100% !important;
-    }
+  p {
+    width: 100% !important;
+  }
 }
 
 @media (max-width: 410px) {
-
-    .google-mobile {
-        font-size: 1rem !important;
-    }
+  .google-mobile {
+    font-size: 1rem !important;
+  }
 }
 
 @media (max-width: 380px) {
+  .google-mobile {
+    font-size: 0.75rem !important;
+    gap: 12px !important;
 
-    .google-mobile {
-        font-size: 0.75rem !important;
-        gap: 12px !important;
-
-        img {
-            width: 30px;
-        }
+    img {
+      width: 30px;
     }
+  }
 }
 
 @media (max-height: 1000px) {
+  h1 {
+    font-size: 32px;
+  }
 
-    h1 {
-        font-size: 32px;
-    }
+  p {
+    margin: 8px;
+    font-size: 16px;
+  }
 
-    p {
-        margin: 8px;
-        font-size: 16px
-    }
+  input {
+    height: 40px;
+    margin: 4px;
+    padding: 0 12px;
+    font-size: 14px;
+  }
 
-    input {
-        height: 40px;
-        margin: 4px;
-        padding: 0 12px;
-        font-size: 14px;
-    }
+  hr {
+    margin: 14px;
+  }
 
-    hr {
-        margin: 14px;
-    }
+  .mobile-mt {
+    margin-top: 0.75rem !important;
+  }
 
-    .mobile-mt {
-        margin-top: 0.75rem !important;
-    }
+  .mobile-m {
+    margin: 1rem !important;
+  }
 
-    .mobile-m {
-        margin: 1rem !important;
-    }
+  .googleButton {
+    height: 40px;
+    margin: 0;
+  }
 
-    .googleButton {
-        height: 40px;
-        margin: 0;
+  .mobile-btns {
+    button {
+      margin: 8px;
+      width: 125px;
+      height: 40px;
+      font-size: 12px;
     }
-
-    .mobile-btns {
-        button {
-            margin: 8px;
-            width: 125px;
-            height: 40px;
-            font-size: 12px;
-        }
-    }
+  }
 }
