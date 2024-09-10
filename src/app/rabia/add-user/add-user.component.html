@@ -44,14 +44,19 @@
                     </div>
 
                 </div>
+                @if (this.authService.fehlerMeldung) {
 
+                    <div class="bigAlert">
+                        <span>{{this.authService.fehlerMeldung}}</span>
+                    </div>
+                }
                 <div>
                     <mat-checkbox (change)="acceptPolicy = !acceptPolicy" class="example-margin">Ich stimme der Datenschutzerklärung
                         zu.</mat-checkbox>
                 </div>
             </div>
         </div>
-
+      
         <button type="submit" [disabled]="!acceptPolicy || !username.valid || !email.valid || !password.valid"
             title="login" mat-flat-button name="registrieren">Weiter</button>
 

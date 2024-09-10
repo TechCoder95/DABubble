@@ -42,7 +42,7 @@ export class AddUserComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthenticationService,
+    public authService: AuthenticationService,
   ) {}
 
   /**

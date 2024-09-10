@@ -261,6 +261,7 @@ export class UserService {
       avatar: '/img/avatar.svg',
     };
     await this.DatabaseService.addDataToDB(this.collectionName, data);
+    this.login(this.googleUser);
   }
 
   /**

@@ -61,15 +61,24 @@ export class AuthenticationService {
           username,
           this.userService.googleUser.uid,
         );
-        sessionStorage.setItem('uId', this.userService.googleUser.uid);
         this.emailService.sendMail();
         this.registerProcess = true;
       })
       .catch((error) => {
-        window.location.reload();
-        const errorCode = error.code;
-        const errorMessage = error.message;
-        // ..
+        if (error.code === 'auth/email-already-in-use')
+          this.fehlerMeldung = 'Ein User mit der Email existiert bereits';
+        else if (error.code === 'auth/weak-password')
+          this.fehlerMeldung = 'Passwort zu schwach';
+        else if (error.code === 'auth/network-request-failed')
+          this.fehlerMeldung =
+            'Netzwerkfehler. Bitte überprüfen Sie Ihre Internetverbindung.';
+        else if (error.code === 'auth/too-many-requests')
+          this.fehlerMeldung =
+            'Zu viele Anfragen. Versuchen Sie es später erneut.';
+        else if (error.code === 'auth/invalid-credential')
+          this.fehlerMeldung = 'Ungültige Anmeldeinformationen';
+        else if (error.code === 'auth/invalid-email')
+          this.fehlerMeldung = 'E-Mail-Adresse ist ungültig';
       });
   }
 
