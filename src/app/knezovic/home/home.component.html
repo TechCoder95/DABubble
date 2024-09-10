@@ -75,7 +75,7 @@
     ></app-sidenav>
   } @else {
     @if (
-      getLocation() !== "/user/imprint" || getLocation() !== "/user/privacy"
+      getLocation() !== "/user/imprint" 
     ) {
       <app-header
         [activeUserChange]="activeUserChange"
