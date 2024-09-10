@@ -66,8 +66,7 @@ h5 {
   }
 }
 
-
-.message{
+.message {
   color: white;
   display: flex;
   flex-direction: row;
@@ -75,7 +74,6 @@ h5 {
   align-items: center;
   gap: 5px;
 }
-
 
 .pdf-img-span {
   display: flex;
@@ -87,4 +85,9 @@ h5 {
     height: 60px !important;
     width: 60px !important;
   }
+}
+
+.edited {
+  color: white;
+  font-size: 10px;
 }
