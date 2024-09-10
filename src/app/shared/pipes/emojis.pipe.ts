@@ -26,6 +26,8 @@ export class EmojisPipe implements PipeTransform {
       value.toString().includes(':-+') || 
       value.toString().includes(':-!') || 
       value.toString().includes(':-?') ||
+      value.toString().includes(':-/') ||
+
       value.toString().includes('😘') ||
       value.toString().includes('😂') ||
       value.toString().includes('😢') ||
@@ -47,6 +49,7 @@ export class EmojisPipe implements PipeTransform {
       value.toString().includes('😲') ||
       value.toString().includes('😠')) {
       value = value.toString().replaceAll(':-)', '<img class="emoji" src="/img/emojis/laughing.svg">');
+      value = value.toString().replaceAll(':-/', '<img class="emoji" src="/img/emojis/feeling.svg">');
       value = value.toString().replaceAll(':-(', '<img class="emoji" src="/img/emojis/sad.svg">');
       value = value.toString().replaceAll(':-P', '<img class="emoji" src="/img/emojis/tongue.svg">');
       value = value.toString().replaceAll(':-D', '<img class="emoji" src="/img/emojis/haha2.svg">');
