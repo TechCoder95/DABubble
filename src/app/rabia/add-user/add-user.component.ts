@@ -77,6 +77,7 @@ export class AddUserComponent {
    */
   goToLogin() {
     this.authService.registerProcess = false;
+    this.authService.fehlerMeldung = '';
     this.router.navigate(['/user/login']);
   }
 }

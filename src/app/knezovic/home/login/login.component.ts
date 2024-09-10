@@ -84,6 +84,7 @@ export class LoginComponent implements OnInit, OnDestroy {
    */
   goToRegister() {
     this.authService.registerProcess = true;
+    this.authService.fehlerMeldung = '';
     this.router.navigate(['/user/register']);
   }
 
