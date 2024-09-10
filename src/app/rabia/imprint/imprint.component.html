@@ -1,20 +1,15 @@
 <div class="wrapper">
-  @if (!isMobile()) {
+ 
+  <section>
     <img src="/img/logo.svg" (click)="goBack()" />
-  }
+  </section>
 
   <main>
-    @if (isMobile()) {
-      <img src="/img/logo.svg" (click)="goBack()" />
 
-      <div class="position-mobile">
-        <div (click)="goBack()" class="arrow-back-mobile"></div>
-        <h1>Impressum</h1>
-      </div>
-    } @else {
-      <div (click)="goBack()" class="arrow-back"></div>
+    <section class="position-headline">
       <h1>Impressum</h1>
-    }
+      <div (click)="goBack()" class="arrow-back"></div>
+    </section>
 
     <section class="position-content">
       <div>
@@ -50,7 +45,7 @@
     <section>
       <h1>Kontakt</h1>
 
-      <div class="position-content contact">
+      <div class="contact">
         <span>
           <p>E-Mail:</p>
           <p>Tel:</p>
