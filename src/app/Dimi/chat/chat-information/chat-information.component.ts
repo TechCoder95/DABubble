@@ -65,13 +65,12 @@ export class ChatInformationComponent implements OnInit {
       });
     });
 
-    this.userStatusSubscription = this.subService
-      .getUserObservable()
-      .subscribe(async (user) => {
+    this.userStatusSubscription = this.subService.getUserObservable().subscribe(async (user) => {
         if (this.privateChatPartner) {
           this.privateChatPartner!.isLoggedIn = user.isLoggedIn;
         }
         this.privateChatPartnerName = user.username;
+        this.privatChatAvatar = user.avatar;        
       });
 
     this.channelSub = this.activeChannelFromChat.subscribe((channel: any) => {

@@ -270,11 +270,7 @@ export class UserService {
    * @returns A Promise that resolves when the user is updated.
    */
   async updateUser(user: DABubbleUser) {
-    await this.DatabaseService.updateDataInDB(
-      this.collectionName,
-      user.id!,
-      user,
-    );
+    await this.DatabaseService.updateDataInDB(this.collectionName, user.id!, user,);
   }
 
   /**

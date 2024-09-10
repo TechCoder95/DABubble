@@ -7,11 +7,11 @@
             <div class="close" (click)="close()"></div>
         </div>
 
-        <img class="avatar" src="{{userAvatar}}">
+        <img class="avatar" src="{{user.avatar}}">
 
         <div class="flex flex-column w-full" style="gap: 15px;">
             <div class="flex justify-content-between align-items-center w-full">
-                <span class="font-bold font">{{userName}}</span>
+                <span class="font-bold font">{{user.username}}</span>
                 <span class="font-semibold text-lg purple only-desktop-view" (click)="editProfile()">Bearbeiten</span>
                 <div class="edit" (click)="editProfile()"></div>
             </div>
@@ -36,7 +36,7 @@
                     <span class="font-bold text-xl">E-Mail-Adresse</span>
                 </div>
 
-                <span class="own-mail">{{userMail}}</span>
+                <span class="own-mail">{{user.mail}}</span>
             </div>
         </div>
 
@@ -55,7 +55,7 @@
         </div>
 
         <div>
-            <img class="avatar cursor-pointer" src="{{userAvatar}}" (click)="fileInput.click()">
+            <img class="avatar cursor-pointer" src="{{this.userService.activeUser.avatar}}" (click)="fileInput.click()">
             <input type="file" #fileInput (change)="changeAvatar($event)" style="display: none;">
         </div>
 
@@ -65,7 +65,7 @@
                 <img class="icon" src="img/account_circle.svg" alt="">
                 <span class="font-bold text-xl">Vollständiger Name</span>
             </div>
-            <input type="text" name="username" [(ngModel)]="userName">
+            <input type="text" name="username" [(ngModel)]="user.username">
         </div>
 
         <div class="flex flex-column w-full" style="gap: 10px;">
@@ -73,7 +73,7 @@
                 <img class="icon" src="img/mail-focus.svg" alt="">
                 <span class="font-bold text-xl">E-Mail-Adresse</span>
             </div>
-            <input type="text" name="mail" [(ngModel)]="emailInput" placeholder="{{userMail}}">
+            <input type="text" name="mail" [(ngModel)]="user.mail" placeholder="{{user.mail}}">
         </div>
 
 
