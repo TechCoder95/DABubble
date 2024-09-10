@@ -26,8 +26,8 @@
                         <input type="email" [(ngModel)]="user.mail" class="mail" name="email"
                             placeholder="Beispielname@email.com" #email="ngModel"
                             pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$" required>
-                        @if (!email.valid && !email.disabled && email.touched) {<div class="alert"> <span>Your E-Mail is
-                                required</span>
+                        @if (!email.valid && !email.disabled && email.touched) {<div class="alert"> <span>
+                            Ungültige Email</span>
                         </div>}
                     </div>
 
@@ -38,8 +38,8 @@
                             placeholder="Passwort" #password="ngModel" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                             required>
                         @if (!password.valid && !password.disabled && password.touched) {<div class="alert">
-                            <span>Your
-                                password is required</span>
+                            <span>
+                                Ungültiges Passwort</span>
                         </div>}
                     </div>
 
@@ -51,7 +51,7 @@
                     </div>
                 }
                 <div>
-                    <mat-checkbox (change)="acceptPolicy = !acceptPolicy" class="example-margin">Ich stimme der Datenschutzerklärung
+                    <mat-checkbox (change)="acceptPolicy = !acceptPolicy" class="example-margin">Ich stimme der <a class="link" routerLink="/user/privacy">Datenschutzerklärung</a>
                         zu.</mat-checkbox>
                 </div>
             </div>
