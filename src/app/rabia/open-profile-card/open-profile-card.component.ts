@@ -92,8 +92,11 @@ export class OpenProfileCardComponent {
    * @param file - The file to be uploaded.
    */
   upload(file: File) {
-    this.daStorage.uploadFile(file, sessionStorage.getItem('uId')!);
+    const userId = sessionStorage.getItem('uId')!;
+    const filePath = `avatars/${userId}/${file.name}`; // Unterverzeichnis für Avatare, z.B. "avatars/<userId>/<dateiname>"
+    this.daStorage.uploadFile(file, filePath);
   }
+  
 
   /**
    * Closes the edit mode of the profile card.
