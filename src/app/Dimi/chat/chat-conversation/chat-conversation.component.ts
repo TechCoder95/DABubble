@@ -102,6 +102,7 @@ export class ChatConversationComponent
             this.allMessages.splice(x, 1);
           }
 
+          this.scrollToBottom();
           this.allMessages.push(message);
           this.allMessages.sort((a, b) => a.timestamp - b.timestamp);
         }
@@ -114,13 +115,14 @@ export class ChatConversationComponent
   }
 
   ngAfterViewChecked(): void {
-    // setTimeout(() => {
-    //   this.scrollToBottom();
-    // }, 1000);
+
   }
 
   ngAfterViewInit() {
     this.onScroll();
+    setTimeout(() => {
+      this.scrollToBottom();
+    }, 1000);
   }
 
   /**
