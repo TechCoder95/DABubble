@@ -41,9 +41,6 @@ export class EmailService {
         handleCodeInApp: true,
       };
       sendEmailVerification(user, actionCodeSettings)
-        .then(() => {
-          this.router.navigate(['/user/chooseAvatar']);
-        })
         .catch((error) => {
           console.error(error);
         });
