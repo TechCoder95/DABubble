@@ -155,6 +155,7 @@ button {
   height: 35px;
   width: 35px;
   border-radius: 50%;
+  object-fit: cover;
 }
 
 .remove-selected-user-img {
@@ -202,5 +203,9 @@ button {
 
   .channel-name {
     display: none;
+  }
+
+  .arrange-selected-user {
+    max-height: 48px;
   }
 }
