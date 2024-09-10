@@ -7,7 +7,7 @@
 >
   <div *ngIf="messageExists()">
     <div class="message" [innerHTML]="sendMessage.message | emojis | verlinkung"></div>
-      <span *ngIf="sendMessage.edited">bearbeitet</span>
+      <span *ngIf="sendMessage.edited" class="edited">bearbeitet</span>
   </div>
   <img [src]="sentFile" *ngIf="sentImageExists()" />
 
