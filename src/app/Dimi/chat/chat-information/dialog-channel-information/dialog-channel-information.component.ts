@@ -76,7 +76,6 @@ export class DialogChannelInformationComponent {
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.isMobileAndInChannelInformation = data.isMobileAndInChannelInformation;
-    console.log(this.isMobileAndInChannelInformation);
   }
 
   ngOnInit(): void {

@@ -142,7 +142,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
     this.databaseService.readDataByArray('channels', 'assignedUser', this.activeUser.id!).then((channels: TextChannel[]) => {
       channels = channels.filter((channel) => channel.isPrivate === false);
       this.ChannelsFromUser = channels;
-      console.log(this.ChannelsFromUser);
       
     });
   }
