@@ -14,7 +14,7 @@
                 <div class="flex flex-column gap-4">
                     <div>
                         <input type="text" [(ngModel)]="user.username" class="name" name="username"
-                            placeholder="Username" #username="ngModel" required>
+                            placeholder="Username" #username="ngModel" autocomplete="username" required>
                         @if (!username.valid && !username.disabled && username.touched) {<div class="alert">
                             <span>Your
                                 Name is
@@ -24,7 +24,7 @@
 
                     <div>
                         <input type="email" [(ngModel)]="user.mail" class="mail" name="email"
-                            placeholder="Beispielname@email.com" #email="ngModel"
+                            placeholder="Beispielname@email.com" #email="ngModel" autocomplete="email"
                             pattern="^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,6}$" required>
                         @if (!email.valid && !email.disabled && email.touched) {<div class="alert"> <span>
                             Ungültige Email</span>
@@ -34,7 +34,7 @@
                     <div>
                         <input
                             matTooltip="• one number • one uppercase letter • one lowercase letter • Minimum of 8 characters"
-                            type="password" [(ngModel)]="user.password" class="password" name="password"
+                            type="password" [(ngModel)]="user.password" class="password" name="password" autocomplete="current-password"
                             placeholder="Passwort" #password="ngModel" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
                             required>
                         @if (!password.valid && !password.disabled && password.touched) {<div class="alert">
