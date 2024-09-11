@@ -130,13 +130,16 @@ input {
         }
     }
 
+    input {
+        height: 40px;
+        box-sizing: border-box;
+    }
 }
 
 @media (max-width: 550px) {
     .card {
         width: clamp(16.25rem, -6.25rem + 120vw, 31.25rem);
     }
-
 
     .avatar {
         width: clamp(100px, 50vw, 200px);
@@ -146,7 +149,6 @@ input {
     .font {
         font-size: clamp(1.3125rem, 0.4875rem + 4.4vw, 2rem);
     }
-
 }
 
 @media (max-width: 390px) {
@@ -168,5 +170,10 @@ input {
     .jc {
         justify-content: center;
     }
+}
 
+@media (max-height: 700px) {
+    .editable {
+        height: 600px !important;
+    }
 }

@@ -182,6 +182,10 @@ h5 {
       object-fit: cover;
     }
   }
+
+  .adjust-padding-left {
+    margin-left: -20px;
+  }
 }
 
 @media (max-width: 340px) {

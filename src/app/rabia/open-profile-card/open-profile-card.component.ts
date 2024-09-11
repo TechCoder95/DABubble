@@ -23,6 +23,8 @@ export class OpenProfileCardComponent {
   readonly dialogRef = inject(MatDialogRef<OpenProfileCardComponent>);
   userSubscription: Subscription;
 
+  editMyProfile: boolean = false;
+
   user!: DABubbleUser;
   isUserLoggedIn: boolean = true;
   userName: string = '';
@@ -83,6 +85,7 @@ export class OpenProfileCardComponent {
         }
       };
       reader.readAsDataURL(file);
+      this.editMyProfile = true;
     }
   }
 

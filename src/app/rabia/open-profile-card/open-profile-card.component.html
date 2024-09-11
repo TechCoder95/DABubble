@@ -48,7 +48,7 @@
 
 <section>
     <div class="card editable flex flex-column justify-content-between align-items-center">
-
+        
         <div class="flex justify-content-between align-items-center w-full">
             <span class="text-2xl font-bold">Dein Profil Bearbeiten</span>
             <div class="close" (click)="close()"></div>
@@ -65,7 +65,7 @@
                 <img class="icon" src="img/account_circle.svg" alt="">
                 <span class="font-bold text-xl">Vollständiger Name</span>
             </div>
-            <input type="text" name="username" [(ngModel)]="user.username">
+            <input type="text" name="username" [(ngModel)]="user.username" #name="ngModel">
         </div>
 
         <div class="flex flex-column w-full" style="gap: 10px;">
@@ -73,13 +73,23 @@
                 <img class="icon" src="img/mail-focus.svg" alt="">
                 <span class="font-bold text-xl">E-Mail-Adresse</span>
             </div>
-            <input type="text" name="mail" [(ngModel)]="user.mail" placeholder="{{user.mail}}">
+            <input type="text" name="mail" [(ngModel)]="user.mail" placeholder="{{user.mail}}" #mail="ngModel">
         </div>
 
 
         <div class="flex gap-5">
             <button class="break-btn" mat-stroked-button (click)="closeEdit()">Abbrechen</button>
+
+            @if (editMyProfile) {
             <button mat-flat-button (click)="saveProfile()">Speichern</button>
+            } @else if (name.dirty) {
+            <button mat-flat-button (click)="saveProfile()">Speichern</button>
+            } @else if (mail.dirty) {
+            <button mat-flat-button (click)="saveProfile()">Speichern</button>
+            } @else {
+            <button mat-flat-button disabled>Speichern</button>
+            }
+
         </div>
 
     </div>
