@@ -93,7 +93,6 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // this.getPlaceholderText();
     if (this.activeUserFromChat) {
       this.activeUserFromChat.subscribe((user: DABubbleUser) => {
         this.activeUser = user;
