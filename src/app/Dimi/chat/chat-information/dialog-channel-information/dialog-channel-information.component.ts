@@ -23,6 +23,7 @@ import { TextChannel } from '../../../../shared/interfaces/textchannel';
 import { Router } from '@angular/router';
 import { GlobalsubService } from '../../../../shared/services/globalsub.service';
 import { DialogChannelMembersComponent } from '../dialog-channel-members/dialog-channel-members.component';
+import { DatabaseService } from '../../../../shared/services/database.service';
 
 @Component({
   selector: 'app-dialog-channel-information',
@@ -73,6 +74,7 @@ export class DialogChannelInformationComponent {
     private userService: UserService,
     private router: Router,
     private subscriptionService: GlobalsubService,
+    private dataService: DatabaseService,
     @Inject(MAT_DIALOG_DATA) public data: any,
   ) {
     this.isMobileAndInChannelInformation = data.isMobileAndInChannelInformation;
@@ -84,12 +86,25 @@ export class DialogChannelInformationComponent {
     this.selectedChannel = JSON.parse(
       sessionStorage.getItem('selectedChannel')!,
     );
-    this.getChannelCreator();
+
+    this.dataService.readDataByField('users', 'id', this.selectedChannel.owner).then((value) => {
+      let user = value[0] as DABubbleUser;
+      this.channelCreatorName = `${user.username}`;
+    }
+    );
+
     this.subscriptionService
       .getActiveChannelObservable()
       .subscribe((channel: TextChannel) => {
         this.selectedChannel = channel;
       });
+  }
+
+
+  ngAfterViewInit(): void {
+    //Called after ngAfterContentInit when the component's view has been initialized. Applies to components only.
+    //Add 'implements AfterViewInit' to the class.
+
   }
 
   /**
@@ -284,17 +299,6 @@ export class DialogChannelInformationComponent {
     );
   }
 
-  /**
-   * Retrieves the channel creator information.
-   *
-   * @returns {Promise<void>} A promise that resolves when the channel creator information is retrieved.
-   */
-  async getChannelCreator() {
-    let createrId = this.channelService.channel.owner;
-    this.channelCreatorObject =
-      await this.userService.getOneUserbyId(createrId);
-    this.channelCreatorName = this.channelCreatorObject.username;
-  }
 
   /**
    * Leaves the channel and performs necessary actions.
