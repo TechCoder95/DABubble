@@ -1,0 +1,18 @@
+<main class="channel-dialog" (click)="openWindow()">
+  <img [src]="addLinkImg" />
+  <section *ngIf="linkChannelWindowOpen" class="link-window">
+    @for (channel of ChannelsFromUser; track $index) {
+      <div class="username-checkbox" (click)="toggleUsername($event, channel)">
+        <div (click)="setChannel($event, channel)">
+          <p>{{ channel.name }}</p>
+        </div>
+        <!-- <input
+            type="checkbox"
+            #checkbox
+            (click)="toggleUsername($event, channel)"
+            id="{{ channel.id }}"
+          /> -->
+      </div>
+    }
+  </section>
+</main>

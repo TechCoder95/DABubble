@@ -1,28 +1,29 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { DABubbleUser } from '../../../../shared/interfaces/user';
+import { TextChannel } from '../../../../shared/interfaces/textchannel';
 
 @Component({
-  selector: 'app-link-channel-member',
+  selector: 'app-link-channel',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './link-channel-member.component.html',
-  styleUrl: './link-channel-member.component.scss',
+  templateUrl: './link-channel.component.html',
+  styleUrl: './link-channel.component.scss',
 })
-export class LinkChannelMemberComponent {
-  @Input() usersInChannel!: DABubbleUser[];
+export class LinkChannelComponent {
+  @Input({required:true}) ChannelsFromUser!: TextChannel[];
   @Input() addLinkImg!: string;
-  @Input() linkedUsers!: DABubbleUser[];
-  @Output() users = new EventEmitter<DABubbleUser[]>();
-  @Input({required:true}) linkWindowOpen: boolean = false;
-  @Output() linkWindowOpenChange = new EventEmitter<boolean>();
+  @Input({required:true}) linkedChannel!: TextChannel[];
+  @Output() users = new EventEmitter<TextChannel[]>();
+  @Input({required:true}) linkChannelWindowOpen: boolean = false;
+  @Output() linkChannelWindowOpenChange = new EventEmitter<boolean>();
 
   /**
    * Toggles the state of the link window and sets checkboxes for selected users if the link window is open.
    */
   openWindow() {
-    this.linkWindowOpen = !this.linkWindowOpen;
-    if (this.linkWindowOpen) {
+    this.linkChannelWindowOpen = !this.linkChannelWindowOpen;
+    if (this.linkChannelWindowOpen) {
       this.setCheckboxesForSelectedUsers();
     }
   }
@@ -39,7 +40,7 @@ export class LinkChannelMemberComponent {
       /*  this.selectedUsers = []; */
       checkboxes.forEach((checkbox: HTMLInputElement) => {
         let userID = checkbox.getAttribute('id');
-        if (this.linkedUsers.some((user) => user.id === userID)) {
+        if (this.linkedChannel.some((user) => user.id === userID)) {
           checkbox.checked = true;
           /* this.selectedUsers.push(user); */
         } else {
@@ -47,7 +48,7 @@ export class LinkChannelMemberComponent {
         }
       });
       /* this.selectedUsers = this.linkedUsers; */
-      if (this.linkedUsers.length === this.usersInChannel.length) {
+      if (this.linkedChannel.length === this.ChannelsFromUser.length) {
         let allUsersSelectedCheckbox = this.getAllUsersSelectedCheckbox();
         allUsersSelectedCheckbox.checked = true;
       }
@@ -71,18 +72,18 @@ export class LinkChannelMemberComponent {
    * @param event - The event that triggered the toggle.
    * @param user - The user whose username is being toggled.
    */
-  toggleUsername(event: Event, user: DABubbleUser) {
+  toggleUsername(event: Event, user: TextChannel) {
     event.stopPropagation();
     let checkbox = this.getCheckbox(event);
     if (checkbox) {
       checkbox.checked = !checkbox.checked;
       if (checkbox.checked) {
-        this.linkedUsers.push(user);
+        this.linkedChannel.push(user);
       } else {
         this.deleteUserFromArray(user);
       }
     }
-    this.users.emit(this.linkedUsers);
+    this.users.emit(this.linkedChannel);
   }
 
   /**
@@ -102,10 +103,10 @@ export class LinkChannelMemberComponent {
    *
    * @param user - The user to be deleted.
    */
-  deleteUserFromArray(user: DABubbleUser) {
-    let index = this.linkedUsers.findIndex((u) => u.id === user.id);
+  deleteUserFromArray(user: TextChannel) {
+    let index = this.linkedChannel.findIndex((u) => u.id === user.id);
     if (index !== -1) {
-      this.linkedUsers.splice(index, 1);
+      this.linkedChannel.splice(index, 1);
     }
   }
 
@@ -128,13 +129,13 @@ export class LinkChannelMemberComponent {
         checkbox.checked = isChecked;
       });
 
-      this.linkedUsers = [];
+      this.linkedChannel = [];
 
-      this.usersInChannel.forEach((user) => {
-        this.linkedUsers.push(user);
+      this.ChannelsFromUser.forEach((user) => {
+        this.linkedChannel.push(user);
       });
     }
-    this.users.emit(this.linkedUsers);
+    this.users.emit(this.linkedChannel);
   }
 
   /**
@@ -156,13 +157,13 @@ export class LinkChannelMemberComponent {
    */
   handleEachCheckbox(checkbox: HTMLInputElement, isChecked: boolean) {
     let userId = checkbox.getAttribute('id');
-    let user: DABubbleUser | undefined = this.usersInChannel.find(
+    let user: TextChannel | undefined = this.ChannelsFromUser.find(
       (u) => u.id === userId,
     );
     if (user) {
       if (isChecked) {
-        if (!this.linkedUsers.some((u) => u.id === user.id)) {
-          this.linkedUsers.push(user);
+        if (!this.linkedChannel.some((u) => u.id === user.id)) {
+          this.linkedChannel.push(user);
         }
       } else {
         this.deleteUserFromArray(user);
@@ -177,18 +178,18 @@ export class LinkChannelMemberComponent {
    */
   removeLinkedUser(index: number) {
     if (index === 12345) {
-      this.linkedUsers = [];
+      this.linkedChannel = [];
     } else {
-      this.linkedUsers.splice(index, 1);
-      this.linkWindowOpen = false;
+      this.linkedChannel.splice(index, 1);
+      this.linkChannelWindowOpen = false;
     }
   }
 
-  setUser(event: Event, user: DABubbleUser) {
+  setChannel(event: Event, channel: TextChannel) {
     event.stopPropagation();
-    this.linkedUsers = [user];
-    this.users.emit(this.linkedUsers);
-    this.linkWindowOpen = false;
-    this.linkWindowOpenChange.emit(this.linkWindowOpen);
+    this.linkedChannel = [channel];
+    this.users.emit(this.linkedChannel);
+    this.linkChannelWindowOpen = false;
+    this.linkChannelWindowOpenChange.emit(this.linkChannelWindowOpen);
   }
 }

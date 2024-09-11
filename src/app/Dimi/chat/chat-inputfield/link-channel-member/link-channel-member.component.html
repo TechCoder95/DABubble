@@ -1,19 +1,11 @@
 <main class="emoji" (click)="openWindow()">
   <img [src]="addLinkImg" />
   <section *ngIf="linkWindowOpen" class="link-window">
-    <div class="select-all-usernames" (click)="toggleAllUsernames($event)">
-      <p>Alle auswählen</p>
-      <input type="checkbox" />
-    </div>
     @for (user of usersInChannel; track $index) {
       <div class="username-checkbox" (click)="toggleUsername($event, user)">
-        <p>{{ user.username }}</p>
-        <input
-          type="checkbox"
-          #checkbox
-          (click)="toggleUsername($event, user)"
-          id="{{ user.id }}"
-        />
+        <div (click)="setUser($event, user)">
+          <p>{{ user.username }}</p>
+        </div>
       </div>
     }
   </section>

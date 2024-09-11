@@ -28,8 +28,7 @@ export class DatabaseService implements OnDestroy {
   threadMessageID!: string;
   threadID!: string;
 
-  constructor(private subService: GlobalsubService) {
-  }
+  constructor(private subService: GlobalsubService) {}
 
   ngOnDestroy() {
     if (this.unsubscribe) {
@@ -401,4 +400,5 @@ export class DatabaseService implements OnDestroy {
 
     return channels;
   }
+
 }

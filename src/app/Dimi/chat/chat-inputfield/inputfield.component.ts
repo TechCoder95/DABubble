@@ -4,6 +4,7 @@ import {
   ElementRef,
   Input,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { ChannelService } from '../../../shared/services/channel.service';
@@ -25,6 +26,8 @@ import { HtmlConverterPipe } from '../../../shared/pipes/html-converter.pipe';
 import { SafeResourceUrl } from '@angular/platform-browser';
 import { VerlinkungPipe } from '../../../shared/pipes/verlinkung.pipe';
 import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
+import { LinkChannelComponent } from './link-channel/link-channel.component';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-chat-inputfield',
@@ -41,6 +44,7 @@ import { EmojiInputPipe } from '../../../shared/pipes/emoji-input.pipe';
     HtmlConverterPipe,
     VerlinkungPipe,
     EmojiInputPipe,
+    LinkChannelComponent
   ],
   providers: [EmojisPipe],
   templateUrl: './inputfield.component.html',
@@ -74,6 +78,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   @ViewChild('chatTextarea') chatTextarea!: ElementRef;
 
   storage: any;
+  linkWindowOpen = false;
+  linkChannelWindowOpen = false;
+  linkedChannel: TextChannel[] = [];
+
+  ChannelsFromUser!: TextChannel[];
 
   constructor(
     public channelService: ChannelService,
@@ -111,6 +120,7 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
       });
     }
     this.getUsersInChannel();
+    this.getChannelFromUser();
   }
 
   /**
@@ -125,6 +135,15 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
           this.usersInChannel.push(user);
         }
       });
+    });
+  }
+
+  async getChannelFromUser() {
+    this.databaseService.readDataByArray('channels', 'assignedUser', this.activeUser.id!).then((channels: TextChannel[]) => {
+      channels = channels.filter((channel) => channel.isPrivate === false);
+      this.ChannelsFromUser = channels;
+      console.log(this.ChannelsFromUser);
+      
     });
   }
 
@@ -483,10 +502,26 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   handleLinkedUsernames(users: DABubbleUser[]) {
     users.forEach((user) => {
       if (!this.textareaValue.includes(`@${user.username}' `)) {
+
+        //ich will das letzte zeichen löschen und dann den user einfügen
+        this.textareaValue = this.textareaValue.slice(0, -1);
         this.textareaValue += `@${user.username}' `;
       }
     });
   }
+
+    /**
+   * Handles the linked usernames in the chat input field.
+   *
+   * @param users - An array of DABubbleUser objects representing the linked usernames.
+   */
+    handleLinkedChannels(channel: TextChannel[]) {
+      channel.forEach((channel) => {
+        if (!this.textareaValue.includes(`${channel.name}' `)) {
+          this.textareaValue += `${channel.name}' `;
+        }
+      });
+    }
 
   /**
    * Handles the selected emoji event.
@@ -496,4 +531,18 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
   handleSelectedEmoji(event: string) {
     this.textareaValue += event + ' ';
   }
+
+  handleTextareaInput(event: Event) {
+
+    const iEvent = event as InputEvent;
+
+    if (iEvent.inputType === 'insertText' && iEvent.data === '@') {
+        this.linkWindowOpen = true;
+    } else if (iEvent.inputType === 'insertText' && iEvent.data === '#') {
+        this.linkChannelWindowOpen = true;
+    } else {
+        this.linkWindowOpen = false;
+        this.linkChannelWindowOpen = false;
+    }
+}
 }

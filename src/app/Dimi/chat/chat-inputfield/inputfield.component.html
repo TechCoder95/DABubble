@@ -4,6 +4,7 @@
     [(ngModel)]="textareaValue"
     [placeholder]="getPlaceholderText()"
     [value]="textareaValue | emojiInput"
+    (input)="handleTextareaInput($event)"
   ></textarea>
     
   <!-- Dieser Code funktioniert aber ist sehr sehr anstrengend zu verwalten bzw. es buggt rum und gefällt mir nicht! -->
@@ -49,7 +50,15 @@
         [addLinkImg]="addLinkImg"
         [linkedUsers]="linkedUsers"
         (users)="handleLinkedUsernames($event)"
+        [(linkWindowOpen)]="linkWindowOpen"
       ></app-link-channel-member>
+
+      <app-link-channel
+      [linkedChannel]="linkedChannel"
+        [ChannelsFromUser]="ChannelsFromUser"
+        (users)="handleLinkedChannels($event)"
+        [(linkChannelWindowOpen)]="linkChannelWindowOpen"
+      ></app-link-channel>
     </div>
     <img
       src="./img/send-message.svg"
@@ -59,3 +68,5 @@
     />
   </section>
 </main>
+
+
