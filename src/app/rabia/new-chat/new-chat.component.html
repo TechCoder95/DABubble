@@ -11,7 +11,9 @@
           <img [src]="member.avatar" />
           <div class="online-status" [ngClass]="member.isLoggedIn ? 'green' : 'grey'"></div>
         </div>
-        <p>{{ member.username }} - ({{member.mail}})</p>
+        <div class="flex gap-1">
+          <p>{{ member.username }} </p><p class="only-bigger-window"> - ({{member.mail}})</p>
+        </div>
       </div>
 
       <br>

@@ -14,7 +14,7 @@
                 <div class="flex flex-column gap-4">
                     <div>
                         <input type="text" [(ngModel)]="user.username" class="name" name="username"
-                            placeholder="Name und Nachname" #username="ngModel" required>
+                            placeholder="Username" #username="ngModel" required>
                         @if (!username.valid && !username.disabled && username.touched) {<div class="alert">
                             <span>Your
                                 Name is
