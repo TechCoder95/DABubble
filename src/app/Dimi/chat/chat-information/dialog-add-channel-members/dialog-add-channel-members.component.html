@@ -11,7 +11,7 @@
       />
     </div>
     <div class="channel-name">
-      <img src="./img/tag-hover-thin.svg" />
+      <img src="img/tag-hover-thin.svg" />
       <p>{{ selectedChannel.name }}</p>
     </div>
   </section>
@@ -50,8 +50,8 @@
             (mouseleave)="changeRemoveSelectedUserImg($index, false)"
             [src]="
               hoverStates[$index]
-                ? './img/close-hover.png'
-                : './img/close-default.png'
+                ? 'img/close-hover.png'
+                : 'img/close-default.png'
             "
             (click)="removeSelectedUser($index)"
             class="remove-selected-user-img"

@@ -51,9 +51,9 @@ import { filter } from 'rxjs';
   styleUrl: './inputfield.component.scss',
 })
 export class InputfieldComponent implements OnInit, AfterViewInit {
-  addFilesImg = './img/add-files-default.svg';
-  addEmojiImg = './img/add-emoji-default.svg';
-  addLinkImg = './img/add-link-default.svg';
+  addFilesImg = 'img/add-files-default.svg';
+  addEmojiImg = 'img/add-emoji-default.svg';
+  addLinkImg = 'img/add-link-default.svg';
 
   selectedThread: boolean = false;
   selectedChannel: TextChannel | null = null;
@@ -153,9 +153,9 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    */
   changeAddFilesImg(hover: boolean) {
     if (hover) {
-      this.addFilesImg = './img/add-files-hover.svg';
-      this.addEmojiImg = './img/add-emoji.svg';
-      this.addLinkImg = './img/add-link.svg';
+      this.addFilesImg = 'img/add-files-hover.svg';
+      this.addEmojiImg = 'img/add-emoji.svg';
+      this.addLinkImg = 'img/add-link.svg';
     } else {
       this.setDefaultImages();
     }
@@ -168,9 +168,9 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    */
   changeAddEmojiImg(hover: boolean) {
     if (hover) {
-      this.addEmojiImg = './img/add-emoji-hover.svg';
-      this.addFilesImg = './img/add-files.svg';
-      this.addLinkImg = './img/add-link.svg';
+      this.addEmojiImg = 'img/add-emoji-hover.svg';
+      this.addFilesImg = 'img/add-files.svg';
+      this.addLinkImg = 'img/add-link.svg';
     } else {
       this.setDefaultImages();
     }
@@ -183,9 +183,9 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    */
   changeAddLinkImg(hover: boolean) {
     if (hover) {
-      this.addLinkImg = './img/add-link-hover.svg';
-      this.addEmojiImg = './img/add-emoji.svg';
-      this.addFilesImg = './img/add-files.svg';
+      this.addLinkImg = 'img/add-link-hover.svg';
+      this.addEmojiImg = 'img/add-emoji.svg';
+      this.addFilesImg = 'img/add-files.svg';
     } else {
       this.setDefaultImages();
     }
@@ -195,9 +195,9 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    * Sets the default images for the chat input field.
    */
   setDefaultImages() {
-    this.addFilesImg = './img/add-files-default.svg';
-    this.addEmojiImg = './img/add-emoji-default.svg';
-    this.addLinkImg = './img/add-link-default.svg';
+    this.addFilesImg = 'img/add-files-default.svg';
+    this.addEmojiImg = 'img/add-emoji-default.svg';
+    this.addLinkImg = 'img/add-link-default.svg';
   }
 
   /**

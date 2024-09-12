@@ -3,7 +3,7 @@
     <section class="edit-channel-header">
       <div class="edit-channel-header-child">
         <div class="channel-name">
-          <img src="./img/tag.png" class="headline-tag" />
+          <img src="img/tag.png" class="headline-tag" />
           <h3>{{ selectedChannel.name }}</h3>
         </div>
         <img [src]="closeImg" class="close" (mouseenter)="changeCloseImg(true)" (mouseleave)="changeCloseImg(false)"
@@ -19,7 +19,7 @@
         </p>
       </div>
       <div class="channel-name" #channelName>
-        <img src="./img/tag.png" class="edit-name-tag" />
+        <img src="img/tag.png" class="edit-name-tag" />
         <p *ngIf="!inEditModeName">
           {{ selectedChannel.name }}
         </p>

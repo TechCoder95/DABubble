@@ -120,8 +120,8 @@ export class SidenavComponent implements OnInit, OnDestroy {
   activeGoogleUser!: User;
   activeChannel!: TextChannel;
 
-  imgWorkspaceOpen: string = './img/default-workspace-open.svg';
-  imgworkspaceClosed: string = './img/default-workspace-closed.svg';
+  imgWorkspaceOpen: string = 'img/default-workspace-open.svg';
+  imgworkspaceClosed: string = 'img/default-workspace-closed.svg';
 
   hoverStates: { [key: string]: boolean } = {};
 
@@ -449,13 +449,13 @@ export class SidenavComponent implements OnInit, OnDestroy {
    */
   changeWorkspaceImg(hover: boolean) {
     if (hover && this.workspaceMenuOpen) {
-      this.imgWorkspaceOpen = './img/hover-workspace-open.svg';
+      this.imgWorkspaceOpen = 'img/hover-workspace-open.svg';
     } else if (!hover && this.workspaceMenuOpen) {
-      this.imgWorkspaceOpen = './img/default-workspace-open.svg';
+      this.imgWorkspaceOpen = 'img/default-workspace-open.svg';
     } else if (hover && !this.workspaceMenuOpen) {
-      this.imgworkspaceClosed = './img/hover-workspace-closed.svg';
+      this.imgworkspaceClosed = 'img/hover-workspace-closed.svg';
     } else {
-      this.imgworkspaceClosed = './img/default-workspace-closed.svg';
+      this.imgworkspaceClosed = 'img/default-workspace-closed.svg';
     }
   }
 

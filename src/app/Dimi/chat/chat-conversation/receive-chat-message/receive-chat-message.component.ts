@@ -39,7 +39,7 @@ export class ReceiveChatMessageComponent {
 
   senderUser: DABubbleUser = {
     username: 'dummy',
-    avatar: './img/avatar.svg',
+    avatar: 'img/avatar.svg',
     mail: '',
     isLoggedIn: false,
   };
@@ -69,12 +69,12 @@ export class ReceiveChatMessageComponent {
 
   /**
    * Retrieves the user information for the sender of the chat message.
-   * Sets the avatar of the sender user to './img/avatar.svg'.
+   * Sets the avatar of the sender user to 'img/avatar.svg'.
    * 
    * @returns {Promise<void>} A promise that resolves when the user information is retrieved and the sender user is updated.
    */
   async getUser() {
-    this.senderUser.avatar = './img/avatar.svg';
+    this.senderUser.avatar = 'img/avatar.svg';
     let user = await this.userService.getOneUserbyId(
       this.receiveMessage.senderId,
     );

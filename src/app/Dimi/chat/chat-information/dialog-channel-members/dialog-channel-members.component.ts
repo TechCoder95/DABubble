@@ -31,8 +31,8 @@ import { DatabaseService } from '../../../../shared/services/database.service';
   styleUrl: './dialog-channel-members.component.scss',
 })
 export class DialogChannelMembersComponent implements OnInit {
-  closeImg = './img/close-default.png';
-  addMemberImg = './img/add-members-default.png';
+  closeImg = 'img/close-default.png';
+  addMemberImg = 'img/add-members-default.png';
   activeUser!: DABubbleUser;
   channelMembers: DABubbleUser[] = [];
   @Input() isMobileAndInChannelInformation!: boolean;
@@ -150,9 +150,9 @@ export class DialogChannelMembersComponent implements OnInit {
    */
   changeAddMembersImg(hover: boolean) {
     if (hover) {
-      this.addMemberImg = './img/add-members-hover.png';
+      this.addMemberImg = 'img/add-members-hover.png';
     } else {
-      this.addMemberImg = './img/add-members-default.png';
+      this.addMemberImg = 'img/add-members-default.png';
     }
   }
 
@@ -163,9 +163,9 @@ export class DialogChannelMembersComponent implements OnInit {
    */
   changeCloseImg(hover: boolean) {
     if (hover) {
-      this.closeImg = './img/close-hover.png';
+      this.closeImg = 'img/close-hover.png';
     } else {
-      this.closeImg = './img/close-default.png';
+      this.closeImg = 'img/close-default.png';
     }
   }
 

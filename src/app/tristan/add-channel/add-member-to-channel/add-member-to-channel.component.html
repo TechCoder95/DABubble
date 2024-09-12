@@ -58,8 +58,8 @@
               (mouseleave)="changeRemoveSelectedUserImg($index, false)"
               [src]="
                 hoverStates[$index]
-                  ? './img/close-hover.png'
-                  : './img/close-default.png'
+                  ? 'img/close-hover.png'
+                  : 'img/close-default.png'
               "
               (click)="removeSelectedUser($index)"
               class="remove-selected-user-img"

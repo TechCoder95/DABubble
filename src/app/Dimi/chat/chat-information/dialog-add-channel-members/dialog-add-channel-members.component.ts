@@ -37,12 +37,12 @@ import { Router } from '@angular/router';
   styleUrls: ['./dialog-add-channel-members.component.scss'],
 })
 export class DialogAddChannelMembersComponent implements AfterViewInit {
-  closeImg = './img/close-default.png';
+  closeImg = 'img/close-default.png';
   @ViewChild('inputName') inputName!: ElementRef;
   focusNameInput: boolean = false;
   searchResults: DABubbleUser[] = [];
   selectedUser: DABubbleUser[] = [];
-  removeSelectedUserImg = './img/remove-selected-user.svg';
+  removeSelectedUserImg = 'img/remove-selected-user.svg';
   selectedChannel: TextChannel = JSON.parse(
     sessionStorage.getItem('selectedChannel')!,
   );
@@ -128,9 +128,9 @@ export class DialogAddChannelMembersComponent implements AfterViewInit {
    */
   changeCloseImg(hover: boolean) {
     if (hover) {
-      this.closeImg = './img/close-hover.png';
+      this.closeImg = 'img/close-hover.png';
     } else {
-      this.closeImg = './img/close-default.png';
+      this.closeImg = 'img/close-default.png';
     }
   }
 

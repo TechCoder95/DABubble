@@ -42,7 +42,7 @@ import { DatabaseService } from '../../../../shared/services/database.service';
   styleUrl: './dialog-channel-information.component.scss',
 })
 export class DialogChannelInformationComponent {
-  closeImg = './img/close-default.png';
+  closeImg = 'img/close-default.png';
   channelName: string = 'Entwicklerteam';
   /* TO EDIT NAME */
   @ViewChild('editChannelNameSection') editChannelNameSection!: ElementRef;
@@ -114,9 +114,9 @@ export class DialogChannelInformationComponent {
    */
   changeCloseImg(hover: boolean) {
     if (hover) {
-      this.closeImg = './img/close-hover.png';
+      this.closeImg = 'img/close-hover.png';
     } else {
-      this.closeImg = './img/close-default.png';
+      this.closeImg = 'img/close-default.png';
     }
   }
 

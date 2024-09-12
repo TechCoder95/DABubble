@@ -20,7 +20,7 @@
 
         <div class="flex gap-2 mobile-view">
             <div class="cycle-avatar flex w-full" *ngFor="let image of images">
-                <img [src]="'./img/' + image" alt="" (click)="selectAvatar('./img/' + image)">
+                <img [src]="'img/' + image" alt="" (click)="selectAvatar('img/' + image)">
             </div>
         </div>
 

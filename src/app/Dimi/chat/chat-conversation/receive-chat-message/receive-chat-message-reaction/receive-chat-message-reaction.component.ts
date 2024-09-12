@@ -21,10 +21,10 @@ export class ReceiveChatMessageReactionComponent {
   @Input({ required: true }) messageForThread!: ChatMessage;
   @Input() chatType: ChatType = ChatType.Channel;
 
-  checkMarkImg = './img/message-reaction-check-mark.svg';
-  handsUpImg = './img/message-reaction-hands-up.svg';
-  addReactionImg = './img/message-reaction-add-reaction.svg';
-  answerImg = './img/message-reaction-answer.svg';
+  checkMarkImg = 'img/message-reaction-check-mark.svg';
+  handsUpImg = 'img/message-reaction-hands-up.svg';
+  addReactionImg = 'img/message-reaction-add-reaction.svg';
+  answerImg = 'img/message-reaction-answer.svg';
 
   privateChat!: boolean;
 
@@ -44,7 +44,7 @@ export class ReceiveChatMessageReactionComponent {
    * @param hover - Indicates whether the hover effect is active or not.
    */
   hoverReaction(type: string, hover: boolean) {
-    const basePath = './img/message-reaction-';
+    const basePath = 'img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
 
     if (type === 'addReaction') {

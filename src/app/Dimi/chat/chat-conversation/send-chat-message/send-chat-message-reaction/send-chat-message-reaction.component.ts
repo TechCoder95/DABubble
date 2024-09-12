@@ -14,11 +14,11 @@ import { ChatType } from '../../../../../shared/enums/chattype';
   styleUrl: './send-chat-message-reaction.component.scss',
 })
 export class SendChatMessageReactionComponent {
-  checkMarkImg = './img/message-reaction-check-mark.svg';
-  handsUpImg = './img/message-reaction-hands-up.svg';
-  addReactionImg = './img/message-reaction-add-reaction.svg';
-  answerImg = './img/message-reaction-answer.svg';
-  editMessageImg = './img/message-reaction-edit-message.svg';
+  checkMarkImg = 'img/message-reaction-check-mark.svg';
+  handsUpImg = 'img/message-reaction-hands-up.svg';
+  addReactionImg = 'img/message-reaction-add-reaction.svg';
+  answerImg = 'img/message-reaction-answer.svg';
+  editMessageImg = 'img/message-reaction-edit-message.svg';
   showEditMessageDialog: boolean = false;
   isInEditMode: boolean = false;
   messageDeleted: boolean = false;
@@ -49,7 +49,7 @@ export class SendChatMessageReactionComponent {
    * @param hover - Indicates whether the reaction is being hovered or not.
    */
   hoverReaction(type: string, hover: boolean) {
-    const basePath = './img/message-reaction-';
+    const basePath = 'img/message-reaction-';
     const hoverSuffix = hover ? '-hover' : '';
 
     if (type === 'addReaction') {
@@ -69,9 +69,9 @@ export class SendChatMessageReactionComponent {
   editMessageDialog() {
     this.showEditMessageDialog = !this.showEditMessageDialog;
     if (this.showEditMessageDialog) {
-      this.editMessageImg = './img/message-reaction-edit-message-hover.svg';
+      this.editMessageImg = 'img/message-reaction-edit-message-hover.svg';
     } else {
-      this.editMessageImg = './img/message-reaction-edit-message.svg';
+      this.editMessageImg = 'img/message-reaction-edit-message.svg';
     }
   }
 

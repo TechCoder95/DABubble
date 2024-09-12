@@ -25,11 +25,11 @@ import { OpenUserInfoComponent } from '../../../rabia/open-user-info/open-user-i
 })
 export class ChatInformationComponent implements OnInit {
   isChannel: boolean = true;
-  tagImg = './img/tag.svg';
-  arrowImg = './img/keyboard_arrow_down.svg';
+  tagImg = 'img/tag.svg';
+  arrowImg = 'img/keyboard_arrow_down.svg';
   tagImgClass = '';
   dialogChannelInfoIsOpen: boolean = false;
-  addChannelMembersImg = './img/add-members-default.svg';
+  addChannelMembersImg = 'img/add-members-default.svg';
   assignedUsers: DABubbleUser[] = [];
   isPrivateChat!: boolean;
   privateChatPartner?: DABubbleUser;
@@ -108,11 +108,11 @@ export class ChatInformationComponent implements OnInit {
    */
   changeTagImg(hover: boolean) {
     if (hover || this.dialogChannelInfoIsOpen) {
-      this.tagImg = './img/tag-hover.svg';
-      this.arrowImg = './img/arrow-down-hover.svg';
+      this.tagImg = 'img/tag-hover.svg';
+      this.arrowImg = 'img/arrow-down-hover.svg';
     } else {
-      this.tagImg = './img/tag.svg';
-      this.arrowImg = './img/keyboard_arrow_down.svg';
+      this.tagImg = 'img/tag.svg';
+      this.arrowImg = 'img/keyboard_arrow_down.svg';
     }
   }
 
@@ -123,9 +123,9 @@ export class ChatInformationComponent implements OnInit {
    */
   changeAddMembersImg(hover: boolean) {
     if (hover) {
-      this.addChannelMembersImg = './img/add-members-hover.svg';
+      this.addChannelMembersImg = 'img/add-members-hover.svg';
     } else {
-      this.addChannelMembersImg = './img/add-members-default.svg';
+      this.addChannelMembersImg = 'img/add-members-default.svg';
     }
   }
 
