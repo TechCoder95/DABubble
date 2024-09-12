@@ -84,7 +84,7 @@ export class UserService {
       username: this.guestName,
       uid: '',
       isLoggedIn: true,
-      avatar: '/img/4.svg',
+      avatar: 'img/4.svg',
     };
 
     this.DatabaseService.addDataToDB(this.collectionName, guestUser);
@@ -258,7 +258,7 @@ export class UserService {
       username: username,
       uid: uid,
       isLoggedIn: false,
-      avatar: '/img/avatar.svg',
+      avatar: 'img/avatar.svg',
     };
     await this.DatabaseService.addDataToDB(this.collectionName, data);
     this.login(this.googleUser);
@@ -479,7 +479,7 @@ export class UserService {
         username: 'Felix',
         mail: 'Felix@example.com',
         isLoggedIn: true,
-        avatar: '/img/1.svg',
+        avatar: 'img/1.svg',
         uid: 'Felix-uid',
       },
       {
@@ -487,7 +487,7 @@ export class UserService {
         username: 'Jimmy',
         mail: 'Jimmy@example.com',
         isLoggedIn: false,
-        avatar: '/img/2.svg',
+        avatar: 'img/2.svg',
         uid: 'Jimmy-uid',
       },
       {
@@ -495,7 +495,7 @@ export class UserService {
         username: 'Mia',
         mail: 'Mia@example.com',
         isLoggedIn: true,
-        avatar: '/img/3.svg',
+        avatar: 'img/3.svg',
         uid: 'Mia-uid',
       },
     ];

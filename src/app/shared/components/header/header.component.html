@@ -15,13 +15,13 @@
 
           <img
             class="logo"
-            src="/img/devspace-small-screen.svg"
+            src="img/devspace-small-screen.svg"
             alt="dabubble-logo"
             (click)="backToSidenav()"
           />
         </div>
       } @else {
-        <img class="logo" src="/img/logo.svg" alt="dabubble-logo" />
+        <img class="logo" src="img/logo.svg" alt="dabubble-logo" />
       }
 
       <div class="search">
@@ -34,13 +34,13 @@
           <img class="profileimg" src="{{ activeUser.avatar }}" alt="" />
           <div class="online-status"></div>
         </div>
-        <img class="ml-2 hide-if-to-small" src="/img/arrow-down.svg" alt="" />
+        <img class="ml-2 hide-if-to-small" src="img/arrow-down.svg" alt="" />
       </div>
     </div>
   } @else {
     <div class="flex justify-content-between align-items-center p-3 header">
       <a class="mobile-logo" href="/user/login" title="home"
-        ><img src="/img/logo.svg" alt=""
+        ><img src="img/logo.svg" alt=""
       /></a>
       @if (!this.AuthService.registerProcess) {
         <div class="flex align-items-center flex-column register-desktop">

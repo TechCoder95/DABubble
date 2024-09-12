@@ -58,33 +58,33 @@ export class ReactionComponent implements OnInit {
   getEmojiImg(emoji: Emoji) {
     switch (emoji.type) {
       case 'checkMark':
-        return '/img/checkMarkEmoji.svg';
+        return 'img/checkMarkEmoji.svg';
       case 'handsUp':
-        return '/img/reaction-handsUp.svg';
+        return 'img/reaction-handsUp.svg';
       case 'nerdFace':
-        return '/img/message-reaction-nerd-face.svg';
+        return 'img/message-reaction-nerd-face.svg';
       case 'rocket':
-        return '/img/message-reaction-rocket.svg';
+        return 'img/message-reaction-rocket.svg';
       case 'demon':
-        return '/img/emojis/demon.svg';
+        return 'img/emojis/demon.svg';
       case 'love':
-        return '/img/emojis/love.svg';
+        return 'img/emojis/love.svg';
       case 'happy':
-        return '/img/emojis/laughing.svg';
+        return 'img/emojis/laughing.svg';
       case 'sad':
-        return '/img/emojis/sad.svg';
+        return 'img/emojis/sad.svg';
       case 'angry':
-        return '/img/emojis/angry.svg';
+        return 'img/emojis/angry.svg';
       case 'cute':
-        return '/img/emojis/cute.svg';
+        return 'img/emojis/cute.svg';
       case 'cry':
-        return '/img/emojis/cry.svg';
+        return 'img/emojis/cry.svg';
       case 'kiss':
-        return '/img/emojis/kiss.svg';
+        return 'img/emojis/kiss.svg';
       case 'sarcastic':
-        return '/img/emojis/sarcastic.svg';
+        return 'img/emojis/sarcastic.svg';
       case 'money':
-        return '/img/emojis/money.svg';
+        return 'img/emojis/money.svg';
       default:
         return '';
     }
