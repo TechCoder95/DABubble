@@ -500,11 +500,11 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    */
   handleLinkedUsernames(users: DABubbleUser[]) {
     users.forEach((user) => {
-      if (!this.textareaValue.includes(`@${user.username}' `)) {
+      if (!this.textareaValue.includes(`@${user.username}\u200B `)) {
 
         //ich will das letzte zeichen löschen und dann den user einfügen
         this.textareaValue = this.textareaValue.slice(0, -1);
-        this.textareaValue += `@${user.username}' `;
+        this.textareaValue += `@${user.username}\u200B `;
       }
     });
   }
@@ -516,8 +516,8 @@ export class InputfieldComponent implements OnInit, AfterViewInit {
    */
     handleLinkedChannels(channel: TextChannel[]) {
       channel.forEach((channel) => {
-        if (!this.textareaValue.includes(`${channel.name}' `)) {
-          this.textareaValue += `${channel.name}' `;
+        if (!this.textareaValue.includes(`${channel.name}\u200B `)) {
+          this.textareaValue += `${channel.name}\u200B `;
         }
       });
     }
