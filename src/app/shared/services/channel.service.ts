@@ -458,7 +458,7 @@ export class ChannelService {
   async leaveChannel() {
     const currentUser: DABubbleUser = this.userService.activeUser;
     const channel: TextChannel = JSON.parse(
-      sessionStorage.getItem('selectedChannel') || '{}',
+      sessionStorage.getItem('selectedChannel')!
     );
     const assignedUsersWithoutCurrentUser: string[] =
       this.channel.assignedUser.filter((id) => id !== currentUser.id);
