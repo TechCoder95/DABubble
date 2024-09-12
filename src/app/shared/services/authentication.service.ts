@@ -95,6 +95,7 @@ export class AuthenticationService {
         this.showMessage = true;
         this.loginSuccess = true;
         this.userService.googleUser = userCredential.user;
+        this.fehlerMeldung = '';
 
         setTimeout(() => {
           this.userService.login(userCredential.user);
@@ -133,6 +134,7 @@ export class AuthenticationService {
   googleSignIn() {
     signInWithPopup(this.auth, this.provider)
       .then((result) => {
+        this.fehlerMeldung = '';
         this.showMessage = true;
         this.loginSuccess = true;
         // This gives you a Google Access Token. You can use it to access the Google API.
